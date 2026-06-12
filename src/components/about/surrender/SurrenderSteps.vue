@@ -1,12 +1,13 @@
 <script setup lang="ts">
-const { formStep, selectedAnimal } = defineProps<{
+const { formStep, selectedAnimal, vertical = false } = defineProps<{
   formStep: number
   selectedAnimal: 'dog' | 'cat' | null
+  vertical?: boolean
 }>()
 </script>
 
 <template>
-  <ol class="steps-container">
+  <ol class="steps-container" :class="{ vertical }">
     <li
       class="step"
       :class="{ active: formStep >= 1 }"
@@ -164,6 +165,49 @@ const { formStep, selectedAnimal } = defineProps<{
         font-weight: 600;
       }
     }
+  }
+}
+
+@media (width >= 901px) {
+  .steps-container.vertical {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: none;
+    margin: 0;
+
+    &::before {
+      top: 16px;
+      bottom: 16px;
+      left: 16px;
+      right: auto;
+      width: 1px;
+      height: auto;
+    }
+
+    .step {
+      flex-direction: row;
+      align-items: center;
+      gap: 14px;
+      margin: 0;
+      padding: 9px 0;
+
+      .step-number {
+        margin-bottom: 0;
+        flex-shrink: 0;
+      }
+
+      .step-label {
+        font-size: 0.9rem;
+        white-space: normal;
+        text-align: left;
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .steps-container .step .step-number {
+    transition: none;
   }
 }
 </style>

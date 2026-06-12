@@ -1,18 +1,26 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const props = defineProps<{
-  currentStep: number
-  steps: string[]
-}>()
+const props = withDefaults(
+  defineProps<{
+    currentStep: number
+    steps: string[]
+    vertical?: boolean
+  }>(),
+  { vertical: false },
+)
 
 const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
 </script>
 
 <template>
-  <div class="steps-wrapper">
+  <nav class="steps-wrapper" :class="{ vertical: props.vertical }" aria-label="Form progress">
+    <p class="sr-only" aria-live="polite">
+      Step {{ currentStep + 1 }} of {{ steps.length }}: {{ currentLabel }}
+    </p>
+
     <!-- Mobile: Segmented Progress + Current Step Label Only -->
-    <div class="steps-mobile" aria-label="Progress">
+    <div class="steps-mobile" aria-hidden="true">
       <div class="steps-mobile-segments">
         <div
           v-for="(_, idx) in steps"
@@ -26,18 +34,15 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
       </div>
     </div>
 
-    <!-- Desktop: Original horizontal stepper with numbers and all labels -->
-    <div
-      class="steps-container"
-      :style="{ '--steps-count': String(props.steps.length) }"
-      aria-label="Progress"
-    >
-      <div class="line" />
-      <div
+    <!-- Desktop: numbered stepper (horizontal by default, vertical rail variant) -->
+    <ol class="steps-container" :style="{ '--steps-count': String(props.steps.length) }">
+      <div class="line" aria-hidden="true" />
+      <li
         v-for="(stepLabel, idx) in props.steps"
         :key="stepLabel"
         class="step"
         :class="{ active: props.currentStep >= idx, completed: props.currentStep > idx }"
+        :aria-current="props.currentStep === idx ? 'step' : undefined"
       >
         <div class="step-number">
           <svg
@@ -47,20 +52,33 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
             fill="currentColor"
             width="16"
             height="16"
+            aria-hidden="true"
           >
             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
           </svg>
           <span v-else>{{ idx + 1 }}</span>
         </div>
         <div class="step-label">{{ stepLabel }}</div>
-      </div>
-    </div>
-  </div>
+      </li>
+    </ol>
+  </nav>
 </template>
 
 <style scoped lang="css">
 .steps-wrapper {
   width: 100%;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ── Mobile Segments ────────────────────────────────── */
@@ -105,7 +123,7 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
   margin: 0;
 }
 
-/* ── Desktop stepper ─────────────────────────────────── */
+/* ── Desktop stepper (horizontal default) ───────────── */
 .steps-container {
   display: flex;
   justify-content: space-between;
@@ -115,6 +133,8 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
   align-items: center;
   position: relative;
   gap: 8px;
+  list-style: none;
+  padding: 0;
 
   & .line {
     position: absolute;
@@ -178,6 +198,53 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
         font-weight: 600;
       }
     }
+  }
+}
+
+/* ── Vertical rail variant (desktop only) ───────────── */
+@media (width >= 901px) {
+  .steps-wrapper.vertical {
+    .steps-container {
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 0;
+      margin: 0;
+
+      & .line {
+        top: 16px;
+        bottom: 16px;
+        left: 15px;
+        right: auto;
+        width: 1px !important;
+        height: auto;
+      }
+
+      .step {
+        flex-direction: row;
+        align-items: center;
+        gap: 14px;
+        flex: none;
+        padding: 9px 0;
+
+        .step-number {
+          margin-bottom: 0;
+          flex-shrink: 0;
+        }
+
+        .step-label {
+          text-align: left;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step-segment,
+  .step .step-number {
+    transition: none;
   }
 }
 
