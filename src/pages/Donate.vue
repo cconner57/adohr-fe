@@ -1,409 +1,323 @@
 <script setup lang="ts">
-import Footer from '@/components/common/footer/Footer.vue'
+// TODO: replace with the real giving URLs before enabling the route.
+const PAYPAL_URL = '#'
+const ZELLE_EMAIL = 'donate@idohr.org'
+
+const impactLedger = [
+  { amount: 25, covers: 'Vaccinations and deworming for one rescue' },
+  { amount: 60, covers: 'A microchip and registration for one pet' },
+  { amount: 150, covers: 'Spay or neuter surgery for one cat or dog' },
+  { amount: 300, covers: 'A full month of food and litter for a foster home' },
+  { amount: 600, covers: 'Emergency medical care for one animal in crisis' },
+]
 </script>
 
 <template>
-  <div class="donate-page">
-    <div class="header">
-      <h1>Help Us Save Lives</h1>
-      <p class="mission-text">
-        You can save a life today! Your donation enables ADOHR to continue our lifesaving
-        mission—finding loving homes for wonderful rescued shelter dogs and cats. As a small but
-        dedicated operation, we face significant expenses including veterinary care, food, shelter,
-        and daily care for all the animals in our rescue. Every contribution, no matter the size,
-        makes a real difference. We are a 501(c)(3) non-profit organization, which means your
-        donation is 100% tax-deductible.
-      </p>
-    </div>
+  <main class="donate">
+    <section class="hero">
+      <div class="content-wrapper" v-scroll-reveal>
+        <p class="eyebrow">Every gift opens a door</p>
+        <h1>Help a rescue find <em>home</em></h1>
+        <p class="lead">
+          IDOHR is volunteer-powered, so your donation goes directly to the animals: medical care,
+          food, foster supplies, and the path to a forever family.
+        </p>
+      </div>
+    </section>
 
-    <main class="donate-container">
-      <section class="donate-card cat-card">
-        <h2>Support Our Cats</h2>
-        <div class="illustration">
-          <img src="/images/shadow.jpeg" alt="Cute Cat" width="500" height="375" />
+    <section class="impact" aria-labelledby="impact-title">
+      <div class="content-wrapper" v-scroll-reveal>
+        <p class="eyebrow">Where your gift goes</p>
+        <h2 id="impact-title">The impact ledger</h2>
+        <ul class="ledger">
+          <li v-for="row in impactLedger" :key="row.amount" class="ledger-row">
+            <span class="ledger-amount">${{ row.amount }}</span>
+            <span class="ledger-covers">{{ row.covers }}</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ways" aria-labelledby="ways-title">
+      <div class="content-wrapper" v-scroll-reveal>
+        <p class="eyebrow">Ways to give</p>
+        <h2 id="ways-title">Choose what works for you</h2>
+        <div class="ways-grid">
+          <article class="way-card">
+            <h3>Give online</h3>
+            <p>A one-time or monthly gift through PayPal. Monthly gifts keep foster homes stocked
+              year-round.</p>
+            <a class="way-cta" :href="PAYPAL_URL" target="_blank" rel="noopener noreferrer">
+              Donate with PayPal
+            </a>
+          </article>
+          <article class="way-card">
+            <h3>Send via Zelle</h3>
+            <p>Zelle transfers reach us with no processing fees, so 100% of your gift goes to the
+              animals.</p>
+            <p class="way-detail">{{ ZELLE_EMAIL }}</p>
+          </article>
+          <article class="way-card">
+            <h3>Mail a check</h3>
+            <p>Make checks payable to <strong>I Dream of Home Rescue</strong> and mail them to our
+              PO box.</p>
+            <p class="way-detail">PO Box 7612, La Verne, CA 91750</p>
+          </article>
         </div>
-
-        <div class="payment-methods">
-          <div class="qr-section">
-            <div class="qr-placeholder">
-              <span class="username">lorraine marrero</span>
-              <img
-                src="/images/cat-paypal.jpg"
-                class="real-qr"
-                alt="PayPal QR Code"
-                width="400"
-                height="402"
-              />
-              <span>Scan for PayPal</span>
-            </div>
-          </div>
-
-          <a
-            href="https://www.paypal.com/qrcodes/p2pqrc/FZYN4ZRPJWGXQ"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="donate-btn btn-paypal"
-          >
-            <i class="icon-paypal"></i> Donate via PayPal
-          </a>
-
-          <div class="qr-section">
-            <div class="qr-placeholder">
-              <span class="username">Lorraine Marrero-Baeza</span>
-              <span class="handle">@Lorraine-Marrero-Baeza</span>
-              <img
-                src="/images/cat-venmo.jpg"
-                class="real-qr"
-                alt="Venmo QR Code"
-                width="400"
-                height="403"
-              />
-              <span>Scan for Venmo</span>
-            </div>
-          </div>
-
-          <a
-            href="https://venmo.com/code?user_id=3025264426614784345&created=1762028642"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="donate-btn btn-venmo"
-          >
-            <i class="icon-venmo"></i> Donate via Venmo
-          </a>
-        </div>
-      </section>
-
-      <section class="donate-card dog-card">
-        <h2>Support Our Dogs</h2>
-        <div class="illustration">
-          <img src="/images/suki.jpeg" alt="Cute Dog" />
-        </div>
-
-        <div class="payment-methods">
-          <div class="qr-section">
-            <div class="qr-placeholder">
-              <span class="username">A Dream of Home Rescue, Inc.</span>
-              <img
-                src="/images/dog-venmo.jpeg"
-                class="real-qr"
-                alt="PayPal QR Code"
-                width="400"
-                height="400"
-              />
-              <span>Scan for PayPal</span>
-            </div>
-          </div>
-
-          <a
-            href="https://www.paypal.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="donate-btn btn-paypal"
-          >
-            <i class="icon-paypal"></i> Donate via PayPal
-          </a>
-
-          <div class="qr-section">
-            <div class="qr-placeholder">
-              <span class="username">adohrescue</span>
-              <img
-                src="/images/dog-zelle.jpeg"
-                class="real-qr"
-                alt="Zelle QR Code"
-                width="400"
-                height="400"
-              />
-              <span>Scan for Zelle</span>
-            </div>
-          </div>
-
-          <a href="#" class="donate-btn btn-venmo"> <i class="icon-venmo"></i> Donate via Zelle </a>
-        </div>
-      </section>
-    </main>
-
-    <Footer />
-  </div>
+        <p class="legal">
+          IDOHR is a 501(c)(3) nonprofit · EIN: 81-0780050 · Donations are tax-deductible as
+          allowed by law.
+        </p>
+      </div>
+    </section>
+  </main>
 </template>
 
-<style scoped>
-.donate-page {
+<style scoped lang="css">
+.donate {
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--text-inverse);
+  color: var(--text-primary);
+
+  .content-wrapper {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+}
+
+/* ── Hero ─────────────────────────────────────────────── */
+.hero {
   background-color: var(--color-primary);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.header {
-  text-align: center;
-  padding: 140px 20px 40px;
-}
-
-.header h1 {
   color: var(--text-inverse);
-  font-size: 3rem;
-  margin: 0;
-  line-height: 1.2;
-}
-
-.header .mission-text {
-  text-align: center;
-}
-
-.mission-text {
-  color: var(--text-inverse);
-  font-size: 1.15rem;
-  line-height: 1.6;
-  max-width: 840px;
-  margin: 24px auto 0;
-  opacity: 0.95;
-  font-weight: 500;
-}
-
-.donate-container {
+  padding: 170px var(--layout-padding-side) 70px;
   display: flex;
   justify-content: center;
-  gap: 48px;
-  padding: 0 var(--layout-padding-side) 100px;
-  flex-wrap: wrap;
-  flex: 1;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-}
 
-.donate-card {
-  background: var(--text-inverse);
-  border-radius: 24px;
-  padding: 40px;
-  flex: 1;
-  min-width: 400px;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.donate-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 16px 40px rgb(0 0 0 / 12%);
-}
-
-.donate-card h2 {
-  font-size: 2rem;
-  margin-bottom: 24px;
-  font-weight: 700;
-  text-align: center;
-}
-
-.illustration img {
-  height: 200px;
-  width: 200px;
-  object-fit: cover;
-  border-radius: 50%;
-  margin-bottom: 32px;
-  border: 6px solid;
-  transition: transform 0.3s ease;
-}
-
-.donate-card:hover .illustration img {
-  transform: scale(1.05);
-}
-
-.payment-methods {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-}
-
-.donate-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 24px;
-  border-radius: 50px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.1rem;
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-  color: var(--color-white);
-  box-shadow:
-    0 4px 6px rgb(50 50 93 / 11%),
-    0 1px 3px rgb(0 0 0 / 8%);
-  text-align: center;
-}
-
-.donate-btn:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 7px 14px rgb(50 50 93 / 10%),
-    0 3px 6px rgb(0 0 0 / 8%);
-  filter: brightness(1.1);
-}
-
-.donate-btn:active {
-  transform: translateY(1px);
-  box-shadow: none;
-}
-
-.qr-section {
-  display: flex;
-  justify-content: center;
-  margin: 8px 0;
-  width: 100%;
-}
-
-.qr-placeholder {
-  width: 100%;
-  max-width: 260px;
-  height: auto;
-  padding: 16px;
-  background: transparent;
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: auto;
-  color: #666;
-  font-size: 1rem;
-  text-align: center;
-  gap: 12px;
-  border: none;
-  box-shadow: inset 0 2px 6px rgb(0 0 0 / 3%);
-}
-
-.qr-placeholder > span:not(.username, .handle) {
-  font-weight: 600;
-  color: #222;
-  letter-spacing: 0.5px;
-}
-
-.username {
-  font-weight: 700;
-  color: #333;
-  font-size: 0.85rem;
-  white-space: nowrap;
-}
-
-.handle {
-  font-size: 0.85rem;
-  color: #666;
-  word-break: break-all;
-}
-
-.qr-icon {
-  width: 32px;
-  height: 32px;
-  opacity: 0.5;
-}
-
-.real-qr {
-  width: 100%;
-  max-width: 180px;
-  height: auto;
-  object-fit: contain;
-  border-radius: 4px;
-}
-
-.cat-card h2 {
-  color: var(--color-tertiary);
-}
-
-.cat-card .illustration img {
-  border-color: var(--color-tertiary-light);
-}
-
-.cat-card .qr-placeholder {
-  background-color: var(--color-tertiary-weak);
-  color: var(--color-tertiary);
-  border: 2px solid var(--color-tertiary-light);
-}
-
-.btn-paypal {
-  background-color: var(--color-tertiary);
-}
-
-.dog-card h2 {
-  color: var(--color-secondary);
-}
-
-.dog-card .illustration img {
-  border-color: var(--color-secondary-light);
-}
-
-.dog-card .qr-placeholder {
-  background-color: var(--color-secondary-weak);
-  color: var(--color-secondary);
-  padding: 24px;
-  border: 2px solid var(--color-secondary-light);
-}
-
-.dog-card .btn-paypal {
-  background-color: var(--color-secondary);
-}
-
-.cat-card .btn-venmo {
-  background-color: var(--color-tertiary);
-}
-
-.dog-card .btn-venmo {
-  background-color: var(--color-secondary);
-}
-
-@media (width <= 1024px) {
-  .donate-container {
+  .content-wrapper {
+    text-align: center;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 60px;
   }
 
-  .header {
-    padding-top: 60px;
+  .eyebrow {
+    color: var(--color-warning);
+  }
+
+  h1 {
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.04;
+    color: var(--text-inverse);
+    text-wrap: balance;
+    max-width: 16ch;
+
+    em {
+      font-style: italic;
+      color: oklch(from var(--color-secondary) 78% 0.13 h);
+    }
+  }
+
+  .lead {
+    font-size: 1.2rem;
+    max-width: 560px;
+    margin-top: 20px;
+    line-height: 1.6;
+    color: oklch(from var(--text-inverse) l c h / 88%);
+  }
+
+  @media (width >= 321px) and (width <= 430px) {
+    padding: 120px var(--layout-padding-side) 50px;
+
+    .lead {
+      font-size: 1.05rem;
+    }
   }
 }
 
-@media (width <= 480px) {
-  .header {
-    padding: 110px 20px 30px;
+/* ── Impact ledger ───────────────────────────────────── */
+.impact {
+  padding: 90px var(--layout-padding-side);
+  border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+
+  .eyebrow {
+    color: var(--color-secondary);
   }
 
-  .header h1 {
-    font-size: 2rem;
-    margin-top: 10px;
+  h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.75rem;
   }
 
-  .mission-text {
-    font-size: 1rem;
-    padding: 0 10px;
+  .ledger {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
   }
 
-  .donate-container {
-    padding: 0 16px 60px;
+  .ledger-row {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   }
 
-  .donate-card {
-    padding: 24px 16px;
-    border-radius: 16px;
-    min-width: 0;
-    width: 100%;
+  .ledger-amount {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 600;
+    color: var(--color-secondary);
+    width: 110px;
+    flex-shrink: 0;
+    text-align: right;
   }
 
-  .donate-card h2 {
-    font-size: 1.5rem;
+  .ledger-covers {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
   }
 
-  .illustration img {
-    height: 140px;
-    width: 140px;
-    margin-bottom: 20px;
+  @media (width <= 430px) {
+    .ledger-row {
+      gap: 1rem;
+    }
+
+    .ledger-amount {
+      width: 80px;
+    }
+
+    .ledger-covers {
+      font-size: 1rem;
+    }
+  }
+}
+
+/* ── Ways to give ────────────────────────────────────── */
+.ways {
+  padding: 90px var(--layout-padding-side) 100px;
+
+  .eyebrow {
+    color: var(--color-secondary);
   }
 
-  .qr-placeholder {
-    min-height: 240px;
+  h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.75rem;
   }
+
+  .ways-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .way-card {
+    background: var(--text-inverse);
+    border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-md);
+
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      padding-bottom: 0.6rem;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+    }
+
+    p {
+      line-height: 1.55;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+
+    .way-detail {
+      margin-top: auto;
+      margin-bottom: 0;
+      font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+    }
+
+    .way-cta {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.7rem 1.4rem;
+      background-color: var(--color-secondary);
+      color: var(--text-inverse);
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      transition: background-color var(--transition-fast, 0.15s ease);
+
+      &:hover {
+        background-color: var(
+          --color-secondary-strong,
+          oklch(from var(--color-secondary) 40% c h)
+        );
+      }
+
+      &:focus-visible {
+        outline: 3px solid var(--color-secondary);
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  .legal {
+    margin-top: 2.5rem;
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    color: var(--text-secondary);
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+  }
+
+  @media (width <= 900px) {
+    .ways-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+/* Reveal hooks (global directive) */
+:deep(.reveal) {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:deep(.reveal.active) {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>
