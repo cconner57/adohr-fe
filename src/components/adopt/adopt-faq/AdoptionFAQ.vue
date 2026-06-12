@@ -77,11 +77,13 @@ const faqs = ref([
   .faq-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    border-top: 1px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
   }
 
   h2 {
     font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.015em;
     margin-bottom: 16px;
 
     @media (width <= 440px) {
@@ -90,6 +92,9 @@ const faqs = ref([
   }
 
   details {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+
     &[open] .arrow {
       transform: rotate(90deg);
     }
@@ -107,8 +112,9 @@ const faqs = ref([
     font-weight: 700;
     cursor: pointer;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
+    line-height: 1.4;
 
     &:hover {
       color: var(--color-secondary);
@@ -117,8 +123,8 @@ const faqs = ref([
 
   .faq-answer {
     margin: 8px 0 0 34px;
-    color: var(--text-primary);
-    line-height: 1.4;
+    color: var(--text-secondary);
+    line-height: 1.55;
     font-weight: 400;
   }
 
@@ -139,5 +145,7 @@ const faqs = ref([
 
 .arrow {
   transition: transform 0.2s;
+  flex-shrink: 0;
+  color: var(--color-secondary);
 }
 </style>

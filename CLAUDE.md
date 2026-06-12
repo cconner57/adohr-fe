@@ -1,6 +1,6 @@
-# IDOHR-FE
+# ADOHR-FE
 
-Public-facing website for I Dream of Home Rescue (IDOHR) — a pet adoption/rescue organization.
+Public-facing website for A Dream of Home Rescue (ADOHR) — a pet adoption/rescue organization.
 
 ## Tech Stack
 

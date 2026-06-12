@@ -8,7 +8,7 @@ export function usePets() {
   const store = usePetStore()
   const { currentPets, isFetching: loading } = storeToRefs(store)
 
-  const SESSION_CACHE_KEY = 'idohr_spotlight_pets'
+  const SESSION_CACHE_KEY = 'adohr_spotlight_pets'
   const cached = sessionStorage.getItem(SESSION_CACHE_KEY)
   const cachedPets = ref<IPet[]>(cached ? JSON.parse(cached) : [])
 

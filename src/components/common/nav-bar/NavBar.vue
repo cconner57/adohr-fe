@@ -2,7 +2,6 @@
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import { goToDonate } from '../../../utils/navigate.ts'
 import { useIsMobile, useIsTablet } from '../../../utils/useIsMobile.ts'
 import Button from '../ui/Button.vue'
 import NavDrawer from './NavDrawer.vue'
@@ -21,189 +20,213 @@ watch(
 
 const isMobile = useIsMobile()
 const isTablet = useIsTablet()
+
+function handleDonate() {
+  router.push('/donate')
+}
 </script>
 
 <template>
   <div class="nav-bar">
-    <nav v-if="isMobile || isTablet" class="nav-blurred" aria-label="Primary navigation">
+    <nav v-if="isMobile || isTablet" class="nav-pill" aria-label="Primary navigation">
       <div class="nav-logo">
         <RouterLink to="/" class="nav-item">
-          <img src="/images/idohr-logo.jpg" alt="" />
-          <h1>I Dream of Home Rescue</h1>
+          <img src="/images/adohr-logo.jpg" alt="" />
+          <h1>A Dream of Home</h1>
         </RouterLink>
       </div>
-      <NavDrawer v-model="menuOpen" :size="28" style="color: var(--text-inverse)" />
+      <NavDrawer v-model="menuOpen" :size="26" style="color: var(--text-primary)" />
     </nav>
-    <nav v-else class="nav-blurred" aria-label="Primary navigation">
-      <div class="nav-container">
-        <section class="nav-links">
-          <RouterLink to="/" class="nav-item" active-class="active"
-            ><p data-text="Home">Home</p></RouterLink
-          >
-          <RouterLink
-            to="/about"
-            class="nav-item"
-            active-class="active"
-            :class="{ active: route.path.startsWith('/surrender') }"
-            ><p data-text="About">About</p></RouterLink
-          >
-          <RouterLink
-            to="/adopt"
-            class="nav-item"
-            active-class="active"
-            :class="{
-              active: route.path.startsWith('/adopt') || route.path.startsWith('/pet-adoption'),
-            }"
-            ><p data-text="Adopt">Adopt</p></RouterLink
-          >
-          <RouterLink to="/foster" class="nav-item" active-class="active"
-            ><p data-text="Foster">Foster</p></RouterLink
-          >
-          <RouterLink to="/volunteer" class="nav-item" active-class="active"
-            ><p data-text="Volunteer">Volunteer</p></RouterLink
-          >
-        </section>
-        <!-- <Button title="Donate" color="green" @click="goToDonate(router)" /> -->
-      </div>
+
+    <nav v-else class="nav-pill" aria-label="Primary navigation">
+      <RouterLink to="/" class="brand">
+        <img src="/images/adohr-logo.jpg" alt="" />
+        <span class="brand-name">A Dream of Home</span>
+      </RouterLink>
+
+      <section class="nav-links">
+        <RouterLink to="/" class="nav-item" active-class="active"
+          ><p data-text="Home">Home</p></RouterLink
+        >
+        <RouterLink
+          to="/about"
+          class="nav-item"
+          active-class="active"
+          :class="{ active: route.path.startsWith('/surrender') }"
+          ><p data-text="About">About</p></RouterLink
+        >
+        <RouterLink
+          to="/adopt"
+          class="nav-item"
+          active-class="active"
+          :class="{
+            active: route.path.startsWith('/adopt') || route.path.startsWith('/pet-adoption'),
+          }"
+          ><p data-text="Adopt">Adopt</p></RouterLink
+        >
+        <RouterLink to="/foster" class="nav-item" active-class="active"
+          ><p data-text="Foster">Foster</p></RouterLink
+        >
+        <RouterLink to="/volunteer" class="nav-item" active-class="active"
+          ><p data-text="Volunteer">Volunteer</p></RouterLink
+        >
+      </section>
+
+      <Button title="Donate" color="blue" size="small" class="nav-cta" @click="handleDonate" />
     </nav>
   </div>
 </template>
 
 <style scoped lang="css">
 .nav-bar {
-  nav {
-    view-transition-name: page-navbar;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem var(--layout-padding-side);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 2000;
+  position: fixed;
+  top: calc(12px + var(--safe-top));
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  padding: 0 clamp(12px, 3dvw, 24px);
+  pointer-events: none;
+  view-transition-name: page-navbar;
+
+  .nav-pill {
+    pointer-events: auto;
     width: 100%;
-    margin: 0 auto;
-    overflow: hidden;
-    align-self: center;
-    transition: background-color 0.3s ease;
-
-    .nav-container {
-      width: 100%;
-      max-width: 1600px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .nav-logo {
-      .nav-item {
-        text-decoration: none;
-      }
-    }
-
-    & .nav-links {
-      display: flex;
-      gap: 4rem;
-
-      & .nav-item {
-        color: var(--text-inverse);
-        text-decoration: none;
-
-        p {
-          font-size: 1.2rem;
-          font-weight: 500;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        p::after {
-          content: attr(data-text);
-          font-weight: 600;
-          height: 0;
-          overflow: hidden;
-          visibility: hidden;
-        }
-      }
-
-      & .nav-item.active {
-        font-weight: 600;
-        border-bottom: 2px solid var(--text-inverse);
-        padding-bottom: 4px;
-
-        p {
-          font-size: 1.2rem;
-        }
-
-        &:hover {
-          cursor: pointer;
-        }
-      }
-    }
-  }
-
-  .nav-blurred {
-    background-color: oklch(
-      52% 0.1 205deg / 85.1%
-    ); /* Final User-specified OKLCH (Medium-Dark Teal) */
-    backdrop-filter: blur(10px);
+    max-width: 1080px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0.5rem 0.625rem 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    background-color: oklch(from var(--text-inverse) l c h / 82%);
+    border: 1px solid var(--line-ink);
+    box-shadow: 0 10px 30px -14px oklch(from var(--shadow-color) l c h / 30%);
+    backdrop-filter: blur(14px);
     /* stylelint-disable-next-line property-no-vendor-prefix */
-    -webkit-backdrop-filter: blur(10px);
-    transition:
-      background-color 0.3s ease,
-      backdrop-filter 0.3s ease;
+    -webkit-backdrop-filter: blur(14px);
   }
 
-  @media (width >= 321px) and (width <= 430px) {
-    nav {
-      margin: 0;
-      padding: calc(1rem + var(--safe-top)) 1rem 1rem;
-      gap: 0.5rem;
-      width: 100dvw;
-      justify-content: space-between;
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    text-decoration: none;
+    flex-shrink: 0;
 
-      /* Flattened .nav-logo nesting */
-      & .nav-logo a {
+    img {
+      height: 36px;
+      width: 36px;
+      object-fit: cover;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--line-ink);
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: clamp(1rem, 2.5vw, 2.25rem);
+    align-items: center;
+
+    .nav-item {
+      color: var(--text-primary);
+      text-decoration: none;
+      position: relative;
+      padding: 0.375rem 0;
+
+      p {
+        font-size: 0.98rem;
+        font-weight: 500;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
+        transition: color var(--transition-normal);
       }
 
-      & .nav-logo img {
-        height: 40px;
-        width: auto;
-        border-radius: var(--radius-md);
+      p::after {
+        content: attr(data-text);
+        font-weight: 700;
+        height: 0;
+        overflow: hidden;
+        visibility: hidden;
       }
 
-      & .nav-logo h1 {
-        font-size: 1.2rem;
-        color: var(--text-inverse);
+      &::before {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        translate: -50% 0;
+        width: 5px;
+        height: 5px;
+        border-radius: var(--radius-full);
+        background-color: var(--color-secondary);
+        opacity: 0;
+        scale: 0.4;
+        transition:
+          opacity var(--transition-normal),
+          scale var(--transition-normal);
+      }
+
+      &:hover p {
+        color: var(--color-secondary);
+      }
+
+      &.active p {
+        font-weight: 700;
+      }
+
+      &.active::before {
+        opacity: 1;
+        scale: 1;
       }
     }
   }
 
-  @media (width >= 431px) and (width <= 768px) {
-    nav {
-      gap: 2rem;
-      padding: calc(1rem + var(--safe-top)) 1.5rem 1rem;
-      width: 100dvw;
-      justify-content: space-between;
+  .nav-cta {
+    flex-shrink: 0;
+  }
 
-      /* Flattened .nav-logo nesting */
-      .nav-logo a {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-      }
+  .nav-logo {
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+    }
 
-      .nav-logo img {
-        height: 45px;
-      }
+    img {
+      height: 36px;
+      width: 36px;
+      object-fit: cover;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--line-ink);
+    }
 
-      .nav-logo h1 {
-        font-size: 1.5rem;
-      }
+    h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+  }
+
+  @media (width <= 768px) {
+    top: calc(8px + var(--safe-top));
+
+    .nav-pill {
+      padding: 0.375rem 0.5rem 0.375rem 0.875rem;
     }
   }
 }

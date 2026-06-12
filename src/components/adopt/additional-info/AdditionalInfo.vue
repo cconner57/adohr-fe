@@ -95,13 +95,12 @@ const houseTrainedText = () => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-height: 250px;
+  gap: 0;
+  max-height: none;
 
   @media (width <= 440px) {
-    gap: 5px;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
 
     p {
       font-size: 0.9rem;
@@ -120,6 +119,13 @@ const houseTrainedText = () => {
 .adopt-detail__additional-info__item {
   display: flex;
   flex-direction: row;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+
+  &:first-child {
+    border-top: 1px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
+  }
 
   p {
     text-transform: capitalize;
@@ -129,6 +135,12 @@ const houseTrainedText = () => {
   & p:first-child {
     width: 200px;
     flex-shrink: 0;
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
 
     @media (width <= 440px) {
       width: 110px;
@@ -141,7 +153,7 @@ const houseTrainedText = () => {
     width: 300px;
 
     &.sponsored-fee {
-      color: hsl(43deg 60% 25%);
+      color: oklch(from var(--color-warning) 42% 0.12 h);
     }
 
     @media (width <= 440px) {

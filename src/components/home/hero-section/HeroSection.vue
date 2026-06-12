@@ -9,82 +9,231 @@ const router = useRouter()
 function handleAdopt() {
   goToAdopt(router)
 }
+
+function handleFoster() {
+  router.push('/foster')
+}
+
+const marqueeWords = ['Adopt', 'Foster', 'Volunteer', 'Rescue', 'Love']
 </script>
 
 <template>
   <section class="hero-section">
-    <h1>Rescue. Love. Adopt.</h1>
-    <Button color="blue" title="Adopt Now" @click="handleAdopt" size="large" />
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow hero-eyebrow">Cat &amp; dog rescue · Southern California</p>
+        <h1>
+          Every pet deserves a door that
+          <span class="display-accent">opens&nbsp;home.</span>
+        </h1>
+        <p class="hero-lede">
+          We rescue abandoned cats and dogs, heal them in foster homes, and match them with people
+          ready to love them for life.
+        </p>
+        <div class="hero-actions">
+          <Button title="Meet the pets" color="blue" size="large" @click="handleAdopt" />
+          <Button
+            title="Become a foster"
+            variant="text"
+            theme="neutral"
+            size="large"
+            @click="handleFoster"
+          />
+        </div>
+      </div>
+
+      <div class="hero-portrait">
+        <div class="arch">
+          <img
+            src="/images/hero.jpg"
+            alt="A rescued dog looking up, ready for adoption"
+            width="600"
+            height="760"
+            fetchpriority="high"
+          />
+        </div>
+        <span class="sticker" aria-hidden="true">Rescued<br />&amp; ready</span>
+      </div>
+    </div>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <template v-for="n in 3" :key="n">
+          <span v-for="word in marqueeWords" :key="`${n}-${word}`" class="marquee-word">
+            {{ word }} <span class="paw">🐾</span>
+          </span>
+        </template>
+      </div>
+    </div>
   </section>
 </template>
 
 <style scoped lang="css">
 .hero-section {
-  box-sizing: border-box;
-  inline-size: 100%;
-  min-height: 600px;
-  background: url('/images/hero.jpg') center 70% / cover no-repeat;
-  padding: 100px var(--layout-padding-side) 40px;
+  background-color: var(--text-inverse);
+  padding-top: calc(110px + var(--safe-top));
   overflow: hidden;
+}
 
-  & h1 {
-    font-size: 6rem;
-    color: var(--text-inverse);
-    max-width: 600px;
-    margin-bottom: 24px;
-    text-shadow: 2px 2px 4px rgb(0 0 0 / 50%);
-    line-height: 100px;
-    user-select: none;
+.hero-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(1rem, 4vw, 3rem) var(--layout-padding-side) clamp(3rem, 6vw, 5rem);
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.hero-eyebrow {
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  color: var(--text-primary);
+  max-width: 12ch;
+  margin-bottom: 1.5rem;
+}
+
+.hero-lede {
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 44ch;
+  margin-bottom: 2rem;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Signature: the pet-door arch */
+.hero-portrait {
+  position: relative;
+  justify-self: end;
+  width: min(100%, 420px);
+}
+
+.arch {
+  border-radius: var(--radius-arch);
+  overflow: hidden;
+  border: 1.5px solid var(--line-ink-strong);
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 4 / 5;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    transition: scale 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+.hero-portrait:hover .arch img {
+  scale: 1.04;
+}
+
+.sticker {
+  position: absolute;
+  top: 8%;
+  right: -1.25rem;
+  rotate: 8deg;
+  background-color: var(--color-warning);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1.15;
+  text-align: center;
+  padding: 1.1rem 0.8rem;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--text-primary);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow-md);
+}
+
+/* Marquee strip */
+.marquee {
+  background-color: var(--color-primary);
+  border-block: 1.5px solid var(--text-primary);
+  padding: 0.875rem 0;
+  overflow: hidden;
+}
+
+.marquee-track {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+.marquee-word {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-inverse);
+  display: inline-flex;
+  align-items: center;
+  gap: 3rem;
+  white-space: nowrap;
+
+  .paw {
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
   }
 
-  @media (width >= 321px) and (width <= 430px) {
-    padding-top: 8rem;
-    padding-bottom: 2rem;
-    min-height: 400px;
-    background-position: 50% 20%;
+  to {
+    transform: translateX(-33.333%);
+  }
+}
 
-    & h1 {
-      font-size: 2.5rem;
-      line-height: 3rem;
-      width: 220px;
-      max-width: 100%;
-      margin-bottom: 16px;
-    }
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+@media (width <= 900px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    text-align: center;
   }
 
-  @media (width >= 431px) and (width <= 768px) {
-    padding-top: 8rem;
-    padding-bottom: 2rem;
-    min-height: 400px;
-    background-position: 50% 20%;
-
-    & h1 {
-      font-size: 2.5rem;
-      line-height: 3rem;
-      width: 200px;
-      max-width: 100%;
-      margin-bottom: 16px;
-    }
+  h1 {
+    margin-inline: auto;
   }
 
-  @media (width >= 1025px) and (width <= 1440px) {
-    padding-top: 8rem;
-    padding-bottom: 2rem;
-
-    & h1 {
-      font-size: 5rem;
-      line-height: 80px;
-    }
+  .hero-lede {
+    margin-inline: auto;
   }
 
-  @media (width >= 1441px) {
-    padding-top: 8rem;
-    padding-bottom: 2rem;
+  .hero-actions {
+    justify-content: center;
+  }
 
-    & h1 {
-      font-size: 6rem;
-      line-height: 100px;
-    }
+  .hero-portrait {
+    justify-self: center;
+    width: min(100%, 340px);
+  }
+
+  .sticker {
+    right: -0.5rem;
   }
 }
 </style>

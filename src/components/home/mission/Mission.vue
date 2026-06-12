@@ -2,22 +2,28 @@
 
 <template>
   <section class="mission">
-    <h4>Our Mission</h4>
-    <div class="mission-content">
-      <p>
-        I Dream of Home Rescue's (IDOHR) mission is to rescue abandoned, unwanted, and surrendered
-        animals. While we search for loving homes, we give them what all animals deserve: shelter,
-        food, veterinary care, and love. IDOHR will also advocate and educate on the importance of
-        pet adoption, spaying, neutering, and proper pet care.
+    <div class="mission-text">
+      <p class="eyebrow mission-eyebrow">Our mission</p>
+      <h4>Shelter, food, care, and love — until the right door opens.</h4>
+      <p class="mission-copy">
+        I Dream of Home Rescue (IDOHR) rescues abandoned, unwanted, and surrendered animals. While
+        we search for loving homes, we give them what every animal deserves: shelter, food,
+        veterinary care, and love. We also advocate for pet adoption, spaying, neutering, and
+        responsible pet care.
       </p>
-      <div class="image-container">
-        <img
-          src="/images/watercolor.jpeg"
-          alt="watercolor painting of dog and cat"
-          width="600"
-          height="466"
-        />
-      </div>
+      <ul class="mission-list">
+        <li>Vaccinations, microchipping &amp; spay/neuter</li>
+        <li>Medical treatment &amp; behavioral support</li>
+        <li>Adopter education &amp; lifetime support</li>
+      </ul>
+    </div>
+    <div class="image-container">
+      <img
+        src="/images/watercolor.jpeg"
+        alt="watercolor painting of dog and cat"
+        width="600"
+        height="466"
+      />
     </div>
   </section>
 </template>
@@ -25,110 +31,83 @@
 <style scoped lang="css">
 .mission {
   width: 100%;
-  text-align: start;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  justify-content: center;
+  background-color: var(--color-primary);
+  color: var(--text-inverse);
+  border-radius: calc(var(--radius-lg) * 2);
+  border: 1.5px solid var(--text-primary);
+  padding: clamp(2rem, 5vw, 4.5rem);
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4.5rem);
 
-  & h4 {
-    font-size: 2.75rem;
+  .mission-eyebrow {
+    color: var(--color-warning);
+    margin-bottom: 1rem;
+  }
+
+  h4 {
+    font-size: var(--font-size-h3);
     color: var(--text-inverse);
+    margin-bottom: 1.25rem;
+    max-width: 22ch;
+  }
+
+  .mission-copy {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: oklch(from var(--text-inverse) l c h / 85%);
+    max-width: 56ch;
+    margin-bottom: 1.5rem;
+  }
+
+  .mission-list {
+    list-style: none;
+    padding: 0;
     margin: 0;
-  }
-
-  .mission-content {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    gap: 40px;
+    flex-direction: column;
 
-    & .image-container {
-      background-color: var(--text-inverse);
-      padding: 16px;
-      border-radius: 24px;
-      flex-shrink: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-shadow: var(--shadow-lg);
-    }
-
-    & img {
-      border-radius: 16px;
-      height: auto;
-      max-height: 300px;
-      object-fit: cover;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    & p {
-      width: 100%;
-      max-width: 650px;
-      font-size: 1.2rem;
+    li {
+      position: relative;
+      padding: 0.75rem 0 0.75rem 1.9rem;
+      border-top: 1px solid oklch(from var(--text-inverse) l c h / 18%);
       color: var(--text-inverse);
-      line-height: 1.6;
-      font-weight: 400;
-    }
-  }
+      font-weight: 500;
 
-  @media (width <= 768px) {
-    & h4 {
-      font-size: 2rem;
-    }
-
-    .mission-content {
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-
-      & img {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-      }
-
-      & p {
-        width: 100%;
-        font-size: 1rem;
-        margin-top: 0;
+      &::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--color-warning);
+        font-weight: 700;
       }
     }
   }
 
-  @media (width >= 769px) and (width <= 1024px) {
-    & h4 {
-      font-size: 2.25rem;
-    }
+  .image-container {
+    justify-self: end;
+    width: min(100%, 380px);
+    border-radius: var(--radius-arch);
+    overflow: hidden;
+    border: 1.5px solid oklch(from var(--text-inverse) l c h / 45%);
+    box-shadow: var(--shadow-lg);
 
-    .mission-content {
-      gap: 32px;
-
-      & p {
-        flex: 1;
-        width: auto;
-        font-size: 1.1rem;
-      }
-
-      & img {
-        width: 40%;
-        max-width: 350px;
-      }
+    img {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
     }
   }
 
-  @media (width >= 1025px) and (width <= 1440px) {
-    & h4 {
-      font-size: 2.5rem;
-    }
+  @media (width <= 900px) {
+    grid-template-columns: 1fr;
 
-    .mission-content {
-      & p {
-        flex: 1;
-        width: auto;
-      }
+    .image-container {
+      justify-self: center;
+      order: -1;
+      width: min(100%, 300px);
     }
   }
 }

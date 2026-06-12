@@ -36,8 +36,9 @@ const colorClass = computed(() => {
 
 <style scoped lang="css">
 .capsule {
-  border-radius: var(--radius-lg);
-  font-weight: 700;
+  font-family: var(--font-mono);
+  border-radius: var(--radius-full);
+  font-weight: 500;
   line-height: 1;
   display: inline-flex;
   align-items: center;
@@ -47,59 +48,62 @@ const colorClass = computed(() => {
   max-width: 12rem;
   overflow: hidden;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.07em;
+  border: 1px solid currentcolor;
+  background-color: transparent;
 }
 
-/* Base Themes (Pastel Background + Strong Text) */
+/* Kennel-card tags: hairline outline in the role color */
 .capsule--green {
-  background-color: var(--color-primary-weak);
   color: var(--color-primary-strong);
+  background-color: var(--color-primary-weak);
 }
 
 .capsule--blue {
-  background-color: var(--color-secondary-weak);
   color: var(--color-secondary-strong);
+  background-color: var(--color-secondary-weak);
 }
 
 .capsule--orange {
-  background-color: var(--color-warning-weak);
   color: var(--color-warning-strong);
+  background-color: var(--color-warning-weak);
 }
 
 .capsule--red {
-  background-color: var(--color-danger-weak);
   color: var(--color-danger-strong);
+  background-color: var(--color-danger-weak);
 }
 
 .capsule--purple {
-  background-color: var(--color-tertiary-weak);
   color: var(--color-tertiary-strong);
+  background-color: var(--color-tertiary-weak);
 }
 
 .capsule--gray {
-  background-color: var(--color-neutral-weak);
   color: var(--color-neutral-strong);
+  background-color: transparent;
+  border-color: var(--line-ink);
 }
 
 .capsule--white {
   background-color: var(--color-white);
   color: var(--color-neutral-text-soft);
-  border: 1px solid var(--border-color);
+  border-color: var(--line-ink);
 }
 
-/* Sizes */
+/* Sizes — floors keep mono tags readable (never below ~11.5px) */
 .capsule--sm {
   padding: 4px 10px;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
 }
 
 .capsule--md {
-  padding: 6px 14px;
+  padding: 6px 13px;
   font-size: 0.8rem;
 }
 
 .capsule--lg {
-  padding: 8px 18px;
-  font-size: 0.9rem;
+  padding: 8px 16px;
+  font-size: 0.88rem;
 }
 </style>

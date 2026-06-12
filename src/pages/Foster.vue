@@ -318,8 +318,9 @@ const fosterStepLabels = [
 .form-card {
   background: var(--text-inverse);
   color: var(--text-primary);
-  border-radius: 24px;
-  box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+  box-shadow: var(--shadow-lg);
   padding: 48px 48px 32px;
 
   @container (max-width: 900px) {
@@ -333,15 +334,19 @@ const fosterStepLabels = [
   padding: 0;
 }
 .section-title {
-  font-weight: 700;
-  font-size: 18px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
   line-height: 1.35;
   margin: 18px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+  width: 100%;
 }
 .section-copy {
   margin-bottom: 12px;
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--text-secondary);
 }
 
@@ -360,15 +365,15 @@ const fosterStepLabels = [
 }
 
 .validation-summary {
-  background-color: var(--color-danger-surface);
+  background-color: var(--color-danger-surface, oklch(from var(--color-danger) 98% 0.02 h));
   border: 1px solid var(--color-danger);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   padding: 16px;
   margin: 24px 0;
   text-align: center;
   .summary-title {
     color: var(--color-danger);
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 12px;
   }
   .tags {
@@ -378,17 +383,19 @@ const fosterStepLabels = [
     justify-content: center;
   }
   .tag.is-danger {
-    background-color: var(--color-danger-weak);
+    background-color: var(--color-danger-weak, oklch(from var(--color-danger) 96% 0.04 h));
     color: var(--color-danger);
     padding: 4px 12px;
-    border-radius: 16px;
+    border-radius: var(--radius-full);
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
   }
 }
 
 .actions {
-  margin-top: 20px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   display: flex;
   justify-content: center;
   gap: 16px;

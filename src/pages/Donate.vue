@@ -7,7 +7,7 @@ import Footer from '@/components/common/footer/Footer.vue'
     <div class="header">
       <h1>Help Us Save Lives</h1>
       <p class="mission-text">
-        You can save a life today! Your donation enables IDOHR to continue our lifesaving
+        You can save a life today! Your donation enables ADOHR to continue our lifesaving
         mission—finding loving homes for wonderful rescued shelter dogs and cats. As a small but
         dedicated operation, we face significant expenses including veterinary care, food, shelter,
         and daily care for all the animals in our rescue. Every contribution, no matter the size,
@@ -82,7 +82,7 @@ import Footer from '@/components/common/footer/Footer.vue'
         <div class="payment-methods">
           <div class="qr-section">
             <div class="qr-placeholder">
-              <span class="username">I Dream of Home Rescue, Inc.</span>
+              <span class="username">A Dream of Home Rescue, Inc.</span>
               <img
                 src="/images/dog-venmo.jpeg"
                 class="real-qr"
@@ -105,7 +105,7 @@ import Footer from '@/components/common/footer/Footer.vue'
 
           <div class="qr-section">
             <div class="qr-placeholder">
-              <span class="username">idohrescue</span>
+              <span class="username">adohrescue</span>
               <img
                 src="/images/dog-zelle.jpeg"
                 class="real-qr"

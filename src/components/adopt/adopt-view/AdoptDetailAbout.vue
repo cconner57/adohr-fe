@@ -12,6 +12,7 @@ defineProps<{
   <div class="adopt-detail__about">
     <div class="adopt-detail__about__content">
       <div class="adopt-detail__about__fun">
+        <p class="eyebrow">In their own words</p>
         <h2>From {{ pet.name }}</h2>
         <p v-if="pet.descriptions?.primary">{{ pet.descriptions?.primary }}</p>
         <p v-else class="adopt-detail__about__fallback">{{ formattedFallbackStory }}</p>
@@ -37,17 +38,30 @@ defineProps<{
 <style scoped lang="css">
 .adopt-detail__about {
   display: flex;
-  gap: 24px;
+  gap: 0;
   margin-top: 20px;
   background-color: var(--text-inverse);
   padding: 32px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   color: var(--text-primary);
-  box-shadow: 0 4px 6px rgb(0 0 0 / 25%);
+  box-shadow: var(--shadow-md);
   width: 100%;
+
+  .eyebrow {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    margin-bottom: 6px;
+  }
 
   .adopt-detail__about__content {
     width: 50%;
+    padding-right: 32px;
+    border-right: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
 
     .adopt-detail__about__fun {
       width: 100%;
@@ -55,6 +69,8 @@ defineProps<{
 
     .adopt-detail__about__additional-info {
       margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
 
       ul {
         padding-left: 20px;
@@ -63,6 +79,8 @@ defineProps<{
 
       li {
         margin-bottom: 8px;
+        line-height: 1.55;
+        color: var(--text-secondary);
       }
     }
 
@@ -73,17 +91,21 @@ defineProps<{
 
   .adopt-detail__about__process {
     width: 50%;
+    padding-left: 32px;
   }
 
   h2 {
     font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.015em;
     margin-bottom: 16px;
   }
 
-  p {
+  p:not(.eyebrow) {
     font-size: 1rem;
-    line-height: 1.5;
+    line-height: 1.65;
     margin-bottom: 12px;
+    color: var(--text-secondary);
   }
 
   @media (width <= 768px) {
@@ -92,6 +114,14 @@ defineProps<{
     .adopt-detail__about__content,
     .adopt-detail__about__process {
       width: 100%;
+      padding: 0;
+      border-right: none;
+    }
+
+    .adopt-detail__about__process {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
     }
   }
 }

@@ -85,44 +85,49 @@ const classes = computed(() => {
 button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-normal);
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border-radius: var(--radius-full);
+  transition:
+    translate var(--transition-normal),
+    box-shadow var(--transition-normal),
+    background-color var(--transition-normal),
+    color var(--transition-normal),
+    border-color var(--transition-normal);
   white-space: nowrap;
-  border: 1px solid transparent;
-  font-family: inherit;
+  border: 1.5px solid transparent;
 
   &:hover:not(:disabled) {
     cursor: pointer;
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-lg);
+    translate: 0 -2px;
   }
 
   &:active:not(:disabled) {
-    transform: translateY(0);
+    translate: 0 0;
   }
 }
 
 .small {
-  height: 32px;
+  height: 36px;
   min-width: 80px;
-  padding: 0 12px;
+  padding: 0 18px;
   font-size: 0.85rem;
 }
 
 .medium {
-  height: 40px;
+  height: 44px;
   min-width: 120px;
-  padding: 0 20px;
+  padding: 0 24px;
   font-size: 0.95rem;
 }
 
 .large {
-  height: 48px;
+  height: 54px;
   min-width: 180px;
-  padding: 0 32px;
-  font-size: 1.1rem;
+  padding: 0 36px;
+  font-size: 1.05rem;
 }
 
 .justify-center {
@@ -142,9 +147,18 @@ button {
   display: flex;
 }
 
+/* Filled buttons carry an ink outline + lifted shadow — the "sticker" feel */
 .variant-primary {
-  color: var(--color-white);
-  border: none;
+  color: var(--text-inverse);
+  border-color: oklch(from var(--text-primary) l c h / 60%);
+}
+
+.variant-primary:hover:not(:disabled) {
+  box-shadow: 0 6px 0 -2px oklch(from var(--text-primary) l c h / 75%);
+}
+
+.variant-primary:active:not(:disabled) {
+  box-shadow: 0 2px 0 -1px oklch(from var(--text-primary) l c h / 75%);
 }
 
 .variant-primary.theme-primary {
@@ -160,7 +174,7 @@ button {
 }
 
 .variant-primary.theme-warning {
-  background-color: var(--color-warning);
+  background-color: var(--color-warning-strong);
 }
 
 .variant-primary.theme-danger {
@@ -171,13 +185,9 @@ button {
   background-color: var(--color-neutral);
 }
 
-.variant-primary:hover:not(:disabled) {
-  opacity: 0.9;
-}
-
 .variant-secondary {
-  background-color: var(--color-white);
-  border: 1px solid currentcolor;
+  background-color: transparent;
+  border-color: currentcolor;
 }
 
 .variant-secondary.theme-primary {
@@ -193,7 +203,7 @@ button {
 }
 
 .variant-secondary.theme-warning {
-  color: var(--color-warning);
+  color: var(--color-warning-strong);
 }
 
 .variant-secondary.theme-danger {
@@ -202,16 +212,16 @@ button {
 
 .variant-secondary.theme-neutral {
   color: var(--text-primary);
-  border-color: var(--border-color);
+  border-color: var(--line-ink-strong);
 }
 
 .variant-secondary:hover:not(:disabled) {
-  background-color: #f8fafc;
+  background-color: oklch(from currentcolor l c h / 8%);
 }
 
 .variant-tertiary {
   background-color: var(--color-white);
-  border: 1px solid #cbd5e1;
+  border-color: var(--line-ink-strong);
   color: var(--text-primary);
 }
 
@@ -220,8 +230,9 @@ button {
 }
 
 .variant-tertiary:hover:not(:disabled) {
-  border-color: #94a3b8;
-  background-color: #f1f5f9;
+  border-color: var(--text-primary);
+  background-color: var(--color-neutral-surface);
+  box-shadow: 0 6px 0 -2px oklch(from var(--text-primary) l c h / 30%);
 }
 
 .variant-text {
@@ -232,12 +243,13 @@ button {
   min-width: 0;
   height: auto;
   text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 5px;
 }
 
 .variant-text:hover:not(:disabled) {
-  transform: none;
-  opacity: 0.8;
+  translate: 0 0;
+  color: var(--color-secondary);
 }
 
 .variant-text.theme-primary {
@@ -253,7 +265,7 @@ button {
 }
 
 .variant-text.theme-neutral {
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .legacy-green-weak {
@@ -268,9 +280,9 @@ button {
 
 .button-disabled {
   filter: grayscale(100%);
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
-  transform: none !important;
+  translate: 0 0 !important;
   box-shadow: none !important;
 }
 

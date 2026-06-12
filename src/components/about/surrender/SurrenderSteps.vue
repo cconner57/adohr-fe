@@ -74,11 +74,11 @@ const { formStep, selectedAnimal } = defineProps<{
   &::before {
     content: '';
     position: absolute;
-    top: 15px;
+    top: 16px;
     left: 27px;
     right: 27px;
-    height: 2px;
-    background-color: var(--color-primary);
+    height: 1px;
+    background-color: var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
     z-index: 0;
   }
 
@@ -116,17 +116,24 @@ const { formStep, selectedAnimal } = defineProps<{
     }
 
     .step-number {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
       background-color: var(--text-inverse);
-      border: 1px solid var(--color-primary);
-      color: var(--text-primary);
+      border: 1px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
+      color: var(--text-secondary);
+      font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
       display: flex;
       justify-content: center;
       align-items: center;
       margin-bottom: 8px;
       z-index: 5;
+      transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
 
       @media (width <= 600px) {
         margin-bottom: 0;
@@ -137,6 +144,7 @@ const { formStep, selectedAnimal } = defineProps<{
       font-size: 0.75rem;
       text-align: center;
       white-space: nowrap;
+      color: var(--text-secondary);
 
       @media (width <= 600px) {
         font-size: 1rem;
@@ -146,8 +154,14 @@ const { formStep, selectedAnimal } = defineProps<{
 
     &.active {
       .step-number {
-        background-color: var(--color-primary);
+        background-color: var(--color-secondary);
+        border-color: var(--color-secondary);
         color: var(--text-inverse);
+      }
+
+      .step-label {
+        color: var(--text-primary);
+        font-weight: 600;
       }
     }
   }

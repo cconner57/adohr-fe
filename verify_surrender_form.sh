@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the API endpoint (deployed Cloudflare API)
-API_URL="https://api.idohr.app/applications/surrender"
+API_URL="https://api.adohr.app/applications/surrender"
 
 # Define the payload based on SurrenderApplication in backend/internal/data/surrender.go
 PAYLOAD='{

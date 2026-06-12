@@ -32,12 +32,13 @@ import Candid from '@/components/common/candid-award/Candid.vue'
         </a>
       </div>
       <div class="notice reveal-left" v-scroll-reveal>
+        <p class="eyebrow">Accountability</p>
         <h2>Transparency</h2>
         <p>
           IDOHR is a 501(c)(3) nonprofit. Donations are tax-deductible as allowed by law. We publish
           annual updates and operate with financial transparency.
         </p>
-        <p class="small">EIN: 81-0780050 • PO Box 7612, La Verne, CA 91750</p>
+        <p class="small mono">EIN: 81-0780050 · PO Box 7612, La Verne, CA 91750</p>
         <p class="small">
           Candid Seals recognize nonprofit transparency and profile completeness.
           <a
@@ -60,7 +61,8 @@ import Candid from '@/components/common/candid-award/Candid.vue'
   background-color: var(--text-inverse);
   display: flex;
   justify-content: center;
-  padding: 80px var(--layout-padding-side);
+  padding: 90px var(--layout-padding-side);
+  border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
 
   .content-wrapper {
     width: 100%;
@@ -72,14 +74,29 @@ import Candid from '@/components/common/candid-award/Candid.vue'
     gap: 4rem;
   }
 
-  h2 {
-    font-size: 2.5rem;
+  .eyebrow {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    margin-bottom: 12px;
   }
 
-  p {
+  h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+  }
+
+  p:not(.eyebrow) {
     font-size: 1.15rem;
     max-width: 600px;
-    margin-top: 12px;
+    margin-top: 16px;
+    line-height: 1.65;
+    color: var(--text-secondary);
   }
 
   .notice {
@@ -91,12 +108,21 @@ import Candid from '@/components/common/candid-award/Candid.vue'
 
     .small {
       font-size: 0.85rem;
-      color: var(--color-neutral-strong);
-      margin-top: 12px;
+      color: var(--text-secondary);
+      margin-top: 14px;
+
+      &.mono {
+        font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+        letter-spacing: 0.02em;
+        padding-top: 14px;
+        border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+      }
 
       a {
         color: var(--color-secondary);
         font-weight: 700;
+        text-decoration: underline;
+        text-underline-offset: 3px;
       }
 
       .candid-link-row {

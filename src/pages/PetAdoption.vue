@@ -310,8 +310,9 @@ const secondPetName = computed(() => {
     margin: 0 auto;
     background: var(--text-inverse);
     color: var(--text-primary);
-    border-radius: 24px;
-    box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+    box-shadow: var(--shadow-lg);
     padding: 48px 48px 32px;
 
     @container shell (max-width: 800px) {
@@ -324,29 +325,41 @@ const secondPetName = computed(() => {
       padding: 0;
 
       .section-title {
-        font-weight: 700;
-        font-size: 18px;
+        font-weight: 800;
+        font-size: 1.15rem;
+        letter-spacing: -0.01em;
         margin: 18px 0 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
       }
     }
 
     .cat-name-display {
       display: flex;
-      align-items: center;
+      align-items: baseline;
       justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 2rem;
+      gap: 0.6rem;
+      margin: 0 auto 2rem;
+      padding: 0.6rem 1.4rem;
+      width: fit-content;
+      max-width: 100%;
+      border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+      border-radius: var(--radius-full);
 
       h2 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--text-primary);
+        font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
       }
 
       p {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--color-primary);
+        font-size: 1.3rem;
+        font-weight: 800;
+        letter-spacing: -0.015em;
+        color: var(--color-secondary);
       }
     }
 
@@ -354,7 +367,9 @@ const secondPetName = computed(() => {
       display: flex;
       justify-content: center;
       gap: 16px;
-      margin-top: 20px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
 
       @media (width <= 600px) {
         flex-direction: column;
@@ -369,10 +384,10 @@ const secondPetName = computed(() => {
       max-width: 600px;
       margin: 1rem auto 2rem;
       padding: 1.5rem;
-      background: var(--color-primary-weak);
+      background: oklch(from var(--color-secondary) 97% 0.015 h);
       border-radius: var(--radius-lg);
       text-align: center;
-      border: 1px dashed var(--color-primary);
+      border: 1px dashed oklch(from var(--color-secondary) 62% 0.12 h);
 
       .selection-text {
         font-weight: 600;
@@ -392,14 +407,13 @@ const secondPetName = computed(() => {
     }
 
     .validation-summary {
-      background-color: var(--color-white);
-      border: 1px solid #e11d48;
-      color: #9f1239;
-      border-radius: var(--radius-lg);
+      background-color: var(--color-danger-surface, oklch(from var(--color-danger) 98% 0.02 h));
+      border: 1px solid var(--color-danger);
+      color: var(--color-danger);
+      border-radius: var(--radius-md);
       padding: 1.5rem;
       margin: 2rem 0;
       text-align: center;
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%);
 
       .summary-title {
         font-weight: 700;
@@ -415,8 +429,8 @@ const secondPetName = computed(() => {
       }
 
       .tag.is-danger {
-        background-color: #fce7f3;
-        color: #9f1239;
+        background-color: var(--color-danger-weak, oklch(from var(--color-danger) 96% 0.04 h));
+        color: var(--color-danger);
         padding: 0.5rem 1rem;
         border-radius: var(--radius-full);
         font-size: 0.9rem;

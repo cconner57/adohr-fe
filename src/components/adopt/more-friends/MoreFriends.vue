@@ -13,6 +13,7 @@ const isMobile = useIsMobile()
 
 <template>
   <div class="adopt-detail__more-friends">
+    <p class="eyebrow">Still looking</p>
     <h2>More Friends You Might Like</h2>
     <div class="adopt-detail__more-friends__list">
       <PetItem
@@ -71,13 +72,26 @@ const isMobile = useIsMobile()
   width: 100%;
   background-color: var(--text-inverse);
   color: var(--text-primary);
-  padding: 20px 20px 30px;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px rgb(0 0 0 / 25%);
+  padding: 24px 20px 30px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+  box-shadow: var(--shadow-md);
+
+  .eyebrow {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    margin-bottom: 6px;
+  }
 
   h2 {
     font-size: 1.5rem;
-    margin-bottom: 16px;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    margin-bottom: 20px;
   }
 
   .adopt-detail__more-friends__list {

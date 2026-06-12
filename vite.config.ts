@@ -22,10 +22,10 @@ export default defineConfig(({ mode }) => {
     server: {
       host: 'localhost',
       port: 5173,
-      allowedHosts: ['www.idohr.app', 'idohr.app'],
+      allowedHosts: ['www.adohr.app', 'adohr.app'],
       proxy: {
         // Proxy all backend routes to local backend while maintaining relative paths
-        // This allows access via localhost OR tunnel (idohr.app) transparently
+        // This allows access via localhost OR tunnel (adohr.app) transparently
         '/v1': {
           target: env.VITE_API_URL || 'http://127.0.0.1:8080',
           changeOrigin: true,

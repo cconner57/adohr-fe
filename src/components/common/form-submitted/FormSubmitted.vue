@@ -84,23 +84,24 @@ const messageText = () => {
   max-width: 600px;
   margin: 0 auto;
   background: var(--text-inverse);
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   padding: 60px 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 0 8px #fff);
+  box-shadow: var(--shadow-lg);
   text-align: center;
   animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .icon-wrapper {
-  color: var(--color-primary);
-  background-color: color-mix(in srgb, var(--color-primary) 10%, #fff);
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  color: var(--text-inverse);
+  background-color: var(--color-primary);
+  width: 96px;
+  height: 110px;
+  border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,19 +110,20 @@ const messageText = () => {
 }
 
 .success-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
 }
 
 .success-title {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   margin-bottom: 16px;
   color: var(--text-primary);
 }
 
 .success-message {
-  color: var(--color-neutral-strong);
+  color: var(--text-secondary);
   font-size: 1.1rem;
   margin-bottom: 40px;
   line-height: 1.6;

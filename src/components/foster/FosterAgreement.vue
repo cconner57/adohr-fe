@@ -22,10 +22,10 @@ const emit = defineEmits<{
         I certify that all information submitted in this foster application is true, complete, and
         accurate to the best of my knowledge. I confirm that I am at least 18 years old and
         understand that any material omission or misrepresentation may result in denial, removal of
-        a foster animal, or termination of foster participation at IDOHR's sole discretion. I
+        a foster animal, or termination of foster participation at ADOHR's sole discretion. I
         understand that fostering may be costly and time intensive, and that I may incur
         out-of-pocket expenses, including urgent care expenses, unless reimbursement is expressly
-        authorized in writing by IDOHR in advance. If you understand and agree, please type your
+        authorized in writing by ADOHR in advance. If you understand and agree, please type your
         full name below.
       </p>
 
@@ -66,16 +66,16 @@ const emit = defineEmits<{
       </article>
 
       <p>
-        If approved as a foster, I agree to follow all IDOHR policies and instructions, maintain
+        If approved as a foster, I agree to follow all ADOHR policies and instructions, maintain
         safe control of the foster pet, and communicate promptly regarding behavior, health,
         injuries, incidents, escapes, and emergencies. I understand that fostering a dog or cat may
         involve bites, scratches, zoonotic disease exposure, property damage, conflict with resident
         pets, and emotionally difficult outcomes, including severe illness or death. To the fullest
         extent permitted by law, I voluntarily assume all risks related to fostering and agree to
-        release, defend, indemnify, and hold harmless IDOHR, its officers, directors, volunteers,
+        release, defend, indemnify, and hold harmless ADOHR, its officers, directors, volunteers,
         partners, and representatives from any and all claims, demands, actions, damages, losses,
         liabilities, judgments, and expenses (including reasonable attorneys' fees) arising out of
-        or related to my fostering activities, except to the extent caused by IDOHR's gross
+        or related to my fostering activities, except to the extent caused by ADOHR's gross
         negligence or willful misconduct. If you understand and agree, please type your full name
         below.
       </p>

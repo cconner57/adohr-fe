@@ -138,7 +138,7 @@ function handleAdopt() {
       <h3>{{ props.name }}</h3>
       <div v-if="props.capsules.length > 0" class="capsules">
         <template v-for="capText in props.capsules" :key="capText">
-          <Capsules v-if="capText && capText !== 'Invalid Date'">{{ capText }}</Capsules>
+          <Capsules v-if="capText && capText !== 'Invalid Date'" size="sm">{{ capText }}</Capsules>
         </template>
       </div>
       <p v-if="props.description">{{ props.description }}</p>
@@ -155,18 +155,30 @@ function handleAdopt() {
   flex-direction: column;
   gap: 12px;
   width: 280px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-arch);
   overflow: hidden;
-  background-color: var(--text-inverse);
+  background-color: var(--color-white);
   color: var(--text-primary);
-  box-shadow: 0 4px 6px rgb(0 0 0 / 25%);
-  min-height: 390px;
+  border: 1.5px solid var(--line-ink);
+  box-shadow: var(--shadow-sm);
+  min-height: 420px;
+  transition:
+    translate var(--transition-slow),
+    box-shadow var(--transition-slow),
+    border-color var(--transition-slow);
+
+  &:hover {
+    translate: 0 -6px;
+    box-shadow: var(--shadow-lg);
+    border-color: var(--line-ink-strong);
+  }
 
   .img-wrapper {
     position: relative;
     width: 100%;
-    height: 180px;
+    height: 220px;
     flex-shrink: 0;
+    overflow: hidden;
 
     .img-placeholder {
       position: absolute;
@@ -192,7 +204,9 @@ function handleAdopt() {
       cursor: pointer;
       display: block;
       opacity: 0;
-      transition: opacity 300ms ease-in-out;
+      transition:
+        opacity 300ms ease-in-out,
+        scale 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 
       &.loaded {
         opacity: 1;
@@ -202,7 +216,7 @@ function handleAdopt() {
     .img-fallback {
       width: 100%;
       height: 100%;
-      background-color: #add8e6;
+      background-color: var(--color-primary-weak);
       position: relative;
       cursor: pointer;
 
@@ -210,86 +224,89 @@ function handleAdopt() {
         content: '';
         position: absolute;
         inset: 0;
-        background-color: var(--color-white);
+        background-color: var(--color-primary-border);
         mask: url('/images/paw.svg') no-repeat;
-        mask-position: 90px 60px;
+        mask-position: center center;
         mask-size: 100px 100px;
       }
     }
 
     .image-badge {
       position: absolute;
-      top: 0.625rem;
-      left: 0.625rem;
+      top: 0.75rem;
+      left: 50%;
+      translate: -50% 0;
+      z-index: 2;
       display: flex;
       align-items: center;
       gap: 0.3rem;
-      background-color: hsl(43deg 96% 50%);
-      color: hsl(43deg 96% 15%);
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.05em;
+      background-color: var(--color-warning);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 0.25rem 0.5rem;
+      padding: 0.3rem 0.65rem;
       border-radius: var(--radius-full);
-      box-shadow: 0 2px 6px rgb(0 0 0 / 25%);
+      border: 1px solid var(--text-primary);
       pointer-events: none;
-    }
-
-    .sponsored-badge {
-      background-color: hsl(43deg 96% 50%);
-      color: hsl(43deg 96% 15%);
+      white-space: nowrap;
     }
 
     .coming-soon-badge {
-      background-color: hsl(180deg 70% 70%);
-      color: hsl(180deg 60% 16%);
+      background-color: var(--color-tertiary-light);
     }
 
     .coming-soon-badge.with-sponsored {
-      top: 2.35rem;
+      top: 2.6rem;
     }
+  }
+
+  &:hover .img-wrapper img {
+    scale: 1.05;
   }
 
   .info-section {
     display: flex;
     flex-direction: column;
-    padding: 0 20px 16px;
+    padding: 4px 20px 18px;
     flex: 1;
     overflow: hidden;
+    border-top: 1.5px solid var(--line-ink);
+    margin-top: -12px;
+    padding-top: 14px;
   }
 
   h3 {
-    font-size: 1.5rem;
-    margin-bottom: 4px;
+    font-size: 1.6rem;
+    margin-bottom: 6px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.6;
-    padding: 4px 0;
+    line-height: 1.2;
     flex-shrink: 0;
-    text-wrap: balance;
   }
 
   .capsules {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: nowrap;
     overflow: hidden;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   p {
     font-size: 0.925rem;
     flex-grow: 0;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.5;
-    padding-bottom: 2px;
+    line-height: 1.55;
+    color: var(--text-secondary);
   }
 
   @media (width <= 768px) {
@@ -303,54 +320,14 @@ function handleAdopt() {
     margin-top: auto;
   }
 
-  @media (width >= 321px) and (width <= 430px) {
-    & .img-fallback {
-      background-color: #add8e6;
-    }
-
-    & .img-fallback::after {
-      mask-position: center center;
-    }
-
-    & .info-section {
-      & .capsules {
-        margin-bottom: 8px;
-        gap: 6px;
-      }
-    }
-  }
-
   @media (width >= 1025px) and (width <= 1440px) {
-    width: 240px;
-    min-height: 360px;
-
-    & .img-fallback {
-      background-color: #add8e6;
-    }
-
-    & .img-fallback::after {
-      mask-position: center center;
-    }
-
-    & .info-section {
-      & .capsules {
-        margin-bottom: 12px;
-        gap: 2px;
-      }
-    }
+    width: 250px;
+    min-height: 400px;
   }
 
   @media (width >= 1441px) {
-    width: 260px;
-    min-height: 380px;
-
-    & .img-fallback {
-      background-color: #add8e6;
-    }
-
-    & .img-fallback::after {
-      mask-position: center center;
-    }
+    width: 270px;
+    min-height: 410px;
   }
 }
 

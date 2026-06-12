@@ -1,7 +1,8 @@
 <template>
   <section class="hero" v-scroll-reveal>
     <div class="content-wrapper">
-      <h1>About IDOHR</h1>
+      <p class="eyebrow">Est. 2016 · Southern California</p>
+      <h1>The people behind <em>the door</em></h1>
       <p class="lead">
         I Dream of Home Rescue (IDOHR) is a volunteer-powered nonprofit helping homeless cats and
         dogs heal, thrive, and find loving homes across Southern California.
@@ -12,7 +13,7 @@
 
 <style scoped lang="css">
 .hero {
-  padding: 150px var(--layout-padding-side) 50px;
+  padding: 170px var(--layout-padding-side) 70px;
   color: var(--text-inverse);
   background-color: var(--color-primary);
   display: flex;
@@ -28,26 +29,45 @@
     margin: 0 auto;
   }
 
-  h1 {
-    font-size: 2.5rem;
-    color: var(--text-inverse);
+  .eyebrow {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-warning);
+    margin-bottom: 14px;
   }
 
-  p {
-    font-size: 1.25rem;
-    max-width: 600px;
-    margin-top: 12px;
-    font-weight: 400;
+  h1 {
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.04;
     color: var(--text-inverse);
+    text-wrap: balance;
+    max-width: 14ch;
+
+    em {
+      font-style: italic;
+      color: oklch(from var(--color-secondary) 78% 0.13 h);
+    }
+  }
+
+  .lead {
+    font-size: 1.2rem;
+    max-width: 560px;
+    margin-top: 20px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: oklch(from var(--text-inverse) l c h / 88%);
   }
 
   @media (width >= 321px) and (width <= 430px) {
-    padding: 100px var(--layout-padding-side) 50px;
-    h1 {
-      font-size: 2rem;
-    }
-    p {
-      font-size: 1.15rem;
+    padding: 120px var(--layout-padding-side) 50px;
+
+    .lead {
+      font-size: 1.05rem;
     }
   }
 }

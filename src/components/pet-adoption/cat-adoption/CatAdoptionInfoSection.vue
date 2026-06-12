@@ -83,7 +83,7 @@ const goodToKnowItems: IPolicyItem[] = [
         <p class="policy-body">
           Kittens may not have completed every service at the time of adoption. By around 6 months
           of age, kittens are expected to receive all required veterinary care listed above. If you
-          adopt a kitten, you agree to coordinate with an IDOHR director so your kitten can attend
+          adopt a kitten, you agree to coordinate with an ADOHR director so your kitten can attend
           required follow-up vet visits.
         </p>
         <p class="policy-body">

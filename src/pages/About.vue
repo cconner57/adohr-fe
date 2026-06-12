@@ -42,7 +42,7 @@ import SurrenderCat from '@/components/about/surrender/SurrenderCat.vue'
     background-color: var(--text-inverse);
     display: flex;
     justify-content: center;
-    padding: 80px var(--layout-padding-side);
+    padding: 0;
   }
 }
 

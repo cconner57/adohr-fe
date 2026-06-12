@@ -95,6 +95,7 @@ const faqGroups = [
 
 <template>
   <section class="about-faq" aria-labelledby="about-faq-title">
+    <p class="eyebrow">Before you ask</p>
     <h2 id="about-faq-title">Adoption FAQs</h2>
     <div class="groups">
       <section
@@ -140,48 +141,66 @@ const faqGroups = [
 
 <style scoped lang="css">
 .about-faq {
-  padding: 80px var(--layout-padding-side);
+  padding: 90px var(--layout-padding-side);
   background-color: var(--text-inverse);
   color: var(--text-primary);
 
+  .eyebrow {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
   h2 {
     text-align: center;
-    font-size: 2.25rem;
-    margin-bottom: 2rem;
+    font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 2.5rem;
     color: var(--text-primary);
   }
 
   .groups {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
+    gap: 0;
     max-width: 1600px;
     margin: 0 auto;
+    border-top: 1px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
   }
 
   .group {
-    background: var(--color-primary);
-    border: 1px solid var(--color-primary-border);
-    border-radius: var(--radius-lg);
-    padding: 1rem;
-    box-shadow: 0 8px 18px rgb(0 165 173 / 18%);
+    padding: 1.5rem 1.75rem 1.75rem;
+    border-right: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+
+    &:last-child {
+      border-right: none;
+    }
 
     h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.75rem;
-      color: var(--text-inverse);
+      font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
     }
   }
 
   .faq-list {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
   }
 
   .faq-details {
-    border-top: 1px solid hsl(from var(--color-primary) h s 84%);
-    padding-top: 0.75rem;
+    border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+    padding: 0.85rem 0;
 
     &[open] .arrow {
       transform: rotate(90deg);
@@ -191,11 +210,16 @@ const faqGroups = [
   .faq-question {
     list-style: none;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
     font-weight: 700;
+    line-height: 1.4;
     cursor: pointer;
-    color: var(--text-inverse);
+    color: var(--text-primary);
+
+    &:hover {
+      color: var(--color-secondary);
+    }
 
     &::-webkit-details-marker {
       display: none;
@@ -204,18 +228,30 @@ const faqGroups = [
 
   .faq-answer {
     margin: 0.6rem 0 0 1.7rem;
-    line-height: 1.45;
-    color: var(--text-inverse);
+    line-height: 1.55;
+    color: var(--text-secondary);
   }
 
   .arrow {
     transition: transform 0.2s;
     flex-shrink: 0;
+    color: var(--color-secondary);
+    margin-top: 1px;
   }
 
   @media (width <= 1024px) {
     .groups {
       grid-template-columns: 1fr;
+    }
+
+    .group {
+      border-right: none;
+      border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+      padding: 1.5rem 0;
+
+      &:last-child {
+        border-bottom: none;
+      }
     }
   }
 }

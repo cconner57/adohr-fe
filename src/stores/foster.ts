@@ -6,7 +6,7 @@ import { FOSTER_PAGES } from '@/constants/fosterQuestions'
 import type { IFosterFormState, TFosterSpecies } from '@/models/foster-form'
 import { getApiErrorMessage, withPublicOrgId } from '@/utils/api'
 
-const FOSTER_STORAGE_KEY = 'idohr_foster_form_v1'
+const FOSTER_STORAGE_KEY = 'adohr_foster_form_v1'
 
 interface IFosterPersistedState {
   speciesPreference: TFosterSpecies

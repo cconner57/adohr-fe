@@ -22,6 +22,7 @@ const emit = defineEmits<{
 <template>
   <div class="adopt-detail__info">
     <div class="adopt-detail__info__main">
+      <p class="eyebrow">Waiting for a home</p>
       <h1 class="text-balance">{{ pet.name }}</h1>
       <div class="adopt-detail__traits">
         <Capsules v-if="pet?.species" :label="pet?.species" />
@@ -83,13 +84,14 @@ const emit = defineEmits<{
   background-color: var(--text-inverse);
   color: var(--text-primary);
   padding: 32px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   flex: 2;
   width: 0;
   min-width: 0;
   height: auto;
   min-height: 600px;
-  box-shadow: 0 4px 6px rgb(0 0 0 / 25%);
+  box-shadow: var(--shadow-md);
 
   @media (width <= 1024px) {
     width: 100%;
@@ -99,14 +101,27 @@ const emit = defineEmits<{
 }
 
 .adopt-detail__info__main {
-  h1 {
-    font-size: 2.5rem;
+  .eyebrow {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    margin-bottom: 6px;
   }
 
-  @media (width >= 321px) and (width <= 430px) {
-    h1 {
-      font-size: 1.5rem;
-    }
+  h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin-bottom: 0.75rem;
+  }
+
+  & > p:not(.eyebrow) {
+    line-height: 1.6;
+    color: var(--text-secondary);
   }
 
   .adopt-detail__traits {
@@ -114,6 +129,8 @@ const emit = defineEmits<{
     flex-flow: row wrap;
     gap: 10px;
     margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   }
 
   .adopt-detail__actions {
@@ -121,7 +138,9 @@ const emit = defineEmits<{
     grid-template-columns: 1fr 1fr;
     gap: 14px;
     flex-wrap: wrap;
-    margin-top: 1rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
 
     @media (width <= 440px) {
       display: flex;
@@ -134,16 +153,16 @@ const emit = defineEmits<{
   display: flex;
   align-items: flex-start;
   gap: 0.625rem;
-  background-color: hsl(43deg 96% 95%);
-  border: 1px solid hsl(43deg 96% 70%);
-  border-radius: 10px;
+  background-color: oklch(from var(--color-warning) 94% 0.07 h);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-md);
   padding: 0.75rem 1rem;
-  color: hsl(43deg 60% 25%);
+  color: var(--text-primary);
 
   svg {
     flex-shrink: 0;
     margin-top: 0.125rem;
-    color: hsl(43deg 96% 45%);
+    color: oklch(from var(--color-warning) 55% 0.13 h);
   }
 
   span {
@@ -159,7 +178,7 @@ const emit = defineEmits<{
 
   .sponsored-sub {
     font-size: 0.8rem;
-    opacity: 0.85;
+    color: var(--text-secondary);
   }
 }
 
@@ -167,12 +186,12 @@ const emit = defineEmits<{
   display: block;
   margin-top: 0.75rem;
   padding: 0.75rem 1rem;
-  border-radius: 10px;
-  background-color: hsl(180deg 65% 93%);
-  border: 1px solid hsl(180deg 55% 74%);
-  color: hsl(180deg 60% 17%);
+  border-radius: var(--radius-md);
+  background-color: oklch(from var(--color-primary) 94% 0.025 h);
+  border: 1px solid oklch(from var(--color-primary) 78% 0.05 h);
+  color: oklch(from var(--color-primary) 30% 0.06 h);
   font-size: 0.9rem;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 </style>

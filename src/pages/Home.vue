@@ -23,20 +23,21 @@ onMounted(() => {
 
 <template>
   <div class="container">
-    <div v-scroll-reveal>
-      <HeroSection />
-    </div>
-    <main class="section-1">
-      <div class="content-wrapper">
-        <div v-scroll-reveal class="reveal-delay-100">
-          <AdoptionSpotlight :pets="spotlightPets" :loading="loading" :error="error" />
-        </div>
-        <div v-scroll-reveal class="reveal-delay-200">
-          <Mission />
-        </div>
+    <HeroSection />
+
+    <main class="section spotlight-section">
+      <div class="content-wrapper" v-scroll-reveal>
+        <AdoptionSpotlight :pets="spotlightPets" :loading="loading" :error="error" />
       </div>
     </main>
-    <main class="section-2">
+
+    <main class="section mission-section">
+      <div class="content-wrapper" v-scroll-reveal>
+        <Mission />
+      </div>
+    </main>
+
+    <main class="section impact-section">
       <div class="content-wrapper">
         <div v-scroll-reveal>
           <Impact />
@@ -44,7 +45,7 @@ onMounted(() => {
         <section class="call-to-action" v-scroll-reveal>
           <BannerButton
             imgSrc="/images/paw.svg"
-            title="Adopt a Pet"
+            title="Adopt a pet"
             subtitle="Find your perfect companion"
             color="blue"
             @click="() => router.push('/adopt')"
@@ -52,20 +53,20 @@ onMounted(() => {
           />
           <BannerButton
             imgSrc="/images/hand.svg"
-            title="Foster a Pet"
+            title="Foster a pet"
             subtitle="Provide temporary care and save a life"
             color="purple"
             @click="() => router.push('/foster')"
             class="hover-scale"
           />
-          <!-- <BannerButton
+          <BannerButton
             imgSrc="/images/heart.svg"
             title="Donate"
-            subtitle="Help us save more lives"
+            subtitle="Help us rescue more animals"
             color="green"
             @click="() => router.push('/donate')"
             class="hover-scale"
-          /> -->
+          />
         </section>
       </div>
     </main>
@@ -77,6 +78,7 @@ onMounted(() => {
 <style scoped lang="css">
 .container {
   width: 100%;
+  background-color: var(--text-inverse);
 }
 
 :deep(.reveal) {
@@ -90,116 +92,46 @@ onMounted(() => {
   transform: translateY(0);
 }
 
-:deep(.reveal-delay-100.active) {
-  transition-delay: 0.1s;
-}
-
-:deep(.reveal-delay-200.active) {
-  transition-delay: 0.2s;
-}
-
 :deep(.hover-scale) {
   transition: transform 0.3s ease;
 }
 
 :deep(.hover-scale:hover) {
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
-.content-wrapper {
-  width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 64px;
-}
-
-main {
+.section {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  padding: clamp(48px, 8vw, 110px) var(--layout-padding-side);
 }
 
 .content-wrapper {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 64px;
-
-  @media (width >= 0) and (width <= 320px) {
-    gap: 24px;
-  }
-
-  @media (width >= 321px) and (width <= 430px) {
-    gap: 40px;
-  }
-
-  @media (width >= 431px) and (width <= 768px) {
-    gap: 48px;
-  }
-
-  @media (width >= 769px) and (width <= 1024px) {
-    gap: 56px;
-  }
+  gap: clamp(40px, 6vw, 72px);
 }
 
-.section-1 {
-  background-color: var(--color-primary);
-  padding: 0 var(--layout-padding-side) 220px;
-  margin-top: -20px;
-  min-height: auto;
-
-  @media (width >= 0) and (width <= 320px) {
-    margin-top: 0;
-    padding-bottom: 40px;
-  }
-
-  @media (width >= 321px) and (width <= 430px) {
-    margin-top: 0;
-    padding-bottom: 60px;
-  }
-
-  @media (width >= 431px) and (width <= 768px) {
-    margin-top: 0;
-    padding-bottom: 80px;
-  }
-
-  @media (width >= 769px) and (width <= 1024px) {
-    padding-bottom: 120px;
-  }
+.spotlight-section {
+  padding-bottom: clamp(24px, 4vw, 56px);
 }
 
-.section-2 {
-  background-color: var(--text-inverse);
-  padding: 60px var(--layout-padding-side) 80px;
-  height: auto;
+.mission-section {
+  padding-top: clamp(24px, 4vw, 56px);
+}
 
-  @media (width >= 0) and (width <= 320px) {
-    padding-top: 40px;
-    padding-bottom: 24px;
-  }
-
-  @media (width >= 321px) and (width <= 430px) {
-    padding-top: 60px;
-    padding-bottom: 32px;
-  }
-
-  @media (width >= 431px) and (width <= 768px) {
-    padding-top: 80px;
-    padding-bottom: 100px;
-  }
-
-  @media (width >= 769px) and (width <= 1024px) {
-    padding-top: 100px;
-    padding-bottom: 150px;
-  }
+.impact-section {
+  border-top: 1.5px solid var(--line-ink);
 }
 
 .call-to-action {
   display: flex;
-  margin: 20px 0 0;
-  gap: 60px;
+  gap: clamp(20px, 4vw, 48px);
   width: 100%;
   justify-content: flex-start;
 
@@ -207,35 +139,8 @@ main {
     flex: 1;
   }
 
-  @media (width >= 0) and (width <= 320px) {
+  @media (width <= 768px) {
     flex-direction: column;
-    gap: 16px;
-    margin: 20px 0 0;
   }
-
-  @media (width >= 321px) and (width <= 430px) {
-    flex-direction: column;
-    gap: 20px;
-    margin: 20px 0 0;
-  }
-
-  @media (width >= 431px) and (width <= 768px) {
-    flex-direction: column;
-    gap: 32px;
-  }
-
-  @media (width >= 769px) and (width <= 1024px) {
-    gap: 40px;
-  }
-}
-
-.adopt-now-button {
-  background-color: var(--color-primary);
-  height: 48px;
-  min-width: 160px;
-  padding: 0 24px;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: var(--radius-sm);
 }
 </style>

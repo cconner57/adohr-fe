@@ -21,7 +21,7 @@ The line: `audit-frontend` reviews *how* a component is written. `audit-system-d
 
 ## Platform Context
 
-This is **IDOHR-FE** — the public-facing website for I Dream of Home Rescue, a pet adoption/rescue organization.
+This is **ADOHR-FE** — the public-facing website for A Dream of Home Rescue, a pet adoption/rescue organization.
 
 | Layer | Technology |
 |---|---|

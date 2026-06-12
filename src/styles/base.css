@@ -1,114 +1,141 @@
-@font-face {
-  font-family: Roboto-V;
-  src: url('../assets/fonts/Roboto-Variable.ttf') format('truetype-variations');
-  font-weight: 1 999;
-  font-display: swap;
-}
+/* ============================================================================
+   "OPEN DOOR" DESIGN SYSTEM
+   A warm, editorial identity for a cat & dog rescue.
+
+   Concept: every pet is waiting behind a door. The arch ("pet door") is the
+   signature shape, marmalade is the fur-warm accent, deep pine is the calm
+   ground, and heavy, tight system-font headlines carry the personality.
+
+   Zero external dependencies: no font downloads, no libraries. Type roles are
+   built from system stacks (rounded display on platforms that have it).
+
+   Accessibility: all text/background pairs meet WCAG AA (4.5:1 body, 3:1
+   large text); focus rings are 3px high-contrast; motion respects
+   prefers-reduced-motion via reset.css.
+
+   IMPORTANT: every legacy variable name is preserved so existing components
+   (forms, inputs, capsules, drawers) inherit the new identity automatically.
+   ============================================================================ */
 
 :root {
-  /* ========================================================================
-     Strict 8-Color Palette (OKLCH)
-     ======================================================================== */
-  --color-primary: oklch(65.66% 0.1117 200.913deg); /* User-specified Brand Teal */
-  --color-secondary: oklch(50% 0.22 260deg); /* Deep Blue/Purple - Fixed typo & darkened */
-  --color-tertiary: oklch(55% 0.18 310deg); /* Pink/Purple - Darkened */
-  --color-danger: oklch(60% 0.2 20deg); /* Vibrant Red - Alerts/Error */
-  --color-warning: oklch(75% 0.18 85deg); /* Warm Yellow - Warning */
-  --color-neutral: oklch(25% 0.04 260deg); /* Cool Dark Grey - Neutral/Text */
-  --text-primary: var(--color-neutral); /* Main text color */
-  --text-secondary: oklch(40% 0.06 260deg); /* Cool Grey text color - Darkened from 45% */
-  --text-inverse: oklch(99% 0.01 260deg); /* Cool White - Inverse text/Background */
+  /* ==========================================================================
+     Core palette — 6 named colors
+     Ink      #221E19  warm charcoal (text, lines)
+     Paper    #F8F3EA  oat-warm white (surfaces — mapped to --text-inverse)
+     Pine     #1F4038  deep evergreen (calm section ground — primary)
+     Marmalade#E0571F  tabby-fur orange (action — secondary)
+     Cobalt   #2B4ED4  collar blue (dogs / tertiary)
+     Butter   #F2B33D  highlight (warning / badges)
+     ========================================================================== */
+
+  --color-primary: oklch(36% 0.06 168deg); /* Pine — section grounds & success actions (paper text: ~8.9:1) */
+  --color-secondary: oklch(53% 0.155 42deg); /* Marmalade — primary CTAs; paper text on it: ~4.9:1 (AA) */
+  --color-tertiary: oklch(46% 0.19 266deg); /* Cobalt — dog-flow accents; paper text on it: ~6.8:1 */
+  --color-danger: oklch(52% 0.19 25deg); /* Alerts / errors; paper text on it: ~5.4:1 */
+  --color-warning: oklch(78% 0.14 82deg); /* Butter — badge fills, always paired with ink text (~9:1) */
+  --color-neutral: oklch(25% 0.022 70deg); /* Warm ink */
+
+  --text-primary: oklch(24% 0.022 70deg); /* Ink on paper: ~13.8:1 */
+  --text-secondary: oklch(42% 0.028 65deg); /* Faded ink on paper: ~6.6:1 (AA at any size) */
+  --text-inverse: oklch(96.5% 0.013 85deg); /* Paper — also the global card surface */
 
   /* Color Variations */
-  --color-primary-light: oklch(from var(--color-primary) 93% c h);
-  --color-primary-dark: oklch(from var(--color-primary) 45% c h);
-  --color-secondary-light: oklch(from #1976d2 90% c h);
-  --color-secondary-dark: oklch(from #1976d2 10% c h);
-  --color-tertiary-light: oklch(from #6b5b95 90% c h);
-  --color-tertiary-dark: oklch(from #6b5b95 10% c h);
-  --color-danger-light: oklch(from #c73a67 90% c h);
-  --color-danger-dark: oklch(from #c73a67 10% c h);
-  --color-warning-light: oklch(from #deb024 90% c h);
-  --color-warning-dark: oklch(from #deb024 10% c h);
-  --color-neutral-light: oklch(from #1f2121 90% c h);
-  --color-neutral-dark: oklch(from #1f2121 10% c h);
+  --color-primary-light: oklch(from var(--color-primary) 90% 0.04 h);
+  --color-primary-dark: oklch(from var(--color-primary) 26% c h);
+  --color-secondary-light: oklch(from var(--color-secondary) 88% 0.07 h);
+  --color-secondary-dark: oklch(from var(--color-secondary) 40% c h);
+  --color-tertiary-light: oklch(from var(--color-tertiary) 88% 0.06 h);
+  --color-tertiary-dark: oklch(from var(--color-tertiary) 30% c h);
+  --color-danger-light: oklch(from var(--color-danger) 88% 0.06 h);
+  --color-danger-dark: oklch(from var(--color-danger) 30% c h);
+  --color-warning-light: oklch(from var(--color-warning) 92% 0.06 h);
+  --color-warning-dark: oklch(from var(--color-warning) 35% c h);
+  --color-neutral-light: oklch(from var(--color-neutral) 90% 0.01 h);
+  --color-neutral-dark: oklch(from var(--color-neutral) 12% c h);
 
-  /* Color Hover States */
-  --color-primary-hover: oklch(from #00a5ad 95% c h);
-  --color-secondary-hover: oklch(from #1976d2 95% c h);
-  --color-tertiary-hover: oklch(from #6b5b95 95% c h);
-  --color-danger-hover: oklch(from #c73a67 95% c h);
-  --color-warning-hover: oklch(from #deb024 95% c h);
-  --color-neutral-hover: oklch(from #1f2121 95% c h);
+  /* Hover states */
+  --color-primary-hover: oklch(from var(--color-primary) 94% 0.03 h);
+  --color-secondary-hover: oklch(from var(--color-secondary) 94% 0.04 h);
+  --color-tertiary-hover: oklch(from var(--color-tertiary) 94% 0.03 h);
+  --color-danger-hover: oklch(from var(--color-danger) 94% 0.03 h);
+  --color-warning-hover: oklch(from var(--color-warning) 95% 0.04 h);
+  --color-neutral-hover: oklch(from var(--color-neutral) 95% 0.01 h);
 
-  /* Weak Variants (Backgrounds) - 96% Lightness, Low Chroma (Pastel) */
-  --color-primary-weak: oklch(from #00a5ad 96% 0.04 h);
-  --color-secondary-weak: oklch(from #1976d2 96% 0.04 h);
-  --color-tertiary-weak: oklch(from #6b5b95 96% 0.04 h);
-  --color-danger-weak: oklch(from #c73a67 96% 0.04 h);
-  --color-warning-weak: oklch(from #deb024 96% 0.04 h);
-  --color-neutral-weak: oklch(from #1f2121 96% 0.02 h); /* Even lower for neutral */
+  /* Weak variants (pastel backgrounds) */
+  --color-primary-weak: oklch(from var(--color-primary) 95% 0.025 h);
+  --color-secondary-weak: oklch(from var(--color-secondary) 95% 0.035 h);
+  --color-tertiary-weak: oklch(from var(--color-tertiary) 95% 0.03 h);
+  --color-danger-weak: oklch(from var(--color-danger) 95% 0.03 h);
+  --color-warning-weak: oklch(from var(--color-warning) 95% 0.05 h);
+  --color-neutral-weak: oklch(from var(--color-neutral) 94% 0.012 h);
 
-  /* Surface Variants (Subtle Backgrounds) - 98% Lightness */
-  --color-primary-surface: oklch(from #00a5ad 98% 0.02 h);
-  --color-secondary-surface: oklch(from #1976d2 98% 0.02 h);
-  --color-tertiary-surface: oklch(from #6b5b95 98% 0.02 h);
-  --color-danger-surface: oklch(from #c73a67 98% 0.02 h);
-  --color-warning-surface: oklch(from #deb024 98% 0.02 h);
-  --color-neutral-surface: oklch(from #1f2121 98% 0.01 h);
+  /* Surface variants (subtle backgrounds) */
+  --color-primary-surface: oklch(from var(--color-primary) 97.5% 0.015 h);
+  --color-secondary-surface: oklch(from var(--color-secondary) 97.5% 0.02 h);
+  --color-tertiary-surface: oklch(from var(--color-tertiary) 97.5% 0.015 h);
+  --color-danger-surface: oklch(from var(--color-danger) 97.5% 0.015 h);
+  --color-warning-surface: oklch(from var(--color-warning) 97.5% 0.03 h);
+  --color-neutral-surface: oklch(from var(--color-neutral) 97.5% 0.008 h);
 
-  /* Border Variants - 85% Lightness */
-  --color-primary-border: oklch(from #00a5ad 85% c h);
-  --color-secondary-border: oklch(from #1976d2 85% c h);
-  --color-tertiary-border: oklch(from #6b5b95 85% c h);
-  --color-danger-border: oklch(from #c73a67 85% c h);
-  --color-warning-border: oklch(from #deb024 85% c h);
-  --color-neutral-border: oklch(from #1f2121 85% c h);
+  /* Border variants */
+  --color-primary-border: oklch(from var(--color-primary) 84% 0.04 h);
+  --color-secondary-border: oklch(from var(--color-secondary) 84% 0.06 h);
+  --color-tertiary-border: oklch(from var(--color-tertiary) 84% 0.05 h);
+  --color-danger-border: oklch(from var(--color-danger) 84% 0.05 h);
+  --color-warning-border: oklch(from var(--color-warning) 84% 0.07 h);
+  --color-neutral-border: oklch(from var(--color-neutral) 84% 0.015 h);
 
-  /* Soft Text Variants - 50% Lightness */
-  --color-primary-text-soft: oklch(from #00a5ad 50% c h);
-  --color-secondary-text-soft: oklch(from #1976d2 50% c h);
-  --color-tertiary-text-soft: oklch(from #6b5b95 50% c h);
-  --color-danger-text-soft: oklch(from #c73a67 50% c h);
-  --color-warning-text-soft: oklch(from #deb024 50% c h);
-  --color-neutral-text-soft: oklch(from #1f2121 50% c h);
+  /* Soft text variants */
+  --color-primary-text-soft: oklch(from var(--color-primary) 48% c h);
+  --color-secondary-text-soft: oklch(from var(--color-secondary) 50% c h);
+  --color-tertiary-text-soft: oklch(from var(--color-tertiary) 50% c h);
+  --color-danger-text-soft: oklch(from var(--color-danger) 50% c h);
+  --color-warning-text-soft: oklch(from var(--color-warning) 48% c h);
+  --color-neutral-text-soft: oklch(from var(--color-neutral) 50% 0.02 h);
 
-  /* Strong Variants - 40% Lightness */
-  --color-primary-strong: oklch(from #00a5ad 40% c h);
-  --color-secondary-strong: oklch(from #1976d2 40% c h);
-  --color-tertiary-strong: oklch(from #6b5b95 40% c h);
-  --color-danger-strong: oklch(from #c73a67 40% c h);
-  --color-warning-strong: oklch(from #deb024 40% c h);
-  --color-neutral-strong: oklch(from #1f2121 40% c h);
+  /* Strong variants */
+  --color-primary-strong: oklch(from var(--color-primary) 30% c h);
+  --color-secondary-strong: oklch(from var(--color-secondary) 40% c h);
+  --color-tertiary-strong: oklch(from var(--color-tertiary) 38% c h);
+  --color-danger-strong: oklch(from var(--color-danger) 40% c h);
+  --color-warning-strong: oklch(from var(--color-warning) 38% c h);
+  --color-neutral-strong: oklch(from var(--color-neutral) 38% c h);
 
-  /* Strong Border Variants - 80% Lightness */
-  --color-primary-border-strong: oklch(from #00a5ad 80% c h);
-  --color-secondary-border-strong: oklch(from #1976d2 80% c h);
-  --color-tertiary-border-strong: oklch(from #6b5b95 80% c h);
-  --color-danger-border-strong: oklch(from #c73a67 80% c h);
-  --color-warning-border-strong: oklch(from #deb024 80% c h);
-  --color-neutral-border-strong: oklch(from #1f2121 80% c h);
+  /* Strong border variants */
+  --color-primary-border-strong: oklch(from var(--color-primary) 74% 0.06 h);
+  --color-secondary-border-strong: oklch(from var(--color-secondary) 74% 0.1 h);
+  --color-tertiary-border-strong: oklch(from var(--color-tertiary) 74% 0.08 h);
+  --color-danger-border-strong: oklch(from var(--color-danger) 74% 0.08 h);
+  --color-warning-border-strong: oklch(from var(--color-warning) 74% 0.1 h);
+  --color-neutral-border-strong: oklch(from var(--color-neutral) 74% 0.02 h);
 
-  /* Shadow Colors */
-  --shadow-color: oklch(from #1f2121 10% c h);
+  /* Shadow */
+  --shadow-color: oklch(from var(--color-neutral) 20% c h);
 
-  /* Legacy Aliases Removed */
-  --border-color: #e0e0e0; /* Exception: Common border */
+  /* Hairline ink lines — the "kennel card" ruling used across the new design */
+  --line-ink: oklch(from var(--text-primary) l c h / 16%);
+  --line-ink-strong: oklch(from var(--text-primary) l c h / 32%);
 
-  /* ========================================================================
+  /* Common border (legacy alias) */
+  --border-color: oklch(from var(--color-neutral) 86% 0.015 h);
+
+  /* ==========================================================================
      Design Tokens
-     ======================================================================== */
+     ========================================================================== */
 
-  /* Border Radius */
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  /* Radii — soft, generous, with the arch as the hero shape */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
   --radius-full: 999px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgb(0 0 0 / 2%);
-  --shadow-md: 0 2px 4px rgb(0 0 0 / 10%);
-  --shadow-lg: 0 4px 6px rgb(0 0 0 / 5%);
+  /* The signature: a "pet door" arch for image frames */
+  --radius-arch: 999px 999px var(--radius-lg) var(--radius-lg);
+
+  /* Shadows — warm, soft */
+  --shadow-sm: 0 1px 2px oklch(from var(--shadow-color) l c h / 5%);
+  --shadow-md: 0 2px 6px oklch(from var(--shadow-color) l c h / 7%);
+  --shadow-lg: 0 14px 36px -12px oklch(from var(--shadow-color) l c h / 22%);
 
   /* Spacing */
   --space-xs: 4px;
@@ -120,8 +147,8 @@
 
   /* Transitions */
   --transition-fast: 0.15s ease;
-  --transition-normal: 0.2s ease;
-  --transition-slow: 0.3s ease;
+  --transition-normal: 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-slow: 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 
   /* Z-Index Scale */
   --z-dropdown: 1000;
@@ -131,20 +158,29 @@
   --z-toast: 9998;
   --z-overlay: 9999;
 
-  /* Gray Palette */
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
+  /* Gray palette (warmed) */
+  --color-gray-50: oklch(97% 0.006 80deg);
+  --color-gray-100: oklch(94% 0.008 80deg);
+  --color-gray-200: oklch(89% 0.01 80deg);
+  --color-gray-300: oklch(82% 0.012 80deg);
+  --color-gray-400: oklch(66% 0.015 75deg);
+  --color-gray-500: oklch(52% 0.018 70deg);
 
-  /* Surface */
-  --color-white: #fff;
-  --color-surface: #fff;
+  /* Surfaces */
+  --color-white: #fffdf9;
+  --color-surface: #fffdf9;
 
-  /* Layout Variables */
-  --font-regular: 'Roboto-V';
+  /* Typography roles — system stacks only, no downloads.
+     Display uses the platform's rounded face where available (SF Rounded on
+     Apple devices) and falls back to the heaviest weights of the system UI
+     face elsewhere — the personality comes from weight + tracking, not a
+     webfont. */
+  --font-display: ui-rounded, 'SF Pro Rounded', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'Segoe UI Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --font-regular: var(--font-body);
+
+  /* Layout */
   --mobile-breakpoint: 440px;
   --tablet-breakpoint: 1024px;
   --desktop-breakpoint: 1440px;
@@ -157,19 +193,18 @@
   --viewport-desktop: 1280px;
   --viewport-large-desktop: 1440px;
 
-  /* Global Layout Padding matching Hero Section */
-  --layout-padding-side: clamp(16px, 10dvw, 170px);
+  --layout-padding-side: clamp(16px, 6dvw, 96px);
 
-  /* Typography Scale */
-  --font-size-h1: clamp(2rem, 5vw, 4.25rem);
-  --font-size-h2: clamp(1.75rem, 4vw, 3rem);
+  /* Type scale — display sizes are bigger and tighter than before */
+  --font-size-h1: clamp(2.5rem, 6.5vw, 5.25rem);
+  --font-size-h2: clamp(2rem, 4.5vw, 3.5rem);
   --font-size-h3: clamp(1.5rem, 3vw, 2.25rem);
   --font-size-h4: clamp(1.25rem, 2vw, 1.75rem);
-  --font-size-h5: clamp(1.1rem, 1.5vw, 1.5rem);
+  --font-size-h5: clamp(1.1rem, 1.5vw, 1.4rem);
   --font-size-h6: 1rem;
 }
 
-/* Global Scrollbar Styling - Hide for Native Feel but allow scroll */
+/* Hide scrollbars but allow scroll */
 ::-webkit-scrollbar {
   width: 0;
   background: transparent;
@@ -177,23 +212,60 @@
 
 html {
   scrollbar-width: none;
-  -ms-overflow-style: none; /* IE 10+ */
-  background-color: var(
-    --text-inverse
-  ); /* Cool White to match Admin pages and prevent black flicker */
+  -ms-overflow-style: none;
+  background-color: var(--text-inverse);
+
+  /* The palette is light-only; prevent UA dark form controls from clashing
+     (overrides the `light dark` hint in reset.css). */
+  color-scheme: light;
 }
 
-/* Base Native App Feel */
 body {
-  background-color: var(
-    --text-inverse
-  ); /* Cool White to match Admin pages and prevent black flicker */
+  background-color: var(--text-inverse);
+  color: var(--text-primary);
+  font-family: var(--font-body);
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  overscroll-behavior-y: none; /* Prevent pull-to-refresh on body if implemented elsewhere */
+  overscroll-behavior-y: none;
 }
 
-/* Allow text selection on content that matters */
+/* Headlines carry the brand voice: heavy weight + tight tracking does the
+   work a webfont would otherwise do. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+/* High-contrast, always-visible keyboard focus on every surface
+   (cobalt ring reads on both paper and pine; 3px + offset per WCAG 2.4.11/13) */
+:focus-visible {
+  outline: 3px solid var(--color-tertiary);
+  outline-offset: 2px;
+}
+
+/* Utility roles */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.display-accent {
+  font-style: italic;
+  font-weight: 600;
+  color: var(--color-secondary);
+}
+
 p,
 h1,
 h2,
@@ -209,16 +281,18 @@ a {
   user-select: text;
 }
 
-/* Fix iOS Zoom on Inputs */
+/* Fix iOS zoom on inputs (zoom is triggered by focusable text fields, not buttons) */
 input,
 textarea,
-select,
-button {
-  font-size: 16px !important; /* Forces 16px to prevent zoom */
+select {
+  font-size: 16px !important;
   max-width: 100%;
 }
 
-/* Button & Interactive - No Selection */
+button {
+  max-width: 100%;
+}
+
 button,
 .btn,
 a.btn,
@@ -226,7 +300,7 @@ label,
 .clickable {
   user-select: none;
   cursor: pointer;
-  touch-action: manipulation; /* Improves tap response */
+  touch-action: manipulation;
 }
 
 /* View Transitions */
@@ -268,7 +342,6 @@ label,
   }
 }
 
-/* Typography Utilities */
 .text-balance {
   text-wrap: balance;
 }

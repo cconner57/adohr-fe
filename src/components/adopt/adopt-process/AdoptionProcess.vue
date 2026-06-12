@@ -25,7 +25,7 @@ defineProps<{
         </p>
       </li>
       <li>
-        <span>Adoption Fee & Final Steps</span>
+        <span>Adoption Fee &amp; Final Steps</span>
         <p>
           Once your application is reviewed, we’ll work with you to finalize the adoption with a
           small fee that helps cover your cat’s care, vaccinations, and microchipping.
@@ -62,14 +62,14 @@ defineProps<{
         </p>
       </li>
       <li>
-        <span>Meet & Greet</span> <br />
+        <span>Meet &amp; Greet</span> <br />
         <p>
           Meet your potential new best friend! We’ll arrange a meet-and-greet with all household
           members (including pets) to ensure everyone gets along.
         </p>
       </li>
       <li>
-        <span>Adoption Fee & Final Steps</span> <br />
+        <span>Adoption Fee &amp; Final Steps</span> <br />
         <p>
           Once it’s a match, we’ll finalize the adoption with a small fee that helps cover your
           dog’s care, vaccinations, and microchipping.
@@ -93,6 +93,8 @@ defineProps<{
 
 h2 {
   font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
   margin-bottom: 16px;
 
   @media (width <= 440px) {
@@ -103,15 +105,37 @@ h2 {
 ol {
   padding-left: 0;
   margin-bottom: 16px;
-  list-style-type: decimal;
-  list-style-position: inside;
+  list-style: none;
+  counter-reset: process;
 }
 
 li {
-  margin-bottom: 8px;
+  counter-increment: process;
+  position: relative;
+  padding: 12px 0 12px 46px;
+  border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+  margin-bottom: 0;
 
-  @media (width <= 440px) {
-    margin-bottom: 12px;
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &::before {
+    content: counter(process, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 32px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+    border: 1px solid oklch(from var(--color-secondary) 70% 0.1 h);
+    border-radius: 999px 999px 8px 8px;
   }
 }
 
@@ -124,10 +148,10 @@ li span {
 }
 
 li p {
-  margin: 4px 0;
-  color: var(--text-primary);
-  line-height: 1.4;
-  padding-left: 16px;
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  padding-left: 0;
   font-weight: 400;
 
   @media (width <= 440px) {

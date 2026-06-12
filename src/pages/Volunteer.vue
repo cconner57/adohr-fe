@@ -128,7 +128,7 @@ watch(
       <form class="form-card" aria-label="Volunteer Application" @submit.prevent="handleSubmit">
         <ApplicationHeader
           header-title="Volunteer"
-          header-text="I Dream of Home Rescue (IDOHR) is an all-volunteer, nonprofit dedicated to helping homeless cats
+          header-text="A Dream of Home Rescue (ADOHR) is an all-volunteer, nonprofit dedicated to helping homeless cats
     and kittens find loving, permanent homes. Most volunteer shifts take place at our PetSmart partner
     location in Pasadena, plus occasional events and approved vet transport support. We’re looking for responsible volunteers to help with
     feeding and cleaning, socializing cats and kittens, supporting adoptions, and light

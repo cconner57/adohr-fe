@@ -8,15 +8,15 @@ const { headerTitle, headerText } = defineProps<{
 <template>
   <header class="form-header">
     <svg
-      width="80"
-      height="80"
+      width="64"
+      height="64"
       viewBox="0 0 128 128"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Dog paw icon"
+      aria-label="Paw icon"
       class="header-icon"
     >
-      <g fill="var(--color-primary)">
+      <g fill="var(--color-secondary)">
         <ellipse cx="28" cy="44" rx="11" ry="14" />
         <ellipse cx="100" cy="44" rx="11" ry="14" />
         <ellipse cx="52" cy="28" rx="11" ry="14" />
@@ -27,7 +27,8 @@ const { headerTitle, headerText } = defineProps<{
       </g>
     </svg>
 
-    <h1 id="form-title">{{ headerTitle }} Application</h1>
+    <p class="form-eyebrow">Application</p>
+    <h1 id="form-title">{{ headerTitle }} <span class="title-accent">application</span></h1>
   </header>
 
   <p v-if="headerText" class="lede">
@@ -38,57 +39,63 @@ const { headerTitle, headerText } = defineProps<{
 <style scoped lang="css">
 .form-header {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 4px;
-  color: var(--color-primary);
+  gap: 10px;
+  margin-bottom: 8px;
+  text-align: center;
+
+  & .form-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
 
   & h1 {
-    font-size: var(--font-size-h1);
-    line-height: 1.2;
-    letter-spacing: 0.2px;
-    color: var(--color-primary);
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    line-height: 1.05;
+    color: var(--text-primary);
+  }
+
+  & .title-accent {
+    font-style: italic;
+    font-weight: 600;
+    color: var(--color-secondary);
   }
 
   & .header-icon {
     flex-shrink: 0;
-    width: 80px;
-    height: 80px;
+    width: 56px;
+    height: 56px;
   }
 
   @media (width <= 440px) {
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
     margin-bottom: 1rem;
 
-    & h1 {
-      font-size: 1.75rem;
-      text-align: center;
-    }
-
     & .header-icon {
-      width: 50px;
-      height: 50px;
+      width: 44px;
+      height: 44px;
     }
   }
 }
 
 .lede {
-  color: var(--text-primary);
-  margin: 6px auto 18px;
-  font-size: 1.125rem;
-  line-height: 1.6;
-  max-width: 900px;
+  color: var(--text-secondary);
+  margin: 14px auto 22px;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  max-width: 760px;
   user-select: none;
   font-weight: 400;
   text-align: center;
 
   @media (width <= 440px) {
     font-size: 1rem;
-    margin: 4px 0 12px;
-    text-align: center;
+    margin: 8px 0 14px;
   }
 }
 </style>

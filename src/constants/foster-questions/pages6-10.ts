@@ -79,7 +79,7 @@ export const PAGES_6_TO_10: IFosterPage[] = [
       {
         id: 'q60',
         number: 60,
-        label: 'If you are scratched or nipped, will you report it to IDOHR immediately?',
+        label: 'If you are scratched or nipped, will you report it to ADOHR immediately?',
         type: 'select',
         required: true,
         options: yesNoOptions,
@@ -157,7 +157,7 @@ export const PAGES_6_TO_10: IFosterPage[] = [
       {
         id: 'q69',
         number: 69,
-        label: 'What do you need IDOHR to provide? (Food, litter, crate, etc.)',
+        label: 'What do you need ADOHR to provide? (Food, litter, crate, etc.)',
         type: 'textarea',
         required: true,
       },
@@ -235,7 +235,7 @@ export const PAGES_6_TO_10: IFosterPage[] = [
       {
         id: 'q77',
         number: 77,
-        label: 'Do you agree to respond to IDOHR within 24 hours?',
+        label: 'Do you agree to respond to ADOHR within 24 hours?',
         type: 'select',
         required: true,
         options: yesNoOptions,
@@ -311,7 +311,7 @@ export const PAGES_6_TO_10: IFosterPage[] = [
       {
         id: 'q86',
         number: 86,
-        label: 'Do you understand that IDOHR is the legal owner of the animal?',
+        label: 'Do you understand that ADOHR is the legal owner of the animal?',
         type: 'select',
         required: true,
         options: yesNoOptions,

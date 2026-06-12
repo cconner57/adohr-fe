@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the API endpoint (deployed Cloudflare API)
-API_URL="https://api.idohr.app/applications/adoption"
+API_URL="https://api.adohr.app/applications/adoption"
 
 # Define the FULL payload based on FormState in src/stores/adoption.ts
 PAYLOAD='{
@@ -51,7 +51,7 @@ PAYLOAD='{
   "mobilityDevice": "No",
   "foodTypeBrand": "Premium",
   "surrenderConditions": ["Extreme allergies"],
-  "surrenderPlan": "Return to IDOHR",
+  "surrenderPlan": "Return to ADOHR",
   "affordVetCare": "Yes",
   "affordEmergencyCost": "Yes",
   "homeTourSubmitted": true,

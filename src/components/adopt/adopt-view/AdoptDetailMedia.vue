@@ -68,7 +68,7 @@ watch(
   inset: 0;
   width: 100%;
   height: 100%;
-  border-radius: 16px;
+  border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
   background: linear-gradient(
     110deg,
     hsl(from var(--color-gray-50) h s 97%) 8%,
@@ -77,7 +77,7 @@ watch(
   );
   background-size: 200% 100%;
   animation: shimmer 1.2s linear infinite;
-  box-shadow: 0 4px 6px rgb(0 0 0 / 25%);
+  box-shadow: var(--shadow-lg);
 }
 
 img {
@@ -87,8 +87,8 @@ img {
   height: 100%;
   object-fit: cover;
   object-position: center center;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px rgb(0 0 0 / 25%);
+  border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
+  box-shadow: var(--shadow-lg);
   opacity: 0;
   transition: opacity 300ms ease-in-out;
 
@@ -102,9 +102,10 @@ img {
   inset: 0;
   width: 100%;
   height: 100%;
-  border-radius: 16px;
-  background: url('/images/paw.svg') center/100px 100px no-repeat #add8e6;
-  box-shadow: 0 4px 6px rgb(0 0 0 / 25%);
+  border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
+  background: url('/images/paw.svg') center/100px 100px no-repeat
+    oklch(from var(--color-primary) 88% 0.03 h);
+  box-shadow: var(--shadow-lg);
 }
 
 @keyframes shimmer {

@@ -40,7 +40,7 @@ If $ARGUMENTS specifies a doc area, read those files. Otherwise, do a full docum
 6. Read `src/utils/` — utility functions, looking for inline documentation
 7. Read `src/constants/` — API endpoints and config, looking for documentation
 8. Read `src/api/` — API integration layer (if populated)
-9. Read `~/.claude/projects/-Users-conner-Desktop-IDOHR-FE/memory/MEMORY.md` — the memory index (if it exists)
+9. Read `~/.claude/projects/-Users-conner-Desktop-ADOHR-FE/memory/MEMORY.md` — the memory index (if it exists)
 10. Read each file linked from `MEMORY.md` — evaluate freshness and accuracy
 
 You are auditing **what is written and whether it's correct** — not the quality of the code it describes.

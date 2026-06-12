@@ -106,8 +106,8 @@ onBeforeUnmount(() => {
       >
         <header class="drawer-header">
           <div class="drawer-brand">
-            <img src="/images/idohr-logo.jpg" alt="" class="drawer-logo" />
-            <span class="drawer-title">IDOHR</span>
+            <img src="/images/adohr-logo.jpg" alt="" class="drawer-logo" />
+            <span class="drawer-title">ADOHR</span>
           </div>
           <button class="drawer-close" @click="close" aria-label="Close menu">
             <svg
@@ -144,9 +144,9 @@ onBeforeUnmount(() => {
           </RouterLink>
         </nav>
 
-        <!-- <footer class="drawer-footer">
+        <footer class="drawer-footer">
           <RouterLink to="/donate" class="donate-btn" @click="close">Donate</RouterLink>
-        </footer> -->
+        </footer>
       </aside>
     </transition>
   </Teleport>

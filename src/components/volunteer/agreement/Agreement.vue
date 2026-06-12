@@ -33,12 +33,12 @@ const emit = defineEmits<{
   <fieldset class="waiver-container">
     <legend id="waiv" class="section-title">Agreement</legend>
     <p class="waiver">
-      I, {{ name === ' ' ? '(volunteer name)' : name }}, agree to volunteer with I Dream of Home
-      Rescue (IDOHR) and abide by its policies. I understand that animal handling involves risks of
+      I, {{ name === ' ' ? '(volunteer name)' : name }}, agree to volunteer with A Dream of Home
+      Rescue (ADOHR) and abide by its policies. I understand that animal handling involves risks of
       injury (e.g., bites, scratches) and illness, and I assume full responsibility for these risks.
-      I hereby release and forever discharge IDOHR, its board, and affiliates from any claims,
-      demands, or causes of action arising from my service. In an emergency, I authorize IDOHR to
-      seek medical treatment on my behalf. I further grant IDOHR the right to use photos or videos
+      I hereby release and forever discharge ADOHR, its board, and affiliates from any claims,
+      demands, or causes of action arising from my service. In an emergency, I authorize ADOHR to
+      seek medical treatment on my behalf. I further grant ADOHR the right to use photos or videos
       of me for promotional or social media purposes.
     </p>
 
@@ -71,7 +71,7 @@ const emit = defineEmits<{
 
     <label v-if="age !== null && age < 21" for="parental-consent" class="label"
       >If under 21, I ({{ parentName === '' ? 'parent/guardian name' : parentName }}) give
-      permission for my child to volunteer with IDOHR and agree to the above waiver.</label
+      permission for my child to volunteer with ADOHR and agree to the above waiver.</label
     >
     <div v-if="age !== null && age < 21" class="parentGuardian">
       <div class="name-date-container">

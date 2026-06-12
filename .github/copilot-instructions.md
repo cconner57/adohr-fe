@@ -1,12 +1,12 @@
-# Copilot Instructions for IDOHR
+# Copilot Instructions for ADOHR
 
-Welcome to the IDOHR codebase! This document provides essential guidelines for AI coding agents to be productive in this project. Please follow these instructions to ensure consistency and alignment with the project's architecture and conventions.
+Welcome to the ADOHR codebase! This document provides essential guidelines for AI coding agents to be productive in this project. Please follow these instructions to ensure consistency and alignment with the project's architecture and conventions.
 
 ---
 
 ## 1. Project Overview
 
-IDOHR is a Vue 3 application built with Vite. It features a modular structure with components organized by domain-specific functionality. The project emphasizes:
+ADOHR is a Vue 3 application built with Vite. It features a modular structure with components organized by domain-specific functionality. The project emphasizes:
 
 - **Component-based architecture**: Reusable and domain-specific components.
 - **TypeScript integration**: Strong typing for `.ts` and `.vue` files.
@@ -177,7 +177,7 @@ These instructions guide AI-assisted code contributions to ensure precision, mai
 
 ---
 
-## 9. Additional Best Practices for IDOHR
+## 9. Additional Best Practices for ADOHR
 
 ### 9.1. Component Naming and Placement
 

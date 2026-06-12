@@ -82,12 +82,12 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
 .step-segment {
   flex: 1;
   height: 100%;
-  background: var(--color-primary-border);
+  background: var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   border-radius: var(--radius-full);
   transition: background-color 0.35s ease;
 
   &.active {
-    background: var(--color-primary);
+    background: var(--color-secondary);
   }
 }
 
@@ -99,12 +99,13 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
 
 .steps-mobile-name {
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.015em;
   color: var(--text-primary);
   margin: 0;
 }
 
-/* ── Desktop stepper (Restored to Original) ─────────── */
+/* ── Desktop stepper ─────────────────────────────────── */
 .steps-container {
   display: flex;
   justify-content: space-between;
@@ -117,11 +118,11 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
 
   & .line {
     position: absolute;
-    top: 14px;
+    top: 15px;
     left: calc(100% / (var(--steps-count) * 2));
     right: calc(100% / (var(--steps-count) * 2));
-    height: 2px;
-    background-color: var(--color-primary);
+    height: 1px;
+    background-color: var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
     z-index: 1;
     width: auto !important;
     max-width: none;
@@ -138,29 +139,43 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
     min-width: 0;
 
     .step-number {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
       background-color: var(--text-inverse);
-      border: 1px solid var(--color-primary);
-      color: var(--text-primary);
+      border: 1px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
+      color: var(--text-secondary);
+      font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
       display: flex;
       justify-content: center;
       align-items: center;
       margin-bottom: 8px;
       z-index: 5;
+      transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
     }
 
     .step-label {
       font-size: 0.875rem;
       text-align: center;
       line-height: 1.3;
+      color: var(--text-secondary);
     }
 
     &.active {
       .step-number {
-        background-color: var(--color-primary);
+        background-color: var(--color-secondary);
+        border-color: var(--color-secondary);
         color: var(--text-inverse);
+      }
+
+      .step-label {
+        color: var(--text-primary);
+        font-weight: 600;
       }
     }
   }

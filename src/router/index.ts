@@ -6,7 +6,7 @@ import Home from '../pages/Home.vue'
 
 const About = () => import('../pages/About.vue')
 const Adopt = () => import('../pages/Adopt.vue')
-// const Donate = () => import('../pages/Donate.vue')
+const Donate = () => import('../pages/Donate.vue')
 const Foster = () => import('../pages/Foster.vue')
 const PetMedicalProfile = () => import('../pages/PetMedicalProfile.vue')
 const NotFound = () => import('../pages/NotFound.vue')
@@ -37,10 +37,10 @@ const router = createRouter({
       component: Adopt,
       props: true,
     },
-    // {
-    //   path: '/donate',
-    //   component: Donate,
-    // },
+    {
+      path: '/donate',
+      component: Donate,
+    },
     {
       path: '/volunteer',
       component: Volunteer,

@@ -73,7 +73,7 @@ const handleStartAdoption = () => {
 const handleShare = () => {
   const shareData = {
     title: `Check out ${props.pet.name} for adoption!`,
-    text: `I found ${props.pet.name} on IDOHR and thought you might be interested!`,
+    text: `I found ${props.pet.name} on ADOHR and thought you might be interested!`,
     url: globalThis.location.href,
   }
   if (navigator.share) {

@@ -209,8 +209,9 @@ const formattedAnimal = computed(() => {
     margin: 0 auto;
     background: var(--text-inverse);
     color: var(--text-primary);
-    border-radius: 24px;
-    box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+    box-shadow: var(--shadow-lg);
     padding: 48px 48px 32px;
 
     @container shell (max-width: 800px) {
@@ -222,18 +223,20 @@ const formattedAnimal = computed(() => {
       justify-content: center;
       align-items: center;
       gap: 16px;
-      margin-bottom: 4px;
-      color: var(--color-primary);
+      margin-bottom: 12px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
 
       h1 {
-        font-size: 4.25rem;
-        line-height: 1.2;
-        letter-spacing: 0.2px;
-        color: var(--color-primary);
+        font-size: clamp(2rem, 4.5vw, 3.6rem);
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        line-height: 1.1;
+        color: var(--text-primary);
       }
 
       img {
-        width: 100px;
+        width: 88px;
         height: auto;
       }
 
@@ -265,7 +268,9 @@ const formattedAnimal = computed(() => {
       display: flex;
       justify-content: center;
       gap: 16px;
-      margin-top: 20px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
 
       @media (width <= 600px) {
         flex-direction: column;
@@ -278,14 +283,13 @@ const formattedAnimal = computed(() => {
   }
 
   .validation-summary {
-    background-color: #fff1f2;
-    border: 1px solid #e11d48;
-    color: #9f1239;
-    border-radius: var(--radius-lg);
+    background-color: var(--color-danger-surface, oklch(from var(--color-danger) 98% 0.02 h));
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger);
+    border-radius: var(--radius-md);
     padding: 1.5rem;
     margin: 2rem 0;
     text-align: center;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%);
 
     .summary-title {
       font-weight: 700;
@@ -301,8 +305,8 @@ const formattedAnimal = computed(() => {
     }
 
     .tag.is-danger {
-      background-color: #fce7f3;
-      color: #9f1239;
+      background-color: var(--color-danger-weak, oklch(from var(--color-danger) 96% 0.04 h));
+      color: var(--color-danger);
       padding: 0.5rem 1rem;
       border-radius: var(--radius-full);
       font-size: 0.9rem;

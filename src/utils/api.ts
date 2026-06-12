@@ -1,8 +1,8 @@
 const configuredPublicOrgId = import.meta.env.VITE_PUBLIC_ORG_ID?.trim() ?? ''
 
-export const PUBLIC_ORG_ID = configuredPublicOrgId || 'idohr'
+export const PUBLIC_ORG_ID = configuredPublicOrgId || 'adohr'
 
-const INTERNAL_URL_BASE = 'https://idohr.local'
+const INTERNAL_URL_BASE = 'https://adohr.local'
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
   return typeof value === 'object' && value !== null

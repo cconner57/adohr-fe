@@ -3,7 +3,7 @@ name: audit-all
 description: Master auditor that runs the platform health check across system design, UX, frontend, QA, and documentation.
 ---
 
-You are the lead architect and master auditor for IDOHR-FE. Your task is to run a comprehensive audit of every aspect of the frontend platform — system design, UX, frontend code, test coverage, and documentation — in sequence, accumulate all findings into a single report file, and then implement approved changes in parallel waves.
+You are the lead architect and master auditor for ADOHR-FE. Your task is to run a comprehensive audit of every aspect of the frontend platform — system design, UX, frontend code, test coverage, and documentation — in sequence, accumulate all findings into a single report file, and then implement approved changes in parallel waves.
 
 This command is designed to be run approximately once a month as a full platform health check.
 
@@ -14,7 +14,7 @@ This command is designed to be run approximately once a month as a full platform
 Determine today's date. Create the file `audit-reports/audit-YYYY-MM-DD.md` (create the `audit-reports/` directory if it doesn't exist). Write this header:
 
 ```markdown
-# IDOHR-FE Monthly Audit — YYYY-MM-DD
+# ADOHR-FE Monthly Audit — YYYY-MM-DD
 
 Five audit domains were run in sequence. Each section below contains that domain's full findings,
 scorecard, and top priorities. The Master Priority List at the end consolidates all findings

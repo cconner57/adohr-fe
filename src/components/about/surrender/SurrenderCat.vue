@@ -12,6 +12,7 @@ const goToSurrenderForm = () => {
 
 <template>
   <div class="surrender-cat-section">
+    <p class="eyebrow">A hard decision, handled with care</p>
     <h2>Surrender Pet</h2>
     <p class="description">
       If you need to surrender your pet, we understand this can be a difficult decision. Please fill
@@ -28,31 +29,45 @@ const goToSurrenderForm = () => {
 </template>
 
 <style scoped lang="css">
-h2 {
-  font-size: 2.5rem;
-  color: var(--text-inverse);
-  text-align: center;
-  margin: 50px 0 10px;
-}
-
 .surrender-cat-section {
   text-align: center;
   background-color: var(--color-primary);
-  padding: 80px var(--layout-padding-side);
+  padding: 90px var(--layout-padding-side);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.description {
-  font-size: 1.2rem;
+.eyebrow {
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-warning);
+  margin-bottom: 12px;
+}
+
+h2 {
+  font-size: clamp(1.9rem, 3.4vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--text-inverse);
-  margin-bottom: 50px;
+  text-align: center;
+  margin: 0 0 10px;
+}
+
+.description {
+  font-size: 1.15rem;
+  color: oklch(from var(--text-inverse) l c h / 88%);
+  margin-bottom: 36px;
   text-align: center;
   font-weight: 400;
+  line-height: 1.6;
+  max-width: 560px;
 }
 
 .surrender-button {
-  margin-bottom: 60px;
+  margin-bottom: 0;
 }
 </style>

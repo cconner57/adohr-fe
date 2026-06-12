@@ -240,18 +240,25 @@ p {
   font-size: 1rem;
   color: var(--text-primary);
   margin-bottom: 1rem;
-  font-weight: 300;
+  font-weight: 400;
+  line-height: 1.6;
 }
 
 ul {
-  margin: 0 0 1rem 1.5rem;
+  margin: 0 0 1rem;
   padding: 0;
-  list-style-type: disc;
+  list-style: none;
   color: var(--text-primary);
 }
 
 li {
-  margin-bottom: 0.5rem;
+  padding: 0.6rem 0;
+  margin-bottom: 0;
+  border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+
+  &:last-child {
+    border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+  }
 }
 
 form {
@@ -302,39 +309,40 @@ form {
 }
 
 .success__icon-wrapper {
-  color: #ffffff;
-  background-color: #0f766e;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  color: var(--text-inverse);
+  background-color: var(--color-primary);
+  width: 92px;
+  height: 104px;
+  border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5rem;
-  box-shadow: 0 12px 30px rgb(15 118 110 / 25%);
+  box-shadow: var(--shadow-lg);
   animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s both;
 }
 
 .success__icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   color: inherit;
 }
 
 .success__title {
   font-size: 1.75rem;
-  font-weight: 700;
-  color: #1f2937;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
   margin-bottom: 0.75rem;
 }
 
 .success__message {
-  color: #4b5563;
+  color: var(--text-secondary);
   font-size: 1.05rem;
   line-height: 1.6;
   max-width: 300px;
   margin: 0;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 @keyframes scaleIn {

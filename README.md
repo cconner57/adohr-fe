@@ -1,6 +1,6 @@
 # 🗺️ Product Roadmap (Year 1)
 
-This roadmap outlines the strategic development plan for the IDOHR platform, moving from a foundational MVP to a multi-tenant SaaS platform.
+This roadmap outlines the strategic development plan for the ADOHR platform, moving from a foundational MVP to a multi-tenant SaaS platform.
 
 ---
 
@@ -43,7 +43,7 @@ This roadmap outlines the strategic development plan for the IDOHR platform, mov
 
 - [ ] **Offline "Field Mode":** Enable PWA capabilities so Intake Coordinators can fill out forms in areas with poor cell service.
 - [ ] **Push Notifications:** Implement web push notifications to alert fosters of urgent needs.
-- [ ] **"Add to Home Screen":** Optimize the web manifest to encourage volunteers to install IDOHR as a native-feeling app.
+- [ ] **"Add to Home Screen":** Optimize the web manifest to encourage volunteers to install ADOHR as a native-feeling app.
 
 ## 🔄 Phase 6: Financial Stability
 
@@ -79,7 +79,7 @@ This roadmap outlines the strategic development plan for the IDOHR platform, mov
 
 ## 🏙️ Phase 10: Community Resources
 
-**Goal:** Position IDOHR as a community hub, not just a shelter.
+**Goal:** Position ADOHR as a community hub, not just a shelter.
 
 - [ ] **Lost & Found Generator:** A public tool allowing community members to upload lost pet info and generate a printable PDF flyer.
 - [ ] **Volunteer "Skill Swap":** A directory of volunteer professional skills (e.g., Lawyer, Plumber, CPA).

@@ -22,7 +22,8 @@ const handleGoHome = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
+  min-height: 100vh;
+  background-color: var(--color-primary);
   padding: 2rem;
   padding-top: 8rem;
   text-align: center;
@@ -47,10 +48,10 @@ const handleGoHome = () => {
 }
 
 .not-found-image {
-  max-width: 100%;
+  max-width: min(100%, 360px);
   height: auto;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
+  border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
+  box-shadow: var(--shadow-lg);
   margin-bottom: 1rem;
   margin-top: 2rem;
 }
@@ -59,16 +60,15 @@ h1 {
   color: var(--text-inverse);
   font-size: 2.5rem;
   font-weight: 800;
+  letter-spacing: -0.02em;
   margin: 0;
-  text-shadow: 0 2px 4px rgb(0 0 0 / 20%);
 }
 
 p {
-  color: var(--text-inverse);
-  font-size: 1.25rem;
-  font-weight: 600;
+  color: oklch(from var(--text-inverse) l c h / 88%);
+  font-size: 1.2rem;
+  font-weight: 500;
   margin: 0 0 1rem;
-  text-shadow: 0 2px 4px rgb(0 0 0 / 30%);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 </style>

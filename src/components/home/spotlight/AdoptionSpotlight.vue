@@ -43,7 +43,11 @@ const displayedPets = computed((): IPet[] => {
 
 <template>
   <section class="adoption-spotlight">
-    <h2>Adoption Spotlight</h2>
+    <header class="spotlight-header">
+      <p class="eyebrow">Waiting right now</p>
+      <h2>Adoption <span class="display-accent">spotlight</span></h2>
+    </header>
+
     <div v-if="loading" class="loader-container">
       <Spinner />
     </div>
@@ -85,83 +89,40 @@ const displayedPets = computed((): IPet[] => {
 }
 
 .adoption-spotlight {
-  background-color: var(--text-inverse);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 4px 6px rgb(0 0 0 / 25%);
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin: -120px 0 0;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
   width: 100%;
-  padding: 24px 50px 40px;
+}
 
-  & h2 {
-    font-size: 2rem;
+.spotlight-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+
+  .eyebrow {
+    color: var(--color-secondary);
+  }
+
+  h2 {
+    font-size: var(--font-size-h2);
     color: var(--text-primary);
   }
+}
 
+.pet-list {
+  display: flex;
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 8px 4px 16px;
+  -webkit-overflow-scrolling: touch;
+  justify-content: flex-start;
+}
+
+@media (width <= 430px) {
   .pet-list {
-    display: flex;
-    gap: 3rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 8px;
-    -webkit-overflow-scrolling: touch;
     justify-content: center;
-    margin-left: -50px;
-    margin-right: -50px;
-    padding-left: 50px;
-    padding-right: 50px;
-  }
-
-  @media (width <= 430px) {
-    margin: 2rem 0 0;
-    padding: 1rem 2rem;
-    gap: 0.5rem;
-
-    & h2 {
-      font-size: 1.5rem;
-    }
-
-    .pet-list {
-      gap: 1rem;
-      margin-left: -2rem;
-      margin-right: -2rem;
-      padding-left: 2rem;
-      padding-right: 2rem;
-      justify-content: flex-start;
-    }
-  }
-
-  @media (width >= 431px) and (width <= 768px) {
-    margin: -20px 0 0;
-
-    & h2 {
-      font-size: 1.75rem;
-    }
-  }
-
-  @media (width >= 769px) and (width <= 1024px) {
-    & h2 {
-      font-size: 1.75rem;
-    }
-  }
-
-  @media (width >= 1025px) and (width <= 1440px) {
-    width: 100%;
-    padding: 24px 30px 30px;
-
-    & h2 {
-      font-size: 1.75rem;
-    }
-
-    .pet-list {
-      gap: 2rem;
-      margin-left: -30px;
-      margin-right: -30px;
-      padding-left: 30px;
-      padding-right: 30px;
-    }
   }
 }
 </style>
