@@ -51,7 +51,7 @@ export const usePetStore = defineStore('pets', () => {
       status,
       sort: 'age',
       limit: '10000',
-      orgId: 'adohr',
+      orgId: 'idohr',
     })
 
     const response = await fetch(`${API_ENDPOINTS.PETS_LIST}?${params.toString()}`)
@@ -76,7 +76,7 @@ export const usePetStore = defineStore('pets', () => {
         sort: 'age',
         page: String(page),
         page_size: String(pageSize),
-        orgId: 'adohr',
+        orgId: 'idohr',
       })
 
       const pageResponse = await fetch(`${API_ENDPOINTS.PETS_LIST}?${pageParams.toString()}`)
@@ -156,7 +156,7 @@ export const usePetStore = defineStore('pets', () => {
     if (refreshedPet) return refreshedPet
 
     try {
-      const response = await fetch(`${API_ENDPOINTS.PET_DETAILS(idOrSlug)}?orgId=adohr`)
+      const response = await fetch(`${API_ENDPOINTS.PET_DETAILS(idOrSlug)}?orgId=idohr`)
       if (!response.ok) return null
 
       const json = await response.json()
@@ -188,7 +188,7 @@ export const usePetStore = defineStore('pets', () => {
 
     isFetching.value = true
     try {
-      const queryString = paramsString ? `${paramsString}&orgId=adohr` : 'orgId=adohr'
+      const queryString = paramsString ? `${paramsString}&orgId=idohr` : 'orgId=idohr'
       const response = await fetch(`${API_ENDPOINTS.PETS}?${queryString}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -214,7 +214,7 @@ export const usePetStore = defineStore('pets', () => {
     isFetching.value = true
     try {
       // Fetch specifically adopted pets, reasonable limit (e.g. 1000 to cover full year)
-      const response = await fetch(`${API_ENDPOINTS.PETS}?status=adopted&limit=1000&orgId=adohr`, {
+      const response = await fetch(`${API_ENDPOINTS.PETS}?status=adopted&limit=1000&orgId=idohr`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -241,7 +241,7 @@ export const usePetStore = defineStore('pets', () => {
 
     const fetchCount = async (year: number): Promise<number> => {
       try {
-        const response = await fetch(`${API_ENDPOINTS.ADOPTED_PETS_COUNT}?year=${year}&orgId=adohr`)
+        const response = await fetch(`${API_ENDPOINTS.ADOPTED_PETS_COUNT}?year=${year}&orgId=idohr`)
         const json = await response.json()
 
         if (json.data && typeof json.data.count === 'number') {

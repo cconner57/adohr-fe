@@ -157,7 +157,7 @@ const medicalFiles = computed(() => {
 
 const findPetFromStatusList = async () => {
   const queryByStatus = async (status: 'adopted' | 'archived') => {
-    const response = await fetch(`${API_ENDPOINTS.PETS_LIST}?status=${status}&orgId=adohr`)
+    const response = await fetch(`${API_ENDPOINTS.PETS_LIST}?status=${status}&orgId=idohr`)
     if (!response.ok) return [] as IPet[]
 
     const json = await response.json()

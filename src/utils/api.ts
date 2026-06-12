@@ -1,6 +1,6 @@
 const configuredPublicOrgId = import.meta.env.VITE_PUBLIC_ORG_ID?.trim() ?? ''
 
-export const PUBLIC_ORG_ID = configuredPublicOrgId || 'adohr'
+export const PUBLIC_ORG_ID = configuredPublicOrgId || 'idohr'
 
 const INTERNAL_URL_BASE = 'https://adohr.local'
 
