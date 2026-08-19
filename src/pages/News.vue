@@ -18,25 +18,36 @@ onMounted(() => {
     <section class="hero">
       <div class="content-wrapper">
         <p class="eyebrow">Dispatches from the rescue</p>
-        <h1>IDOHR News</h1>
+        <h1>ADOHR News</h1>
         <p>Updates from rescue operations, events, and community milestones.</p>
       </div>
     </section>
 
-    <section class="news-list">
+    <section class="news-list" aria-live="polite">
       <div class="content-wrapper">
-        <p v-if="isLoading" class="status">Loading updates...</p>
-        <p v-else-if="error" class="status error">{{ error }}</p>
-
-        <article v-for="item in sortedItems" :key="item.id" class="news-card">
-          <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.title" loading="lazy" />
-          <div class="news-card__content">
-            <p class="meta">{{ item.category }} · {{ formatDate(item.publishedAt) }}</p>
-            <h2>{{ item.title }}</h2>
-            <p class="excerpt">{{ item.excerpt }}</p>
-            <p>{{ item.body }}</p>
+        <div v-if="isLoading" class="skeleton-list">
+          <div v-for="i in 3" :key="i" class="news-card skeleton">
+            <div class="skeleton-img"></div>
+            <div class="news-card__content">
+              <div class="skeleton-meta"></div>
+              <div class="skeleton-title"></div>
+              <div class="skeleton-excerpt"></div>
+              <div class="skeleton-body"></div>
+            </div>
           </div>
-        </article>
+        </div>
+        <p v-else-if="error" class="status error">{{ error }}</p>
+        <template v-else>
+          <article v-for="item in sortedItems" :key="item.id" class="news-card">
+            <img v-if="item.imageUrl" :src="item.imageUrl" alt="" loading="lazy" />
+            <div class="news-card__content">
+              <p class="meta">{{ item.category }} · {{ formatDate(item.publishedAt) }}</p>
+              <h2>{{ item.title }}</h2>
+              <p class="excerpt">{{ item.excerpt }}</p>
+              <p>{{ item.body }}</p>
+            </div>
+          </article>
+        </template>
       </div>
     </section>
   </main>
@@ -144,12 +155,69 @@ onMounted(() => {
         padding-bottom: 0.6rem;
         margin-bottom: 0.6rem;
         border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
 
       p {
         line-height: 1.6;
         color: var(--text-secondary);
       }
+    }
+
+    &.skeleton {
+      .skeleton-img {
+        width: 100%;
+        height: 100%;
+        min-height: 200px;
+        background: var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+        animation: pulse 1.5s infinite;
+      }
+
+      .skeleton-meta {
+        height: 12px;
+        width: 30%;
+        background: var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+        margin-bottom: 0.4rem;
+        animation: pulse 1.5s infinite;
+      }
+
+      .skeleton-title {
+        height: 24px;
+        width: 80%;
+        background: var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+        margin: 0.4rem 0 0.6rem;
+        animation: pulse 1.5s infinite;
+      }
+
+      .skeleton-excerpt {
+        height: 16px;
+        width: 100%;
+        background: var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+        margin-bottom: 0.6rem;
+        animation: pulse 1.5s infinite;
+      }
+
+      .skeleton-body {
+        height: 48px;
+        width: 100%;
+        background: var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+        animation: pulse 1.5s infinite;
+      }
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 0.6;
     }
   }
 

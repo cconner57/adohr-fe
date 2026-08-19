@@ -6,7 +6,7 @@
       <p class="eyebrow mission-eyebrow">Our mission</p>
       <h4>Shelter, food, care, and love — until the right door opens.</h4>
       <p class="mission-copy">
-        I Dream of Home Rescue (IDOHR) rescues abandoned, unwanted, and surrendered animals. While
+        A Dream of Home Rescue (ADOHR) rescues abandoned, unwanted, and surrendered animals. While
         we search for loving homes, we give them what every animal deserves: shelter, food,
         veterinary care, and love. We also advocate for pet adoption, spaying, neutering, and
         responsible pet care.

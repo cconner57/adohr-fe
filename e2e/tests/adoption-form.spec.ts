@@ -24,14 +24,14 @@ test.describe('Adoption form flow', () => {
     await expect(page.locator('body')).not.toHaveText('Cannot GET')
 
     // Should show the pet adoption form content
-    await expect(page.locator('form, [class*="adoption"], [class*="pet-adoption"]').first()).toBeVisible()
+    await expect(page.locator('.form-card, .page-shell, .cat-adoption-info').first()).toBeVisible()
   })
 
   test('can navigate through form steps', async ({ page }) => {
     await page.goto('/pet-adoption/pet-001')
 
     // Wait for form to load
-    await expect(page.locator('[class*="adoption"]').first()).toBeVisible()
+    await expect(page.locator('.form-card, .page-shell, .cat-adoption-info').first()).toBeVisible()
 
     // Look for a Next/Continue button to advance steps
     const nextButton = page.getByRole('button', { name: /next|continue/i })

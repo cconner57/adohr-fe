@@ -30,8 +30,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <fieldset class="waiver-container">
-    <legend id="waiv" class="section-title">Agreement</legend>
+  <div class="waiver-container">
     <p class="waiver">
       I, {{ name === ' ' ? '(volunteer name)' : name }}, agree to volunteer with A Dream of Home
       Rescue (ADOHR) and abide by its policies. I understand that animal handling involves risks of
@@ -99,7 +98,7 @@ const emit = defineEmits<{
         :hasError="hasParentSignatureError"
       />
     </div>
-  </fieldset>
+  </div>
 </template>
 
 <style scoped lang="css">
@@ -109,12 +108,6 @@ const emit = defineEmits<{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
-
-  & .section-title {
-    margin-bottom: 24px;
-    display: block;
-    width: 100%;
-  }
 
   & .acknowledgement,
   .parentGuardian {

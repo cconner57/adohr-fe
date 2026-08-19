@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue'
 
 import type { IPet } from '../../../models/common.ts'
+import { formatDate } from '../../../utils/common.ts'
 import { useIsMobile } from '../../../utils/useIsMobile.ts'
 import PetItem from '../../common/pet-item/PetItem.vue'
 import Spinner from '../../common/ui/Spinner.vue'
@@ -61,8 +62,13 @@ const displayedPets = computed((): IPet[] => {
         :name="pet.name"
         :id="(pet.slug || pet.id).toLowerCase()"
         :photo="pet.photos?.find((p) => p.isPrimary)?.url || null"
-        :description="pet.descriptions?.spotlight || ''"
+        :capsules="[
+          pet?.species ?? '',
+          pet?.sex ?? '',
+          pet?.physical?.dateOfBirth ? formatDate(pet?.physical?.dateOfBirth ?? '', true) : '',
+        ]"
         :size="isMobile ? 'large' : 'medium'"
+        :isSponsored="pet.sponsored?.isSponsored ?? false"
         :status="pet.details?.status ?? ''"
       />
     </div>
@@ -112,12 +118,24 @@ const displayedPets = computed((): IPet[] => {
 
 .pet-list {
   display: flex;
-  gap: clamp(1.25rem, 2.5vw, 2rem);
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  justify-content: space-between;
+  gap: clamp(1rem, 2vw, 2rem);
+  width: 100%;
   padding: 8px 4px 16px;
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  justify-content: flex-start;
+
+  :deep(.pet-item) {
+    flex: 1 1 0;
+    min-width: 250px;
+    max-width: 295px;
+  }
+}
+
+@media (width <= 1140px) {
+  .pet-list {
+    justify-content: flex-start;
+  }
 }
 
 @media (width <= 430px) {

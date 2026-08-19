@@ -93,7 +93,11 @@ const filteredPets = computed(() => {
     })
   }
 
-  return result
+  return [...result].sort((a: IPet, b: IPet) => {
+    const nameA = a.name || ''
+    const nameB = b.name || ''
+    return nameA.localeCompare(nameB, undefined, { sensitivity: 'base' })
+  })
 })
 
 const setFilter = (filter: string) => {
@@ -148,6 +152,18 @@ const handleGeneralApplication = (species: 'cat' | 'dog') => {
   store.selectPet({ id: 'unspecified', petName: 'Unspecified', species })
   router.push(`/pet-adoption/unspecified`)
 }
+
+const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith', value: string) => {
+  if (category === 'sex') {
+    advancedFilters.value.sex = ''
+  } else if (category === 'age') {
+    advancedFilters.value.age = advancedFilters.value.age.filter((v) => v !== value)
+  } else if (category === 'size') {
+    advancedFilters.value.size = advancedFilters.value.size.filter((v) => v !== value)
+  } else if (category === 'goodWith') {
+    advancedFilters.value.goodWith = advancedFilters.value.goodWith.filter((v) => v !== value)
+  }
+}
 </script>
 
 <template>
@@ -158,9 +174,12 @@ const handleGeneralApplication = (species: 'cat' | 'dog') => {
         :activeFilter="activeFilter"
         :isFilterPanelOpen="isFilterPanelOpen"
         :filterCount="filterCount"
+        :advancedFilters="advancedFilters"
         @set-filter="setFilter"
         @toggle-filters="isFilterPanelOpen = !isFilterPanelOpen"
         @reset-filters="resetAllFilters"
+        @remove-filter="removeFilter"
+        @clear-advanced-filters="clearFilters"
       />
 
       <FilterPanel
@@ -172,7 +191,8 @@ const handleGeneralApplication = (species: 'cat' | 'dog') => {
         @clear="clearFilters"
       />
 
-      <main>
+      <main aria-live="polite">
+        <span class="sr-only">{{ filteredPets.length }} pets found</span>
         <div v-if="isFetching" class="loading-state">
           <Spinner />
         </div>
@@ -180,9 +200,15 @@ const handleGeneralApplication = (species: 'cat' | 'dog') => {
           <AdoptDetail v-if="pet" :pet="pet!" />
           <AdoptSummary v-else-if="filteredPets.length > 0" :pets="filteredPets" />
           <div v-else class="empty-state">
+            <span class="empty-icon">🐾</span>
             <h2>No pets found</h2>
-            <p>We couldn't find any friends matching that filter.</p>
-            <button class="reset-btn" @click="resetAllFilters">View All Pets</button>
+            <p>We couldn't find any friends matching your current filters.</p>
+            <div class="empty-actions">
+              <button v-if="filterCount > 0" class="reset-btn" @click="clearFilters">
+                Clear advanced filters
+              </button>
+              <button class="reset-btn secondary" @click="resetAllFilters">View all pets</button>
+            </div>
           </div>
 
           <GeneralApplicationCTA

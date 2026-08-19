@@ -12,21 +12,23 @@ test.describe('Navigation', () => {
     await page.setViewportSize({ width: 1280, height: 720 })
     await page.goto('/')
 
+    const primaryNav = page.getByRole('navigation', { name: 'Primary navigation' })
+
     // Navigate to About
-    await page.locator('nav a[href="/about"]').click()
+    await primaryNav.locator('a[href="/about"]').click()
     await expect(page).toHaveURL('/about')
 
     // Navigate to Adopt
-    await page.locator('nav a[href="/adopt"]').click()
+    await primaryNav.locator('a[href="/adopt"]').click()
     await expect(page).toHaveURL('/adopt')
     await expect(page.locator('h1')).toContainText('Find your new best friend')
 
     // Navigate to Volunteer
-    await page.locator('nav a[href="/volunteer"]').click()
+    await primaryNav.locator('a[href="/volunteer"]').click()
     await expect(page).toHaveURL('/volunteer')
 
     // Navigate back Home
-    await page.locator('nav a[href="/"]').click()
+    await primaryNav.locator('a.nav-item[href="/"]').click()
     await expect(page).toHaveURL('/')
   })
 
@@ -34,7 +36,9 @@ test.describe('Navigation', () => {
     await page.setViewportSize({ width: 1280, height: 720 })
     await page.goto('/')
 
-    await page.locator('nav a[href="/adopt"]').click()
+    const primaryNav = page.getByRole('navigation', { name: 'Primary navigation' })
+
+    await primaryNav.locator('a[href="/adopt"]').click()
     await expect(page).toHaveURL('/adopt')
 
     await page.goBack()

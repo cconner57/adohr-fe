@@ -5,6 +5,7 @@ import AboutLocations from '@/components/about/AboutLocations.vue'
 import AboutMission from '@/components/about/AboutMission.vue'
 import AboutStory from '@/components/about/AboutStory.vue'
 import AboutTransparency from '@/components/about/AboutTransparency.vue'
+import SupportOurMission from '@/components/about/SupportOurMission.vue'
 import SurrenderCat from '@/components/about/surrender/SurrenderCat.vue'
 </script>
 
@@ -21,6 +22,8 @@ import SurrenderCat from '@/components/about/surrender/SurrenderCat.vue'
         <AboutFAQ />
       </div>
     </section>
+
+    <SupportOurMission />
   </main>
   <SurrenderCat />
 </template>

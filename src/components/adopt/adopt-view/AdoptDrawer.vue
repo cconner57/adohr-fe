@@ -24,7 +24,6 @@ const { formData, isSubmitting, isSubmitted, apiError, submitInquiry } = usePetI
 const preferredDate = ref('')
 const preferredTime = ref('')
 const hasAttemptedSubmit = ref(false)
-const showInquiryForm = ref(false)
 
 const isEmailValid = (value: string) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
@@ -148,87 +147,85 @@ const submitForm = async () => {
         <li><strong>Monday through Friday</strong><br />10am to 12pm and 6pm to 8pm</li>
         <li><strong>Weekends</strong><br />12pm to 4pm</li>
       </ul>
-      <div v-if="showInquiryForm">
-        <p>
-          If these times don’t work for you, no problem! Simply fill out the form below, and one of
-          our volunteers will get in touch with you as soon as possible to arrange a time that works
-          best for you.
-        </p>
+      <p>
+        If these times don’t work for you, no problem! Simply fill out the form below, and one of
+        our volunteers will get in touch with you as soon as possible to arrange a time that works
+        best for you.
+      </p>
 
-        <form @submit.prevent="submitForm">
-          <InputField
-            label="Your First Name:"
-            placeholder="Enter your first name"
-            type="text"
-            v-model="formData.firstName"
-            required
-            :hasError="hasFieldError('firstName')"
-          />
-          <InputField
-            label="Your Last Name:"
-            placeholder="Enter your last name"
-            type="text"
-            v-model="formData.lastName"
-            required
-            :hasError="hasFieldError('lastName')"
-          />
-          <InputField
-            label="Your Email:"
-            placeholder="Enter your email"
-            type="email"
-            v-model="formData.email"
-            required
-            :hasError="hasFieldError('email')"
-          />
-          <InputField
-            label="Your Phone Number:"
-            placeholder="Enter your phone number"
-            type="tel"
-            v-model="formData.phone"
-            inputmode="tel"
-            required
-            :hasError="hasFieldError('phone')"
-            @update:modelValue="updatePhone"
-          />
-          <InputField
-            label="Preferred Date:"
-            placeholder="Select a preferred date"
-            type="date"
-            v-model="preferredDate"
-            required
-            :hasError="hasFieldError('preferredDate')"
-            openPickerOnFocus
-          />
-          <InputField
-            label="Preferred Time:"
-            placeholder="Select a preferred time"
-            type="time"
-            v-model="preferredTime"
-            required
-            :hasError="hasFieldError('preferredTime')"
-            openPickerOnFocus
-          />
-        </form>
+      <form @submit.prevent="submitForm">
+        <InputField
+          label="Your First Name:"
+          placeholder="Enter your first name"
+          type="text"
+          v-model="formData.firstName"
+          required
+          :hasError="hasFieldError('firstName')"
+        />
+        <InputField
+          label="Your Last Name:"
+          placeholder="Enter your last name"
+          type="text"
+          v-model="formData.lastName"
+          required
+          :hasError="hasFieldError('lastName')"
+        />
+        <InputField
+          label="Your Email:"
+          placeholder="Enter your email"
+          type="email"
+          v-model="formData.email"
+          required
+          :hasError="hasFieldError('email')"
+        />
+        <InputField
+          label="Your Phone Number:"
+          placeholder="Enter your phone number"
+          type="tel"
+          v-model="formData.phone"
+          inputmode="tel"
+          required
+          :hasError="hasFieldError('phone')"
+          @update:modelValue="updatePhone"
+        />
+        <InputField
+          label="Preferred Date:"
+          placeholder="Select a preferred date"
+          type="date"
+          v-model="preferredDate"
+          required
+          :hasError="hasFieldError('preferredDate')"
+          openPickerOnFocus
+        />
+        <InputField
+          label="Preferred Time:"
+          placeholder="Select a preferred time"
+          type="time"
+          v-model="preferredTime"
+          required
+          :hasError="hasFieldError('preferredTime')"
+          openPickerOnFocus
+        />
+      </form>
 
-        <div v-if="hasAttemptedSubmit && validationErrors.length > 0" class="validation-summary">
-          <p class="summary-title">Please complete all required fields:</p>
-          <p class="summary-copy">{{ validationErrors[0] }}</p>
-        </div>
+      <div v-if="hasAttemptedSubmit && validationErrors.length > 0" class="validation-summary">
+        <p class="summary-title">Please complete all required fields:</p>
+        <p class="summary-copy">{{ validationErrors[0] }}</p>
+      </div>
 
-        <p v-if="apiError" class="error">{{ apiError }}</p>
+      <p v-if="apiError" class="error">{{ apiError }}</p>
 
-        <p class="footer-note">We look forward to helping you find your new best friend!</p>
+      <p class="footer-note">We look forward to helping you find your new best friend!</p>
 
-        <div class="actions">
-          <Button
-            title="Submit"
-            color="green"
-            type="submit"
-            @click="submitForm()"
-            :loading="isSubmitting"
-            :fullWidth="true"
-          />
-        </div>
+      <div class="actions">
+        <Button
+          title="Submit"
+          color="green"
+          type="submit"
+          @click="submitForm()"
+          :loading="isSubmitting"
+          :fullWidth="true"
+        />
       </div>
     </template>
   </Drawer>
@@ -350,6 +347,7 @@ form {
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -361,6 +359,7 @@ form {
     opacity: 0;
     transform: scale(0.5);
   }
+
   to {
     opacity: 1;
     transform: scale(1);

@@ -297,7 +297,7 @@ textarea.has-error {
 }
 
 .success__icon-wrapper {
-  color: #ffffff;
+  color: #fff;
   background-color: #0f766e;
   width: 100px;
   height: 100px;
@@ -337,6 +337,7 @@ textarea.has-error {
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -348,6 +349,7 @@ textarea.has-error {
     opacity: 0;
     transform: scale(0.5);
   }
+
   to {
     opacity: 1;
     transform: scale(1);

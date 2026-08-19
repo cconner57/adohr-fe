@@ -1,5 +1,9 @@
 <script setup lang="ts">
-const { formStep, selectedAnimal, vertical = false } = defineProps<{
+const {
+  formStep,
+  selectedAnimal,
+  vertical = false,
+} = defineProps<{
   formStep: number
   selectedAnimal: 'dog' | 'cat' | null
   vertical?: boolean
@@ -176,10 +180,7 @@ const { formStep, selectedAnimal, vertical = false } = defineProps<{
     margin: 0;
 
     &::before {
-      top: 16px;
-      bottom: 16px;
-      left: 16px;
-      right: auto;
+      inset: 16px auto 16px 16px;
       width: 1px;
       height: auto;
     }

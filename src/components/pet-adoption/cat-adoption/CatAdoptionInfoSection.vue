@@ -178,6 +178,7 @@ const goodToKnowItems: IPolicyItem[] = [
     opacity: 0.8;
   }
 }
+
 .intro-grid {
   --intro-panel-bg: color-mix(in oklch, var(--text-inverse) 90%, var(--color-primary) 10%);
   --intro-card-bg: color-mix(in oklch, var(--text-inverse) 96%, var(--color-primary) 4%);

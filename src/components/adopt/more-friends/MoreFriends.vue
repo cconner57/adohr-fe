@@ -22,7 +22,9 @@ const isMobile = useIsMobile()
         :capsules="[
           props.pet.species || '',
           (props.pet.sex as string) || '',
-          formatDate((props.pet.physical?.ageGroup || '') as string),
+          props.pet.physical?.dateOfBirth
+            ? formatDate(props.pet.physical.dateOfBirth, true)
+            : props.pet.physical?.ageGroup || '',
         ]"
         :photo="props.pet.photos?.find((p) => p.isPrimary)?.url || props.pet.photos?.[0]?.url"
         :status="props.pet.details?.status ?? ''"
@@ -33,19 +35,9 @@ const isMobile = useIsMobile()
         :capsules="[
           props.pet.species || '',
           (props.pet.sex as string) || '',
-          formatDate((props.pet.physical?.ageGroup || '') as string),
-        ]"
-        :photo="props.pet.photos?.find((p) => p.isPrimary)?.url || props.pet.photos?.[0]?.url"
-        :status="props.pet.details?.status ?? ''"
-      />
-      <PetItem
-        v-if="!isMobile"
-        :id="props.pet.id"
-        name="Crystal"
-        :capsules="[
-          props.pet.species || '',
-          (props.pet.sex as string) || '',
-          formatDate((props.pet.physical?.ageGroup || '') as string),
+          props.pet.physical?.dateOfBirth
+            ? formatDate(props.pet.physical.dateOfBirth, true)
+            : props.pet.physical?.ageGroup || '',
         ]"
         :photo="props.pet.photos?.find((p) => p.isPrimary)?.url || props.pet.photos?.[0]?.url"
         :status="props.pet.details?.status ?? ''"
@@ -57,7 +49,23 @@ const isMobile = useIsMobile()
         :capsules="[
           props.pet.species || '',
           (props.pet.sex as string) || '',
-          formatDate((props.pet.physical?.ageGroup || '') as string),
+          props.pet.physical?.dateOfBirth
+            ? formatDate(props.pet.physical.dateOfBirth, true)
+            : props.pet.physical?.ageGroup || '',
+        ]"
+        :photo="props.pet.photos?.find((p) => p.isPrimary)?.url || props.pet.photos?.[0]?.url"
+        :status="props.pet.details?.status ?? ''"
+      />
+      <PetItem
+        v-if="!isMobile"
+        :id="props.pet.id"
+        name="Crystal"
+        :capsules="[
+          props.pet.species || '',
+          (props.pet.sex as string) || '',
+          props.pet.physical?.dateOfBirth
+            ? formatDate(props.pet.physical.dateOfBirth, true)
+            : props.pet.physical?.ageGroup || '',
         ]"
         :photo="props.pet.photos?.find((p) => p.isPrimary)?.url || props.pet.photos?.[0]?.url"
         :status="props.pet.details?.status ?? ''"

@@ -3,6 +3,7 @@ import { type Ref, ref } from 'vue'
 
 import { API_ENDPOINTS } from '../constants/api'
 import type { IPet } from '../models/common'
+import { PUBLIC_ORG_ID } from '../utils/api'
 
 export const usePetStore = defineStore('pets', () => {
   const currentPets = ref<IPet[]>([])
@@ -49,9 +50,9 @@ export const usePetStore = defineStore('pets', () => {
   const fetchListByStatus = async (status: string) => {
     const params = new URLSearchParams({
       status,
-      sort: 'age',
+      sort: 'name',
       limit: '10000',
-      orgId: 'idohr',
+      orgId: PUBLIC_ORG_ID,
     })
 
     const response = await fetch(`${API_ENDPOINTS.PETS_LIST}?${params.toString()}`)
@@ -73,10 +74,10 @@ export const usePetStore = defineStore('pets', () => {
     while (page <= 200) {
       const pageParams = new URLSearchParams({
         status,
-        sort: 'age',
+        sort: 'name',
         page: String(page),
         page_size: String(pageSize),
-        orgId: 'idohr',
+        orgId: PUBLIC_ORG_ID,
       })
 
       const pageResponse = await fetch(`${API_ENDPOINTS.PETS_LIST}?${pageParams.toString()}`)
@@ -156,7 +157,7 @@ export const usePetStore = defineStore('pets', () => {
     if (refreshedPet) return refreshedPet
 
     try {
-      const response = await fetch(`${API_ENDPOINTS.PET_DETAILS(idOrSlug)}?orgId=idohr`)
+      const response = await fetch(`${API_ENDPOINTS.PET_DETAILS(idOrSlug)}?orgId=${PUBLIC_ORG_ID}`)
       if (!response.ok) return null
 
       const json = await response.json()
@@ -188,7 +189,9 @@ export const usePetStore = defineStore('pets', () => {
 
     isFetching.value = true
     try {
-      const queryString = paramsString ? `${paramsString}&orgId=idohr` : 'orgId=idohr'
+      const queryString = paramsString
+        ? `${paramsString}&orgId=${PUBLIC_ORG_ID}`
+        : `orgId=${PUBLIC_ORG_ID}`
       const response = await fetch(`${API_ENDPOINTS.PETS}?${queryString}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -214,12 +217,15 @@ export const usePetStore = defineStore('pets', () => {
     isFetching.value = true
     try {
       // Fetch specifically adopted pets, reasonable limit (e.g. 1000 to cover full year)
-      const response = await fetch(`${API_ENDPOINTS.PETS}?status=adopted&limit=1000&orgId=idohr`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+      const response = await fetch(
+        `${API_ENDPOINTS.PETS}?status=adopted&limit=1000&orgId=${PUBLIC_ORG_ID}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
         },
-      })
+      )
 
       if (!response.ok) throw new Error('Failed to fetch adopted pets')
       const json = await response.json()
@@ -241,7 +247,9 @@ export const usePetStore = defineStore('pets', () => {
 
     const fetchCount = async (year: number): Promise<number> => {
       try {
-        const response = await fetch(`${API_ENDPOINTS.ADOPTED_PETS_COUNT}?year=${year}&orgId=idohr`)
+        const response = await fetch(
+          `${API_ENDPOINTS.ADOPTED_PETS_COUNT}?year=${year}&orgId=${PUBLIC_ORG_ID}`,
+        )
         const json = await response.json()
 
         if (json.data && typeof json.data.count === 'number') {

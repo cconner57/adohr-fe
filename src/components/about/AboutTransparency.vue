@@ -10,7 +10,7 @@ import Candid from '@/components/common/candid-award/Candid.vue'
           href="https://www.guidestar.org/profile/81-0780050"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="View IDOHR Candid profile"
+          aria-label="View ADOHR Candid profile"
         >
           <Candid type="Gold" year="2024" class="award-item" />
         </a>
@@ -18,7 +18,7 @@ import Candid from '@/components/common/candid-award/Candid.vue'
           href="https://www.guidestar.org/profile/81-0780050"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="View IDOHR Candid profile"
+          aria-label="View ADOHR Candid profile"
         >
           <Candid type="Gold" year="2023" class="award-item" style="transition-delay: 0.1s" />
         </a>
@@ -26,7 +26,7 @@ import Candid from '@/components/common/candid-award/Candid.vue'
           href="https://www.guidestar.org/profile/81-0780050"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="View IDOHR Candid profile"
+          aria-label="View ADOHR Candid profile"
         >
           <Candid type="Silver" year="2022" class="award-item" style="transition-delay: 0.2s" />
         </a>
@@ -35,7 +35,7 @@ import Candid from '@/components/common/candid-award/Candid.vue'
         <p class="eyebrow">Accountability</p>
         <h2>Transparency</h2>
         <p>
-          IDOHR is a 501(c)(3) nonprofit. Donations are tax-deductible as allowed by law. We publish
+          ADOHR is a 501(c)(3) nonprofit. Donations are tax-deductible as allowed by law. We publish
           annual updates and operate with financial transparency.
         </p>
         <p class="small mono">EIN: 81-0780050 · PO Box 7612, La Verne, CA 91750</p>

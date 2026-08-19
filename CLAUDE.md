@@ -12,14 +12,24 @@ Public-facing website for A Dream of Home Rescue (ADOHR) — a pet adoption/resc
 
 ## Commands
 
-- `npm run dev` — Start dev server
-- `npm run check` — **Full validation** (type-check + eslint + stylelint + tests). Run this before committing.
-- `npm run build` — Production build (type-check + vite build)
-- `npm run lint` — ESLint with auto-fix
-- `npm run format` — Prettier format all src files
-- `npm run test:unit` — Vitest in watch mode
-- `npm run test:check` — Vitest single run (CI mode)
-- `npm run test:coverage` — Vitest with coverage report
+All commands can be executed via `make` or `npm`:
+
+- `make help` — Display all available targets and descriptions
+- `make run-fe` / `make dev` (`npm run dev`) — Start Vite dev server (host mode)
+- `make check` (`npm run check`) — **Full validation** (type-check + eslint + stylelint + tests). Run before committing.
+- `make build` (`npm run build`) — Production build (type-check + vite build)
+- `make preview` (`npm run preview`) — Local preview with Wrangler
+- `make deploy` (`npm run deploy`) — Build and deploy to Cloudflare
+- `make fmt` (`npm run format`) — Prettier format all src files
+- `make lint` (`npm run lint`) — ESLint with auto-fix
+- `make lint-check` (`npm run lint:check`) — ESLint check only
+- `make lint-style` (`npm run lint:style`) — Stylelint check
+- `make type-check` (`npm run type-check`) — TypeScript type checking via vue-tsc
+- `make test` / `make test-unit` (`npm run test:unit`) — Vitest in watch mode
+- `make test-check` (`npm run test:check`) — Vitest single run (CI mode)
+- `make test-coverage` (`npm run test:coverage`) — Vitest with coverage report
+- `make test-e2e` (`npm run test:e2e`) — Playwright end-to-end tests
+- `make clean` — Clean dist, coverage, cache, and build files
 
 ## Code Conventions
 

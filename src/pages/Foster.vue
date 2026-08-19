@@ -142,6 +142,11 @@ const onNext = () => {
   if (validateCurrentPage()) {
     fosterStore.goToNextStep()
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  } else {
+    setTimeout(() => {
+      const errorSummary = document.querySelector('.validation-summary') as HTMLElement
+      if (errorSummary) errorSummary.focus()
+    }, 0)
   }
 }
 
@@ -251,7 +256,9 @@ const fosterStepLabels = [
         <div
           v-if="attemptedValidation && validationErrors.length > 0"
           class="validation-summary"
+          tabindex="-1"
           role="alert"
+          aria-live="assertive"
         >
           <p class="summary-title">Please complete the following required fields:</p>
           <div class="tags">
@@ -333,6 +340,7 @@ const fosterStepLabels = [
   margin: 24px 0;
   padding: 0;
 }
+
 .section-title {
   font-weight: 800;
   font-size: 1.15rem;
@@ -343,6 +351,7 @@ const fosterStepLabels = [
   border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   width: 100%;
 }
+
 .section-copy {
   margin-bottom: 12px;
   font-size: 1rem;
@@ -371,17 +380,20 @@ const fosterStepLabels = [
   padding: 16px;
   margin: 24px 0;
   text-align: center;
+
   .summary-title {
     color: var(--color-danger);
     font-weight: 700;
     margin-bottom: 12px;
   }
+
   .tags {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
   }
+
   .tag.is-danger {
     background-color: var(--color-danger-weak, oklch(from var(--color-danger) 96% 0.04 h));
     color: var(--color-danger);
@@ -404,6 +416,7 @@ const fosterStepLabels = [
 @media (width <= 440px) {
   .actions {
     flex-direction: column;
+
     button {
       width: 100%;
     }

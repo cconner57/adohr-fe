@@ -46,8 +46,14 @@ main {
   background: oklch(from var(--text-inverse) l c h / 8%);
   border-radius: var(--radius-lg);
   border: 1px solid oklch(from var(--text-inverse) l c h / 25%);
-  max-width: 420px;
+  max-width: 480px;
   margin: 2rem auto;
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+  }
 
   h2 {
     font-size: 1.75rem;
@@ -62,11 +68,18 @@ main {
     line-height: 1.5;
   }
 
+  .empty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+
   .reset-btn {
     all: unset;
     background-color: var(--text-inverse);
     color: var(--text-primary);
-    padding: 12px 32px;
+    padding: 12px 24px;
     border-radius: var(--radius-full);
     font-weight: 700;
     cursor: pointer;
@@ -81,6 +94,16 @@ main {
 
     &:active {
       translate: 0 0;
+    }
+
+    &.secondary {
+      background-color: transparent;
+      color: var(--text-inverse);
+      border: 1.5px solid var(--text-inverse);
+
+      &:hover {
+        box-shadow: 0 6px 0 -2px oklch(100% 0 0deg / 20%);
+      }
     }
   }
 }
@@ -258,6 +281,77 @@ main {
     }
 
     scrollbar-width: none;
+  }
+}
+
+.active-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 1240px;
+  width: 100%;
+  margin-top: -0.75rem;
+
+  .active-chips-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: oklch(from var(--text-inverse) l c h / 80%);
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .chip-btn {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: oklch(from var(--text-inverse) l c h / 16%);
+    color: var(--text-inverse);
+    border: 1px solid oklch(from var(--text-inverse) l c h / 30%);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s;
+
+    &:hover {
+      background: oklch(from var(--text-inverse) l c h / 26%);
+      border-color: oklch(from var(--text-inverse) l c h / 50%);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-secondary);
+      outline-offset: 2px;
+    }
+
+    .chip-x {
+      font-size: 0.72rem;
+      opacity: 0.8;
+    }
+  }
+
+  .chip-clear-all {
+    all: unset;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-warning);
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 4px;
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-warning);
+      outline-offset: 2px;
+    }
   }
 }
 

@@ -155,13 +155,12 @@ function handleAdopt() {
   flex-direction: column;
   gap: 12px;
   width: 280px;
-  border-radius: var(--radius-arch);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   background-color: var(--color-white);
   color: var(--text-primary);
   border: 1.5px solid var(--line-ink);
   box-shadow: var(--shadow-sm);
-  min-height: 420px;
   transition:
     translate var(--transition-slow),
     box-shadow var(--transition-slow),
@@ -317,17 +316,15 @@ function handleAdopt() {
   }
 
   .adopt-button {
-    margin-top: auto;
+    margin-top: 0;
   }
 
   @media (width >= 1025px) and (width <= 1440px) {
     width: 250px;
-    min-height: 400px;
   }
 
   @media (width >= 1441px) {
     width: 270px;
-    min-height: 410px;
   }
 }
 

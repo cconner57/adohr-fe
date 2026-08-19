@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import { API_ENDPOINTS } from '@/constants/api'
 import type { IPet, IVaccineRecord, IVaccineSeries } from '@/models/common'
 import { usePetStore } from '@/stores/pets'
+import { PUBLIC_ORG_ID } from '@/utils/api'
 
 interface IMedicalFile {
   name: string
@@ -37,57 +38,64 @@ const toDateLabel = (value?: string | null) => {
   return date.toLocaleDateString()
 }
 
-const formatVaccineRecord = (record?: IVaccineRecord) => {
-  if (!record) return null
-
-  const parts = [`Administered: ${toDateLabel(record.dateAdministered)}`]
-  if (record.expiresAt) {
-    parts.push(`Expires: ${toDateLabel(record.expiresAt)}`)
-  }
-  if (record.veterinarian) {
-    parts.push(`Veterinarian: ${record.veterinarian}`)
-  }
-
-  return parts.join(' | ')
+interface IParsedVaccineRecord {
+  name: string
+  administered?: string | null
+  expires?: string | null
+  veterinarian?: string | null
+  status?: string | null
 }
 
-const expandSeries = (label: string, series?: IVaccineSeries) => {
-  if (!series) return [] as string[]
+const parseVaccineRecord = (name: string, record?: IVaccineRecord): IParsedVaccineRecord | null => {
+  if (!record) return null
+  return {
+    name,
+    administered: toDateLabel(record.dateAdministered),
+    expires: record.expiresAt ? toDateLabel(record.expiresAt) : null,
+    veterinarian: record.veterinarian || null,
+  }
+}
 
-  const rows: string[] = []
+const expandSeriesObjects = (label: string, series?: IVaccineSeries): IParsedVaccineRecord[] => {
+  if (!series) return []
 
-  const round1 = formatVaccineRecord(series.round1)
-  const round2 = formatVaccineRecord(series.round2)
-  const round3 = formatVaccineRecord(series.round3)
+  const rows: IParsedVaccineRecord[] = []
 
-  if (round1) rows.push(`${label} Round 1 - ${round1}`)
-  if (round2) rows.push(`${label} Round 2 - ${round2}`)
-  if (round3) rows.push(`${label} Round 3 - ${round3}`)
+  const round1 = parseVaccineRecord(`${label} Round 1`, series.round1)
+  const round2 = parseVaccineRecord(`${label} Round 2`, series.round2)
+  const round3 = parseVaccineRecord(`${label} Round 3`, series.round3)
+
+  if (round1) rows.push(round1)
+  if (round2) rows.push(round2)
+  if (round3) rows.push(round3)
 
   if (rows.length === 0 && series.isComplete) {
-    rows.push(`${label} - Series marked complete`)
+    rows.push({
+      name: label,
+      status: 'Series marked complete',
+    })
   }
 
   return rows
 }
 
-const vaccineLines = computed(() => {
+const vaccineRecords = computed(() => {
   const vaccinations = pet.value?.medical.vaccinations
-  if (!vaccinations) return [] as string[]
+  if (!vaccinations) return [] as IParsedVaccineRecord[]
 
-  const lines: string[] = []
+  const lines: IParsedVaccineRecord[] = []
 
-  const rabies = formatVaccineRecord(vaccinations.rabies)
-  if (rabies) lines.push(`Rabies - ${rabies}`)
+  const rabies = parseVaccineRecord('Rabies', vaccinations.rabies)
+  if (rabies) lines.push(rabies)
 
-  const bordetella = formatVaccineRecord(vaccinations.bordetella)
-  if (bordetella) lines.push(`Bordetella - ${bordetella}`)
+  const bordetella = parseVaccineRecord('Bordetella', vaccinations.bordetella)
+  if (bordetella) lines.push(bordetella)
 
   const seriesLines = [
-    ...expandSeries('Canine Distemper', vaccinations.canineDistemper),
-    ...expandSeries('Feline Distemper', vaccinations.felineDistemper),
-    ...expandSeries('Feline Leukemia', vaccinations.felineLeukemia),
-    ...expandSeries('Leptospira', vaccinations.leptospira),
+    ...expandSeriesObjects('Canine Distemper', vaccinations.canineDistemper),
+    ...expandSeriesObjects('Feline Distemper', vaccinations.felineDistemper),
+    ...expandSeriesObjects('Feline Leukemia', vaccinations.felineLeukemia),
+    ...expandSeriesObjects('Leptospira', vaccinations.leptospira),
   ]
 
   if (seriesLines.length > 0) {
@@ -96,11 +104,11 @@ const vaccineLines = computed(() => {
 
   const otherVaccines = vaccinations.other ?? []
   otherVaccines.forEach((record, index) => {
-    const parsed = formatVaccineRecord(record)
-    if (!parsed) return
-
     const name = record.name?.trim() || `Other Vaccine ${index + 1}`
-    lines.push(`${name} - ${parsed}`)
+    const parsed = parseVaccineRecord(name, record)
+    if (parsed) {
+      lines.push(parsed)
+    }
   })
 
   return lines
@@ -157,7 +165,9 @@ const medicalFiles = computed(() => {
 
 const findPetFromStatusList = async () => {
   const queryByStatus = async (status: 'adopted' | 'archived') => {
-    const response = await fetch(`${API_ENDPOINTS.PETS_LIST}?status=${status}&orgId=idohr`)
+    const response = await fetch(
+      `${API_ENDPOINTS.PETS_LIST}?status=${status}&orgId=${PUBLIC_ORG_ID}`,
+    )
     if (!response.ok) return [] as IPet[]
 
     const json = await response.json()
@@ -243,9 +253,19 @@ onMounted(async () => {
 
         <article class="block">
           <h2>Vaccination History</h2>
-          <ul v-if="vaccineLines.length > 0">
-            <li v-for="line in vaccineLines" :key="line">{{ line }}</li>
-          </ul>
+          <dl v-if="vaccineRecords.length > 0" class="medical-list">
+            <template v-for="(record, index) in vaccineRecords" :key="index">
+              <dt>{{ record.name }}</dt>
+              <dd>
+                <span v-if="record.status">{{ record.status }}</span>
+                <template v-else>
+                  <div v-if="record.administered">Administered: {{ record.administered }}</div>
+                  <div v-if="record.expires">Expires: {{ record.expires }}</div>
+                  <div v-if="record.veterinarian">Veterinarian: {{ record.veterinarian }}</div>
+                </template>
+              </dd>
+            </template>
+          </dl>
           <p v-else class="muted">No vaccination records available.</p>
           <p class="muted">
             Vaccinations Up To Date:
@@ -317,6 +337,29 @@ onMounted(async () => {
 
   ul {
     margin-left: 1.1rem;
+  }
+
+  .medical-list {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+
+    dt {
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 0.8rem;
+    }
+
+    dd {
+      margin-left: 0;
+      margin-bottom: 0.8rem;
+      padding-left: 1rem;
+      border-left: 2px solid var(--color-secondary);
+      color: var(--text-secondary);
+
+      div {
+        margin-bottom: 0.2rem;
+      }
+    }
   }
 
   a {

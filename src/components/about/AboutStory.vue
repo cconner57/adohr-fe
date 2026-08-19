@@ -5,7 +5,7 @@
         <span class="arch-frame">
           <img
             src="/images/watercolor.jpeg"
-            alt="IDOHR watercolor inspiration"
+            alt="ADOHR watercolor inspiration"
             width="600"
             height="466"
           />
@@ -15,7 +15,7 @@
         <p class="eyebrow">Our story</p>
         <h2>It started with a dream — and a handful of fosters</h2>
         <p>
-          IDOHR began in 2016 with a simple dream: to give every abandoned, neglected, and unwanted
+          ADOHR began in 2016 with a simple dream: to give every abandoned, neglected, and unwanted
           animal a safe place to call home. What started as a small circle of fosters has grown into
           a community of adopters, volunteers, and supporters who believe compassion changes
           lives—both animal and human.

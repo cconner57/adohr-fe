@@ -16,7 +16,8 @@ const countCurrent = computed(() => adoptedCounts.value[currentYear] ?? 0)
 const countPrevious = computed(() => adoptedCounts.value[previousYear] ?? 0)
 const isLoading = computed(() => !countsLoaded.value)
 
-const getLabel = (count: number) => (count === 1 ? 'pet found a forever home' : 'pets found forever homes')
+const getLabel = (count: number) =>
+  count === 1 ? 'pet found a forever home' : 'pets found forever homes'
 
 onMounted(() => {
   petStore.fetchAdoptedCounts()

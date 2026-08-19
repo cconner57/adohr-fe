@@ -25,50 +25,52 @@ onMounted(() => {
   <div class="container">
     <HeroSection />
 
-    <main class="section spotlight-section">
-      <div class="content-wrapper" v-scroll-reveal>
-        <AdoptionSpotlight :pets="spotlightPets" :loading="loading" :error="error" />
-      </div>
-    </main>
-
-    <main class="section mission-section">
-      <div class="content-wrapper" v-scroll-reveal>
-        <Mission />
-      </div>
-    </main>
-
-    <main class="section impact-section">
-      <div class="content-wrapper">
-        <div v-scroll-reveal>
-          <Impact />
+    <main id="main-content">
+      <section class="section spotlight-section" aria-label="Adoption Spotlight">
+        <div class="content-wrapper" v-scroll-reveal>
+          <AdoptionSpotlight :pets="spotlightPets" :loading="loading" :error="error" />
         </div>
-        <section class="call-to-action" v-scroll-reveal>
-          <BannerButton
-            imgSrc="/images/paw.svg"
-            title="Adopt a pet"
-            subtitle="Find your perfect companion"
-            color="blue"
-            @click="() => router.push('/adopt')"
-            class="hover-scale"
-          />
-          <BannerButton
-            imgSrc="/images/hand.svg"
-            title="Foster a pet"
-            subtitle="Provide temporary care and save a life"
-            color="purple"
-            @click="() => router.push('/foster')"
-            class="hover-scale"
-          />
-          <BannerButton
-            imgSrc="/images/heart.svg"
-            title="Donate"
-            subtitle="Help us rescue more animals"
-            color="green"
-            @click="() => router.push('/donate')"
-            class="hover-scale"
-          />
-        </section>
-      </div>
+      </section>
+
+      <section class="section mission-section" aria-label="Our Mission">
+        <div class="content-wrapper" v-scroll-reveal>
+          <Mission />
+        </div>
+      </section>
+
+      <section class="section impact-section" aria-label="Impact and Actions">
+        <div class="content-wrapper">
+          <div v-scroll-reveal>
+            <Impact />
+          </div>
+          <section class="call-to-action" aria-label="Ways to help" v-scroll-reveal>
+            <BannerButton
+              imgSrc="/images/paw.svg"
+              title="Adopt a pet"
+              subtitle="Find your perfect companion"
+              color="blue"
+              @click="() => router.push('/adopt')"
+              class="hover-scale"
+            />
+            <BannerButton
+              imgSrc="/images/hand.svg"
+              title="Foster a pet"
+              subtitle="Provide temporary care and save a life"
+              color="purple"
+              @click="() => router.push('/foster')"
+              class="hover-scale"
+            />
+            <BannerButton
+              imgSrc="/images/heart.svg"
+              title="Donate"
+              subtitle="Help us rescue more animals"
+              color="green"
+              @click="() => router.push('/donate')"
+              class="hover-scale"
+            />
+          </section>
+        </div>
+      </section>
     </main>
 
     <Footer />
@@ -85,11 +87,20 @@ onMounted(() => {
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+    transition: opacity 0.8s ease;
+  }
 }
 
 :deep(.reveal.active) {
   opacity: 1;
   transform: translateY(0);
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+  }
 }
 
 :deep(.hover-scale) {

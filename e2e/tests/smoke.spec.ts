@@ -9,7 +9,7 @@ test.describe('Smoke tests — every route renders', () => {
 
   test('Home page renders', async ({ page }) => {
     await page.goto('/')
-    await expect(page.locator('nav')).toBeVisible()
+    await expect(page.locator('nav').first()).toBeVisible()
     await expect(page.locator('body')).not.toHaveText('Cannot GET')
   })
 

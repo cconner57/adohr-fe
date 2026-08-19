@@ -68,6 +68,30 @@ export const useVolunteerStore = defineStore('volunteer', () => {
 
   const isSubmitting = ref(false)
 
+  const STORAGE_KEY = 'adohr_volunteer_form_v1'
+
+  const clearPersistedState = () => {
+    sessionStorage.removeItem(STORAGE_KEY)
+  }
+
+  const persistState = () => {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(formState))
+  }
+
+  const initFromStorage = () => {
+    const stored = sessionStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        Object.assign(formState, parsed)
+      } catch (e) {
+        console.error('Failed to restore volunteer form state', e)
+      }
+    }
+  }
+
+  initFromStorage()
+
   const clearFormData = () => {
     formState.fax_number = ''
     formState.email = ''
@@ -151,6 +175,7 @@ export const useVolunteerStore = defineStore('volunteer', () => {
 
       isSubmitted.value = true
       clearFormData()
+      clearPersistedState()
       return true
     } catch (error) {
       console.error('Network error:', error)
@@ -166,6 +191,7 @@ export const useVolunteerStore = defineStore('volunteer', () => {
     hasAttemptedSubmit.value = false
     apiError.value = null
     clearFormData()
+    clearPersistedState()
   }
 
   return {
@@ -176,6 +202,8 @@ export const useVolunteerStore = defineStore('volunteer', () => {
     apiError,
     validationErrors,
     isFormValid,
+    persistState,
+    clearPersistedState,
     submit,
     resetForm,
   }

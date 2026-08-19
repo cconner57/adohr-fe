@@ -7,9 +7,7 @@ const currentYear = computed(() => new Date().getFullYear())
 <template>
   <footer class="footer">
     <div class="footer-inner">
-      <h2 class="footer-headline">
-        Every pet, <span class="footer-accent">home.</span>
-      </h2>
+      <h2 class="footer-headline">Every pet, <span class="footer-accent">home.</span></h2>
 
       <div class="footer-grid">
         <nav class="footer-links" aria-label="Footer navigation">
@@ -27,9 +25,11 @@ const currentYear = computed(() => new Date().getFullYear())
       </div>
 
       <div class="footer-legal">
-        <p>I Dream of Home Rescue, Inc. is a 501(c)(3) non-profit organization · Tax ID 81-0780050</p>
+        <p>
+          A Dream of Home Rescue, Inc. is a 501(c)(3) non-profit organization · Tax ID 81-0780050
+        </p>
         <p>PO Box 7612, La Verne, California 91750</p>
-        <p>&copy; {{ currentYear }} I Dream of Home Rescue. All rights reserved.</p>
+        <p>&copy; {{ currentYear }} A Dream of Home Rescue. All rights reserved.</p>
       </div>
     </div>
   </footer>

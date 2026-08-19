@@ -76,7 +76,7 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
 }
@@ -212,10 +212,7 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
       margin: 0;
 
       & .line {
-        top: 16px;
-        bottom: 16px;
-        left: 15px;
-        right: auto;
+        inset: 16px auto 16px 15px;
         width: 1px !important;
         height: auto;
       }

@@ -112,7 +112,10 @@ const handleBlur = (field: string) => {
 const handleSubmit = async () => {
   if (!adoptionStore.isStepValid) {
     hasAttemptedSubmit.value = true
-    globalThis.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+    setTimeout(() => {
+      const errorSummary = document.querySelector('.validation-summary') as HTMLElement
+      if (errorSummary) errorSummary.focus()
+    }, 0)
     return
   }
 
@@ -164,139 +167,157 @@ const secondPetName = computed(() => {
           :header-title="species === 'cat' ? 'Cat' : 'Dog'"
           :header-text="headerText"
         />
-      <div v-show="!isCatIntroStep" class="cat-name-display">
-        <h2>Adopting Pet{{ secondPetName ? 's' : '' }}:</h2>
-        <p>
-          <template v-if="selectedPet?.id === 'unspecified'">
-            Custom: {{ formState.generalPetName || '' }}
-          </template>
-          <template v-else>
-            {{ selectedPet?.petName || selectedPet?.name
-            }}{{ secondPetName ? ` & ${secondPetName}` : '' }}
-          </template>
-        </p>
-      </div>
-      <CatAdoptionInfoSection v-show="isCatIntroStep" :is-kitten="isKitten" />
-      <GeneralSection
-        v-show="(!isCatFlow && step === 0) || (isCatFlow && step === 1)"
-        v-model="formState"
-        :touched="touched"
-        :handleBlur="handleBlur"
-        :hasAttemptedSubmit="hasAttemptedSubmit"
-      />
-      <HomeSection
-        v-show="(!isCatFlow && step === 1) || (isCatFlow && step === 2)"
-        v-model="formState"
-        :touched="touched"
-        :handleBlur="handleBlur"
-        :hasAttemptedSubmit="hasAttemptedSubmit"
-        :animalLabel="animalLabel"
-      />
-      <NewCatSection
-        v-show="(!isCatFlow && step === 2) || (isCatFlow && step === 3)"
-        v-model="formState"
-        :touched="touched"
-        :handleBlur="handleBlur"
-        :hasAttemptedSubmit="hasAttemptedSubmit"
-        :animalLabel="animalLabel"
-      />
-      <CurrentPetsSection
-        v-show="(!isCatFlow && step === 3) || (isCatFlow && step === 4)"
-        v-model="formState"
-        :touched="touched"
-        :handleBlur="handleBlur"
-        :hasAttemptedSubmit="hasAttemptedSubmit"
-        :animalLabel="animalLabel"
-      />
-      <PastPetsSection
-        v-show="(!isCatFlow && step === 4) || (isCatFlow && step === 5)"
-        v-model="formState"
-        :touched="touched"
-        :handleBlur="handleBlur"
-        :hasAttemptedSubmit="hasAttemptedSubmit"
-      />
-      <OtherSection
-        v-show="(!isCatFlow && step === 5) || (isCatFlow && step === 6)"
-        v-model="formState"
-        :touched="touched"
-        :handleBlur="handleBlur"
-        :hasAttemptedSubmit="hasAttemptedSubmit"
-        :animalLabel="animalLabel"
-      />
-      <SummarySection
-        v-show="(!isCatFlow && step === 6) || (isCatFlow && step === 7)"
-        v-model="formState"
-        :touched="touched"
-        :handleBlur="handleBlur"
-        :hasAttemptedSubmit="hasAttemptedSubmit"
-        :animalLabel="animalLabel"
-      />
-
-      <div v-if="hasAttemptedSubmit && validationErrors.length > 0" class="validation-summary">
-        <p class="summary-title">Please complete the following required fields:</p>
-        <div class="tags">
-          <span v-for="err in validationErrors" :key="err" class="tag is-danger">{{ err }}</span>
+        <div v-show="!isCatIntroStep" class="cat-name-display">
+          <h2>Adopting Pet{{ secondPetName ? 's' : '' }}:</h2>
+          <p>
+            <template v-if="selectedPet?.id === 'unspecified'">
+              Custom: {{ formState.generalPetName || '' }}
+            </template>
+            <template v-else>
+              {{ selectedPet?.petName || selectedPet?.name
+              }}{{ secondPetName ? ` & ${secondPetName}` : '' }}
+            </template>
+          </p>
         </div>
-      </div>
+        <CatAdoptionInfoSection v-show="isCatIntroStep" :is-kitten="isKitten" />
+        <GeneralSection
+          v-show="(!isCatFlow && step === 0) || (isCatFlow && step === 1)"
+          v-model="formState"
+          :touched="touched"
+          :handleBlur="handleBlur"
+          :hasAttemptedSubmit="hasAttemptedSubmit"
+        />
+        <HomeSection
+          v-show="(!isCatFlow && step === 1) || (isCatFlow && step === 2)"
+          v-model="formState"
+          :touched="touched"
+          :handleBlur="handleBlur"
+          :hasAttemptedSubmit="hasAttemptedSubmit"
+          :animalLabel="animalLabel"
+        />
+        <NewCatSection
+          v-show="(!isCatFlow && step === 2) || (isCatFlow && step === 3)"
+          v-model="formState"
+          :touched="touched"
+          :handleBlur="handleBlur"
+          :hasAttemptedSubmit="hasAttemptedSubmit"
+          :animalLabel="animalLabel"
+        />
+        <CurrentPetsSection
+          v-show="(!isCatFlow && step === 3) || (isCatFlow && step === 4)"
+          v-model="formState"
+          :touched="touched"
+          :handleBlur="handleBlur"
+          :hasAttemptedSubmit="hasAttemptedSubmit"
+          :animalLabel="animalLabel"
+        />
+        <PastPetsSection
+          v-show="(!isCatFlow && step === 4) || (isCatFlow && step === 5)"
+          v-model="formState"
+          :touched="touched"
+          :handleBlur="handleBlur"
+          :hasAttemptedSubmit="hasAttemptedSubmit"
+        />
+        <OtherSection
+          v-show="(!isCatFlow && step === 5) || (isCatFlow && step === 6)"
+          v-model="formState"
+          :touched="touched"
+          :handleBlur="handleBlur"
+          :hasAttemptedSubmit="hasAttemptedSubmit"
+          :animalLabel="animalLabel"
+        />
+        <SummarySection
+          v-show="(!isCatFlow && step === 6) || (isCatFlow && step === 7)"
+          v-model="formState"
+          :touched="touched"
+          :handleBlur="handleBlur"
+          :hasAttemptedSubmit="hasAttemptedSubmit"
+          :animalLabel="animalLabel"
+        />
 
-      <div v-if="submissionError" class="validation-summary error-summary">
-        <p class="summary-title">There was an error submitting your application:</p>
-        <p class="error-message">{{ submissionError }}</p>
-      </div>
+        <div
+          v-if="hasAttemptedSubmit && validationErrors.length > 0"
+          class="validation-summary"
+          tabindex="-1"
+          role="alert"
+          aria-live="assertive"
+        >
+          <p class="summary-title">Please complete the following required fields:</p>
+          <div class="tags">
+            <span v-for="err in validationErrors" :key="err" class="tag is-danger">{{ err }}</span>
+          </div>
+        </div>
 
-      <!-- General Application Flow: Required Interested Pet Name -->
-      <div v-if="step === 0 && selectedPet?.id === 'unspecified'" class="second-pet-selection">
-        <InputField
-          v-model="formState.generalPetName"
-          :label="`Which ${animalLabel} are you interested in?`"
-          placeholder="Enter pet name"
-          required
-          fullWidth
-          :has-error="
-            hasAttemptedSubmit && (!formState.generalPetName || !formState.generalPetName.trim())
+        <div
+          v-if="submissionError"
+          class="validation-summary error-summary"
+          tabindex="-1"
+          role="alert"
+          aria-live="assertive"
+        >
+          <p class="summary-title">There was an error submitting your application:</p>
+          <p class="error-message">{{ submissionError }}</p>
+        </div>
+
+        <!-- General Application Flow: Required Interested Pet Name -->
+        <div v-if="step === 0 && selectedPet?.id === 'unspecified'" class="second-pet-selection">
+          <InputField
+            v-model="formState.generalPetName"
+            :label="`Which ${animalLabel} are you interested in?`"
+            placeholder="Enter pet name"
+            required
+            fullWidth
+            :has-error="
+              hasAttemptedSubmit && (!formState.generalPetName || !formState.generalPetName.trim())
+            "
+            @blur="handleBlur('generalPetName')"
+          />
+        </div>
+
+        <!-- Specific Pet Flow: Optional Second Pet Selection -->
+        <div
+          v-else-if="
+            step === 0 && selectedPet?.id !== 'unspecified' && availablePetsOptions.length > 0
           "
-          @blur="handleBlur('generalPetName')"
-        />
-      </div>
+          class="second-pet-selection"
+        >
+          <p class="selection-text">
+            Would you like to add a second {{ animalLabel }} to this application?
+          </p>
+          <Select
+            v-model="formState.secondPetId"
+            :options="[{ label: 'None', value: '' }, ...availablePetsOptions]"
+            placeholder="Select a second pet (optional)"
+            fullWidth
+          />
+        </div>
 
-      <!-- Specific Pet Flow: Optional Second Pet Selection -->
-      <div
-        v-else-if="
-          step === 0 && selectedPet?.id !== 'unspecified' && availablePetsOptions.length > 0
-        "
-        class="second-pet-selection"
-      >
-        <p class="selection-text">
-          Would you like to add a second {{ animalLabel }} to this application?
-        </p>
-        <Select
-          v-model="formState.secondPetId"
-          :options="[{ label: 'None', value: '' }, ...availablePetsOptions]"
-          placeholder="Select a second pet (optional)"
-          fullWidth
-        />
-      </div>
+        <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+          {{
+            `Step ${visibleStep + 1} of ${adoptionSteps.length}: ${adoptionSteps[visibleStep] || 'Application'}`
+          }}
+        </div>
 
-      <div class="actions">
-        <Button
-          @click="prevStep"
-          title="Back"
-          :color="'white'"
-          size="large"
-          style="border: 1px solid var(--color-primary); color: var(--color-primary)"
-          :disabled="step === 0 || isSubmitted"
-        />
-        <Button
-          @click="handleSubmit"
-          type="submit"
-          :title="step < finalStep ? 'Next' : 'Submit Application'"
-          color="green"
-          size="large"
-          :loading="step === finalStep && isSubmitting"
-          :disabled="isSubmitted || isSubmitting"
-        />
-      </div>
-    </section>
+        <div class="actions">
+          <Button
+            @click="prevStep"
+            title="Back"
+            :color="'white'"
+            size="large"
+            style="border: 1px solid var(--color-primary); color: var(--color-primary)"
+            :disabled="step === 0 || isSubmitted"
+          />
+          <Button
+            @click="handleSubmit"
+            type="submit"
+            :title="step < finalStep ? 'Next' : 'Submit Application'"
+            color="green"
+            size="large"
+            :loading="step === finalStep && isSubmitting"
+            :disabled="isSubmitted || isSubmitting"
+          />
+        </div>
+      </section>
     </div>
 
     <FormSubmitted
@@ -309,300 +330,4 @@ const secondPetName = computed(() => {
   </section>
 </template>
 
-<style scoped lang="css">
-.page-shell {
-  min-height: 100vh;
-  background-color: var(--color-primary);
-  padding: 9rem var(--layout-padding-side) 64px;
-  container-type: inline-size;
-  container-name: shell;
-
-  @media (width <= 440px) {
-    padding: 6rem 16px 32px;
-  }
-
-  .dossier {
-    max-width: 1600px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 280px minmax(0, 1fr);
-    gap: 28px;
-    align-items: start;
-
-    @media (width <= 900px) {
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-  }
-
-  /* ── The rail: an outlined "pet door" carrying progress ── */
-  .rail {
-    position: sticky;
-    top: 110px;
-    color: var(--text-inverse);
-    border: 1px solid oklch(from var(--text-inverse) l c h / 35%);
-    border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
-    padding: 72px 26px 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-height: 420px;
-
-    .rail-code {
-      font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-      font-size: 0.74rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--color-warning);
-      text-align: center;
-      padding-bottom: 16px;
-      border-bottom: 1px solid oklch(from var(--text-inverse) l c h / 25%);
-    }
-
-    .rail-note {
-      font-size: 0.92rem;
-      line-height: 1.6;
-      color: oklch(from var(--text-inverse) l c h / 85%);
-    }
-
-    .rail-count {
-      margin-top: auto;
-      padding-top: 16px;
-      border-top: 1px solid oklch(from var(--text-inverse) l c h / 25%);
-      font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-      font-size: 0.74rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: oklch(from var(--text-inverse) l c h / 85%);
-      text-align: center;
-    }
-
-    /* Recolor the stepper for the pine ground */
-    :deep(.steps-container) {
-      .line {
-        background-color: oklch(from var(--text-inverse) l c h / 30%);
-      }
-
-      .step {
-        .step-number {
-          background-color: transparent;
-          border-color: oklch(from var(--text-inverse) l c h / 45%);
-          color: oklch(from var(--text-inverse) l c h / 85%);
-        }
-
-        .step-label {
-          color: oklch(from var(--text-inverse) l c h / 78%);
-        }
-
-        &.active {
-          .step-number {
-            background-color: var(--color-warning);
-            border-color: var(--color-warning);
-            color: var(--color-neutral);
-          }
-
-          .step-label {
-            color: var(--text-inverse);
-            font-weight: 600;
-          }
-        }
-      }
-    }
-
-    @media (width <= 900px) {
-      position: static;
-      min-height: 0;
-      padding: 20px;
-      border-radius: var(--radius-lg);
-      background: var(--text-inverse);
-      border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-      color: var(--text-primary);
-
-      .rail-code {
-        color: var(--color-secondary);
-        border-bottom-color: var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-        padding-bottom: 12px;
-      }
-
-      .rail-note {
-        color: var(--text-secondary);
-      }
-
-      .rail-count {
-        display: none;
-      }
-
-      /* Restore paper-ground stepper colors */
-      :deep(.steps-container) {
-        margin-bottom: 0;
-
-        .line {
-          background-color: var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
-        }
-
-        .step {
-          .step-number {
-            background-color: var(--text-inverse);
-            border-color: var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
-            color: var(--text-secondary);
-          }
-
-          .step-label {
-            color: var(--text-secondary);
-          }
-
-          &.active {
-            .step-number {
-              background-color: var(--color-secondary);
-              border-color: var(--color-secondary);
-              color: var(--text-inverse);
-            }
-
-            .step-label {
-              color: var(--text-primary);
-            }
-          }
-        }
-      }
-
-      :deep(.steps-mobile) {
-        margin-bottom: 0;
-      }
-    }
-  }
-
-  .form-card {
-    background: var(--text-inverse);
-    color: var(--text-primary);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-    box-shadow: var(--shadow-lg);
-    padding: 48px 48px 32px;
-    min-width: 0;
-
-    @container shell (max-width: 800px) {
-      padding: 32px 24px;
-    }
-
-    fieldset {
-      border: 0;
-      margin: 24px 0;
-      padding: 0;
-
-      .section-title {
-        font-weight: 800;
-        font-size: 1.15rem;
-        letter-spacing: -0.01em;
-        margin: 18px 0 12px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-      }
-    }
-
-    .cat-name-display {
-      display: flex;
-      align-items: baseline;
-      justify-content: center;
-      gap: 0.6rem;
-      margin: 0 auto 2rem;
-      padding: 0.6rem 1.4rem;
-      width: fit-content;
-      max-width: 100%;
-      border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-      border-radius: var(--radius-full);
-
-      h2 {
-        font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-        font-size: 0.78rem;
-        font-weight: 600;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--text-secondary);
-      }
-
-      p {
-        font-size: 1.3rem;
-        font-weight: 800;
-        letter-spacing: -0.015em;
-        color: var(--color-secondary);
-      }
-    }
-
-    .actions {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 28px;
-      padding-top: 24px;
-      border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-
-      @media (width <= 600px) {
-        flex-direction: column;
-
-        button {
-          width: 100%;
-        }
-      }
-    }
-
-    .second-pet-selection {
-      max-width: 600px;
-      margin: 1rem auto 2rem;
-      padding: 1.5rem;
-      background: oklch(from var(--color-secondary) 97% 0.015 h);
-      border-radius: var(--radius-lg);
-      text-align: center;
-      border: 1px dashed oklch(from var(--color-secondary) 62% 0.12 h);
-
-      .selection-text {
-        font-weight: 600;
-        margin-bottom: 1rem;
-        color: var(--text-primary);
-      }
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-
-      @container shell (max-width: 650px) {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .validation-summary {
-      background-color: var(--color-danger-surface, oklch(from var(--color-danger) 98% 0.02 h));
-      border: 1px solid var(--color-danger);
-      color: var(--color-danger);
-      border-radius: var(--radius-md);
-      padding: 1.5rem;
-      margin: 2rem 0;
-      text-align: center;
-
-      .summary-title {
-        font-weight: 700;
-        margin-bottom: 1rem;
-        font-size: 1.1rem;
-      }
-
-      .tags {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.5rem;
-      }
-
-      .tag.is-danger {
-        background-color: var(--color-danger-weak, oklch(from var(--color-danger) 96% 0.04 h));
-        color: var(--color-danger);
-        padding: 0.5rem 1rem;
-        border-radius: var(--radius-full);
-        font-size: 0.9rem;
-        font-weight: 600;
-      }
-    }
-  }
-}
-</style>
+<style scoped src="./PetAdoption.css"></style>

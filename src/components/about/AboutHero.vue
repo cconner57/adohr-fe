@@ -4,7 +4,7 @@
       <p class="eyebrow">Est. 2016 · Southern California</p>
       <h1>The people behind <em>the door</em></h1>
       <p class="lead">
-        I Dream of Home Rescue (IDOHR) is a volunteer-powered nonprofit helping homeless cats and
+        A Dream of Home Rescue (ADOHR) is a volunteer-powered nonprofit helping homeless cats and
         dogs heal, thrive, and find loving homes across Southern California.
       </p>
     </div>
@@ -13,7 +13,7 @@
 
 <style scoped lang="css">
 .hero {
-  padding: 170px var(--layout-padding-side) 70px;
+  padding: clamp(120px, 12vw, 150px) var(--layout-padding-side) clamp(40px, 6vw, 70px);
   color: var(--text-inverse);
   background-color: var(--color-primary);
   display: flex;

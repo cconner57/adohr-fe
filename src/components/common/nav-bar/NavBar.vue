@@ -32,7 +32,7 @@ function handleDonate() {
       <div class="nav-logo">
         <RouterLink to="/" class="nav-item">
           <img src="/images/adohr-logo.jpg" alt="" />
-          <h1>A Dream of Home</h1>
+          <span class="brand-name">A Dream of Home</span>
         </RouterLink>
       </div>
       <NavDrawer v-model="menuOpen" :size="26" style="color: var(--text-primary)" />
@@ -44,33 +44,45 @@ function handleDonate() {
         <span class="brand-name">A Dream of Home</span>
       </RouterLink>
 
-      <section class="nav-links">
-        <RouterLink to="/" class="nav-item" active-class="active"
-          ><p data-text="Home">Home</p></RouterLink
-        >
-        <RouterLink
-          to="/about"
-          class="nav-item"
-          active-class="active"
-          :class="{ active: route.path.startsWith('/surrender') }"
-          ><p data-text="About">About</p></RouterLink
-        >
-        <RouterLink
-          to="/adopt"
-          class="nav-item"
-          active-class="active"
-          :class="{
-            active: route.path.startsWith('/adopt') || route.path.startsWith('/pet-adoption'),
-          }"
-          ><p data-text="Adopt">Adopt</p></RouterLink
-        >
-        <RouterLink to="/foster" class="nav-item" active-class="active"
-          ><p data-text="Foster">Foster</p></RouterLink
-        >
-        <RouterLink to="/volunteer" class="nav-item" active-class="active"
-          ><p data-text="Volunteer">Volunteer</p></RouterLink
-        >
-      </section>
+      <ul class="nav-links" role="list">
+        <li>
+          <RouterLink to="/" class="nav-item" active-class="active">
+            <p data-text="Home">Home</p>
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink
+            to="/about"
+            class="nav-item"
+            active-class="active"
+            :class="{ active: route.path.startsWith('/surrender') }"
+          >
+            <p data-text="About">About</p>
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink
+            to="/adopt"
+            class="nav-item"
+            active-class="active"
+            :class="{
+              active: route.path.startsWith('/adopt') || route.path.startsWith('/pet-adoption'),
+            }"
+          >
+            <p data-text="Adopt">Adopt</p>
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/foster" class="nav-item" active-class="active">
+            <p data-text="Foster">Foster</p>
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/volunteer" class="nav-item" active-class="active">
+            <p data-text="Volunteer">Volunteer</p>
+          </RouterLink>
+        </li>
+      </ul>
 
       <Button title="Donate" color="blue" size="small" class="nav-cta" @click="handleDonate" />
     </nav>
@@ -137,6 +149,17 @@ function handleDonate() {
     display: flex;
     gap: clamp(1rem, 2.5vw, 2.25rem);
     align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
 
     .nav-item {
       color: var(--text-primary);

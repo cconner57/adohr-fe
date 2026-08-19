@@ -69,6 +69,14 @@ const { touched, handleBlur, touchAll } = useFormState([
   'parentSignatureData',
 ])
 
+watch(
+  formState,
+  () => {
+    volunteerStore.persistState()
+  },
+  { deep: true },
+)
+
 const handleSubmit = async () => {
   if (!isFormValid.value) {
     touchAll()
@@ -316,12 +324,16 @@ watch(
           />
         </fieldset>
 
-        <div v-scroll-reveal>
+        <fieldset class="volunteer-stack" aria-labelledby="avail" v-scroll-reveal>
+          <legend id="avail" class="section-title">Availability</legend>
           <Availability
             v-model="formState.availability"
             :hasError="touched.availability && formState.availability.length === 0"
           />
+        </fieldset>
 
+        <fieldset class="volunteer-stack" aria-labelledby="waiv" v-scroll-reveal>
+          <legend id="waiv" class="section-title">Agreement</legend>
           <Agreement
             :name="formState.firstName + ' ' + formState.lastName"
             v-model:fullName="formState.nameFull"
@@ -338,7 +350,9 @@ watch(
             :hasParentDateError="touched.parentSignatureDate && !formState.parentSignatureDate"
             :hasParentSignatureError="touched.parentSignatureData && !formState.parentSignatureData"
           />
+        </fieldset>
 
+        <div v-scroll-reveal>
           <div v-if="apiError" class="validation-summary error-alert">
             <p class="summary-title">Submission Error</p>
             <p>{{ apiError }}</p>
@@ -349,6 +363,7 @@ watch(
             class="validation-summary"
             role="alert"
             tabindex="-1"
+            aria-live="assertive"
           >
             <p class="summary-title">Please complete the following required fields:</p>
             <div class="tags">

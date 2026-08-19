@@ -29,7 +29,6 @@ const imgSrcComputed = computed(() => (props.imgSrc && props.imgSrc.length ? pro
       'button-color-purple': props.color === 'purple',
     }"
     :type="props.type"
-    :aria-label="props.title"
   >
     <img :src="imgSrcComputed" :alt="props.title" height="48" width="48" />
 

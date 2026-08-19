@@ -1,7 +1,7 @@
 <script setup lang="ts">
-// TODO: replace with the real giving URLs before enabling the route.
-const PAYPAL_URL = '#'
-const ZELLE_EMAIL = 'donate@idohr.org'
+// Donation URLs
+const PAYPAL_URL = 'https://www.paypal.com/donate'
+const ZELLE_EMAIL = 'donate@adohr.org'
 
 const impactLedger = [
   { amount: 25, covers: 'Vaccinations and deworming for one rescue' },
@@ -19,8 +19,17 @@ const impactLedger = [
         <p class="eyebrow">Every gift opens a door</p>
         <h1>Help a rescue find <em>home</em></h1>
         <p class="lead">
-          IDOHR is volunteer-powered, so your donation goes directly to the animals: medical care,
+          ADOHR is volunteer-powered, so your donation goes directly to the animals: medical care,
           food, foster supplies, and the path to a forever family.
+        </p>
+      </div>
+    </section>
+
+    <section class="trust-banner">
+      <div class="content-wrapper" v-scroll-reveal>
+        <p class="legal">
+          ADOHR is a 501(c)(3) nonprofit · EIN: 81-0780050 · Donations are tax-deductible as allowed
+          by law.
         </p>
       </div>
     </section>
@@ -42,32 +51,40 @@ const impactLedger = [
       <div class="content-wrapper" v-scroll-reveal>
         <p class="eyebrow">Ways to give</p>
         <h2 id="ways-title">Choose what works for you</h2>
-        <div class="ways-grid">
-          <article class="way-card">
-            <h3>Give online</h3>
-            <p>A one-time or monthly gift through PayPal. Monthly gifts keep foster homes stocked
-              year-round.</p>
-            <a class="way-cta" :href="PAYPAL_URL" target="_blank" rel="noopener noreferrer">
-              Donate with PayPal
-            </a>
-          </article>
-          <article class="way-card">
-            <h3>Send via Zelle</h3>
-            <p>Zelle transfers reach us with no processing fees, so 100% of your gift goes to the
-              animals.</p>
-            <p class="way-detail">{{ ZELLE_EMAIL }}</p>
-          </article>
-          <article class="way-card">
-            <h3>Mail a check</h3>
-            <p>Make checks payable to <strong>I Dream of Home Rescue</strong> and mail them to our
-              PO box.</p>
-            <p class="way-detail">PO Box 7612, La Verne, CA 91750</p>
-          </article>
-        </div>
-        <p class="legal">
-          IDOHR is a 501(c)(3) nonprofit · EIN: 81-0780050 · Donations are tax-deductible as
-          allowed by law.
-        </p>
+        <ul class="ways-grid" role="list">
+          <li class="way-item">
+            <article class="way-card">
+              <h3>Give online</h3>
+              <p>
+                A one-time or monthly gift through PayPal. Monthly gifts keep foster homes stocked
+                year-round.
+              </p>
+              <a class="way-cta" :href="PAYPAL_URL" target="_blank" rel="noopener noreferrer">
+                Donate with PayPal
+              </a>
+            </article>
+          </li>
+          <li class="way-item">
+            <article class="way-card">
+              <h3>Send via Zelle</h3>
+              <p>
+                Zelle transfers reach us with no processing fees, so 100% of your gift goes to the
+                animals.
+              </p>
+              <p class="way-detail">{{ ZELLE_EMAIL }}</p>
+            </article>
+          </li>
+          <li class="way-item">
+            <article class="way-card">
+              <h3>Mail a check</h3>
+              <p>
+                Make checks payable to <strong>A Dream of Home Rescue</strong> and mail them to our
+                PO box.
+              </p>
+              <p class="way-detail">PO Box 7612, La Verne, CA 91750</p>
+            </article>
+          </li>
+        </ul>
       </div>
     </section>
   </main>
@@ -100,7 +117,7 @@ const impactLedger = [
 .hero {
   background-color: var(--color-primary);
   color: var(--text-inverse);
-  padding: 170px var(--layout-padding-side) 70px;
+  padding: clamp(120px, 12vw, 150px) var(--layout-padding-side) clamp(40px, 6vw, 70px);
   display: flex;
   justify-content: center;
 
@@ -139,7 +156,7 @@ const impactLedger = [
   }
 
   @media (width >= 321px) and (width <= 430px) {
-    padding: 120px var(--layout-padding-side) 50px;
+    padding: 110px var(--layout-padding-side) 40px;
 
     .lead {
       font-size: 1.05rem;
@@ -228,9 +245,17 @@ const impactLedger = [
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .way-item {
+    display: flex;
   }
 
   .way-card {
+    flex: 1 1 0;
     background: var(--text-inverse);
     border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
     border-radius: var(--radius-lg);
@@ -279,10 +304,7 @@ const impactLedger = [
       transition: background-color var(--transition-fast, 0.15s ease);
 
       &:hover {
-        background-color: var(
-          --color-secondary-strong,
-          oklch(from var(--color-secondary) 40% c h)
-        );
+        background-color: var(--color-secondary-strong, oklch(from var(--color-secondary) 40% c h));
       }
 
       &:focus-visible {
@@ -293,13 +315,25 @@ const impactLedger = [
   }
 
   .legal {
-    margin-top: 2.5rem;
     font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
     font-size: 0.85rem;
     letter-spacing: 0.02em;
     color: var(--text-secondary);
-    padding-top: 1rem;
-    border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+  }
+}
+
+.trust-banner {
+  padding: 24px var(--layout-padding-side);
+  background-color: var(--surface-secondary, oklch(from var(--text-primary) 98% 0 h));
+  text-align: center;
+  border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+
+  .legal {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin: 0;
   }
 
   @media (width <= 900px) {

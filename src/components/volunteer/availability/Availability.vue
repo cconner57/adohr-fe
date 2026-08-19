@@ -148,7 +148,7 @@ const adoptionShifts = computed(() =>
 
 <template>
   <div class="availability-section">
-    <h3 class="section-label">Preference on time of day (select all that apply):</h3>
+    <p class="section-label">Preference on time of day (select all that apply):</p>
 
     <div class="times-grid" :class="{ 'has-error': hasError }">
       <div class="sub-header">Everyday Shifts (Monday – Sunday)</div>

@@ -16,7 +16,7 @@ const faqGroups = [
       {
         question: 'Can I return the pet if the match is not successful?',
         answer:
-          'Yes. Contact IDOHR directly so we can coordinate a safe return plan and next placement steps.',
+          'Yes. Contact ADOHR directly so we can coordinate a safe return plan and next placement steps.',
       },
       {
         question: 'How long does the adoption process usually take?',
