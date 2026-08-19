@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router'
 import Button from '../../common/ui/Button.vue'
 import EventPrepModal from './EventPrepModal.vue'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     isFilterActive?: boolean
     showFilterButton?: boolean
@@ -72,7 +72,7 @@ const handleFastTrack = () => {
 </script>
 
 <template>
-  <aside class="petsmart-banner" aria-label="Weekend Adoption Event Info">
+  <aside class="petsmart-banner" :class="[`variant-${variant}`]" aria-label="Weekend Adoption Event Info">
     <div class="banner-badge">
       <span class="live-dot" aria-hidden="true"></span>
       <span>Every Sat &amp; Sun (12 PM &ndash; 4 PM)</span>
@@ -103,15 +103,15 @@ const handleFastTrack = () => {
 
         <Button
           title="What to Bring"
-          variant="secondary"
-          color="blue"
+          :variant="variant === 'dark' ? 'secondary' : 'secondary'"
+          :color="variant === 'dark' ? 'white' : 'blue'"
           size="small"
           @click="isPrepModalOpen = true"
         />
 
         <Button
           title="Directions ↗"
-          color="blue"
+          :color="variant === 'dark' ? 'orange' : 'blue'"
           size="small"
           @click="handleDirections"
         />
@@ -140,6 +140,61 @@ const handleFastTrack = () => {
   gap: 0.75rem;
   position: relative;
   overflow: hidden;
+
+  &.variant-dark {
+    background: linear-gradient(135deg, oklch(from var(--color-primary) 30% 0.08 h), oklch(from var(--color-primary) 20% 0.05 h));
+    border: 1.5px solid oklch(100% 0 0deg / 22%);
+    border-left: 6px solid var(--color-warning);
+    color: var(--text-inverse);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 0;
+
+    .banner-badge {
+      background-color: oklch(100% 0 0deg / 15%);
+      color: var(--color-warning);
+
+      .live-dot {
+        background-color: var(--color-warning);
+        box-shadow: 0 0 0 2px oklch(from var(--color-warning) l c h / 35%);
+      }
+    }
+
+    .banner-content {
+      .text-block {
+        .banner-title {
+          color: var(--text-inverse);
+        }
+
+        .banner-subtitle {
+          color: oklch(100% 0 0deg / 85%);
+
+          strong {
+            color: var(--color-warning);
+          }
+        }
+      }
+
+      .banner-actions {
+        .filter-toggle-btn {
+          background-color: oklch(100% 0 0deg / 12%);
+          border-color: oklch(100% 0 0deg / 22%);
+          color: var(--text-inverse);
+
+          &:hover {
+            background-color: oklch(100% 0 0deg / 20%);
+            border-color: var(--color-warning);
+            color: var(--color-warning);
+          }
+
+          &.active {
+            background-color: var(--color-warning);
+            color: var(--color-primary);
+            border-color: var(--color-warning);
+          }
+        }
+      }
+    }
+  }
 
   .banner-badge {
     display: inline-flex;

@@ -52,4 +52,14 @@ describe('PetSmartEventBanner.vue', () => {
 
     expect(wrapper.findComponent({ name: 'EventPrepModal' }).props('isOpen')).toBe(true)
   })
+
+  it('applies variant-dark class when variant is dark', () => {
+    const wrapper = mount(PetSmartEventBanner, {
+      props: {
+        variant: 'dark',
+      },
+    })
+
+    expect(wrapper.find('.petsmart-banner').classes()).toContain('variant-dark')
+  })
 })

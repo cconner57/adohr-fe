@@ -32,7 +32,7 @@ onMounted(() => {
       <!-- 2. Weekend Events Band -->
       <section class="events-band" aria-label="Weekend Adoption Events">
         <div class="content-wrapper" v-scroll-reveal>
-          <PetSmartEventBanner :showFilterButton="false" />
+          <PetSmartEventBanner :showFilterButton="false" variant="dark" />
         </div>
       </section>
 
@@ -143,9 +143,10 @@ onMounted(() => {
 
 .events-band {
   width: 100%;
-  background-color: oklch(from var(--color-primary-weak) l c h / 35%);
-  border-block: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-  padding: clamp(24px, 4vw, 40px) 0;
+  background: linear-gradient(180deg, oklch(from var(--color-primary) 92% 0.04 h), oklch(from var(--color-primary) 86% 0.06 h));
+  border-block: 2px solid var(--line-ink, oklch(from var(--text-primary) l c h / 20%));
+  padding: clamp(36px, 5vw, 56px) 0;
+  box-shadow: inset 0 2px 10px oklch(from var(--text-primary) l c h / 8%);
 }
 
 .section {
