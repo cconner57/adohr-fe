@@ -11,20 +11,6 @@ const isSpayedOrNeutered = (pet: IPet) => {
   return pet?.sex === 'male' ? 'Neutered' : 'Spayed'
 }
 
-const goodWithText = computed(() => {
-  const traits = props.pet.behavior
-  if (!traits || (!traits.isGoodWithCats && !traits.isGoodWithDogs && !traits.isGoodWithKids)) {
-    return 'N/A'
-  }
-
-  const goodWith: string[] = []
-  if (traits.isGoodWithCats) goodWith.push('Other Cats')
-  if (traits.isGoodWithDogs) goodWith.push('Other Dogs')
-  if (traits.isGoodWithKids) goodWith.push('Kids')
-
-  return goodWith.join(', ')
-})
-
 const normalizedBreed = computed(() => {
   const breed = props.pet.physical?.breed
   if (!breed) return 'N/A'
@@ -77,10 +63,6 @@ const houseTrainedText = () => {
         }},
         {{ pet.medical?.microchip.microchipped ? 'Microchipped' : 'Not Microchipped' }}
       </p>
-    </div>
-    <div class="adopt-detail__additional-info__item">
-      <p>Good in a home with</p>
-      <p>{{ goodWithText }}</p>
     </div>
     <div class="adopt-detail__additional-info__item">
       <p>Adoption Fee</p>

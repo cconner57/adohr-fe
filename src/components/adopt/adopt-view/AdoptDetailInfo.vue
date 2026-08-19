@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 
 import type { IPet } from '../../../models/common.ts'
 import { calculateAge } from '../../../utils/date'
@@ -20,8 +19,6 @@ const emit = defineEmits<{
   'request-info': []
   'schedule-meet': []
 }>()
-
-const router = useRouter()
 
 const statusBadge = computed(() => {
   const normalizedStatus = props.pet.details?.status?.trim().toLowerCase() ?? ''
@@ -44,6 +41,18 @@ const statusBadge = computed(() => {
       return { text: '', class: '', visible: false }
   }
 })
+
+const goodWithItems = computed(() => {
+  const traits = props.pet.behavior
+  if (!traits) return []
+
+  const items: { label: string; key: 'kids' | 'dogs' | 'cats' }[] = []
+  if (traits.isGoodWithKids) items.push({ label: 'Good with kids', key: 'kids' })
+  if (traits.isGoodWithDogs) items.push({ label: 'Good with dogs', key: 'dogs' })
+  if (traits.isGoodWithCats) items.push({ label: 'Good with cats', key: 'cats' })
+
+  return items
+})
 </script>
 
 <template>
@@ -63,10 +72,66 @@ const statusBadge = computed(() => {
         />
       </div>
 
-      <div class="behavior-tags" v-if="pet?.behavior?.isGoodWithKids || pet?.behavior?.isGoodWithDogs || pet?.behavior?.isGoodWithCats">
-        <div v-if="pet?.behavior?.isGoodWithKids" class="behavior-tag"><span class="emoji">👶</span> Good with kids</div>
-        <div v-if="pet?.behavior?.isGoodWithDogs" class="behavior-tag"><span class="emoji">🐶</span> Good with dogs</div>
-        <div v-if="pet?.behavior?.isGoodWithCats" class="behavior-tag"><span class="emoji">🐱</span> Good with cats</div>
+      <div class="behavior-tags" v-if="goodWithItems.length > 0">
+        <div v-for="item in goodWithItems" :key="item.key" class="behavior-tag">
+          <svg
+            v-if="item.key === 'kids'"
+            class="tag-icon"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          <svg
+            v-else-if="item.key === 'dogs'"
+            class="tag-icon"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M10 5.17C10 3.78 8.42 2.68 6.5 3c-2.82.47-4.11 6.01-4 7 .08.71.72 1.35 1.5 1.5 1.56.31 3.04-1.13 3.5-2.5" />
+            <path d="M14 5.17C14 3.78 15.58 2.68 17.5 3c2.82.47 4.11 6.01 4 7-.08.71-.72 1.35-1.5 1.5-1.56.31-3.04-1.13-3.5-2.5" />
+            <circle cx="9" cy="14" r="1.2" fill="currentColor" stroke="none" />
+            <circle cx="15" cy="14" r="1.2" fill="currentColor" stroke="none" />
+            <path d="M11 16.5h2l-1 1-1-1z" fill="currentColor" stroke="none" />
+            <path d="M4.42 11.25A13.15 13.15 0 0 0 4 14.5c0 4.42 3.58 8 8 8s8-3.58 8-8c0-1.14-.24-2.22-.66-3.2" />
+          </svg>
+          <svg
+            v-else-if="item.key === 'cats'"
+            class="tag-icon"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-1.39 8.12.63 1.18.97 2.51.97 3.88 0 4.97-3.58 9-8 9s-8-4.03-8-9c0-1.37.34-2.7.97-3.88C3.99 10 2.17 3.58 3.57 3c1.39-.58 4.64.26 6.43 2.26.65-.17 1.33-.26 2-.26z" />
+            <circle cx="9" cy="13" r="1.2" fill="currentColor" stroke="none" />
+            <circle cx="15" cy="13" r="1.2" fill="currentColor" stroke="none" />
+            <path d="M11 15.5h2l-1 1-1-1z" fill="currentColor" stroke="none" />
+          </svg>
+          <span>{{ item.label }}</span>
+        </div>
       </div>
 
       <p>{{ pet?.descriptions?.fun }}</p>
@@ -92,9 +157,6 @@ const statusBadge = computed(() => {
           :disabled="isComingSoon"
           :fullWidth="true"
         />
-      </div>
-      <div class="secondary-foster-cta">
-        <Button title="Not ready to adopt? Interested in fostering?" variant="text" theme="neutral" @click="router.push('/foster')" />
       </div>
       <output v-if="isComingSoon" class="coming-soon-banner">
         This pet is coming soon. You can request information now, and scheduling opens once the pet
@@ -199,23 +261,25 @@ const statusBadge = computed(() => {
     display: flex;
     flex-flow: row wrap;
     gap: 8px;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
   }
 
   .behavior-tag {
     display: flex;
     align-items: center;
-    gap: 6px;
-    background-color: var(--color-gray-50);
-    padding: 6px 12px;
+    gap: 8px;
+    background-color: var(--color-primary-weak);
+    padding: 6px 14px;
     border-radius: var(--radius-full);
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--text-primary);
-    border: 1px solid var(--line-ink);
+    color: var(--color-primary-strong);
+    border: 1px solid var(--color-primary-border);
     
-    .emoji {
-      font-size: 1.1rem;
+    .tag-icon {
+      color: var(--color-primary);
+      stroke: var(--color-primary);
+      flex-shrink: 0;
     }
   }
 
@@ -231,21 +295,6 @@ const statusBadge = computed(() => {
     @media (width <= 440px) {
       display: flex;
       flex-direction: column;
-    }
-  }
-
-  .secondary-foster-cta {
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
-    
-    :deep(button) {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      
-      &:hover {
-        color: var(--color-secondary);
-      }
     }
   }
 }

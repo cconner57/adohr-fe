@@ -10,10 +10,6 @@ function handleAdopt() {
   goToAdopt(router)
 }
 
-function handleFoster() {
-  router.push('/foster')
-}
-
 const marqueeWords = ['Adopt', 'Foster', 'Volunteer', 'Rescue', 'Love']
 </script>
 
@@ -32,13 +28,6 @@ const marqueeWords = ['Adopt', 'Foster', 'Volunteer', 'Rescue', 'Love']
         </p>
         <div class="hero-actions">
           <Button title="Meet the pets" color="blue" size="large" @click="handleAdopt" />
-          <Button
-            title="Become a foster"
-            variant="text"
-            theme="neutral"
-            size="large"
-            @click="handleFoster"
-          />
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import type { IPet } from '../../../models/common.ts'
@@ -8,6 +9,7 @@ import { usePetStore } from '../../../stores/pets'
 import { vibrate } from '../../../utils/haptics.ts'
 import AdoptDetailAbout from './AdoptDetailAbout.vue'
 import AdoptDetailInfo from './AdoptDetailInfo.vue'
+import AdoptDetailLittermates from './AdoptDetailLittermates.vue'
 import AdoptDetailMedia from './AdoptDetailMedia.vue'
 import AdoptDrawer from './AdoptDrawer.vue'
 import RequestInfoDrawer from './RequestInfoDrawer.vue'
@@ -19,8 +21,33 @@ const props = defineProps<{
 const router = useRouter()
 const adoptionStore = useAdoptionStore()
 const petStore = usePetStore()
+const { currentPets } = storeToRefs(petStore)
 const isDrawerOpen = ref(false)
 const isInfoDrawerOpen = ref(false)
+
+onMounted(() => {
+  if (currentPets.value.length === 0) {
+    petStore.fetchPetsList()
+  }
+})
+
+const littermates = computed<IPet[]>(() => {
+  // If the API directly populates littermates array in the future
+  const dynamicPet = props.pet as unknown as { littermates?: IPet[] }
+  if (dynamicPet.littermates && Array.isArray(dynamicPet.littermates)) {
+    return dynamicPet.littermates
+  }
+
+  // Filter currentPets from store if litterName is present
+  if (!props.pet.litterName || !props.pet.litterName.trim()) return []
+  const normalizedLitter = props.pet.litterName.trim().toLowerCase()
+  return currentPets.value.filter(
+    (p) =>
+      p.id !== props.pet.id &&
+      p.litterName &&
+      p.litterName.trim().toLowerCase() === normalizedLitter,
+  )
+})
 
 const isComingSoon = computed(() => {
   const normalizedStatus = props.pet.details?.status?.trim().toLowerCase() ?? ''
@@ -116,6 +143,7 @@ watch(
       />
     </div>
     <AdoptDetailAbout :pet="pet" :formattedFallbackStory="formattedFallbackStory" />
+    <AdoptDetailLittermates :pet="pet" :littermates="littermates" />
   </div>
 
   <AdoptDrawer
