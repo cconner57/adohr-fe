@@ -1,5 +1,6 @@
-import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { describe, expect, it, vi } from 'vitest'
+
 import PetSmartEventBanner from '../PetSmartEventBanner.vue'
 
 vi.mock('vue-router', () => ({

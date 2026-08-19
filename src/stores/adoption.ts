@@ -140,34 +140,45 @@ export const useAdoptionStore = defineStore('adoption', () => {
     return validationErrors.value.length === 0
   })
 
-  const STORAGE_KEY = 'adoption_form_state'
+  const STORAGE_KEY = 'adohr_adoption_form_draft_v1'
   const ADOPTION_SUBMIT_TIMEOUT_MS = 20000
 
+  const hasSavedDraft = computed(() => {
+    return Boolean(formState.firstName || formState.email || formState.address)
+  })
+
   const clearPersistedState = () => {
-    sessionStorage.removeItem(STORAGE_KEY)
-    localStorage.removeItem(STORAGE_KEY)
+    try {
+      sessionStorage.removeItem(STORAGE_KEY)
+      localStorage.removeItem(STORAGE_KEY)
+    } catch (e) {
+      console.error('Failed to clear persisted adoption draft', e)
+    }
   }
 
   const persistState = () => {
-    sessionStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
+    try {
+      const payload = JSON.stringify({
         step: step.value,
         formState: formState,
-      }),
-    )
+      })
+      sessionStorage.setItem(STORAGE_KEY, payload)
+      localStorage.setItem(STORAGE_KEY, payload)
+    } catch (e) {
+      console.error('Failed to persist adoption form state', e)
+    }
   }
 
   const initFromStorage = () => {
-    const stored = sessionStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      try {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY)
+      if (stored) {
         const parsed = JSON.parse(stored)
         step.value = parsed.step || 0
         Object.assign(formState, parsed.formState)
-      } catch (e) {
-        console.error('Failed to restore adoption form state', e)
       }
+    } catch (e) {
+      console.error('Failed to restore adoption form state', e)
     }
   }
 
@@ -486,6 +497,8 @@ export const useAdoptionStore = defineStore('adoption', () => {
     prevStep,
     resetForm,
     persistState,
+    clearPersistedState,
+    hasSavedDraft,
     submitApplication,
   }
 })

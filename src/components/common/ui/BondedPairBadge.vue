@@ -47,12 +47,12 @@ defineProps<{
     color: var(--color-danger);
   }
 
-  &--sm {
+  &.bonded-badge--sm {
     padding: 3px 8px;
     font-size: 0.68rem;
   }
 
-  &--md {
+  &.bonded-badge--md {
     padding: 5px 12px;
     font-size: 0.78rem;
   }

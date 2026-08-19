@@ -68,25 +68,40 @@ export const useVolunteerStore = defineStore('volunteer', () => {
 
   const isSubmitting = ref(false)
 
-  const STORAGE_KEY = 'adohr_volunteer_form_v1'
+  const STORAGE_KEY = 'adohr_volunteer_form_draft_v1'
+
+  const hasSavedDraft = computed(() => {
+    return Boolean(formState.firstName || formState.email || formState.phoneNumber)
+  })
 
   const clearPersistedState = () => {
-    sessionStorage.removeItem(STORAGE_KEY)
+    try {
+      sessionStorage.removeItem(STORAGE_KEY)
+      localStorage.removeItem(STORAGE_KEY)
+    } catch (e) {
+      console.error('Failed to clear persisted volunteer draft', e)
+    }
   }
 
   const persistState = () => {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(formState))
+    try {
+      const payload = JSON.stringify(formState)
+      sessionStorage.setItem(STORAGE_KEY, payload)
+      localStorage.setItem(STORAGE_KEY, payload)
+    } catch (e) {
+      console.error('Failed to persist volunteer form state', e)
+    }
   }
 
   const initFromStorage = () => {
-    const stored = sessionStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      try {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY)
+      if (stored) {
         const parsed = JSON.parse(stored)
         Object.assign(formState, parsed)
-      } catch (e) {
-        console.error('Failed to restore volunteer form state', e)
       }
+    } catch (e) {
+      console.error('Failed to restore volunteer form state', e)
     }
   }
 
@@ -202,6 +217,7 @@ export const useVolunteerStore = defineStore('volunteer', () => {
     apiError,
     validationErrors,
     isFormValid,
+    hasSavedDraft,
     persistState,
     clearPersistedState,
     submit,

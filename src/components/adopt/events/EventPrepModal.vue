@@ -150,7 +150,7 @@ onUnmounted(() => {
           />
           <Button
             title="Got it, thanks!"
-            variant="outline"
+            variant="secondary"
             color="blue"
             @click="emit('close')"
           />

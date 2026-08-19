@@ -8,12 +8,14 @@ const About = () => import('../pages/About.vue')
 const Adopt = () => import('../pages/Adopt.vue')
 const Donate = () => import('../pages/Donate.vue')
 const Foster = () => import('../pages/Foster.vue')
+const HappyTails = () => import('../pages/HappyTails.vue')
 const PetMedicalProfile = () => import('../pages/PetMedicalProfile.vue')
 const NotFound = () => import('../pages/NotFound.vue')
 const News = () => import('../pages/News.vue')
 const PetAdoption = () => import('../pages/PetAdoption.vue')
 const SurrenderPet = () => import('../pages/SurrenderPet.vue')
 const Volunteer = () => import('../pages/Volunteer.vue')
+const Wishlist = () => import('../pages/Wishlist.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +58,14 @@ const router = createRouter({
     {
       path: '/news',
       component: News,
+    },
+    {
+      path: '/happy-tails',
+      component: HappyTails,
+    },
+    {
+      path: '/wishlist',
+      component: Wishlist,
     },
     {
       path: '/pet-adoption/:id',

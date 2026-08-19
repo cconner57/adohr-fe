@@ -95,16 +95,16 @@ const handleFastTrack = () => {
 
         <Button
           title="What to Bring"
-          variant="outline"
+          variant="secondary"
           color="blue"
-          size="sm"
+          size="small"
           @click="isPrepModalOpen = true"
         />
 
         <Button
           title="Directions ↗"
           color="blue"
-          size="sm"
+          size="small"
           @click="handleDirections"
         />
       </div>

@@ -254,7 +254,7 @@ onUnmounted(() => {
           <Button
             v-if="step > 1"
             title="Back"
-            variant="outline"
+            variant="secondary"
             color="blue"
             @click="handleBack"
           />
