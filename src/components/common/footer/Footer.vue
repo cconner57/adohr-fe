@@ -28,7 +28,7 @@ const currentYear = computed(() => new Date().getFullYear())
         <p>
           A Dream of Home Rescue, Inc. is a 501(c)(3) non-profit organization · Tax ID 81-0780050
         </p>
-        <p>PO Box 7612, La Verne, California 91750</p>
+        <p>PO Box 5543, Pasadena, California 91107</p>
         <p>&copy; {{ currentYear }} A Dream of Home Rescue. All rights reserved.</p>
       </div>
     </div>

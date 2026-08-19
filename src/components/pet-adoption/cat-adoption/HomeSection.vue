@@ -21,6 +21,7 @@ const { formState } = storeToRefs(adoptionStore)
 
 <template>
   <div class="home-section">
+    <h2 class="section-title">Housing Information</h2>
     <InputSelectGroup
       label="Home Type"
       :options="['Home', 'Apartment', 'Condo', 'Townhouse', 'Other']"

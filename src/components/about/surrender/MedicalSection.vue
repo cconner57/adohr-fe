@@ -95,7 +95,7 @@ watch(
 
 <template>
   <div class="medical-section">
-    <h5>Medical History</h5>
+    <h2 class="section-title">Medical History</h2>
     <div class="medical-grid">
       <InputTextArea
         label="Please list all veterniarians that have seen the cat, including address and number"

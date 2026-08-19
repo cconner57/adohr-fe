@@ -37,6 +37,7 @@ const showTypedNameMismatch = computed(() => {
 
 <template>
   <div class="summary-section">
+    <h2 class="section-title">Adoption Agreement & Acknowledgments</h2>
     <p>
       Thank you for the time to complete this application. Please note: Filling out this application
       does not guarantee an adoption. We have thoroughly evaluated all of the animals in our care,

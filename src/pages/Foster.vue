@@ -225,6 +225,9 @@ const fosterStepLabels = [
           <legend v-if="state.currentStep < 10" class="section-title">
             {{ currentPage.title.replace(/^Page\s+\d+:\s*/, '') }}
           </legend>
+          <legend v-else class="section-title">
+            Foster Care Agreement & Release
+          </legend>
 
           <div v-if="state.currentStep < 10" class="questions-grid">
             <FosterQuestionCard
@@ -329,6 +332,7 @@ const fosterStepLabels = [
   border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   box-shadow: var(--shadow-lg);
   padding: 48px 48px 32px;
+  counter-reset: intake-section;
 
   @container (max-width: 900px) {
     padding: 32px 24px;
@@ -342,6 +346,10 @@ const fosterStepLabels = [
 }
 
 .section-title {
+  counter-increment: intake-section;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
   font-weight: 800;
   font-size: 1.15rem;
   letter-spacing: -0.01em;
@@ -350,6 +358,16 @@ const fosterStepLabels = [
   padding-bottom: 10px;
   border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   width: 100%;
+
+  &::before {
+    content: counter(intake-section, decimal-leading-zero);
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--color-secondary);
+    flex-shrink: 0;
+  }
 }
 
 .section-copy {

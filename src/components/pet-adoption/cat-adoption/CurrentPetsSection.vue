@@ -30,6 +30,7 @@ const removePet = (index: number) => {
 
 <template>
   <div class="current-pets-section">
+    <h2 class="section-title">Current Pets in Household</h2>
     <InputSelectGroup
       label="Do you currently have any pets in your home?"
       :options="['Yes', 'No']"

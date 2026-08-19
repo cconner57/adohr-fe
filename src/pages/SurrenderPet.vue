@@ -235,9 +235,35 @@ const formattedAnimal = computed(() => {
     border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
     box-shadow: var(--shadow-lg);
     padding: 48px 48px 32px;
+    counter-reset: intake-section;
 
     @container shell (max-width: 800px) {
       padding: 32px 16px;
+    }
+
+    :deep(.section-title) {
+      counter-increment: intake-section;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.01em;
+      line-height: 1.35;
+      margin: 18px 0 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+      width: 100%;
+
+      &::before {
+        content: counter(intake-section, decimal-leading-zero);
+        font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        color: var(--color-secondary);
+        flex-shrink: 0;
+      }
     }
 
     .form-header {

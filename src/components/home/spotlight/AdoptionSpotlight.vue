@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 import type { IPet } from '../../../models/common.ts'
 import { formatDate } from '../../../utils/common.ts'
 import { useIsMobile } from '../../../utils/useIsMobile.ts'
 import PetItem from '../../common/pet-item/PetItem.vue'
+import Button from '../../common/ui/Button.vue'
 import Spinner from '../../common/ui/Spinner.vue'
 
 const props = defineProps<{
@@ -14,6 +16,7 @@ const props = defineProps<{
 }>()
 
 const isMobile = useIsMobile()
+const router = useRouter()
 
 const randomPet = ref<IPet | null>(null)
 watch(
@@ -53,7 +56,17 @@ const displayedPets = computed((): IPet[] => {
       <Spinner />
     </div>
     <div v-else-if="error" class="error-container">
-      <p>Unable to load spotlight pets.</p>
+      <div class="error-content">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="error-icon" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+          <line x1="9" y1="9" x2="9.01" y2="9"></line>
+          <line x1="15" y1="9" x2="15.01" y2="9"></line>
+        </svg>
+        <h3>Spotlight unavailable</h3>
+        <p>We're having trouble loading the featured pets right now, but you can still view all of our adoptable friends.</p>
+        <Button title="View all pets" @click="router.push('/adopt')" color="blue" size="medium" />
+      </div>
     </div>
     <div v-else class="pet-list">
       <PetItem
@@ -88,10 +101,40 @@ const displayedPets = computed((): IPet[] => {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100px;
+  min-height: 250px;
   width: 100%;
-  color: var(--color-danger);
-  font-weight: 500;
+  padding: 2rem;
+  background-color: var(--text-inverse);
+  border: 1px dashed oklch(from var(--color-danger) l c h / 30%);
+  border-radius: var(--radius-lg);
+}
+
+.error-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 420px;
+  gap: 12px;
+
+  .error-icon {
+    color: var(--color-danger);
+    margin-bottom: 8px;
+    opacity: 0.8;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+  }
 }
 
 .adoption-spotlight {

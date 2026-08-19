@@ -8,6 +8,7 @@ import HeroSection from '@/components/home/hero-section/HeroSection.vue'
 import Impact from '@/components/home/impact/Impact.vue'
 import Mission from '@/components/home/mission/Mission.vue'
 import AdoptionSpotlight from '@/components/home/spotlight/AdoptionSpotlight.vue'
+import SuccessStories from '@/components/home/success-stories/SuccessStories.vue'
 import { usePets } from '@/composables/usePets.ts'
 import { useScrollReveal } from '@/composables/useScrollReveal.ts'
 
@@ -35,6 +36,12 @@ onMounted(() => {
       <section class="section mission-section" aria-label="Our Mission">
         <div class="content-wrapper" v-scroll-reveal>
           <Mission />
+        </div>
+      </section>
+
+      <section class="section success-stories-section" aria-label="Success Stories">
+        <div class="content-wrapper" v-scroll-reveal>
+          <SuccessStories />
         </div>
       </section>
 
@@ -134,6 +141,12 @@ onMounted(() => {
 
 .mission-section {
   padding-top: clamp(24px, 4vw, 56px);
+  padding-bottom: clamp(24px, 4vw, 56px);
+}
+
+.success-stories-section {
+  padding-top: clamp(24px, 4vw, 56px);
+  padding-bottom: clamp(48px, 8vw, 110px);
 }
 
 .impact-section {

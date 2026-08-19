@@ -23,7 +23,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <h5>Feeding</h5>
+    <h2 class="section-title">Feeding</h2>
     <div class="feeding-grid">
       <ButtonToggle
         :label="`Does the ${selectedAnimal.toLowerCase()} get treats?`"

@@ -29,6 +29,7 @@ const removePet = (index: number) => {
 
 <template>
   <div class="past-pets-section">
+    <h2 class="section-title">Past Pets in Household</h2>
     <InputSelectGroup
       label="Did you have pets in the past?"
       :options="['Yes', 'No']"

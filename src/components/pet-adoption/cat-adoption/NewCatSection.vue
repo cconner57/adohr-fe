@@ -29,6 +29,9 @@ const { modelValue, animalLabel = 'cat' } = defineProps<{
 
 <template>
   <div class="new-cat-section">
+    <h2 class="section-title">
+      {{ animalLabel === 'dog' ? 'Dog Match & Preferences' : 'Cat Match & Preferences' }}
+    </h2>
     <InputField
       v-model="modelValue.catPreferenceBreed"
       label="Preferred breed, age, or gender?"

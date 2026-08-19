@@ -46,6 +46,7 @@ const surrenderOptions = computed(() => {
 
 <template>
   <div class="other-section">
+    <h2 class="section-title">Care & Household Routine</h2>
     <template v-if="animalLabel === 'dog'">
       <InputTextArea
         label="Why did you select this dog(s)?"

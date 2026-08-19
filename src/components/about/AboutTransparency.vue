@@ -38,7 +38,7 @@ import Candid from '@/components/common/candid-award/Candid.vue'
           ADOHR is a 501(c)(3) nonprofit. Donations are tax-deductible as allowed by law. We publish
           annual updates and operate with financial transparency.
         </p>
-        <p class="small mono">EIN: 81-0780050 · PO Box 7612, La Verne, CA 91750</p>
+        <p class="small mono">EIN: 81-0780050 · PO Box 5543, Pasadena, CA 91107</p>
         <p class="small">
           Candid Seals recognize nonprofit transparency and profile completeness.
           <a

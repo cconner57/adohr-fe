@@ -12,7 +12,7 @@ const updateSelectedAnimal = (value: 'dog' | 'cat') => {
 </script>
 
 <template>
-  <h2>Will you be surrendering Dog(s) or Cat(s)?</h2>
+  <h2 class="section-title">Will you be surrendering Dog(s) or Cat(s)?</h2>
   <div class="times" :class="{ 'has-error': formError }">
     <label class="time-card">
       <input
@@ -45,12 +45,6 @@ const updateSelectedAnimal = (value: 'dog' | 'cat') => {
 </template>
 
 <style scoped lang="css">
-h2 {
-  margin-top: 3rem;
-  margin-bottom: 12px;
-  font-size: 1.5rem;
-}
-
 .times {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

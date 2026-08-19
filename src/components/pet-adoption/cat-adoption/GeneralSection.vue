@@ -46,7 +46,7 @@ function handleAgreementUpdate(val: string | number | boolean | null) {
 <template>
   <div class="cat-adoption-form">
     <div>
-      <h2>Applicant Information</h2>
+      <h2 class="section-title">Applicant Information</h2>
 
       <div class="fax-field" aria-hidden="true">
         <label for="fax_number">Fax Number</label>

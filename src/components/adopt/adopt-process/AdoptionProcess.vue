@@ -112,7 +112,7 @@ ol {
 li {
   counter-increment: process;
   position: relative;
-  padding: 12px 0 12px 46px;
+  padding: 12px 0 12px 32px;
   border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   margin-bottom: 0;
 
@@ -124,18 +124,12 @@ li {
     content: counter(process, decimal-leading-zero);
     position: absolute;
     left: 0;
-    top: 14px;
-    width: 32px;
-    height: 36px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    top: 12px;
     font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-    font-size: 0.72rem;
+    font-size: 0.85rem;
     font-weight: 600;
+    letter-spacing: 0.1em;
     color: var(--color-secondary);
-    border: 1px solid oklch(from var(--color-secondary) 70% 0.1 h);
-    border-radius: 999px 999px 8px 8px;
   }
 }
 

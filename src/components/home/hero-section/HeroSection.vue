@@ -14,10 +14,6 @@ function handleFoster() {
   router.push('/foster')
 }
 
-function handleDonate() {
-  router.push('/donate')
-}
-
 const marqueeWords = ['Adopt', 'Foster', 'Volunteer', 'Rescue', 'Love']
 </script>
 
@@ -42,13 +38,6 @@ const marqueeWords = ['Adopt', 'Foster', 'Volunteer', 'Rescue', 'Love']
             theme="neutral"
             size="large"
             @click="handleFoster"
-          />
-          <Button
-            title="Donate"
-            variant="text"
-            theme="neutral"
-            size="large"
-            @click="handleDonate"
           />
         </div>
       </div>

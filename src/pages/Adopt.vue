@@ -1,24 +1,19 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 import AdoptDetail from '@/components/adopt/adopt-view/AdoptDetail.vue'
 import AdoptSummary from '@/components/adopt/adopt-view/AdoptSummary.vue'
 import AdoptPageHeader from '@/components/adopt/AdoptPageHeader.vue'
 import FilterPanel from '@/components/adopt/FilterPanel.vue'
-import GeneralApplicationCTA from '@/components/adopt/GeneralApplicationCTA.vue'
 import Spinner from '@/components/common/ui/Spinner.vue'
 import type { IPet } from '@/models/common'
-import { useAdoptionStore } from '@/stores/adoption'
 import { usePetStore } from '@/stores/pets'
-import { vibrate } from '@/utils/haptics'
 
 const props = defineProps<{ id?: string }>()
 const route = useRoute()
-const router = useRouter()
 const store = usePetStore()
-const adoptionStore = useAdoptionStore()
 const { currentPets, isFetching } = storeToRefs(store)
 
 const id = computed(() => props.id ?? (route.params.id as string | undefined))
@@ -145,14 +140,6 @@ const filterCount = computed(
   () => Object.values(advancedFilters.value).flat().filter(Boolean).length,
 )
 
-const handleGeneralApplication = (species: 'cat' | 'dog') => {
-  vibrate(50)
-  adoptionStore.resetForm()
-  store.clearSelectedPet()
-  store.selectPet({ id: 'unspecified', petName: 'Unspecified', species })
-  router.push(`/pet-adoption/unspecified`)
-}
-
 const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith', value: string) => {
   if (category === 'sex') {
     advancedFilters.value.sex = ''
@@ -210,12 +197,6 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith', value: stri
               <button class="reset-btn secondary" @click="resetAllFilters">View all pets</button>
             </div>
           </div>
-
-          <GeneralApplicationCTA
-            v-if="!pet"
-            :activeFilter="activeFilter"
-            @apply="handleGeneralApplication"
-          />
         </template>
       </main>
     </div>

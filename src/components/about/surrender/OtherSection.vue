@@ -13,7 +13,7 @@ const { formState } = defineProps<{
 
 <template>
   <div>
-    <h5>Other</h5>
+    <h2 class="section-title">Additional Information</h2>
     <div class="other-grid">
       <InputTextArea
         label="Please feel free to tell us any other information about the pet you feel is important"

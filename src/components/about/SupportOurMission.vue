@@ -12,7 +12,7 @@ const goToDonate = () => {
 
 <template>
   <section class="support-mission">
-    <div class="content-wrapper" v-scroll-reveal>
+    <div class="content-wrapper">
       <div class="support-text">
         <p class="eyebrow">Support our work</p>
         <h2>Help us open more doors</h2>

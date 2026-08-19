@@ -25,7 +25,7 @@ onMounted(() => {
 
 <template>
   <div class="aggressive-section">
-    <h5>Aggressive Behavior</h5>
+    <h2 class="section-title">Aggressive Behavior</h2>
     <div class="aggressive-grid">
       <ButtonToggle
         :label="`Has the ${selectedAnimal.toLowerCase()} ever attacked or bit a person?`"

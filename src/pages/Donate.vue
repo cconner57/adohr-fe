@@ -51,16 +51,31 @@ const impactLedger = [
       <div class="content-wrapper" v-scroll-reveal>
         <p class="eyebrow">Ways to give</p>
         <h2 id="ways-title">Choose what works for you</h2>
+        <div class="vip-card">
+          <div class="vip-content">
+            <span class="vip-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Monthly Rescue Pack
+            </span>
+            <h3>Become a Monthly Supporter</h3>
+            <p>Join a dedicated group of recurring donors who keep our foster homes stocked year-round. Monthly gifts provide predictable, life-saving funds for animals needing emergency care.</p>
+          </div>
+          <div class="vip-action">
+            <a class="way-cta vip-cta" :href="PAYPAL_URL" target="_blank" rel="noopener noreferrer">
+              Join the Pack
+            </a>
+          </div>
+        </div>
+
         <ul class="ways-grid" role="list">
           <li class="way-item">
             <article class="way-card">
-              <h3>Give online</h3>
+              <h3>One-Time Gift</h3>
               <p>
-                A one-time or monthly gift through PayPal. Monthly gifts keep foster homes stocked
-                year-round.
+                Make a direct, one-time contribution through PayPal to support an animal's immediate needs.
               </p>
               <a class="way-cta" :href="PAYPAL_URL" target="_blank" rel="noopener noreferrer">
-                Donate with PayPal
+                Donate Online
               </a>
             </article>
           </li>
@@ -81,7 +96,7 @@ const impactLedger = [
                 Make checks payable to <strong>A Dream of Home Rescue</strong> and mail them to our
                 PO box.
               </p>
-              <p class="way-detail">PO Box 7612, La Verne, CA 91750</p>
+              <p class="way-detail">PO Box 5543, Pasadena, CA 91107</p>
             </article>
           </li>
         </ul>
@@ -239,6 +254,89 @@ const impactLedger = [
     font-weight: 800;
     letter-spacing: -0.02em;
     margin-bottom: 1.75rem;
+  }
+
+  .vip-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-warning);
+    color: var(--text-primary);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    gap: 2rem;
+    box-shadow: var(--shadow-lg);
+    
+    .vip-content {
+      flex: 1;
+      max-width: 600px;
+      
+      .vip-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background-color: var(--text-primary);
+        color: var(--color-warning);
+        padding: 6px 12px;
+        border-radius: var(--radius-full);
+        margin-bottom: 1rem;
+        
+        svg { margin-top: -2px; }
+      }
+      
+      h3 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.75rem;
+      }
+      
+      p {
+        font-size: 1.1rem;
+        line-height: 1.5;
+        color: var(--text-primary);
+        opacity: 0.9;
+        margin: 0;
+      }
+    }
+    
+    .vip-action {
+      flex-shrink: 0;
+      
+      .vip-cta {
+        display: inline-flex;
+        background-color: var(--text-primary);
+        color: var(--color-warning) !important;
+        font-size: 1.1rem;
+        font-weight: 700;
+        padding: 14px 28px;
+        border-radius: var(--radius-full);
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+      }
+    }
+
+    @media (width <= 800px) {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 2rem;
+      
+      .vip-action {
+        width: 100%;
+        .vip-cta { width: 100%; justify-content: center; }
+      }
+    }
   }
 
   .ways-grid {

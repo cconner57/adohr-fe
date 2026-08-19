@@ -89,7 +89,7 @@ onMounted(() => {
 
 <template>
   <div class="behavior-section">
-    <h5>Behavior</h5>
+    <h2 class="section-title">Behavior</h2>
     <div class="behavior-grid">
       <InputGrid
         :label="`How does the ${selectedAnimal.toLowerCase()} usually behave towards people they do know?`"

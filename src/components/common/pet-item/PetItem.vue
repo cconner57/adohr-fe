@@ -60,13 +60,26 @@ const photoSrc = computed(() => {
 const imgError = ref(false)
 const isImageLoaded = ref(false)
 const buttonTitle = computed(() => `Meet ${props.name}`)
-const isComingSoon = computed(() => {
+const statusBadge = computed(() => {
   const normalizedStatus = props.status.trim().toLowerCase()
-  return (
-    normalizedStatus === 'intake' ||
-    normalizedStatus === 'intake-processing' ||
-    normalizedStatus === 'intake processing'
-  )
+  switch (normalizedStatus) {
+    case 'intake':
+    case 'intake-processing':
+    case 'intake processing':
+      return { text: 'Processing', class: 'badge-tertiary', visible: true }
+    case 'adoption-pending':
+    case 'adoption pending':
+    case 'pending':
+      return { text: 'Adoption Pending', class: 'badge-warning', visible: true }
+    case 'foster':
+    case 'foster needed':
+      return { text: 'Foster Needed', class: 'badge-secondary', visible: true }
+    case 'hold':
+    case 'medical hold':
+      return { text: 'On Hold', class: 'badge-danger', visible: true }
+    default:
+      return { text: '', class: '', visible: false }
+  }
 })
 
 function onImgError() {
@@ -114,12 +127,12 @@ function handleAdopt() {
       />
       <div v-else class="img-fallback" aria-hidden="true" @click="handleAdopt"></div>
       <div
-        v-if="isComingSoon"
-        class="image-badge coming-soon-badge"
-        :class="{ 'with-sponsored': props.isSponsored }"
-        aria-label="Coming soon"
+        v-if="statusBadge.visible"
+        class="image-badge"
+        :class="[statusBadge.class, { 'with-sponsored': props.isSponsored }]"
+        :aria-label="statusBadge.text"
       >
-        Coming soon
+        {{ statusBadge.text }}
       </div>
       <div
         v-if="props.isSponsored"
@@ -253,11 +266,25 @@ function handleAdopt() {
       white-space: nowrap;
     }
 
-    .coming-soon-badge {
+    .badge-tertiary {
       background-color: var(--color-tertiary-light);
     }
+    
+    .badge-warning {
+      background-color: var(--color-warning);
+    }
+    
+    .badge-secondary {
+      background-color: var(--color-secondary);
+      color: var(--color-white);
+    }
+    
+    .badge-danger {
+      background-color: var(--color-danger);
+      color: var(--color-white);
+    }
 
-    .coming-soon-badge.with-sponsored {
+    .image-badge.with-sponsored:not(.sponsored-badge) {
       top: 2.6rem;
     }
   }
