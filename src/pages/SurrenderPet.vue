@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import {
@@ -36,8 +36,9 @@ const {
   selectedAnimal,
   validationErrors,
   isStepValid,
+  hasSavedDraft,
 } = storeToRefs(surrenderStore)
-const { nextStep, prevStep, resetForm, submitApplication } = surrenderStore
+const { nextStep, prevStep, resetForm, submitApplication, clearPersistedState } = surrenderStore
 
 const touched = reactive<Record<string, boolean>>({})
 
@@ -76,6 +77,19 @@ const handleReset = async () => {
   resetForm()
 }
 
+const handleClearDraft = () => {
+  clearPersistedState()
+  resetForm()
+}
+
+watch(
+  () => [selectedAnimal.value, formState],
+  () => {
+    surrenderStore.persistState()
+  },
+  { deep: true },
+)
+
 const headerText = computed(() => {
   if (!selectedAnimal.value || step.value === 0) {
     return 'Surrender Pet'
@@ -104,6 +118,17 @@ const formattedAnimal = computed(() => {
             Start by telling us which pet you need to surrender. We'll only ask what we need to find
             the best path forward.
           </p>
+        </div>
+
+        <!-- Draft Auto-Save Banner -->
+        <div v-if="hasSavedDraft" class="draft-badge-bar">
+          <span class="draft-indicator">
+            <span class="dot"></span>
+            Draft auto-saved · Step {{ step + 1 }} of 7
+          </span>
+          <button type="button" class="clear-draft-btn" @click="handleClearDraft">
+            Clear Draft
+          </button>
         </div>
 
         <SurrenderSteps
@@ -263,6 +288,48 @@ const formattedAnimal = computed(() => {
         letter-spacing: 0.1em;
         color: var(--color-secondary);
         flex-shrink: 0;
+      }
+    }
+
+    .draft-badge-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      margin-bottom: 1.5rem;
+      background-color: oklch(from var(--color-secondary) 96% 0.04 h);
+      border: 1px solid oklch(from var(--color-secondary) 80% 0.1 h);
+      border-radius: var(--radius-md, 8px);
+      font-size: 0.82rem;
+
+      .draft-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--color-primary);
+        font-weight: 600;
+
+        .dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: var(--color-secondary);
+          box-shadow: 0 0 0 2px oklch(from var(--color-secondary) 85% 0.15 h / 40%);
+        }
+      }
+
+      .clear-draft-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 0.78rem;
+        cursor: pointer;
+        text-decoration: underline;
+        padding: 2px 6px;
+
+        &:hover {
+          color: var(--color-danger);
+        }
       }
     }
 

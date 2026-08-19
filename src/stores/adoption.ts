@@ -129,7 +129,6 @@ export const useAdoptionStore = defineStore('adoption', () => {
   })
 
   const STORAGE_KEY = 'adohr_adoption_form_draft_v1'
-  const ADOPTION_SUBMIT_TIMEOUT_MS = 20000
 
   const hasSavedDraft = computed(() => {
     return Boolean(formState.firstName || formState.email || formState.address)
@@ -229,12 +228,11 @@ export const useAdoptionStore = defineStore('adoption', () => {
           body: JSON.stringify(payload),
         },
         {
-          timeoutMs: ADOPTION_SUBMIT_TIMEOUT_MS,
-          maxRetries: 1,
+          retries: 1,
           retryDelayMs: 600,
-          shouldRetry: (_err, _res) => {
-            if (!_res) return false
-            return [408, 429, 502, 503, 504].includes(_res.status)
+          shouldRetry: (context) => {
+            if (!context.response) return false
+            return [408, 429, 502, 503, 504].includes(context.response.status)
           },
         },
       )

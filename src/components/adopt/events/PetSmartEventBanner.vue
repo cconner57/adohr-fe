@@ -5,10 +5,18 @@ import { useRouter } from 'vue-router'
 import Button from '../../common/ui/Button.vue'
 import EventPrepModal from './EventPrepModal.vue'
 
-defineProps<{
-  isFilterActive?: boolean
-  showFilterButton?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    isFilterActive?: boolean
+    showFilterButton?: boolean
+    variant?: 'light' | 'dark'
+  }>(),
+  {
+    isFilterActive: false,
+    showFilterButton: true,
+    variant: 'light',
+  },
+)
 
 const emit = defineEmits<{
   'toggle-filter': []

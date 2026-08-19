@@ -9,8 +9,6 @@ const router = useRouter()
 function handleAdopt() {
   goToAdopt(router)
 }
-
-const marqueeWords = ['Adopt', 'Foster', 'Volunteer', 'Rescue', 'Love']
 </script>
 
 <template>
@@ -42,16 +40,6 @@ const marqueeWords = ['Adopt', 'Foster', 'Volunteer', 'Rescue', 'Love']
           />
         </div>
         <span class="sticker" aria-hidden="true">Rescued<br />&amp; ready</span>
-      </div>
-    </div>
-
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee-track">
-        <template v-for="n in 3" :key="n">
-          <span v-for="word in marqueeWords" :key="`${n}-${word}`" class="marquee-word">
-            {{ word }} <span class="paw">🐾</span>
-          </span>
-        </template>
       </div>
     </div>
   </section>
@@ -147,55 +135,6 @@ h1 {
   display: flex;
   align-items: center;
   box-shadow: var(--shadow-md);
-}
-
-/* Marquee strip */
-.marquee {
-  background-color: var(--color-primary);
-  border-block: 1.5px solid var(--text-primary);
-  padding: 0.875rem 0;
-  overflow: hidden;
-}
-
-.marquee-track {
-  display: flex;
-  gap: 3rem;
-  width: max-content;
-  animation: marquee 28s linear infinite;
-}
-
-.marquee-word {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.1rem;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--text-inverse);
-  display: inline-flex;
-  align-items: center;
-  gap: 3rem;
-  white-space: nowrap;
-
-  .paw {
-    font-size: 0.85rem;
-    opacity: 0.7;
-  }
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-33.333%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-  }
 }
 
 @media (width <= 900px) {

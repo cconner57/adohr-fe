@@ -57,6 +57,24 @@ export type TMedicalConcern =
   | 'obesity'
   | 'upper respiratory infections'
 
+export interface ISibling {
+  id: string
+  name: string
+  photo?: string | null
+  species: TSpecies | string
+  sex: TSex | 'unknown' | string
+  age?: TAgeGroup | string | null
+  dob?: string | null
+  status?: string | null
+  isMom?: boolean | null
+  isDad?: boolean | null
+}
+
+export interface ILitter {
+  groupName?: string | null
+  siblings?: ISibling[] | null
+}
+
 export interface IPet {
   id: string
   slug?: string
@@ -67,6 +85,7 @@ export interface IPet {
   name: string
   species: TSpecies
   sex: TSex | 'unknown'
+  litter?: ILitter | null
   litterName?: string | null
   isAttendingWeekend?: boolean | null
 

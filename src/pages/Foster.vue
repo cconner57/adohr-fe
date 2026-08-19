@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import FormSubmitted from '@/components/common/form-submitted/FormSubmitted.vue'
@@ -16,7 +16,8 @@ import { useFosterStore } from '@/stores/foster'
 
 const router = useRouter()
 const fosterStore = useFosterStore()
-const { state } = storeToRefs(fosterStore)
+const { state, hasSavedDraft } = storeToRefs(fosterStore)
+const { clearPersistedState } = fosterStore
 
 const validationError = ref<string | null>(null)
 const attemptedValidation = ref(false)
@@ -169,6 +170,18 @@ const onReset = async () => {
   await router.push('/')
 }
 
+const handleClearDraft = () => {
+  clearPersistedState()
+}
+
+watch(
+  () => [state.value.speciesPreference, state.value.answers],
+  () => {
+    fosterStore.persistState()
+  },
+  { deep: true },
+)
+
 const getInputType = (type: string) => {
   if (['email', 'tel', 'date', 'number'].includes(type)) return type
   return 'text'
@@ -202,6 +215,17 @@ const fosterStepLabels = [
         <section class="progress-panel">
           <AdoptionSteps :currentStep="state.currentStep - 1" :steps="fosterStepLabels" />
         </section>
+
+        <!-- Draft Auto-Save Banner -->
+        <div v-if="hasSavedDraft" class="draft-badge-bar">
+          <span class="draft-indicator">
+            <span class="dot"></span>
+            Draft auto-saved · Step {{ state.currentStep }} of {{ fosterStepLabels.length }}
+          </span>
+          <button type="button" class="clear-draft-btn" @click="handleClearDraft">
+            Clear Draft
+          </button>
+        </div>
 
         <fieldset v-if="state.currentStep === 1" class="section-block species">
           <legend class="section-title">Foster Preference</legend>
@@ -308,136 +332,4 @@ const fosterStepLabels = [
   </section>
 </template>
 
-<style scoped lang="css">
-.page-shell {
-  min-height: 100vh;
-  background-color: var(--color-primary);
-  padding: 9rem var(--layout-padding-side) 64px;
-
-  @media (width <= 440px) {
-    padding: 6rem 16px 32px;
-  }
-}
-
-.form-container {
-  max-width: 1600px;
-  margin: 0 auto;
-  container-type: inline-size;
-}
-
-.form-card {
-  background: var(--text-inverse);
-  color: var(--text-primary);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-  box-shadow: var(--shadow-lg);
-  padding: 48px 48px 32px;
-  counter-reset: intake-section;
-
-  @container (max-width: 900px) {
-    padding: 32px 24px;
-  }
-}
-
-.section-block {
-  border: 0;
-  margin: 24px 0;
-  padding: 0;
-}
-
-.section-title {
-  counter-increment: intake-section;
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  font-weight: 800;
-  font-size: 1.15rem;
-  letter-spacing: -0.01em;
-  line-height: 1.35;
-  margin: 18px 0 12px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-  width: 100%;
-
-  &::before {
-    content: counter(intake-section, decimal-leading-zero);
-    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: var(--color-secondary);
-    flex-shrink: 0;
-  }
-}
-
-.section-copy {
-  margin-bottom: 12px;
-  font-size: 1rem;
-  line-height: 1.55;
-  color: var(--text-secondary);
-}
-
-.questions-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-
-  @container (max-width: 860px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.full-row {
-  grid-column: 1 / -1;
-}
-
-.validation-summary {
-  background-color: var(--color-danger-surface, oklch(from var(--color-danger) 98% 0.02 h));
-  border: 1px solid var(--color-danger);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  margin: 24px 0;
-  text-align: center;
-
-  .summary-title {
-    color: var(--color-danger);
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-  }
-
-  .tag.is-danger {
-    background-color: var(--color-danger-weak, oklch(from var(--color-danger) 96% 0.04 h));
-    color: var(--color-danger);
-    padding: 4px 12px;
-    border-radius: var(--radius-full);
-    font-size: 0.875rem;
-    font-weight: 600;
-  }
-}
-
-.actions {
-  margin-top: 28px;
-  padding-top: 24px;
-  border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-}
-
-@media (width <= 440px) {
-  .actions {
-    flex-direction: column;
-
-    button {
-      width: 100%;
-    }
-  }
-}
-</style>
+<style scoped src="./Foster.css"></style>

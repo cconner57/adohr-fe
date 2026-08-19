@@ -195,11 +195,30 @@ export const useFosterStore = defineStore('foster', () => {
 
   const progressLabel = computed(() => `Page ${state.value.currentStep} of 10`)
 
+  const hasSavedDraft = computed(() => {
+    return Boolean(
+      hasSavedProgress.value ||
+      state.value.speciesPreference ||
+      Object.keys(state.value.answers).length > 0,
+    )
+  })
+
+  const persistState = () => {
+    saveProgressOnNext()
+  }
+
+  const clearPersistedState = () => {
+    startNewForm()
+  }
+
   return {
     state,
     hasSavedProgress,
+    hasSavedDraft,
     progressLabel,
     loadProgress,
+    persistState,
+    clearPersistedState,
     setSpeciesPreference,
     setAnswer,
     saveProgressOnNext,

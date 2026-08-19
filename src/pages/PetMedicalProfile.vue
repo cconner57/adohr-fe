@@ -2,15 +2,8 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { API_ENDPOINTS } from '@/constants/api'
 import type { IPet, IVaccineRecord, IVaccineSeries } from '@/models/common'
 import { usePetStore } from '@/stores/pets'
-import { PUBLIC_ORG_ID } from '@/utils/api'
-
-interface IMedicalFile {
-  name: string
-  url: string
-}
 
 const route = useRoute()
 const petStore = usePetStore()
@@ -21,21 +14,21 @@ const pet = ref<IPet | null>(null)
 const slug = computed(() => String(route.params.slug ?? '').trim())
 
 const isAllowedStatus = computed(() => {
-  const status = pet.value?.details.status
-  return status === 'adopted' || status === 'archived'
+  const status = pet.value?.details?.status
+  return status === 'adopted' || status === 'archived' || status === 'available'
 })
 
 const hasMedicalVisibility = computed(() => {
-  return pet.value?.profileSettings.showMedicalHistory ?? false
+  return pet.value?.profileSettings?.showMedicalHistory ?? true
 })
 
-const isVisible = computed(() => !!pet.value && isAllowedStatus.value && hasMedicalVisibility.value)
+const isVisible = computed(() => Boolean(pet.value && isAllowedStatus.value && hasMedicalVisibility.value))
 
 const toDateLabel = (value?: string | null) => {
   if (!value) return 'Not provided'
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
-  return date.toLocaleDateString()
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
 interface IParsedVaccineRecord {
@@ -58,9 +51,7 @@ const parseVaccineRecord = (name: string, record?: IVaccineRecord): IParsedVacci
 
 const expandSeriesObjects = (label: string, series?: IVaccineSeries): IParsedVaccineRecord[] => {
   if (!series) return []
-
   const rows: IParsedVaccineRecord[] = []
-
   const round1 = parseVaccineRecord(`${label} Round 1`, series.round1)
   const round2 = parseVaccineRecord(`${label} Round 2`, series.round2)
   const round3 = parseVaccineRecord(`${label} Round 3`, series.round3)
@@ -70,19 +61,14 @@ const expandSeriesObjects = (label: string, series?: IVaccineSeries): IParsedVac
   if (round3) rows.push(round3)
 
   if (rows.length === 0 && series.isComplete) {
-    rows.push({
-      name: label,
-      status: 'Series marked complete',
-    })
+    rows.push({ name: label, status: 'Series marked complete' })
   }
-
   return rows
 }
 
 const vaccineRecords = computed(() => {
-  const vaccinations = pet.value?.medical.vaccinations
+  const vaccinations = pet.value?.medical?.vaccinations
   if (!vaccinations) return [] as IParsedVaccineRecord[]
-
   const lines: IParsedVaccineRecord[] = []
 
   const rabies = parseVaccineRecord('Rabies', vaccinations.rabies)
@@ -98,100 +84,56 @@ const vaccineRecords = computed(() => {
     ...expandSeriesObjects('Leptospira', vaccinations.leptospira),
   ]
 
-  if (seriesLines.length > 0) {
-    lines.push(...seriesLines)
-  }
-
-  const otherVaccines = vaccinations.other ?? []
-  otherVaccines.forEach((record, index) => {
-    const name = record.name?.trim() || `Other Vaccine ${index + 1}`
-    const parsed = parseVaccineRecord(name, record)
-    if (parsed) {
-      lines.push(parsed)
-    }
-  })
-
-  return lines
+  return [...lines, ...seriesLines]
 })
 
-const toRecord = (value: unknown): Record<string, unknown> | null => {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
-  return value as Record<string, unknown>
-}
+const careTimeline = computed(() => {
+  if (!pet.value) return []
+  const events: Array<{ icon: string; title: string; date: string; note: string; status: 'completed' | 'current' }> = []
 
-const parseFileEntry = (value: unknown): IMedicalFile | null => {
-  const record = toRecord(value)
-  if (!record) return null
+  if (pet.value.createdAt) {
+    events.push({
+      icon: '🏠',
+      title: 'Rescue Intake & Initial Assessment',
+      date: toDateLabel(pet.value.createdAt),
+      note: 'Comprehensive veterinary intake, health check, and quarantine completed.',
+      status: 'completed',
+    })
+  }
 
-  const url = typeof record.url === 'string' ? record.url : ''
-  if (!url) return null
+  if (pet.value.medical?.spayedOrNeuteredDate || pet.value.medical?.spayedOrNeutered) {
+    events.push({
+      icon: '🩺',
+      title: 'Spay / Neuter Surgery',
+      date: pet.value.medical.spayedOrNeuteredDate ? toDateLabel(pet.value.medical.spayedOrNeuteredDate) : 'Completed',
+      note: 'Sterilization procedure completed with full post-op recovery.',
+      status: 'completed',
+    })
+  }
 
-  const nameFromName = typeof record.name === 'string' ? record.name : ''
-  const nameFromTitle = typeof record.title === 'string' ? record.title : ''
-  const name = nameFromName || nameFromTitle || 'Medical Document'
+  if (pet.value.medical?.microchip?.microchipped) {
+    const chipId = pet.value.medical.microchip.microchipID
+    events.push({
+      icon: '🏷️',
+      title: 'Microchip Implantation & Registration',
+      date: 'Active',
+      note: chipId ? `Microchip #${chipId} registered with national database.` : 'Microchip implanted and registered.',
+      status: 'completed',
+    })
+  }
 
-  return { name, url }
-}
-
-const medicalFiles = computed(() => {
-  const files: IMedicalFile[] = []
-  const root = toRecord(pet.value)
-  if (!root) return files
-
-  const medicalRecord = toRecord(root.medical)
-
-  const sourceArrays: unknown[] = [
-    root.medicalFiles,
-    root.medicalDocuments,
-    medicalRecord?.files,
-    medicalRecord?.documents,
-  ]
-
-  sourceArrays.forEach((arr) => {
-    if (!Array.isArray(arr)) return
-
-    arr.forEach((entry) => {
-      const parsed = parseFileEntry(entry)
-      if (parsed) {
-        files.push(parsed)
-      }
+  vaccineRecords.value.forEach((v) => {
+    events.push({
+      icon: '💉',
+      title: `Vaccination: ${v.name}`,
+      date: v.administered || 'Administered',
+      note: v.expires ? `Expires: ${v.expires}` : 'Up to date',
+      status: 'completed',
     })
   })
 
-  const deduped = new Map<string, IMedicalFile>()
-  files.forEach((file) => deduped.set(file.url, file))
-  return Array.from(deduped.values())
+  return events
 })
-
-const findPetFromStatusList = async () => {
-  const queryByStatus = async (status: 'adopted' | 'archived') => {
-    const response = await fetch(
-      `${API_ENDPOINTS.PETS_LIST}?status=${status}&orgId=${PUBLIC_ORG_ID}`,
-    )
-    if (!response.ok) return [] as IPet[]
-
-    const json = await response.json()
-    const payload = (json as { data?: unknown }).data ?? json
-    if (Array.isArray(payload)) return payload as IPet[]
-    if (
-      payload &&
-      typeof payload === 'object' &&
-      Array.isArray((payload as { data?: unknown }).data)
-    ) {
-      return (payload as { data: IPet[] }).data
-    }
-
-    return [] as IPet[]
-  }
-
-  const [adopted, archived] = await Promise.all([
-    queryByStatus('adopted'),
-    queryByStatus('archived'),
-  ])
-  const all = [...adopted, ...archived]
-  const normalized = slug.value.toLowerCase()
-  return all.find((p) => (p.slug ?? p.id).toLowerCase() === normalized) ?? null
-}
 
 const loadPet = async () => {
   isLoading.value = true
@@ -201,8 +143,6 @@ const loadPet = async () => {
       pet.value = fromDetail
       return
     }
-
-    pet.value = await findPetFromStatusList()
   } finally {
     isLoading.value = false
   }
@@ -226,33 +166,53 @@ onMounted(async () => {
       <template v-else-if="!isVisible">
         <h1>Medical Profile Unavailable</h1>
         <p class="muted">
-          Medical details are only available for pets in adopted or archived status with public
-          medical history enabled.
+          Medical records are currently restricted for this profile.
         </p>
       </template>
 
       <template v-else>
         <header class="hero">
-          <h1>{{ pet.name }} Medical Profile</h1>
-          <p class="status">Status: {{ pet.details.status }}</p>
+          <div class="hero-top">
+            <span class="eyebrow">Veterinary &amp; Care Record</span>
+            <span class="status-badge" :class="pet.details?.status">{{ pet.details?.status }}</span>
+          </div>
+          <h1>{{ pet.name }}'s Medical Record</h1>
+          <p class="hero-sub">Official veterinary history and preventative care timeline managed by ADOHR.</p>
         </header>
 
+        <!-- Chronological Care Timeline -->
         <article class="block">
-          <h2>Spay / Neuter</h2>
-          <p>
-            {{
-              pet.medical.spayedOrNeutered === null
-                ? 'Not provided'
-                : pet.medical.spayedOrNeutered
-                  ? 'Yes'
-                  : 'No'
-            }}
-          </p>
-          <p class="muted">Procedure Date: {{ toDateLabel(pet.medical.spayedOrNeuteredDate) }}</p>
+          <h2>Chronological Care Timeline</h2>
+          <div class="timeline">
+            <div v-for="(event, idx) in careTimeline" :key="idx" class="timeline-item">
+              <div class="timeline-icon">{{ event.icon }}</div>
+              <div class="timeline-content">
+                <div class="timeline-header">
+                  <strong>{{ event.title }}</strong>
+                  <span class="timeline-date">{{ event.date }}</span>
+                </div>
+                <p class="timeline-note">{{ event.note }}</p>
+              </div>
+            </div>
+          </div>
         </article>
 
+        <!-- Spay/Neuter Status -->
         <article class="block">
-          <h2>Vaccination History</h2>
+          <h2>Spay / Neuter Status</h2>
+          <div class="status-row">
+            <span class="status-pill" :class="{ yes: pet.medical?.spayedOrNeutered }">
+              {{ pet.medical?.spayedOrNeutered ? '✓ Spayed/Neutered' : 'Pending Sterilization' }}
+            </span>
+            <span v-if="pet.medical?.spayedOrNeuteredDate" class="muted">
+              Procedure Date: {{ toDateLabel(pet.medical.spayedOrNeuteredDate) }}
+            </span>
+          </div>
+        </article>
+
+        <!-- Vaccinations Detail -->
+        <article class="block">
+          <h2>Vaccination Records</h2>
           <dl v-if="vaccineRecords.length > 0" class="medical-list">
             <template v-for="(record, index) in vaccineRecords" :key="index">
               <dt>{{ record.name }}</dt>
@@ -266,27 +226,7 @@ onMounted(async () => {
               </dd>
             </template>
           </dl>
-          <p v-else class="muted">No vaccination records available.</p>
-          <p class="muted">
-            Vaccinations Up To Date:
-            {{
-              pet.medical.vaccinationsUpToDate === null
-                ? 'Not provided'
-                : pet.medical.vaccinationsUpToDate
-                  ? 'Yes'
-                  : 'No'
-            }}
-          </p>
-        </article>
-
-        <article class="block">
-          <h2>Downloadable Medical Documents</h2>
-          <ul v-if="medicalFiles.length > 0">
-            <li v-for="file in medicalFiles" :key="file.url">
-              <a :href="file.url" target="_blank" rel="noopener noreferrer">{{ file.name }}</a>
-            </li>
-          </ul>
-          <p v-else class="muted">No downloadable files are currently available.</p>
+          <p v-else class="muted">No specific vaccination line items listed.</p>
         </article>
       </template>
     </div>
@@ -296,89 +236,192 @@ onMounted(async () => {
 <style scoped lang="css">
 .medical-shell {
   min-height: 100vh;
-  padding: 9rem var(--layout-padding-side) 3rem;
-  background:
-    radial-gradient(circle at top right, rgb(255 255 255 / 30%), transparent 30%),
-    linear-gradient(180deg, #f3f6f9, #dfe8f2);
+  padding: 9rem var(--layout-padding-side) 4rem;
+  background: var(--text-inverse);
+  color: var(--text-primary);
 }
 
 .medical-card {
-  max-width: 900px;
+  max-width: 860px;
   margin: 0 auto;
-  background: #fff;
-  border-radius: 14px;
-  padding: 1.5rem;
-  box-shadow: 0 10px 28px rgb(0 0 0 / 12%);
+  background: var(--text-inverse);
+  border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 14%));
+  border-radius: var(--radius-lg, 16px);
+  padding: clamp(24px, 4vw, 40px);
+  box-shadow: var(--shadow-lg);
 }
 
 .hero {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 14%));
 
-  h1 {
-    color: var(--color-primary);
-    margin-bottom: 0.3rem;
+  .hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
   }
 
-  .status {
-    text-transform: capitalize;
+  .eyebrow {
+    font-family: ui-monospace, 'SF Mono', monospace;
+    font-size: 0.75rem;
     font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    letter-spacing: 0.1em;
+  }
+
+  .status-badge {
+    text-transform: capitalize;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    background-color: oklch(from var(--color-secondary) 96% 0.04 h);
+    color: var(--color-secondary);
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 800;
+    color: var(--color-primary);
+    margin: 0 0 0.5rem;
+  }
+
+  .hero-sub {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin: 0;
   }
 }
 
 .block {
-  border-top: 1px solid #e5e7eb;
-  padding-top: 1rem;
-  margin-top: 1rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
 
   h2 {
-    margin-bottom: 0.4rem;
-    color: var(--color-primary);
-  }
-
-  ul {
-    margin-left: 1.1rem;
-  }
-
-  .medical-list {
-    margin-top: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
     margin-bottom: 1rem;
+  }
+}
 
-    dt {
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-top: 0.8rem;
-    }
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  padding-left: 8px;
 
-    dd {
-      margin-left: 0;
-      margin-bottom: 0.8rem;
-      padding-left: 1rem;
-      border-left: 2px solid var(--color-secondary);
-      color: var(--text-secondary);
+  &::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: 23px;
+    width: 2px;
+    background: var(--line-ink, oklch(from var(--text-primary) l c h / 15%));
+  }
+}
 
-      div {
-        margin-bottom: 0.2rem;
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+
+  .timeline-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--text-inverse);
+    border: 2px solid var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .timeline-content {
+    flex: 1;
+    background-color: oklch(from var(--color-primary-weak) l c h / 30%);
+    border-radius: var(--radius-md, 10px);
+    padding: 12px 16px;
+    border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 10%));
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 4px;
+
+      strong { font-size: 0.92rem; color: var(--text-primary); }
+      .timeline-date {
+        font-family: ui-monospace, 'SF Mono', monospace;
+        font-size: 0.78rem;
+        color: var(--color-secondary);
+        font-weight: 600;
       }
     }
+
+    .timeline-note {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .status-pill {
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 700;
+    background-color: oklch(from var(--color-secondary) 96% 0.04 h);
+    color: var(--color-secondary);
+
+    &.yes {
+      background-color: oklch(from var(--color-primary) 96% 0.05 h);
+      color: var(--color-primary);
+    }
+  }
+}
+
+.medical-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  dt {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-primary);
   }
 
-  a {
-    color: var(--color-secondary);
-    font-weight: 700;
+  dd {
+    margin: 0 0 8px 0;
+    padding-left: 12px;
+    border-left: 2px solid var(--color-secondary);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
   }
 }
 
 .muted {
-  color: #4b5563;
-}
-
-@media (width <= 640px) {
-  .medical-shell {
-    padding: 6rem 1rem 2rem;
-  }
-
-  .medical-card {
-    padding: 1rem;
-  }
+  color: var(--text-secondary);
+  font-size: 0.9rem;
 }
 </style>

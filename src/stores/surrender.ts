@@ -8,102 +8,161 @@ import type { SurrenderFormState } from '../models/surrender-form'
 import { getApiErrorMessage, withPublicOrgId } from '../utils/api'
 import { getSurrenderValidationErrors } from './validation/surrenderValidation'
 
+const getInitialSurrenderFormState = (): SurrenderFormState => ({
+  fax_number: '',
+  firstName: '',
+  lastName: '',
+  phoneNumber: '',
+  email: '',
+  streetAddress: '',
+  city: '',
+  state: '',
+  zipCode: '',
+  whenToSurrenderAnimal: '',
+  animalName: '',
+  animalSex: '',
+  animalAge: '',
+  animalOwnershipDuration: '',
+  animalLocationFound: '',
+  animalWhySurrendered: '',
+  householdMembers: [{ age: '', gender: 'Female', count: 1 }],
+  otherPetsInHousehold: '',
+  animalsBehaviorTowardsKnownPeople: '',
+  animalsBehaviorTowardsStrangers: '',
+  animalsBehaviorTowardsKnownAnimals: '',
+  commentsOnBehavior: '',
+  animalsReactionToNewPeople: '',
+  animalHouseTrained: '',
+  animalSpendMajorityOfTime: '',
+  animalLeftAloneDuration: '',
+  animalWhenLeftAlone: '',
+  animalLeftAloneBehaviors: '',
+  animalHowItPlays: '',
+  animalToysItLikes: '',
+  animalGamesItLikes: '',
+  animalScaredOfAnything: '',
+  animalScaredOfAnythingExplanation: '',
+  animalBadHabits: '',
+  animalAllowedOnFurniture: '',
+  animalSleepAtNight: '',
+  animalBehaviorFoodOthers: '',
+  animalBehaviorToysOthers: '',
+  animalProblemsRidingInCar: '',
+  animalProblemsRidingInCarExplanation: '',
+  animalEscapedBefore: '',
+  animalEscapedBeforeExplanation: '',
+  animalEverAttackedPeople: '',
+  animalEverAttackedPeopleExplanation: '',
+  animalEverAttackedOtherCats: '',
+  animalEverAttackedOtherCatsExplanation: '',
+  animalEverAttackedOtherDogs: '',
+  animalEverAttackedOtherDogsExplanation: '',
+  animalVeterinarianList: '',
+  animalVeterinarianYearlyVisits: '',
+  animalSpayedNeutered: '',
+  animalVaccinationHistory: '',
+  animalVaccinationsCurrent: '',
+  animalTestedHeartworm: '',
+  animalTestedHeartwormExplanation: '',
+  animalHeartwormPrevention: '',
+  animalHeartwormPreventionExplanation: '',
+  animalMicrochipped: '',
+  animalMicrochippedExplanation: '',
+  animalVetOrGroomerBehavior: '',
+  animalVetMuzzled: '',
+  animalPastOrPresentHealthProblems: '',
+  animalPastOrPresentHealthProblemsExplanation: '',
+  animalCurrentMedications: '',
+  animalCurrentMedicationsExplanation: '',
+  animalTypeOfFood: '',
+  animalEatingFrequency: '',
+  animalAmountOfFood: '',
+  animalFoodTreats: '',
+  animalFoodTreatsExplanation: '',
+  additionalInformation: '',
+  fullBodyPhotoOfAnimal: '',
+  closeUpPhotoOfAnimalFace: '',
+  copiesOfRecords: '',
+})
+
 export const useSurrenderStore = defineStore('surrender', () => {
   const { isDemoMode } = useDemoMode()
   const step = ref(0)
-
   const isSubmitted = ref(false)
   const isSubmitting = ref(false)
   const submissionError = ref<string | null>(null)
   const hasAttemptedSubmit = ref(false)
   const selectedAnimal = ref<'dog' | 'cat' | null>(null)
 
-  const formState = reactive<SurrenderFormState>({
-    fax_number: '',
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    email: '',
-    streetAddress: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    whenToSurrenderAnimal: '',
-    animalName: '',
-    animalSex: '',
-    animalAge: '',
-    animalOwnershipDuration: '',
-    animalLocationFound: '',
-    animalWhySurrendered: '',
-    householdMembers: [{ age: '', gender: 'Female', count: 1 }],
-    otherPetsInHousehold: '',
+  const formState = reactive<SurrenderFormState>(getInitialSurrenderFormState())
 
-    animalsBehaviorTowardsKnownPeople: '',
+  const STORAGE_KEY = 'adohr_surrender_form_draft_v1'
 
-    animalsBehaviorTowardsStrangers: '',
-    animalsBehaviorTowardsKnownAnimals: '',
-    commentsOnBehavior: '',
-    animalsReactionToNewPeople: '',
-    animalHouseTrained: '',
-    animalSpendMajorityOfTime: '',
-    animalLeftAloneDuration: '',
-    animalWhenLeftAlone: '',
-    animalLeftAloneBehaviors: '',
-    animalHowItPlays: '',
-    animalToysItLikes: '',
-    animalGamesItLikes: '',
-    animalScaredOfAnything: '',
-    animalScaredOfAnythingExplanation: '',
-    animalBadHabits: '',
-    animalAllowedOnFurniture: '',
-    animalSleepAtNight: '',
-    animalBehaviorFoodOthers: '',
-    animalBehaviorToysOthers: '',
-    animalProblemsRidingInCar: '',
-    animalProblemsRidingInCarExplanation: '',
-    animalEscapedBefore: '',
-    animalEscapedBeforeExplanation: '',
-
-    animalEverAttackedPeople: '',
-
-    animalEverAttackedPeopleExplanation: '',
-    animalEverAttackedOtherCats: '',
-    animalEverAttackedOtherCatsExplanation: '',
-    animalEverAttackedOtherDogs: '',
-    animalEverAttackedOtherDogsExplanation: '',
-
-    animalVeterinarianList: '',
-
-    animalVeterinarianYearlyVisits: '',
-    animalSpayedNeutered: '',
-    animalVaccinationHistory: '',
-    animalVaccinationsCurrent: '',
-    animalTestedHeartworm: '',
-    animalTestedHeartwormExplanation: '',
-    animalHeartwormPrevention: '',
-    animalHeartwormPreventionExplanation: '',
-    animalMicrochipped: '',
-    animalMicrochippedExplanation: '',
-    animalVetOrGroomerBehavior: '',
-    animalVetMuzzled: '',
-    animalPastOrPresentHealthProblems: '',
-    animalPastOrPresentHealthProblemsExplanation: '',
-    animalCurrentMedications: '',
-    animalCurrentMedicationsExplanation: '',
-
-    animalTypeOfFood: '',
-
-    animalEatingFrequency: '',
-    animalAmountOfFood: '',
-    animalFoodTreats: '',
-    animalFoodTreatsExplanation: '',
-
-    additionalInformation: '',
-
-    fullBodyPhotoOfAnimal: '',
-    closeUpPhotoOfAnimalFace: '',
-    copiesOfRecords: '',
+  const hasSavedDraft = computed(() => {
+    return Boolean(
+      selectedAnimal.value ||
+      formState.firstName ||
+      formState.email ||
+      formState.animalName ||
+      formState.phoneNumber,
+    )
   })
+
+  const clearPersistedState = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY)
+    } catch (e) {
+      console.error('Failed to clear surrender draft', e)
+    }
+  }
+
+  const serializableTextFields = () => {
+    const raw = toRaw(formState)
+    const {
+      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+      fullBodyPhotoOfAnimal: _fullBodyPhotoOfAnimal,
+      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+      closeUpPhotoOfAnimalFace: _closeUpPhotoOfAnimalFace,
+      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+      copiesOfRecords: _copiesOfRecords,
+      ...textFields
+    } = raw
+    const serialized: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(textFields)) {
+      serialized[key] =
+        Array.isArray(value) && value.every((v) => typeof v === 'string') ? value.join(', ') : value
+    }
+    return serialized
+  }
+
+  const persistState = () => {
+    try {
+      const payload = JSON.stringify({
+        step: step.value,
+        selectedAnimal: selectedAnimal.value,
+        formState: serializableTextFields(),
+      })
+      localStorage.setItem(STORAGE_KEY, payload)
+    } catch (e) {
+      console.error('Failed to persist surrender form state', e)
+    }
+  }
+
+  const initFromStorage = () => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        step.value = parsed.step || 0
+        selectedAnimal.value = parsed.selectedAnimal || null
+        Object.assign(formState, parsed.formState)
+      }
+    } catch (e) {
+      console.error('Failed to restore surrender form state', e)
+    }
+  }
+
+  initFromStorage()
 
   const validationErrors = computed(() => {
     return getSurrenderValidationErrors({
@@ -133,7 +192,7 @@ export const useSurrenderStore = defineStore('surrender', () => {
     }
 
     submitMetric('form_step', { form: 'surrender', step: step.value })
-
+    persistState()
     hasAttemptedSubmit.value = false
     return true
   }
@@ -145,127 +204,34 @@ export const useSurrenderStore = defineStore('surrender', () => {
       } else {
         step.value--
       }
+      persistState()
     }
   }
 
   const clearFormData = () => {
-    formState.fax_number = ''
-    formState.firstName = ''
-    formState.lastName = ''
-    formState.phoneNumber = ''
-    formState.email = ''
-    formState.streetAddress = ''
-    formState.city = ''
-    formState.state = ''
-    formState.zipCode = ''
-    formState.whenToSurrenderAnimal = ''
-    formState.animalName = ''
-    formState.animalSex = ''
-    formState.animalAge = ''
-    formState.animalOwnershipDuration = ''
-    formState.animalLocationFound = ''
-    formState.animalWhySurrendered = ''
-    formState.householdMembers = [{ age: '', gender: 'Female', count: 1 }]
-    formState.otherPetsInHousehold = ''
-    formState.animalsBehaviorTowardsKnownPeople = ''
-    formState.animalsBehaviorTowardsStrangers = ''
-    formState.animalsBehaviorTowardsKnownAnimals = ''
-    formState.commentsOnBehavior = ''
-    formState.animalsReactionToNewPeople = ''
-    formState.animalHouseTrained = ''
-    formState.animalSpendMajorityOfTime = ''
-    formState.animalLeftAloneDuration = ''
-    formState.animalWhenLeftAlone = ''
-    formState.animalLeftAloneBehaviors = ''
-    formState.animalHowItPlays = ''
-    formState.animalToysItLikes = ''
-    formState.animalGamesItLikes = ''
-    formState.animalScaredOfAnything = ''
-    formState.animalScaredOfAnythingExplanation = ''
-    formState.animalBadHabits = ''
-    formState.animalAllowedOnFurniture = ''
-    formState.animalSleepAtNight = ''
-    formState.animalBehaviorFoodOthers = ''
-    formState.animalBehaviorToysOthers = ''
-    formState.animalProblemsRidingInCar = ''
-    formState.animalProblemsRidingInCarExplanation = ''
-    formState.animalEscapedBefore = ''
-    formState.animalEscapedBeforeExplanation = ''
-    formState.animalEverAttackedPeople = ''
-    formState.animalEverAttackedPeopleExplanation = ''
-    formState.animalEverAttackedOtherCats = ''
-    formState.animalEverAttackedOtherCatsExplanation = ''
-    formState.animalEverAttackedOtherDogs = ''
-    formState.animalEverAttackedOtherDogsExplanation = ''
-    formState.animalVeterinarianList = ''
-    formState.animalVeterinarianYearlyVisits = ''
-    formState.animalSpayedNeutered = ''
-    formState.animalVaccinationHistory = ''
-    formState.animalVaccinationsCurrent = ''
-    formState.animalTestedHeartworm = ''
-    formState.animalTestedHeartwormExplanation = ''
-    formState.animalHeartwormPrevention = ''
-    formState.animalHeartwormPreventionExplanation = ''
-    formState.animalMicrochipped = ''
-    formState.animalMicrochippedExplanation = ''
-    formState.animalVetOrGroomerBehavior = ''
-    formState.animalVetMuzzled = ''
-    formState.animalPastOrPresentHealthProblems = ''
-    formState.animalPastOrPresentHealthProblemsExplanation = ''
-    formState.animalCurrentMedications = ''
-    formState.animalCurrentMedicationsExplanation = ''
-    formState.animalTypeOfFood = ''
-    formState.animalEatingFrequency = ''
-    formState.animalAmountOfFood = ''
-    formState.animalFoodTreats = ''
-    formState.animalFoodTreatsExplanation = ''
-    formState.additionalInformation = ''
-    formState.fullBodyPhotoOfAnimal = ''
-    formState.closeUpPhotoOfAnimalFace = ''
-    formState.copiesOfRecords = ''
+    Object.assign(formState, getInitialSurrenderFormState())
+    selectedAnimal.value = null
   }
 
   const resetForm = () => {
     step.value = 0
     isSubmitted.value = false
-    isSubmitting.value = false
-    submissionError.value = null
     hasAttemptedSubmit.value = false
-    selectedAnimal.value = null
+    submissionError.value = null
     clearFormData()
+    clearPersistedState()
   }
 
-  const isFile = (val: unknown): val is File =>
-    val instanceof File ||
-    (val != null && typeof val === 'object' && 'name' in val && 'size' in val && 'type' in val)
+  const isFile = (val: unknown): val is File => {
+    return val instanceof File
+  }
 
   const hasFiles = () => {
     const raw = toRaw(formState)
-    return (
-      isFile(raw.fullBodyPhotoOfAnimal) ||
-      isFile(raw.closeUpPhotoOfAnimalFace) ||
-      (Array.isArray(raw.copiesOfRecords) && raw.copiesOfRecords.some((f) => isFile(f)))
-    )
-  }
-
-  const serializableTextFields = () => {
-    const raw = toRaw(formState)
-    const {
-      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-      fullBodyPhotoOfAnimal: _fullBodyPhotoOfAnimal,
-      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-      closeUpPhotoOfAnimalFace: _closeUpPhotoOfAnimalFace,
-      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-      copiesOfRecords: _copiesOfRecords,
-      ...textFields
-    } = raw
-    // Join any string[] values into comma-separated strings for the backend
-    const serialized: Record<string, unknown> = {}
-    for (const [key, value] of Object.entries(textFields)) {
-      serialized[key] =
-        Array.isArray(value) && value.every((v) => typeof v === 'string') ? value.join(', ') : value
-    }
-    return serialized
+    if (isFile(raw.fullBodyPhotoOfAnimal)) return true
+    if (isFile(raw.closeUpPhotoOfAnimalFace)) return true
+    if (Array.isArray(raw.copiesOfRecords) && raw.copiesOfRecords.some(isFile)) return true
+    return false
   }
 
   const buildFormData = () => {
@@ -273,45 +239,36 @@ export const useSurrenderStore = defineStore('surrender', () => {
     const fd = new FormData()
     fd.append('data', JSON.stringify(serializableTextFields()))
 
-    // Append file fields — use toRaw to unwrap reactive proxy before appending
     const fullBody = toRaw(raw.fullBodyPhotoOfAnimal)
     const closeUp = toRaw(raw.closeUpPhotoOfAnimalFace)
     const records = toRaw(raw.copiesOfRecords)
 
-    if (isFile(fullBody)) {
-      fd.append('fullBodyPhoto', fullBody)
-    }
-    if (isFile(closeUp)) {
-      fd.append('closeUpPhoto', closeUp)
-    }
+    if (isFile(fullBody)) fd.append('fullBodyPhoto', fullBody)
+    if (isFile(closeUp)) fd.append('closeUpPhoto', closeUp)
     if (Array.isArray(records)) {
       for (const file of records) {
         const rawFile = toRaw(file)
-        if (isFile(rawFile)) {
-          fd.append('records', rawFile)
-        }
+        if (isFile(rawFile)) fd.append('records', rawFile)
       }
     }
-
     return fd
   }
 
   const submitApplication = async () => {
     if (isSubmitting.value) return
-
     isSubmitting.value = true
     submissionError.value = null
 
     try {
       if (isDemoMode.value) {
-        console.log('Demo Mode: Simulating submission success')
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        await new Promise((resolve) => setTimeout(resolve, 800))
         isSubmitted.value = true
+        clearFormData()
+        clearPersistedState()
         return
       }
 
       isSubmitted.value = false
-
       const useMultipart = hasFiles()
       const response = await fetch(withPublicOrgId(API_ENDPOINTS.SURRENDER_APPLICATION), {
         method: 'POST',
@@ -330,8 +287,9 @@ export const useSurrenderStore = defineStore('surrender', () => {
       }
 
       submitMetric('form_submit', { form: 'surrender' })
-
       isSubmitted.value = true
+      clearFormData()
+      clearPersistedState()
     } catch (error) {
       console.error('Error submitting form:', error)
       submissionError.value =
@@ -353,6 +311,9 @@ export const useSurrenderStore = defineStore('surrender', () => {
     selectedAnimal,
     validationErrors,
     isStepValid,
+    hasSavedDraft,
+    persistState,
+    clearPersistedState,
     nextStep,
     prevStep,
     submitApplication,

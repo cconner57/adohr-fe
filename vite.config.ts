@@ -93,5 +93,14 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vue-core': ['vue', 'vue-router', 'pinia'],
+          },
+        },
+      },
+    },
   };
 })

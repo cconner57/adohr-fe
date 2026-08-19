@@ -1,39 +1,95 @@
 <script setup lang="ts">
-import type { IPet } from '../../../models/common.ts'
+import { computed } from 'vue'
+
+import type { IPet, ISibling } from '../../../models/common.ts'
 import { formatDate } from '../../../utils/common.ts'
 import PetItem from '../../common/pet-item/PetItem.vue'
 
-defineProps<{
+const props = defineProps<{
   pet: IPet
-  littermates: IPet[]
+  littermates?: IPet[]
 }>()
+
+interface IDisplaySibling {
+  id: string
+  name: string
+  photo: string | null
+  capsules: string[]
+  description: string
+  isSponsored: boolean
+  status: string
+}
+
+const litterGroupName = computed(() => {
+  return props.pet.litter?.groupName || props.pet.litterName || ''
+})
+
+const siblingsList = computed<IDisplaySibling[]>(() => {
+  // 1. If API provides direct pet.litter.siblings
+  if (props.pet.litter?.siblings && props.pet.litter.siblings.length > 0) {
+    return props.pet.litter.siblings.map((sibling: ISibling) => {
+      const capsules: string[] = []
+      if (sibling.isMom) capsules.push('Mom')
+      if (sibling.isDad) capsules.push('Dad')
+      if (sibling.species) capsules.push(sibling.species)
+      if (sibling.sex) capsules.push(sibling.sex)
+      if (sibling.dob) capsules.push(formatDate(sibling.dob, true))
+      else if (sibling.age) capsules.push(sibling.age)
+
+      return {
+        id: sibling.id,
+        name: sibling.name,
+        photo: sibling.photo || null,
+        capsules,
+        description: '',
+        isSponsored: false,
+        status: sibling.status || 'available',
+      }
+    })
+  }
+
+  // 2. Fallback to passed littermates IPet array
+  if (props.littermates && props.littermates.length > 0) {
+    return props.littermates.map((littermate: IPet) => ({
+      id: littermate.slug || littermate.id,
+      name: littermate.name,
+      photo: littermate.photos?.find((p) => p.isPrimary)?.url || null,
+      capsules: [
+        littermate.species || '',
+        littermate.sex || '',
+        littermate.physical?.dateOfBirth ? formatDate(littermate.physical.dateOfBirth, true) : '',
+      ].filter(Boolean),
+      description: littermate.descriptions?.fun || '',
+      isSponsored: littermate.sponsored?.isSponsored || false,
+      status: littermate.details?.status || '',
+    }))
+  }
+
+  return []
+})
 </script>
 
 <template>
-  <section v-if="littermates && littermates.length > 0" class="adopt-detail__littermates" aria-label="Littermates">
+  <section v-if="siblingsList.length > 0" class="adopt-detail__littermates" aria-label="Littermates">
     <div class="littermates-header">
       <p class="eyebrow">Family Ties</p>
       <h2>Meet {{ pet.name }}'s Littermates</h2>
       <p class="litter-desc">
-        {{ pet.litterName ? `${pet.litterName} Litter · ` : '' }}These brothers and sisters were rescued together and are also looking for their forever homes.
+        {{ litterGroupName ? `${litterGroupName} · ` : '' }}These brothers and sisters were rescued together and are also looking for their forever homes.
       </p>
     </div>
 
     <div class="littermates-grid">
       <PetItem
-        v-for="littermate in littermates"
-        :key="littermate.id"
-        :id="littermate.slug || littermate.id"
-        :name="littermate.name"
-        :description="littermate.descriptions?.fun ?? ''"
-        :capsules="[
-          littermate?.species ?? '',
-          littermate?.sex ?? '',
-          littermate?.physical?.dateOfBirth ? formatDate(littermate.physical.dateOfBirth, true) : '',
-        ]"
-        :photo="littermate.photos?.find((p) => p.isPrimary)?.url"
-        :isSponsored="littermate.sponsored?.isSponsored ?? false"
-        :status="littermate.details?.status ?? ''"
+        v-for="sibling in siblingsList"
+        :key="sibling.id"
+        :id="sibling.id"
+        :name="sibling.name"
+        :description="sibling.description"
+        :capsules="sibling.capsules"
+        :photo="sibling.photo"
+        :isSponsored="sibling.isSponsored"
+        :status="sibling.status"
       />
     </div>
   </section>

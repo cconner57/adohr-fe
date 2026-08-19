@@ -46,7 +46,9 @@ describe('PreQualModal.vue', () => {
       await checkboxes[i].setValue(true)
     }
 
-    expect(proceedBtn?.props('disabled')).toBe(false)
+    const updatedButtons = wrapper.findAllComponents({ name: 'Button' })
+    const updatedProceedBtn = updatedButtons.find((b) => b.props('title') === "I'm Ready to Apply →")
+    expect(updatedProceedBtn?.props('disabled')).toBe(false)
   })
 
   it('emits proceed with fastTrack status when clicked', async () => {

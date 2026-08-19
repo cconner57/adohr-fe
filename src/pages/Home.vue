@@ -25,31 +25,39 @@ onMounted(() => {
 
 <template>
   <div class="container">
+    <!-- 1. Hero Section -->
     <HeroSection />
 
     <main id="main-content">
+      <!-- 2. Weekend Events Band -->
+      <section class="events-band" aria-label="Weekend Adoption Events">
+        <div class="content-wrapper" v-scroll-reveal>
+          <PetSmartEventBanner :showFilterButton="false" />
+        </div>
+      </section>
+
+      <!-- 3. Adoption Spotlight Section -->
       <section class="section spotlight-section" aria-label="Adoption Spotlight">
         <div class="content-wrapper" v-scroll-reveal>
-          <PetSmartEventBanner
-            :showFilterButton="false"
-            style="margin-bottom: 2.5rem;"
-          />
           <AdoptionSpotlight :pets="spotlightPets" :loading="loading" :error="error" />
         </div>
       </section>
 
+      <!-- 4. Our Mission Section -->
       <section class="section mission-section" aria-label="Our Mission">
         <div class="content-wrapper" v-scroll-reveal>
           <Mission />
         </div>
       </section>
 
+      <!-- 5. Success Stories Section -->
       <section class="section success-stories-section" aria-label="Success Stories">
         <div class="content-wrapper" v-scroll-reveal>
           <SuccessStories />
         </div>
       </section>
 
+      <!-- 6. Impact & Ways to Help Section -->
       <section class="section impact-section" aria-label="Impact and Actions">
         <div class="content-wrapper">
           <div v-scroll-reveal>
@@ -123,39 +131,47 @@ onMounted(() => {
   transform: scale(1.03);
 }
 
+.content-wrapper {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 var(--layout-padding-side);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(32px, 5vw, 64px);
+}
+
+.events-band {
+  width: 100%;
+  background-color: oklch(from var(--color-primary-weak) l c h / 35%);
+  border-block: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
+  padding: clamp(24px, 4vw, 40px) 0;
+}
+
 .section {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding: clamp(48px, 8vw, 110px) var(--layout-padding-side);
-}
-
-.content-wrapper {
-  width: 100%;
-  max-width: 1240px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(40px, 6vw, 72px);
 }
 
 .spotlight-section {
-  padding-bottom: clamp(24px, 4vw, 56px);
+  padding: clamp(56px, 8vw, 96px) 0 clamp(48px, 6vw, 72px);
 }
 
 .mission-section {
-  padding-top: clamp(24px, 4vw, 56px);
-  padding-bottom: clamp(24px, 4vw, 56px);
+  padding: clamp(32px, 5vw, 56px) 0 clamp(56px, 8vw, 88px);
 }
 
 .success-stories-section {
-  padding-top: clamp(24px, 4vw, 56px);
-  padding-bottom: clamp(48px, 8vw, 110px);
+  background-color: oklch(from var(--text-primary) 98% 0.01 70deg);
+  border-block: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
+  padding: clamp(64px, 8vw, 100px) 0;
 }
 
 .impact-section {
-  border-top: 1.5px solid var(--line-ink);
+  background-color: var(--text-inverse);
+  padding: clamp(64px, 8vw, 100px) 0 clamp(80px, 10vw, 120px);
 }
 
 .call-to-action {
