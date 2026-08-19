@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import FormSubmitted from '@/components/common/form-submitted/FormSubmitted.vue'
@@ -34,10 +34,11 @@ const {
   hasAttemptedSubmit,
   validationErrors,
   submissionError,
+  hasSavedDraft,
 } = storeToRefs(adoptionStore)
 const { selectedPet } = storeToRefs(petStore)
 
-const { prevStep, resetForm } = adoptionStore
+const { prevStep, resetForm, clearPersistedState } = adoptionStore
 
 const { submitMetric } = useMetrics()
 
@@ -138,6 +139,20 @@ const handleReset = async () => {
   await router.push('/')
   resetForm()
 }
+
+const handleClearDraft = () => {
+  clearPersistedState()
+  resetForm()
+}
+
+watch(
+  formState,
+  () => {
+    adoptionStore.persistState()
+  },
+  { deep: true },
+)
+
 const secondPetName = computed(() => {
   if (!formState.value.secondPetId) return null
   return petStore.currentPets.find((p) => p.id === formState.value.secondPetId)?.name
@@ -167,6 +182,17 @@ const secondPetName = computed(() => {
           :header-title="species === 'cat' ? 'Cat' : 'Dog'"
           :header-text="headerText"
         />
+
+        <!-- Draft Auto-Save Banner -->
+        <div v-if="hasSavedDraft" class="draft-badge-bar">
+          <span class="draft-indicator">
+            <span class="dot"></span>
+            Draft auto-saved · Step {{ visibleStep + 1 }} of {{ adoptionSteps.length }}
+          </span>
+          <button type="button" class="clear-draft-btn" @click="handleClearDraft">
+            Clear Draft
+          </button>
+        </div>
         <div v-show="!isCatIntroStep" class="cat-name-display">
           <h2>Adopting Pet{{ secondPetName ? 's' : '' }}:</h2>
           <p>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+
 import Button from './Button.vue'
 
 const props = defineProps<{
@@ -20,10 +21,12 @@ const ackHousing = ref(false)
 const ackCare = ref(false)
 const ackHousehold = ref(false)
 
-const allAcknowledged = () => ackAge.value && ackHousing.value && ackCare.value && ackHousehold.value
+const allAcknowledged = computed(() => {
+  return ackAge.value && ackHousing.value && ackCare.value && ackHousehold.value
+})
 
 const handleProceed = () => {
-  if (!allAcknowledged()) return
+  if (!allAcknowledged.value) return
   emit('proceed', { isFastTrack: isFastTrack.value })
   emit('close')
 }
@@ -131,7 +134,7 @@ onUnmounted(() => {
           <Button
             title="I'm Ready to Apply →"
             color="blue"
-            :disabled="!allAcknowledged()"
+            :disabled="!allAcknowledged"
             @click="handleProceed"
           />
         </footer>

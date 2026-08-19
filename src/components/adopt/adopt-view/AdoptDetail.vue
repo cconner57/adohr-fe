@@ -7,6 +7,7 @@ import type { IPet } from '../../../models/common.ts'
 import { useAdoptionStore } from '../../../stores/adoption'
 import { usePetStore } from '../../../stores/pets'
 import { vibrate } from '../../../utils/haptics.ts'
+import PreQualModal from '../../common/ui/PreQualModal.vue'
 import AdoptDetailAbout from './AdoptDetailAbout.vue'
 import AdoptDetailInfo from './AdoptDetailInfo.vue'
 import AdoptDetailLittermates from './AdoptDetailLittermates.vue'
@@ -24,6 +25,7 @@ const petStore = usePetStore()
 const { currentPets } = storeToRefs(petStore)
 const isDrawerOpen = ref(false)
 const isInfoDrawerOpen = ref(false)
+const isPreQualOpen = ref(false)
 
 onMounted(() => {
   if (currentPets.value.length === 0) {
@@ -91,6 +93,10 @@ const pickFallbackStory = () => {
 const handleStartAdoption = () => {
   if (isStartAdoptionDisabled.value) return
   vibrate(50)
+  isPreQualOpen.value = true
+}
+
+const handlePreQualProceed = () => {
   adoptionStore.resetForm()
   petStore.clearSelectedPet()
   petStore.selectPet({ id: props.pet.id, petName: props.pet.name, species: props.pet.species })
@@ -160,6 +166,14 @@ watch(
     :pet="pet"
     :isDrawerOpen="isInfoDrawerOpen"
     @update:isDrawerOpen="isInfoDrawerOpen = $event"
+  />
+
+  <PreQualModal
+    :isOpen="isPreQualOpen"
+    :petName="pet.name"
+    :species="pet.species"
+    @close="isPreQualOpen = false"
+    @proceed="handlePreQualProceed"
   />
 </template>
 
