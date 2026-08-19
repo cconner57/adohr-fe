@@ -3,6 +3,7 @@ import { computed } from 'vue'
 
 import type { IPet } from '../../../models/common.ts'
 import { calculateAge } from '../../../utils/date'
+import BondedPairBadge from '../../common/ui/BondedPairBadge.vue'
 import Button from '../../common/ui/Button.vue'
 import Capsules from '../../common/ui/Capsules.vue'
 import AdditionalInfo from '../additional-info/AdditionalInfo.vue'
@@ -63,6 +64,14 @@ const goodWithItems = computed(() => {
         <div v-if="statusBadge.visible" class="detail-badge" :class="statusBadge.class">{{ statusBadge.text }}</div>
       </div>
       <h1 class="text-balance">{{ pet.name }}</h1>
+
+      <BondedPairBadge
+        v-if="pet.behavior?.bonded?.isBonded"
+        :bondedWithNames="pet.behavior?.bonded?.bondedWith"
+        size="md"
+        style="margin-bottom: 12px;"
+      />
+
       <div class="adopt-detail__traits">
         <Capsules v-if="pet?.species" :label="pet?.species" />
         <Capsules v-if="pet?.sex" :label="pet?.sex" />

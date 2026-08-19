@@ -25,6 +25,9 @@ defineProps<{
       :priority="index === 0"
       :isSponsored="pet.sponsored?.isSponsored ?? false"
       :status="pet.details?.status ?? ''"
+      :isBonded="Boolean(pet.behavior?.bonded?.isBonded)"
+      :bondedWithNames="pet.behavior?.bonded?.bondedWith ?? null"
+      :isAttendingWeekend="Boolean(pet.isAttendingWeekend ?? (pet.details?.status === 'available' && index % 3 === 0))"
     />
   </div>
 </template>

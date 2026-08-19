@@ -131,7 +131,12 @@ watch(
 <template>
   <div class="adopt-detail">
     <div class="adopt-detail__main">
-      <AdoptDetailMedia :petPhotoUrl="petPhotoUrl" :petName="pet.name" :petId="pet.id" />
+      <AdoptDetailMedia
+        :petPhotoUrl="petPhotoUrl"
+        :petName="pet.name"
+        :petId="pet.id"
+        :photos="pet.photos"
+      />
       <AdoptDetailInfo
         :pet="pet"
         :isComingSoon="isComingSoon"

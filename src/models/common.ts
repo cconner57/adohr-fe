@@ -68,6 +68,7 @@ export interface IPet {
   species: TSpecies
   sex: TSex | 'unknown'
   litterName?: string | null
+  isAttendingWeekend?: boolean | null
 
   physical: {
     ageGroup: TAgeGroup | null

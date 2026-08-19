@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 
 import { useMetrics } from '../../../composables/useMetrics'
 import { goToAdopt } from '../../../utils/navigate.ts'
+import BondedPairBadge from '../ui/BondedPairBadge.vue'
 import Button from '../ui/Button.vue'
 import Capsules from '../ui/Capsules.vue'
 
@@ -46,6 +47,18 @@ const props = defineProps({
     type: String,
     required: false,
     default: '',
+  },
+  isBonded: {
+    type: Boolean,
+    default: false,
+  },
+  bondedWithNames: {
+    type: Array as PropType<string[] | null>,
+    default: null,
+  },
+  isAttendingWeekend: {
+    type: Boolean,
+    default: false,
   },
 })
 const router = useRouter()
@@ -126,29 +139,51 @@ function handleAdopt() {
         @click="handleAdopt"
       />
       <div v-else class="img-fallback" aria-hidden="true" @click="handleAdopt"></div>
-      <div
-        v-if="statusBadge.visible"
-        class="image-badge"
-        :class="[statusBadge.class, { 'with-sponsored': props.isSponsored }]"
-        :aria-label="statusBadge.text"
-      >
-        {{ statusBadge.text }}
-      </div>
-      <div
-        v-if="props.isSponsored"
-        class="image-badge sponsored-badge"
-        aria-label="Adoption fee sponsored"
-      >
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path
-            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-          />
-        </svg>
-        Sponsored
+      
+      <div class="badge-stack">
+        <div
+          v-if="statusBadge.visible"
+          class="image-badge"
+          :class="statusBadge.class"
+          :aria-label="statusBadge.text"
+        >
+          {{ statusBadge.text }}
+        </div>
+        <div
+          v-if="props.isSponsored"
+          class="image-badge sponsored-badge"
+          aria-label="Adoption fee sponsored"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+            />
+          </svg>
+          Sponsored
+        </div>
+        <div
+          v-if="props.isAttendingWeekend"
+          class="image-badge weekend-badge"
+          aria-label="Attending PetSmart this weekend"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          At PetSmart Sat &amp; Sun
+        </div>
       </div>
     </div>
     <div class="info-section">
       <h3>{{ props.name }}</h3>
+      
+      <BondedPairBadge
+        v-if="props.isBonded"
+        :bondedWithNames="props.bondedWithNames"
+        size="sm"
+        style="margin-bottom: 8px;"
+      />
+
       <div v-if="props.capsules.length > 0" class="capsules">
         <template v-for="capText in props.capsules" :key="capText">
           <Capsules v-if="capText && capText !== 'Invalid Date'" size="sm">{{ capText }}</Capsules>
@@ -243,13 +278,23 @@ function handleAdopt() {
       }
     }
 
-    .image-badge {
+    .badge-stack {
       position: absolute;
       top: 0.75rem;
       left: 50%;
       translate: -50% 0;
       z-index: 2;
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: max-content;
+      max-width: 90%;
+      pointer-events: none;
+    }
+
+    .image-badge {
+      display: inline-flex;
       align-items: center;
       gap: 0.3rem;
       background-color: var(--color-warning);
@@ -262,7 +307,6 @@ function handleAdopt() {
       padding: 0.3rem 0.65rem;
       border-radius: var(--radius-full);
       border: 1px solid var(--text-primary);
-      pointer-events: none;
       white-space: nowrap;
     }
 
@@ -284,8 +328,10 @@ function handleAdopt() {
       color: var(--color-white);
     }
 
-    .image-badge.with-sponsored:not(.sponsored-badge) {
-      top: 2.6rem;
+    .weekend-badge {
+      background-color: var(--color-primary);
+      color: var(--text-inverse);
+      border-color: var(--color-primary-strong);
     }
   }
 

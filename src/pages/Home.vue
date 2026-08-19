@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
+import PetSmartEventBanner from '@/components/adopt/events/PetSmartEventBanner.vue'
 import Footer from '@/components/common/footer/Footer.vue'
 import BannerButton from '@/components/common/ui/BannerButton.vue'
 import HeroSection from '@/components/home/hero-section/HeroSection.vue'
@@ -29,6 +30,10 @@ onMounted(() => {
     <main id="main-content">
       <section class="section spotlight-section" aria-label="Adoption Spotlight">
         <div class="content-wrapper" v-scroll-reveal>
+          <PetSmartEventBanner
+            :showFilterButton="false"
+            style="margin-bottom: 2.5rem;"
+          />
           <AdoptionSpotlight :pets="spotlightPets" :loading="loading" :error="error" />
         </div>
       </section>

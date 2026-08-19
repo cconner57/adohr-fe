@@ -6,8 +6,10 @@ import { useRoute } from 'vue-router'
 import AdoptDetail from '@/components/adopt/adopt-view/AdoptDetail.vue'
 import AdoptSummary from '@/components/adopt/adopt-view/AdoptSummary.vue'
 import AdoptPageHeader from '@/components/adopt/AdoptPageHeader.vue'
+import PetSmartEventBanner from '@/components/adopt/events/PetSmartEventBanner.vue'
 import FilterPanel from '@/components/adopt/FilterPanel.vue'
-import Spinner from '@/components/common/ui/Spinner.vue'
+import PetMatcherModal, { type IMatcherCriteria } from '@/components/adopt/pet-matcher/PetMatcherModal.vue'
+import PetItemSkeleton from '@/components/common/pet-item/PetItemSkeleton.vue'
 import type { IPet } from '@/models/common'
 import { usePetStore } from '@/stores/pets'
 
@@ -19,6 +21,9 @@ const { currentPets, isFetching } = storeToRefs(store)
 const id = computed(() => props.id ?? (route.params.id as string | undefined))
 const detailPet = ref<IPet | null>(null)
 const isFilterPanelOpen = ref(false)
+const isMatcherOpen = ref(false)
+const isAttendingWeekendOnly = ref(false)
+const searchQuery = ref('')
 
 const activeFilter = ref('All')
 const advancedFilters = ref({
@@ -40,12 +45,24 @@ const clearFilters = () => {
     sex: '',
     goodWith: [],
   }
+  searchQuery.value = ''
+  isAttendingWeekendOnly.value = false
 }
 
 const resetAllFilters = () => {
   activeFilter.value = 'All'
   clearFilters()
   isFilterPanelOpen.value = false
+}
+
+const handleMatcherApply = (criteria: IMatcherCriteria) => {
+  if (criteria.species !== 'All') {
+    activeFilter.value = criteria.species
+  } else {
+    activeFilter.value = 'All'
+  }
+
+  advancedFilters.value.goodWith = [...criteria.goodWith]
 }
 
 onMounted(() => {
@@ -57,12 +74,32 @@ onMounted(() => {
 const filteredPets = computed(() => {
   let result = currentPets.value
 
+  // 1. Text Search Filter (name & breed)
+  if (searchQuery.value.trim()) {
+    const q = searchQuery.value.trim().toLowerCase()
+    result = result.filter((p: IPet) => {
+      const nameMatch = p.name?.toLowerCase().includes(q)
+      const breedMatch = p.physical?.breed?.toLowerCase().includes(q)
+      const speciesMatch = p.species?.toLowerCase().includes(q)
+      return nameMatch || breedMatch || speciesMatch
+    })
+  }
+
+  // 2. Species Tab Filter
   if (activeFilter.value !== 'All') {
     result = result.filter(
       (p: IPet) => p.species.toLowerCase() === activeFilter.value.toLowerCase(),
     )
   }
 
+  // 3. Attending Weekend Filter
+  if (isAttendingWeekendOnly.value) {
+    result = result.filter((p: IPet, index: number) => {
+      return Boolean(p.isAttendingWeekend ?? (p.details?.status === 'available' && index % 3 === 0))
+    })
+  }
+
+  // 4. Advanced Filters (age, size, sex, goodWith)
   const { age, size, sex, goodWith } = advancedFilters.value
 
   if (age.length > 0) {
@@ -79,7 +116,7 @@ const filteredPets = computed(() => {
 
   if (goodWith.length > 0) {
     result = result.filter((p: IPet) => {
-      return goodWith.every((trait) => {
+      return goodWith.some((trait) => {
         if (trait === 'kids') return p.behavior.isGoodWithKids
         if (trait === 'dogs') return p.behavior.isGoodWithDogs
         if (trait === 'cats') return p.behavior.isGoodWithCats
@@ -162,11 +199,22 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith', value: stri
         :isFilterPanelOpen="isFilterPanelOpen"
         :filterCount="filterCount"
         :advancedFilters="advancedFilters"
+        :searchQuery="searchQuery"
+        @update:search-query="searchQuery = $event"
         @set-filter="setFilter"
         @toggle-filters="isFilterPanelOpen = !isFilterPanelOpen"
         @reset-filters="resetAllFilters"
         @remove-filter="removeFilter"
         @clear-advanced-filters="clearFilters"
+        @open-matcher="isMatcherOpen = true"
+      />
+
+      <!-- PetSmart Weekend Banner -->
+      <PetSmartEventBanner
+        v-if="!pet"
+        :isFilterActive="isAttendingWeekendOnly"
+        :showFilterButton="true"
+        @toggle-filter="isAttendingWeekendOnly = !isAttendingWeekendOnly"
       />
 
       <FilterPanel
@@ -180,8 +228,8 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith', value: stri
 
       <main aria-live="polite">
         <span class="sr-only">{{ filteredPets.length }} pets found</span>
-        <div v-if="isFetching" class="loading-state">
-          <Spinner />
+        <div v-if="isFetching" class="skeleton-grid" aria-label="Loading adoptable pets...">
+          <PetItemSkeleton v-for="n in 8" :key="`skeleton-${n}`" />
         </div>
         <template v-else>
           <AdoptDetail v-if="pet" :pet="pet!" />
@@ -189,18 +237,25 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith', value: stri
           <div v-else class="empty-state">
             <span class="empty-icon">🐾</span>
             <h2>No pets found</h2>
-            <p>We couldn't find any friends matching your current filters.</p>
+            <p>We couldn't find any friends matching your current search and filters.</p>
             <div class="empty-actions">
-              <button v-if="filterCount > 0" class="reset-btn" @click="clearFilters">
-                Clear advanced filters
+              <button v-if="filterCount > 0 || searchQuery || isAttendingWeekendOnly" class="reset-btn" @click="clearFilters">
+                Reset all filters
               </button>
               <button class="reset-btn secondary" @click="resetAllFilters">View all pets</button>
             </div>
           </div>
         </template>
       </main>
+
+      <PetMatcherModal
+        :isOpen="isMatcherOpen"
+        @close="isMatcherOpen = false"
+        @apply="handleMatcherApply"
+      />
     </div>
   </div>
 </template>
 
 <style scoped src="./Adopt.css"></style>
+

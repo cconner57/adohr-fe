@@ -4,6 +4,7 @@ defineProps<{
   activeFilter: string
   isFilterPanelOpen: boolean
   filterCount: number
+  searchQuery?: string
   advancedFilters?: {
     age: string[]
     size: string[]
@@ -18,6 +19,8 @@ const emit = defineEmits<{
   'reset-filters': []
   'remove-filter': [category: 'age' | 'size' | 'sex' | 'goodWith', value: string]
   'clear-advanced-filters': []
+  'update:search-query': [query: string]
+  'open-matcher': []
 }>()
 </script>
 
@@ -28,7 +31,44 @@ const emit = defineEmits<{
       Search adoptable cats and dogs across Southern California. Every adoption helps us rescue
       another life.
     </p>
+
+    <!-- Search Input Bar -->
+    <div class="search-bar-wrapper">
+      <svg
+        class="search-icon"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+      <input
+        type="search"
+        class="search-input"
+        placeholder="Search by name or breed (e.g. Mocha, Tabby, Shepherd)..."
+        :value="searchQuery"
+        @input="emit('update:search-query', ($event.target as HTMLInputElement).value)"
+        aria-label="Search adoptable pets by name or breed"
+      />
+      <button
+        v-if="searchQuery"
+        type="button"
+        class="search-clear-btn"
+        aria-label="Clear search"
+        @click="emit('update:search-query', '')"
+      >
+        ✕
+      </button>
+    </div>
   </div>
+
   <div class="filters" v-if="!pet">
     <div class="species-group">
       <button
@@ -45,8 +85,18 @@ const emit = defineEmits<{
         Dogs
       </button>
     </div>
-    <div class="mobile-break"></div>
+    
     <div class="divider"></div>
+
+    <button
+      class="matcher-trigger-btn"
+      type="button"
+      @click="emit('open-matcher')"
+    >
+      <span class="quiz-sparkle" aria-hidden="true">✨</span>
+      Pet Matcher Quiz
+    </button>
+
     <button
       class="filter-btn"
       :class="{ active: isFilterPanelOpen }"
