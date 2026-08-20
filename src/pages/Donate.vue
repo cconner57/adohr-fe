@@ -113,9 +113,9 @@ const impactLedger = [
           </li>
           <li class="way-item">
             <article class="way-card">
-              <h3>Mail a Check</h3>
-              <p>Make checks payable to <strong>A Dream of Home Rescue</strong> and mail them to our Pasadena PO box.</p>
-              <p class="way-detail">PO Box 5543, Pasadena, CA 91107</p>
+              <h3>Foster Supply Wishlist</h3>
+              <p>Send needed food, kitten formula, litter, and supplies directly to our foster homes via Amazon &amp; Chewy.</p>
+              <RouterLink to="/wishlist" class="way-cta">View Wishlist →</RouterLink>
             </article>
           </li>
         </ul>
@@ -135,7 +135,7 @@ const impactLedger = [
           <div class="match-info">
             <h3>How to Request a Match:</h3>
             <ol class="match-steps">
-              <li>Donate to ADOHR via PayPal, Zelle, or Check.</li>
+              <li>Donate to ADOHR via PayPal or Zelle.</li>
               <li>Log into your company giving portal (e.g. <em>Benevity, CyberGrants, YourCause, Bright Funds</em>).</li>
               <li>Search for <strong>A Dream of Home Rescue</strong> using our Tax ID below.</li>
               <li>Submit your receipt to double your gift!</li>
@@ -146,7 +146,7 @@ const impactLedger = [
             <span class="ein-label">Nonprofit Tax ID / EIN:</span>
             <span class="ein-code">81-0780050</span>
             <button type="button" class="copy-btn" @click="copyEIN">
-              {{ isCopied ? '✓ Copied to Clipboard!' : '📋 Copy EIN' }}
+              {{ isCopied ? '✓ Copied to Clipboard!' : 'Copy EIN' }}
             </button>
             <p class="ein-sub">A Dream of Home Rescue, Inc. · Pasadena, CA</p>
           </div>
@@ -275,10 +275,17 @@ const impactLedger = [
     h2 { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 2rem; }
 
     .vip-card {
-      background: linear-gradient(135deg, oklch(from var(--color-primary) 25% c h), oklch(from var(--color-primary) 18% c h));
-      color: var(--text-inverse); border-radius: var(--radius-lg); padding: 2.5rem;
-      display: flex; justify-content: space-between; align-items: center; gap: 2rem;
-      box-shadow: var(--shadow-lg); margin-bottom: 2.5rem;
+      background-color: var(--color-primary);
+      color: var(--text-inverse);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 2.5rem;
+      border: 1px solid var(--text-primary);
       @media (max-width: 768px) { flex-direction: column; align-items: flex-start; }
 
       .vip-badge {
@@ -296,19 +303,60 @@ const impactLedger = [
     }
 
     .ways-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; list-style: none; padding: 0; margin: 0;
-      @media (max-width: 800px) { grid-template-columns: 1fr; }
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      @media (max-width: 800px) {
+        grid-template-columns: 1fr;
+      }
     }
     .way-card {
-      background: var(--text-inverse); border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-      border-radius: var(--radius-lg); padding: 1.75rem; display: flex; flex-direction: column; box-shadow: var(--shadow-sm); height: 100%;
-      h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 0.75rem; }
-      p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem; }
-      .way-detail { font-family: ui-monospace, 'SF Mono', monospace; font-size: 0.85rem; font-weight: 700; color: var(--color-primary); margin-top: auto; }
+      background: var(--text-inverse);
+      border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      height: 100%;
+
+      h3 {
+        font-size: 1.2rem;
+        font-weight: 800;
+        margin-bottom: 0.75rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        margin-bottom: 1rem;
+      }
+
+      .way-detail {
+        font-family: ui-monospace, 'SF Mono', monospace;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-top: auto;
+      }
+
       .way-cta {
-        margin-top: auto; padding: 0.7rem 1.2rem; background-color: var(--color-secondary); color: var(--text-inverse);
-        font-weight: 700; border-radius: var(--radius-full); text-decoration: none; text-align: center;
-        &:hover { background-color: var(--color-primary); }
+        margin-top: auto;
+        padding: 0.7rem 1.2rem;
+        background-color: var(--color-secondary);
+        color: var(--text-inverse);
+        font-weight: 700;
+        border-radius: var(--radius-full);
+        text-decoration: none;
+        text-align: center;
+
+        &:hover {
+          background-color: var(--color-primary);
+        }
       }
     }
   }

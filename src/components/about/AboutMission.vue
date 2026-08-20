@@ -16,13 +16,15 @@
         </ul>
       </div>
       <div class="image-wrapper reveal-delay-200" v-scroll-reveal>
-        <img
-          src="/images/mission.png"
-          alt="Happy adopted dog and cat"
-          class="mission-image"
-          width="600"
-          height="900"
-        />
+        <div class="mission-image-card">
+          <img
+            src="/images/about-mission.jpg"
+            alt="A sweet rescued puppy and kitten sleeping warmly together"
+            class="mission-image"
+            width="600"
+            height="800"
+          />
+        </div>
       </div>
     </div>
   </section>
@@ -57,6 +59,16 @@
     max-width: 450px;
   }
 
+  .mission-image-card {
+    display: block;
+    position: relative;
+    border-radius: var(--radius-xl, 24px);
+    overflow: hidden;
+    border: 1.5px solid oklch(100% 0 0deg / 24%);
+    box-shadow: var(--shadow-xl);
+    background: var(--text-inverse);
+  }
+
   .eyebrow {
     font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
     font-size: 0.78rem;
@@ -86,11 +98,16 @@
   }
 
   img {
-    width: 260px;
+    display: block;
+    width: 280px;
     max-width: 100%;
     height: auto;
-    border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
-    box-shadow: var(--shadow-lg);
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .mission-image-card:hover img {
+    transform: scale(1.03);
   }
 
   .ticks {

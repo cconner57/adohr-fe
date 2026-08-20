@@ -19,10 +19,10 @@
     </div>
     <div class="image-container">
       <img
-        src="/images/watercolor.jpeg"
-        alt="watercolor painting of dog and cat"
+        src="/images/mission-care.jpg"
+        alt="A loving foster caregiver caring for a rescued dog and cat in a warm home"
         width="600"
-        height="466"
+        height="450"
       />
     </div>
   </section>
@@ -87,17 +87,23 @@
 
   .image-container {
     justify-self: end;
-    width: min(100%, 380px);
-    border-radius: var(--radius-arch);
+    width: min(100%, 420px);
+    border-radius: var(--radius-xl, 24px);
     overflow: hidden;
-    border: 1.5px solid oklch(from var(--text-inverse) l c h / 45%);
-    box-shadow: var(--shadow-lg);
+    border: 1.5px solid oklch(from var(--text-inverse) l c h / 35%);
+    box-shadow: var(--shadow-xl);
+    background: var(--text-inverse);
 
     img {
       width: 100%;
       height: 100%;
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 4 / 3;
       object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.03);
     }
   }
 
@@ -107,7 +113,7 @@
     .image-container {
       justify-self: center;
       order: -1;
-      width: min(100%, 300px);
+      width: min(100%, 340px);
     }
   }
 }

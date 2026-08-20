@@ -21,6 +21,33 @@ const ackHousing = ref(false)
 const ackCare = ref(false)
 const ackHousehold = ref(false)
 
+const isCat = computed(() => props.species?.toLowerCase() === 'cat')
+const isDog = computed(() => props.species?.toLowerCase() === 'dog')
+
+const careDescription = computed(() => {
+  if (isDog.value) {
+    return 'Prepared to provide a safe home (with a securely fenced yard for outdoor time), routine veterinary care, and high-quality nutrition.'
+  }
+  if (isCat.value) {
+    return 'Prepared to provide lifetime indoor shelter, routine veterinary care, and high-quality nutrition.'
+  }
+  return 'Prepared to provide a safe home (indoor shelter / securely fenced yard), routine veterinary care, and high-quality nutrition.'
+})
+
+const fastTrackTag = computed(() => {
+  if (isCat.value) {
+    return '⚡ Fast-Track Adoption Pre-Approval'
+  }
+  return '⚡ Fast-Track Weekend Pre-Approval'
+})
+
+const fastTrackDescription = computed(() => {
+  if (isCat.value) {
+    return 'I plan to visit Pasadena PetSmart this weekend (12–4 PM) or stop by our in-store Cat Adoption Center during the week when volunteers are on-site to meet pets in person. Priority review my application!'
+  }
+  return 'I plan to visit Pasadena PetSmart this Saturday or Sunday (12–4 PM) to meet pets in person. Priority review my application before the event!'
+})
+
 const allAcknowledged = computed(() => {
   return ackAge.value && ackHousing.value && ackCare.value && ackHousehold.value
 })
@@ -80,7 +107,12 @@ onUnmounted(() => {
 
           <div class="checklist">
             <label class="check-item" :class="{ checked: ackAge }">
-              <input type="checkbox" v-model="ackAge" />
+              <input type="checkbox" v-model="ackAge" class="sr-only" />
+              <div class="custom-cb" :class="{ checked: ackAge }" aria-hidden="true">
+                <svg v-if="ackAge" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
               <div class="item-text">
                 <strong>21+ Years of Age</strong>
                 <span>Primary applicant is 21 or older (or has a parent/guardian co-signer).</span>
@@ -88,7 +120,12 @@ onUnmounted(() => {
             </label>
 
             <label class="check-item" :class="{ checked: ackHousing }">
-              <input type="checkbox" v-model="ackHousing" />
+              <input type="checkbox" v-model="ackHousing" class="sr-only" />
+              <div class="custom-cb" :class="{ checked: ackHousing }" aria-hidden="true">
+                <svg v-if="ackHousing" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
               <div class="item-text">
                 <strong>Housing & Landlord Approval</strong>
                 <span>Own home, or have landlord/lease permission to keep pets at your residence.</span>
@@ -96,15 +133,25 @@ onUnmounted(() => {
             </label>
 
             <label class="check-item" :class="{ checked: ackCare }">
-              <input type="checkbox" v-model="ackCare" />
+              <input type="checkbox" v-model="ackCare" class="sr-only" />
+              <div class="custom-cb" :class="{ checked: ackCare }" aria-hidden="true">
+                <svg v-if="ackCare" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
               <div class="item-text">
                 <strong>Veterinary & Lifetime Care Commitment</strong>
-                <span>Prepared to provide lifetime indoor shelter, routine veterinary care, and high-quality nutrition.</span>
+                <span>{{ careDescription }}</span>
               </div>
             </label>
 
             <label class="check-item" :class="{ checked: ackHousehold }">
-              <input type="checkbox" v-model="ackHousehold" />
+              <input type="checkbox" v-model="ackHousehold" class="sr-only" />
+              <div class="custom-cb" :class="{ checked: ackHousehold }" aria-hidden="true">
+                <svg v-if="ackHousehold" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
               <div class="item-text">
                 <strong>All Household Members Onboard</strong>
                 <span>Everyone living in the home is enthusiastic and agrees to welcome this pet.</span>
@@ -112,13 +159,18 @@ onUnmounted(() => {
             </label>
           </div>
 
-          <!-- Weekend Fast-Track Toggle -->
+          <!-- Fast-Track Toggle -->
           <div class="fast-track-box">
             <label class="fast-track-label">
-              <input type="checkbox" v-model="isFastTrack" />
+              <input type="checkbox" v-model="isFastTrack" class="sr-only" />
+              <div class="custom-cb ft-cb" :class="{ checked: isFastTrack }" aria-hidden="true">
+                <svg v-if="isFastTrack" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
               <div class="fast-track-text">
-                <span class="ft-tag">⚡ Fast-Track Weekend Pre-Approval</span>
-                <p>I plan to visit Pasadena PetSmart this Saturday or Sunday (12–4 PM) to meet pets in person. Priority review my application before the event!</p>
+                <span class="ft-tag">{{ fastTrackTag }}</span>
+                <p>{{ fastTrackDescription }}</p>
               </div>
             </label>
           </div>
@@ -240,6 +292,39 @@ onUnmounted(() => {
   gap: 10px;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.custom-cb {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  margin-top: 2px;
+  border-radius: 5px;
+  border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 25%));
+  background-color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-inverse);
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+
+  &.checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+}
+
 .check-item {
   display: flex;
   align-items: flex-start;
@@ -247,17 +332,9 @@ onUnmounted(() => {
   padding: 12px 14px;
   border-radius: var(--radius-md, 10px);
   border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-  background-color: var(--text-inverse);
   cursor: pointer;
-  transition: all 0.2s ease;
-
-  input[type="checkbox"] {
-    margin-top: 3px;
-    width: 18px;
-    height: 18px;
-    accent-color: var(--color-primary);
-    cursor: pointer;
-  }
+  user-select: none;
+  transition: all 0.15s ease;
 
   .item-text {
     display: flex;
@@ -280,6 +357,10 @@ onUnmounted(() => {
   &:hover {
     border-color: var(--color-primary);
     background-color: oklch(from var(--color-primary-weak) l c h / 30%);
+
+    .custom-cb:not(.checked) {
+      border-color: var(--color-primary);
+    }
   }
 
   &.checked {
@@ -293,19 +374,28 @@ onUnmounted(() => {
   border: 1.5px solid var(--color-warning);
   border-radius: var(--radius-md, 10px);
   padding: 12px 14px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px oklch(from var(--color-warning) 70% 0.1 h / 20%);
+  }
 
   .fast-track-label {
     display: flex;
     align-items: flex-start;
     gap: 12px;
     cursor: pointer;
+    user-select: none;
 
-    input[type="checkbox"] {
-      margin-top: 3px;
-      width: 18px;
-      height: 18px;
-      accent-color: var(--color-warning);
-      cursor: pointer;
+    .ft-cb {
+      border-color: oklch(from var(--color-warning) 60% 0.15 h);
+      background-color: var(--text-inverse);
+
+      &.checked {
+        background-color: var(--color-warning);
+        border-color: var(--color-warning);
+        color: var(--color-primary);
+      }
     }
 
     .fast-track-text {
@@ -314,7 +404,8 @@ onUnmounted(() => {
       gap: 4px;
 
       .ft-tag {
-        font-size: 0.82rem;
+        font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+        font-size: 0.74rem;
         font-weight: 800;
         color: var(--color-primary);
         text-transform: uppercase;
@@ -324,7 +415,7 @@ onUnmounted(() => {
       p {
         font-size: 0.8rem;
         color: var(--text-primary);
-        line-height: 1.4;
+        line-height: 1.45;
         margin: 0;
       }
     }

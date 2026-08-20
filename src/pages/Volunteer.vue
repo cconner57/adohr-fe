@@ -205,10 +205,15 @@ watch(
 <template>
   <section class="page-shell">
     <div v-if="!isSubmitted" class="form-container">
-      <form class="form-card" aria-label="Volunteer Application" @submit.prevent="handleSubmit">
+      <form
+        class="form-card"
+        :style="{ '--step-prefix': `'${String(currentStep + 1).padStart(2, '0')}'` }"
+        aria-label="Volunteer Application"
+        @submit.prevent="handleSubmit"
+      >
         <ApplicationHeader
           header-title="Volunteer"
-          header-text="A Dream of Home Rescue (ADOHR) is an all-volunteer, nonprofit dedicated to helping homeless cats and dogs find loving, permanent homes. Most volunteer shifts take place at our PetSmart partner location in Pasadena (Hastings Ranch), plus occasional events and vet transport. Volunteers must be 21 or older (or have a parent/guardian co-sign). Join us and make a meaningful impact!"
+          header-text="A Dream of Home Rescue (ADOHR) is an all-volunteer, nonprofit dedicated to helping homeless cats and dogs find loving, permanent homes. Most volunteer shifts take place at our PetSmart partner location in Pasadena, plus occasional events and vet transport. Volunteers must be 21 or older (or have a parent/guardian co-sign). Join us and make a meaningful impact!"
         />
 
         <div class="stepper-wrapper" v-scroll-reveal>

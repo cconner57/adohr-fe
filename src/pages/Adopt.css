@@ -423,7 +423,7 @@ main {
 .search-bar-wrapper {
   position: relative;
   width: 100%;
-  max-width: 480px;
+  max-width: 660px;
   margin-top: 0.5rem;
 
   .search-icon {

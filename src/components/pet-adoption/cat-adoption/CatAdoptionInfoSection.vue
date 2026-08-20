@@ -1,39 +1,99 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
+import Select from '@/components/common/ui/Select.vue'
+
 interface IPolicyItem {
   title: string
   description?: string
 }
 
-defineProps<{ isKitten: boolean }>()
+const props = withDefaults(
+  defineProps<{
+    isKitten?: boolean
+    species?: 'cat' | 'dog'
+    secondPetId?: string | null
+    availablePetsOptions?: { label: string; value: string }[]
+    animalLabel?: string
+    isGeneral?: boolean
+    generalPetName?: string
+  }>(),
+  {
+    isKitten: false,
+    species: 'cat',
+    secondPetId: null,
+    availablePetsOptions: () => [],
+    animalLabel: 'cat',
+    isGeneral: false,
+    generalPetName: '',
+  },
+)
 
-const includedItems = [
-  'Spay or Neuter',
-  'Vaccinations (kitten series or adult booster)',
-  'FeLV & FIV Testing',
-  'De-worming',
-  'Flea Treatment',
-  'Health Exam by a Veterinarian',
-]
+const emit = defineEmits<{
+  'update:secondPetId': [id: string | null]
+  'update:generalPetName': [name: string]
+}>()
 
-const goodToKnowItems: IPolicyItem[] = [
-  {
-    title: 'Indoor Only',
-    description: 'For their safety and wellbeing, adopted cats must be kept indoors.',
-  },
-  {
-    title: 'No Declawing',
-    description: 'Adopters must agree never to declaw their cat.',
-  },
-  {
-    title: 'Not as Gifts',
-    description: 'We do not place cats as gifts for others.',
-  },
-]
+const isCat = computed(() => props.species === 'cat')
+
+const includedItems = computed(() => {
+  if (isCat.value) {
+    return [
+      'Spay or Neuter',
+      'Vaccinations (kitten series or adult booster)',
+      'FeLV & FIV Testing',
+      'De-worming',
+      'Flea Treatment',
+      'Health Exam by a Veterinarian',
+    ]
+  }
+  return [
+    'Spay or Neuter',
+    'Vaccinations (puppy series or adult booster)',
+    'Heartworm Testing & Prevention',
+    'De-worming',
+    'Flea & Tick Treatment',
+    'Health Exam by a Veterinarian',
+  ]
+})
+
+const goodToKnowItems = computed<IPolicyItem[]>(() => {
+  if (isCat.value) {
+    return [
+      {
+        title: 'Indoor Only',
+        description: 'For their safety and wellbeing, adopted cats must be kept indoors.',
+      },
+      {
+        title: 'No Declawing',
+        description: 'Adopters must agree never to declaw their cat.',
+      },
+      {
+        title: 'Not as Gifts',
+        description: 'We do not place cats as gifts for others.',
+      },
+    ]
+  }
+  return [
+    {
+      title: 'Safe & Secure Home',
+      description: 'A secure yard or dedicated on-leash walking routine is required.',
+    },
+    {
+      title: 'Training & Socialization',
+      description: 'Adopters must commit to humane, positive-reinforcement care.',
+    },
+    {
+      title: 'Not as Gifts',
+      description: 'We do not place dogs as gifts for others.',
+    },
+  ]
+})
 </script>
 
 <template>
   <div class="info-section-wrapper">
-    <div v-if="isKitten" class="kitten-notice" role="alert">
+    <div v-if="isKitten && isCat" class="kitten-notice" role="alert">
       <span class="kitten-notice-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -61,7 +121,8 @@ const goodToKnowItems: IPolicyItem[] = [
         </p>
       </div>
     </div>
-    <section class="intro-grid" aria-label="Cat adoption policies and included care">
+
+    <section class="intro-grid" :aria-label="`${animalLabel} adoption policies and included care`">
       <article class="policy-card">
         <h3 class="policy-title">What's <span>Included</span></h3>
         <ul class="included-list">
@@ -81,14 +142,14 @@ const goodToKnowItems: IPolicyItem[] = [
           </li>
         </ul>
         <p class="policy-body">
-          Kittens may not have completed every service at the time of adoption. By around 6 months
-          of age, kittens are expected to receive all required veterinary care listed above. If you
-          adopt a kitten, you agree to coordinate with an ADOHR director so your kitten can attend
+          {{ isCat ? 'Kittens' : 'Puppies' }} may not have completed every service at the time of adoption. By around 6 months
+          of age, {{ isCat ? 'kittens' : 'puppies' }} are expected to receive all required veterinary care listed above. If you
+          adopt a {{ isCat ? 'kitten' : 'puppy' }}, you agree to coordinate with an ADOHR director so your {{ animalLabel }} can attend
           required follow-up vet visits.
         </p>
         <p class="policy-body">
           These services would ordinarily cost well over $350. Additional donations are always
-          appreciated and directly support cats needing extra medical care.
+          appreciated and directly support {{ isCat ? 'cats' : 'dogs' }} needing extra medical care.
         </p>
       </article>
 
@@ -102,10 +163,35 @@ const goodToKnowItems: IPolicyItem[] = [
         </ul>
         <p class="policy-body final-note">
           Not every application is approved. Our first responsibility is always the long-term
-          welfare of the cat, and we appreciate your understanding.
+          welfare of the {{ animalLabel }}, and we appreciate your understanding.
         </p>
       </article>
     </section>
+
+    <!-- Second Pet Selection Box (Matching Image 2 & 3) -->
+    <div v-if="availablePetsOptions.length > 0 || isGeneral" class="second-pet-selection-box">
+      <p class="selection-box-title">
+        Would you like to add a second {{ animalLabel }} to this application?
+      </p>
+      <div class="selection-input-wrap">
+        <Select
+          v-if="availablePetsOptions.length > 0"
+          :modelValue="secondPetId ?? ''"
+          :options="[{ label: 'None', value: '' }, ...availablePetsOptions]"
+          placeholder="Select a second pet (optional)"
+          fullWidth
+          @update:modelValue="(val: unknown) => emit('update:secondPetId', val ? String(val) : null)"
+        />
+        <input
+          v-else-if="isGeneral"
+          type="text"
+          class="general-second-input"
+          :value="generalPetName"
+          placeholder="Name of second pet or breed preference (optional)"
+          @input="emit('update:generalPetName', ($event.target as HTMLInputElement).value)"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -283,6 +369,46 @@ const goodToKnowItems: IPolicyItem[] = [
 
 .final-note {
   margin-top: 1.25rem;
+}
+
+.second-pet-selection-box {
+  background-color: oklch(from var(--color-secondary) 96% 0.05 h);
+  border: 1.5px dashed var(--color-secondary);
+  border-radius: var(--radius-lg, 16px);
+  padding: 1.25rem 1.5rem;
+  margin: 0.75rem auto 0;
+  max-width: 900px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  box-sizing: border-box;
+
+  .selection-box-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .selection-input-wrap {
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .general-second-input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--line-ink);
+    background: var(--text-inverse);
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    box-sizing: border-box;
+  }
 }
 
 @media (width <= 640px) {

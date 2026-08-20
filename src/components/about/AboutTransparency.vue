@@ -5,32 +5,41 @@ import Candid from '@/components/common/candid-award/Candid.vue'
 <template>
   <section class="transparency">
     <div class="content-wrapper">
-      <div class="awards" v-scroll-reveal>
-        <a
-          href="https://www.guidestar.org/profile/81-0780050"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="View ADOHR Candid profile"
-        >
-          <Candid type="Gold" year="2024" class="award-item" />
-        </a>
-        <a
-          href="https://www.guidestar.org/profile/81-0780050"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="View ADOHR Candid profile"
-        >
-          <Candid type="Gold" year="2023" class="award-item" style="transition-delay: 0.1s" />
-        </a>
-        <a
-          href="https://www.guidestar.org/profile/81-0780050"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="View ADOHR Candid profile"
-        >
-          <Candid type="Silver" year="2022" class="award-item" style="transition-delay: 0.2s" />
-        </a>
+      <div class="awards-container" v-scroll-reveal>
+        <div class="awards-showcase">
+          <p class="showcase-label">Recognized by Candid · GuideStar</p>
+          <div class="awards-grid">
+            <a
+              href="https://www.guidestar.org/profile/81-0780050"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View ADOHR 2024 Gold Candid profile"
+              class="seal-link"
+            >
+              <Candid type="Gold" year="2024" />
+            </a>
+            <a
+              href="https://www.guidestar.org/profile/81-0780050"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View ADOHR 2023 Gold Candid profile"
+              class="seal-link"
+            >
+              <Candid type="Gold" year="2023" />
+            </a>
+            <a
+              href="https://www.guidestar.org/profile/81-0780050"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View ADOHR 2022 Silver Candid profile"
+              class="seal-link"
+            >
+              <Candid type="Silver" year="2022" />
+            </a>
+          </div>
+        </div>
       </div>
+
       <div class="notice reveal-left" v-scroll-reveal>
         <p class="eyebrow">Accountability</p>
         <h2>Transparency</h2>
@@ -47,7 +56,7 @@ import Candid from '@/components/common/candid-award/Candid.vue'
             target="_blank"
             rel="noopener noreferrer"
           >
-            View our Candid profile
+            View our Candid profile ↗
           </a>
         </p>
       </div>
@@ -99,6 +108,48 @@ import Candid from '@/components/common/candid-award/Candid.vue'
     color: var(--text-secondary);
   }
 
+  .awards-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .awards-showcase {
+    background: oklch(from var(--text-primary) l c h / 3%);
+    border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 14%));
+    border-radius: var(--radius-xl, 24px);
+    padding: 2rem 2.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+
+    .showcase-label {
+      font-family: ui-monospace, 'SF Mono', monospace;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .awards-grid {
+      display: flex;
+      gap: 1.75rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .seal-link {
+      display: inline-block;
+      transition: transform 0.2s ease;
+      text-decoration: none;
+    }
+  }
+
   .notice {
     text-align: right;
     display: flex;
@@ -123,6 +174,10 @@ import Candid from '@/components/common/candid-award/Candid.vue'
         font-weight: 700;
         text-decoration: underline;
         text-underline-offset: 3px;
+
+        &:hover {
+          color: var(--color-primary);
+        }
       }
 
       .candid-link-row {
@@ -132,14 +187,6 @@ import Candid from '@/components/common/candid-award/Candid.vue'
     }
   }
 
-  .awards {
-    display: flex;
-    gap: 3rem;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-  }
-
   @media (width <= 1024px) {
     .content-wrapper {
       flex-direction: column;
@@ -147,9 +194,14 @@ import Candid from '@/components/common/candid-award/Candid.vue'
       text-align: center;
     }
 
-    .awards {
+    .awards-container {
       order: -1;
-      margin-bottom: 2rem;
+      width: 100%;
+    }
+
+    .awards-showcase {
+      padding: 1.5rem;
+      width: 100%;
     }
 
     .notice {
@@ -163,25 +215,5 @@ import Candid from '@/components/common/candid-award/Candid.vue'
       }
     }
   }
-
-  @media (width >= 321px) and (width <= 430px) {
-    .awards {
-      flex-direction: column;
-      gap: 3.5rem;
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-    }
-  }
-}
-
-:deep(.award-item) {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-:deep(.active .award-item) {
-  opacity: 1;
-  transform: translateY(0);
 }
 </style>

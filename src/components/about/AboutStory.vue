@@ -2,14 +2,14 @@
   <section class="story">
     <div class="content-wrapper">
       <div v-scroll-reveal class="reveal-left image-container">
-        <span class="arch-frame">
+        <div class="story-image-card">
           <img
-            src="/images/watercolor.jpeg"
-            alt="ADOHR watercolor inspiration"
+            src="/images/about-story.jpg"
+            alt="ADOHR team of veteran volunteers, fosters, and rescued pets together outdoors"
             width="600"
-            height="466"
+            height="450"
           />
-        </span>
+        </div>
       </div>
       <div class="story-text reveal-right" v-scroll-reveal>
         <p class="eyebrow">Our story</p>
@@ -54,23 +54,28 @@
     justify-content: center;
   }
 
-  .arch-frame {
+  .story-image-card {
     display: block;
     position: relative;
-    padding: 10px;
-    border: 1px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
-    border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
+    border-radius: var(--radius-xl, 24px);
+    overflow: hidden;
+    border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+    box-shadow: var(--shadow-lg);
+    background: var(--text-inverse);
   }
 
   img {
     display: block;
     width: 100%;
-    max-width: 420px;
+    max-width: 460px;
     height: auto;
-    aspect-ratio: 5 / 6;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
-    border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
-    box-shadow: var(--shadow-lg);
+    transition: transform 0.4s ease;
+  }
+
+  .story-image-card:hover img {
+    transform: scale(1.03);
   }
 
   .story-text {

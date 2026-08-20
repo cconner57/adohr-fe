@@ -108,9 +108,6 @@ export const useAdoptionStore = defineStore('adoption', () => {
   const formState = reactive<FormState>(getInitialFormState())
 
   const validationStep = computed(() => {
-    if (petStore.selectedPet?.species === 'dog') {
-      return step.value
-    }
     return Math.max(step.value - 1, 0)
   })
 

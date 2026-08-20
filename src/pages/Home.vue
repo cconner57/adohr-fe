@@ -43,6 +43,15 @@ onMounted(() => {
         </div>
       </section>
 
+      <!-- Divider between Spotlight & Mission -->
+      <div class="section-divider-wrapper" aria-hidden="true" v-scroll-reveal>
+        <div class="section-divider">
+          <span class="divider-line"></span>
+          <span class="divider-icon">🐾</span>
+          <span class="divider-line"></span>
+        </div>
+      </div>
+
       <!-- 4. Our Mission Section -->
       <section class="section mission-section" aria-label="Our Mission">
         <div class="content-wrapper" v-scroll-reveal>
@@ -63,6 +72,14 @@ onMounted(() => {
           <div v-scroll-reveal>
             <Impact />
           </div>
+
+          <!-- Divider between Stats and Ways to Help buttons -->
+          <div class="impact-action-divider" aria-hidden="true" v-scroll-reveal>
+            <span class="divider-line"></span>
+            <span class="divider-pill">Ways to get involved</span>
+            <span class="divider-line"></span>
+          </div>
+
           <section class="call-to-action" aria-label="Ways to help" v-scroll-reveal>
             <BannerButton
               imgSrc="/images/paw.svg"
@@ -173,6 +190,61 @@ onMounted(() => {
 .impact-section {
   background-color: var(--text-inverse);
   padding: clamp(64px, 8vw, 100px) 0 clamp(80px, 10vw, 120px);
+}
+
+.section-divider-wrapper {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 var(--layout-padding-side);
+
+  .section-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+
+    .divider-line {
+      flex: 1;
+      height: 1.5px;
+      background: var(--line-ink, oklch(from var(--text-primary) l c h / 14%));
+    }
+
+    .divider-icon {
+      font-size: 1.25rem;
+      opacity: 0.6;
+      user-select: none;
+    }
+  }
+}
+
+.impact-action-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0.5rem 0;
+
+  .divider-line {
+    flex: 1;
+    height: 1.5px;
+    background: var(--line-ink, oklch(from var(--text-primary) l c h / 14%));
+  }
+
+  .divider-pill {
+    padding: 6px 18px;
+    border-radius: var(--radius-full);
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-secondary);
+    background: oklch(from var(--text-primary) l c h / 4%);
+    border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+    white-space: nowrap;
+    margin: 0 1.25rem;
+  }
 }
 
 .call-to-action {

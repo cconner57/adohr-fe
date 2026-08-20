@@ -91,11 +91,11 @@
   width: 100%;
 
   &::before {
-    content: counter(intake-section, decimal-leading-zero);
+    content: var(--step-prefix, '01') '.' counter(intake-section);
     font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
     font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     color: var(--color-secondary);
     flex-shrink: 0;
   }

@@ -101,12 +101,18 @@ const formattedAnimal = computed(() => {
   if (!selectedAnimal.value) return ''
   return selectedAnimal.value.charAt(0).toUpperCase() + selectedAnimal.value.slice(1)
 })
+
+const stepPrefix = computed(() => String(step.value + 1).padStart(2, '0'))
 </script>
 
 <template>
   <section class="page-shell">
     <div v-if="!isSubmitted" class="form-container">
-      <section class="form-card" aria-labelledby="form-title">
+      <section
+        class="form-card"
+        :style="{ '--step-prefix': `'${stepPrefix}'` }"
+        aria-labelledby="form-title"
+      >
         <div class="form-header">
           <p class="eyebrow">Intake · Surrender</p>
           <div class="title-row">
@@ -121,10 +127,10 @@ const formattedAnimal = computed(() => {
         </div>
 
         <!-- Draft Auto-Save Banner -->
-        <div v-if="hasSavedDraft" class="draft-badge-bar">
+        <div v-if="hasSavedDraft && step > 0" class="draft-badge-bar">
           <span class="draft-indicator">
             <span class="dot"></span>
-            Draft auto-saved · Step {{ step + 1 }} of 7
+            Draft auto-saved · Step {{ step }} of 6
           </span>
           <button type="button" class="clear-draft-btn" @click="handleClearDraft">
             Clear Draft
@@ -281,11 +287,11 @@ const formattedAnimal = computed(() => {
       width: 100%;
 
       &::before {
-        content: counter(intake-section, decimal-leading-zero);
+        content: var(--step-prefix, '01') '.' counter(intake-section);
         font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
         font-size: 0.78rem;
-        font-weight: 600;
-        letter-spacing: 0.1em;
+        font-weight: 700;
+        letter-spacing: 0.08em;
         color: var(--color-secondary);
         flex-shrink: 0;
       }

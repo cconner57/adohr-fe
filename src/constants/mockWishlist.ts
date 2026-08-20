@@ -8,7 +8,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'urgent',
     description: 'Essential for bottle-baby kittens without a mother.',
     estimatedCost: '$15-20',
-    icon: '🍼'
+    icon: 'bottle',
   },
   {
     id: 'w2',
@@ -17,7 +17,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'high',
     description: 'High-protein dry food for growing pups.',
     estimatedCost: '$30-45',
-    icon: '🥣'
+    icon: 'bowl',
   },
   {
     id: 'w3',
@@ -26,7 +26,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'medium',
     description: 'Soft food for older dogs and cats with dental issues.',
     estimatedCost: '$25-35',
-    icon: '🥫'
+    icon: 'can',
   },
   {
     id: 'w4',
@@ -35,7 +35,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'low',
     description: 'Soft, smelly treats for positive reinforcement training.',
     estimatedCost: '$10-15',
-    icon: '🥓'
+    icon: 'treats',
   },
   {
     id: 'w5',
@@ -44,7 +44,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'urgent',
     description: 'Monthly topical treatments for incoming rescues.',
     estimatedCost: '$45-60',
-    icon: '🦟'
+    icon: 'shield',
   },
   {
     id: 'w6',
@@ -53,7 +53,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'urgent',
     description: 'Critical medication for treating parasites in new arrivals.',
     estimatedCost: '$20-30',
-    icon: '💊'
+    icon: 'pill',
   },
   {
     id: 'w7',
@@ -62,7 +62,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'high',
     description: 'Ointment for kittens with eye infections.',
     estimatedCost: '$18-25',
-    icon: '👁️'
+    icon: 'eye',
   },
   {
     id: 'w8',
@@ -71,7 +71,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'medium',
     description: 'Gentle cleansing solution for dirty or infected ears.',
     estimatedCost: '$12-18',
-    icon: '👂'
+    icon: 'ear',
   },
   {
     id: 'w9',
@@ -80,7 +80,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'medium',
     description: 'Gauze, wrap, and antiseptic for minor scrapes.',
     estimatedCost: '$25-35',
-    icon: '🚑'
+    icon: 'first-aid',
   },
   {
     id: 'w10',
@@ -89,7 +89,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'high',
     description: 'Soft, washable blankets to keep animals warm.',
     estimatedCost: '$10-20',
-    icon: '🧣'
+    icon: 'blanket',
   },
   {
     id: 'w11',
@@ -98,7 +98,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'medium',
     description: 'Supportive bedding for recovering dogs.',
     estimatedCost: '$25-40',
-    icon: '🛏️'
+    icon: 'bed',
   },
   {
     id: 'w12',
@@ -107,7 +107,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'low',
     description: 'Pheromone sprays to help anxious pets settle in.',
     estimatedCost: '$20-30',
-    icon: '🌬️'
+    icon: 'spray',
   },
   {
     id: 'w13',
@@ -116,16 +116,16 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'urgent',
     description: 'Microwaveable heating discs for neonates.',
     estimatedCost: '$30-35',
-    icon: '🔥'
+    icon: 'heating',
   },
   {
     id: 'w14',
-    name: 'Enzyme Cleaner (Nature\'s Miracle)',
+    name: "Enzyme Cleaner (Nature's Miracle)",
     category: 'cleaning',
     priority: 'high',
     description: 'Essential for cleaning up accidents in foster homes.',
     estimatedCost: '$15-25',
-    icon: '🫧'
+    icon: 'cleaning',
   },
   {
     id: 'w15',
@@ -134,7 +134,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'urgent',
     description: 'Unscented clumping litter for our foster cats.',
     estimatedCost: '$18-25',
-    icon: '🐈'
+    icon: 'litter',
   },
   {
     id: 'w16',
@@ -143,7 +143,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'high',
     description: 'For un-vaccinated puppies learning to potty.',
     estimatedCost: '$20-30',
-    icon: '🧻'
+    icon: 'pads',
   },
   {
     id: 'w17',
@@ -152,7 +152,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'medium',
     description: 'Unscented detergent for washing endless rescue bedding.',
     estimatedCost: '$12-18',
-    icon: '🧺'
+    icon: 'laundry',
   },
   {
     id: 'w18',
@@ -161,7 +161,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'high',
     description: 'For safely transporting cats and small dogs to vet appointments.',
     estimatedCost: '$30-45',
-    icon: '🎒'
+    icon: 'carrier',
   },
   {
     id: 'w19',
@@ -170,7 +170,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'medium',
     description: 'Medium and large crates for adoption events.',
     estimatedCost: '$45-75',
-    icon: '🪤'
+    icon: 'crate',
   },
   {
     id: 'w20',
@@ -179,7 +179,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'low',
     description: 'Waterproof covers to protect volunteer vehicles.',
     estimatedCost: '$25-40',
-    icon: '🚗'
+    icon: 'car',
   },
   {
     id: 'w21',
@@ -188,7 +188,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'high',
     description: 'Durable rubber toys for stuffing with treats to keep dogs busy.',
     estimatedCost: '$10-18',
-    icon: '🦴'
+    icon: 'kong',
   },
   {
     id: 'w22',
@@ -197,7 +197,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'medium',
     description: 'Interactive toys to help shy cats build confidence.',
     estimatedCost: '$8-12',
-    icon: '🪶'
+    icon: 'feather',
   },
   {
     id: 'w23',
@@ -206,7 +206,7 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'low',
     description: 'Mental enrichment for high-energy fosters.',
     estimatedCost: '$15-25',
-    icon: '🧩'
+    icon: 'puzzle',
   },
   {
     id: 'w24',
@@ -215,6 +215,6 @@ export const MOCK_WISHLIST: IWishlistItem[] = [
     priority: 'medium',
     description: 'Tough chews for anxious or teething dogs.',
     estimatedCost: '$12-20',
-    icon: '🦷'
-  }
+    icon: 'chew',
+  },
 ]

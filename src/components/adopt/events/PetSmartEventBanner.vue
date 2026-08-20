@@ -82,7 +82,7 @@ const handleFastTrack = () => {
       <div class="text-block">
         <h3 class="banner-title">Meet Our Adoptable Pets at PetSmart Pasadena</h3>
         <p class="banner-subtitle">
-          <strong>{{ nextEventDates }}</strong> &bull; 3347 E Foothill Blvd, Pasadena (Hastings Ranch)
+          <strong>{{ nextEventDates }}</strong> &bull; 3347 E Foothill Blvd, Pasadena
         </p>
       </div>
 
@@ -106,6 +106,7 @@ const handleFastTrack = () => {
           :variant="variant === 'dark' ? 'secondary' : 'secondary'"
           :color="variant === 'dark' ? 'white' : 'blue'"
           size="small"
+          class="what-to-bring-btn"
           @click="isPrepModalOpen = true"
         />
 
@@ -135,6 +136,9 @@ const handleFastTrack = () => {
   padding: 1.25rem 1.5rem;
   box-shadow: var(--shadow-sm);
   margin-bottom: 1.75rem;
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -190,6 +194,18 @@ const handleFastTrack = () => {
             background-color: var(--color-warning);
             color: var(--color-primary);
             border-color: var(--color-warning);
+          }
+        }
+
+        :deep(.what-to-bring-btn) {
+          background-color: oklch(100% 0 0deg / 14%);
+          color: #ffffff !important;
+          border: 1.5px solid oklch(100% 0 0deg / 45%) !important;
+
+          &:hover {
+            background-color: oklch(100% 0 0deg / 28%);
+            border-color: #ffffff !important;
+            color: #ffffff !important;
           }
         }
       }

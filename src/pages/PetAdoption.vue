@@ -5,8 +5,6 @@ import { useRouter } from 'vue-router'
 
 import FormSubmitted from '@/components/common/form-submitted/FormSubmitted.vue'
 import Button from '@/components/common/ui/Button.vue'
-import InputField from '@/components/common/ui/InputField.vue'
-import Select from '@/components/common/ui/Select.vue'
 import AdoptionSteps from '@/components/pet-adoption/adoption-steps/AdoptionSteps.vue'
 import CatAdoptionInfoSection from '@/components/pet-adoption/cat-adoption/CatAdoptionInfoSection.vue'
 import CurrentPetsSection from '@/components/pet-adoption/cat-adoption/CurrentPetsSection.vue'
@@ -45,8 +43,12 @@ const { submitMetric } = useMetrics()
 const species = computed(() => selectedPet.value?.species ?? 'cat')
 const animalLabel = computed(() => (species.value === 'dog' ? 'dog' : 'cat'))
 const isCatFlow = computed(() => species.value === 'cat')
-const isCatIntroStep = computed(() => isCatFlow.value && step.value === 0)
-const visibleStep = computed(() => (isCatFlow.value ? Math.max(step.value - 1, 0) : step.value))
+const isIntroStep = computed(() => step.value === 0)
+const visibleStep = computed(() => Math.max(step.value - 1, 0))
+const stepPrefix = computed(() => {
+  const pageNum = Math.max(step.value, 1)
+  return String(pageNum).padStart(2, '0')
+})
 
 const isKitten = computed(() => {
   const fullPet = petStore.currentPets.find((p) => p.id === selectedPet.value?.id)
@@ -56,6 +58,7 @@ const isKitten = computed(() => {
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
   return new Date(dob) > sixMonthsAgo
 })
+
 const adoptionSteps = computed(() => {
   if (species.value === 'dog') {
     return ['General', 'Home', 'New Dog', 'Past Pets', 'Other', 'Summary']
@@ -77,11 +80,11 @@ const availablePetsOptions = computed(() => {
 })
 
 const headerText = computed(() => {
-  if (species.value === 'cat') {
-    if (!isCatIntroStep.value) {
-      return undefined
-    }
+  if (!isIntroStep.value) {
+    return undefined
+  }
 
+  if (species.value === 'cat') {
     return 'This application is intended as a means to match the right cat with the right home. The more detail you provide, the better. Most adoptable pets are spayed/neutered, vaccinated, and microchipped. For younger kittens, we offer a foster-to-adopt program where you take them home now and return for scheduled vet care until they are ready for official adoption. Typical adoption fees are $300 for kittens and $250 for adults. Adoption fees are tax-deductible donations, not purchase prices. Thank you for considering adoption!'
   }
 
@@ -110,8 +113,17 @@ const handleBlur = (field: string) => {
   touched[field] = true
 }
 
+const handleBack = () => {
+  if (step.value === 0) {
+    router.push('/adopt')
+  } else {
+    prevStep()
+    globalThis.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
 const handleSubmit = async () => {
-  if (!adoptionStore.isStepValid) {
+  if (step.value > 0 && !adoptionStore.isStepValid) {
     hasAttemptedSubmit.value = true
     setTimeout(() => {
       const errorSummary = document.querySelector('.validation-summary') as HTMLElement
@@ -161,30 +173,26 @@ const secondPetName = computed(() => {
 
 <template>
   <section class="page-shell">
-    <div v-if="!isSubmitted" class="dossier">
-      <aside class="rail" aria-label="Application progress">
-        <p class="rail-code">Intake · Adoption</p>
-        <AdoptionSteps
-          v-if="!isCatIntroStep"
-          :currentStep="visibleStep"
-          :steps="adoptionSteps"
-          vertical
-        />
-        <p v-else class="rail-note">
-          Read the introduction, then begin — your answers help us make the right match.
-        </p>
-        <p v-if="!isCatIntroStep" class="rail-count">
-          Step {{ visibleStep + 1 }} of {{ adoptionSteps.length }}
-        </p>
-      </aside>
-      <section class="form-card" aria-labelledby="form-title">
+    <div v-if="!isSubmitted" class="form-container">
+      <form
+        class="form-card"
+        :style="{ '--step-prefix': `'${stepPrefix}'` }"
+        aria-label="Adoption Application"
+        novalidate
+        @submit.prevent
+      >
         <ApplicationHeader
           :header-title="species === 'cat' ? 'Cat' : 'Dog'"
           :header-text="headerText"
         />
 
+        <!-- Horizontal Stepper inside the card when not on intro step -->
+        <section v-if="!isIntroStep" class="progress-panel">
+          <AdoptionSteps :currentStep="visibleStep" :steps="adoptionSteps" />
+        </section>
+
         <!-- Draft Auto-Save Banner -->
-        <div v-if="hasSavedDraft" class="draft-badge-bar">
+        <div v-if="hasSavedDraft && !isIntroStep" class="draft-badge-bar">
           <span class="draft-indicator">
             <span class="dot"></span>
             Draft auto-saved · Step {{ visibleStep + 1 }} of {{ adoptionSteps.length }}
@@ -193,7 +201,8 @@ const secondPetName = computed(() => {
             Clear Draft
           </button>
         </div>
-        <div v-show="!isCatIntroStep" class="cat-name-display">
+
+        <div v-show="!isIntroStep" class="cat-name-display">
           <h2>Adopting Pet{{ secondPetName ? 's' : '' }}:</h2>
           <p>
             <template v-if="selectedPet?.id === 'unspecified'">
@@ -205,16 +214,29 @@ const secondPetName = computed(() => {
             </template>
           </p>
         </div>
-        <CatAdoptionInfoSection v-show="isCatIntroStep" :is-kitten="isKitten" />
+
+        <CatAdoptionInfoSection
+          v-show="isIntroStep"
+          :species="species"
+          :animal-label="animalLabel"
+          :is-kitten="isKitten"
+          :second-pet-id="formState.secondPetId"
+          :available-pets-options="availablePetsOptions"
+          :is-general="selectedPet?.id === 'unspecified'"
+          :general-pet-name="formState.generalPetName || ''"
+          @update:second-pet-id="(id: string | null) => (formState.secondPetId = id)"
+          @update:general-pet-name="(name: string) => (formState.generalPetName = name)"
+        />
+
         <GeneralSection
-          v-show="(!isCatFlow && step === 0) || (isCatFlow && step === 1)"
+          v-show="step === 1"
           v-model="formState"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"
         />
         <HomeSection
-          v-show="(!isCatFlow && step === 1) || (isCatFlow && step === 2)"
+          v-show="step === 2"
           v-model="formState"
           :touched="touched"
           :handleBlur="handleBlur"
@@ -222,7 +244,7 @@ const secondPetName = computed(() => {
           :animalLabel="animalLabel"
         />
         <NewCatSection
-          v-show="(!isCatFlow && step === 2) || (isCatFlow && step === 3)"
+          v-show="step === 3"
           v-model="formState"
           :touched="touched"
           :handleBlur="handleBlur"
@@ -230,7 +252,7 @@ const secondPetName = computed(() => {
           :animalLabel="animalLabel"
         />
         <CurrentPetsSection
-          v-show="(!isCatFlow && step === 3) || (isCatFlow && step === 4)"
+          v-show="isCatFlow && step === 4"
           v-model="formState"
           :touched="touched"
           :handleBlur="handleBlur"
@@ -285,39 +307,6 @@ const secondPetName = computed(() => {
           <p class="error-message">{{ submissionError }}</p>
         </div>
 
-        <!-- General Application Flow: Required Interested Pet Name -->
-        <div v-if="step === 0 && selectedPet?.id === 'unspecified'" class="second-pet-selection">
-          <InputField
-            v-model="formState.generalPetName"
-            :label="`Which ${animalLabel} are you interested in?`"
-            placeholder="Enter pet name"
-            required
-            fullWidth
-            :has-error="
-              hasAttemptedSubmit && (!formState.generalPetName || !formState.generalPetName.trim())
-            "
-            @blur="handleBlur('generalPetName')"
-          />
-        </div>
-
-        <!-- Specific Pet Flow: Optional Second Pet Selection -->
-        <div
-          v-else-if="
-            step === 0 && selectedPet?.id !== 'unspecified' && availablePetsOptions.length > 0
-          "
-          class="second-pet-selection"
-        >
-          <p class="selection-text">
-            Would you like to add a second {{ animalLabel }} to this application?
-          </p>
-          <Select
-            v-model="formState.secondPetId"
-            :options="[{ label: 'None', value: '' }, ...availablePetsOptions]"
-            placeholder="Select a second pet (optional)"
-            fullWidth
-          />
-        </div>
-
         <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
           {{
             `Step ${visibleStep + 1} of ${adoptionSteps.length}: ${adoptionSteps[visibleStep] || 'Application'}`
@@ -326,12 +315,12 @@ const secondPetName = computed(() => {
 
         <div class="actions">
           <Button
-            @click="prevStep"
+            @click="handleBack"
             title="Back"
             :color="'white'"
             size="large"
             style="border: 1px solid var(--color-primary); color: var(--color-primary)"
-            :disabled="step === 0 || isSubmitted"
+            :disabled="isSubmitted || isSubmitting"
           />
           <Button
             @click="handleSubmit"
@@ -343,7 +332,7 @@ const secondPetName = computed(() => {
             :disabled="isSubmitted || isSubmitting"
           />
         </div>
-      </section>
+      </form>
     </div>
 
     <FormSubmitted

@@ -230,21 +230,42 @@ onUnmounted(() => {
             <p class="step-desc">Select all that apply to ensure safe compatibility.</p>
             <div class="checkbox-grid">
               <label class="checkbox-card" :class="{ selected: goodWithKids }">
-                <input type="checkbox" v-model="goodWithKids" />
-                <span class="cb-title">Children under 12</span>
-                <span class="cb-desc">Needs a gentle, kid-friendly companion</span>
+                <input type="checkbox" v-model="goodWithKids" class="sr-only" />
+                <div class="custom-cb" :class="{ checked: goodWithKids }" aria-hidden="true">
+                  <svg v-if="goodWithKids" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div class="cb-content">
+                  <span class="cb-title">Children under 12</span>
+                  <span class="cb-desc">Needs a gentle, kid-friendly companion</span>
+                </div>
               </label>
 
               <label class="checkbox-card" :class="{ selected: goodWithDogs }">
-                <input type="checkbox" v-model="goodWithDogs" />
-                <span class="cb-title">Other Dog(s)</span>
-                <span class="cb-desc">Needs a dog-friendly socialite</span>
+                <input type="checkbox" v-model="goodWithDogs" class="sr-only" />
+                <div class="custom-cb" :class="{ checked: goodWithDogs }" aria-hidden="true">
+                  <svg v-if="goodWithDogs" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div class="cb-content">
+                  <span class="cb-title">Other Dog(s)</span>
+                  <span class="cb-desc">Needs a dog-friendly socialite</span>
+                </div>
               </label>
 
               <label class="checkbox-card" :class="{ selected: goodWithCats }">
-                <input type="checkbox" v-model="goodWithCats" />
-                <span class="cb-title">Other Cat(s)</span>
-                <span class="cb-desc">Needs a cat-friendly companion</span>
+                <input type="checkbox" v-model="goodWithCats" class="sr-only" />
+                <div class="custom-cb" :class="{ checked: goodWithCats }" aria-hidden="true">
+                  <svg v-if="goodWithCats" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div class="cb-content">
+                  <span class="cb-title">Other Cat(s)</span>
+                  <span class="cb-desc">Needs a cat-friendly companion</span>
+                </div>
               </label>
             </div>
           </div>
@@ -270,231 +291,4 @@ onUnmounted(() => {
   </Teleport>
 </template>
 
-<style scoped lang="css">
-.matcher-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: oklch(from var(--text-primary) l c h / 65%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: var(--z-modal, 1000);
-  padding: 1rem;
-  backdrop-filter: blur(6px);
-  animation: fadeIn 0.2s ease-out;
-}
-
-.matcher-modal {
-  background: var(--text-inverse);
-  border-radius: var(--radius-xl, 24px);
-  border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-  box-shadow: var(--shadow-xl);
-  width: 100%;
-  max-width: 580px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  animation: slideUp 0.25s ease-out;
-}
-
-.matcher-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 1.25rem 1.5rem 1rem;
-
-  .header-left {
-    .step-badge {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--color-secondary);
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    h2 {
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin: 0;
-      color: var(--text-primary);
-    }
-  }
-
-  .close-btn {
-    background: transparent;
-    border: none;
-    font-size: 1.75rem;
-    line-height: 1;
-    cursor: pointer;
-    color: var(--text-secondary);
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-
-    &:hover {
-      color: var(--text-primary);
-    }
-  }
-}
-
-.progress-bar-track {
-  height: 4px;
-  background-color: oklch(from var(--text-primary) l c h / 8%);
-  width: 100%;
-
-  .progress-bar-fill {
-    height: 100%;
-    background-color: var(--color-secondary);
-    transition: width 0.3s ease;
-  }
-}
-
-.matcher-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-
-  .quiz-step {
-    h3 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin: 0 0 4px;
-      color: var(--text-primary);
-    }
-
-    .step-desc {
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-      margin: 0 0 1.25rem;
-    }
-  }
-}
-
-.options-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-
-  .option-card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem 1.25rem;
-    background-color: oklch(from var(--text-primary) l c h / 3%);
-    border: 2px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-    border-radius: var(--radius-md, 12px);
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.15s ease;
-    font-family: inherit;
-
-    .option-icon {
-      font-size: 1.5rem;
-      margin-bottom: 4px;
-    }
-
-    strong {
-      font-size: 1rem;
-      color: var(--text-primary);
-      margin-bottom: 2px;
-    }
-
-    small {
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-    }
-
-    &:hover {
-      border-color: var(--color-primary);
-      background-color: var(--color-primary-weak);
-    }
-
-    &.selected {
-      border-color: var(--color-primary);
-      background-color: var(--color-primary-weak);
-      box-shadow: 0 0 0 1px var(--color-primary);
-    }
-  }
-}
-
-.checkbox-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-
-  .checkbox-card {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem 1.25rem;
-    background-color: oklch(from var(--text-primary) l c h / 3%);
-    border: 2px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-    border-radius: var(--radius-md, 12px);
-    cursor: pointer;
-    position: relative;
-    padding-left: 3rem;
-    transition: all 0.15s ease;
-
-    input[type='checkbox'] {
-      position: absolute;
-      left: 1.25rem;
-      top: 1.25rem;
-      width: 18px;
-      height: 18px;
-      accent-color: var(--color-primary);
-      cursor: pointer;
-    }
-
-    .cb-title {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--text-primary);
-      margin-bottom: 2px;
-    }
-
-    .cb-desc {
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-    }
-
-    &:hover {
-      border-color: var(--color-primary);
-    }
-
-    &.selected {
-      border-color: var(--color-primary);
-      background-color: var(--color-primary-weak);
-    }
-  }
-}
-
-.matcher-footer {
-  display: flex;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-  background-color: oklch(from var(--text-inverse) 98% c h);
-
-  .spacer {
-    flex: 1;
-  }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-</style>
+<style scoped src="./PetMatcherModal.css"></style>

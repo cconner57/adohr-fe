@@ -204,7 +204,13 @@ const fosterStepLabels = [
 <template>
   <section class="page-shell">
     <div v-if="!state.isSubmitted" class="form-container">
-      <form class="form-card" aria-label="Foster Application" novalidate @submit.prevent>
+      <form
+        class="form-card"
+        :style="{ '--step-prefix': `'${String(state.currentStep).padStart(2, '0')}'` }"
+        aria-label="Foster Application"
+        novalidate
+        @submit.prevent
+      >
         <ApplicationHeader
           header-title="Foster"
           :header-text="

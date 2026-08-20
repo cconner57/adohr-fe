@@ -17,12 +17,12 @@ function handleAdopt() {
       <div class="hero-copy">
         <p class="eyebrow hero-eyebrow">Cat &amp; dog rescue · Southern California</p>
         <h1>
-          Every pet deserves a door that
-          <span class="display-accent">opens&nbsp;home.</span>
+          Connecting rescued pets with loving
+          <span class="display-accent">forever&nbsp;homes.</span>
         </h1>
         <p class="hero-lede">
-          We rescue abandoned cats and dogs, heal them in foster homes, and match them with people
-          ready to love them for life.
+          We rescue cats and dogs across Southern California, provide medical care and loving foster
+          homes, and match them with families ready for a lifetime companion.
         </p>
         <div class="hero-actions">
           <Button title="Meet the pets" color="blue" size="large" @click="handleAdopt" />
@@ -30,10 +30,10 @@ function handleAdopt() {
       </div>
 
       <div class="hero-portrait">
-        <div class="arch">
+        <div class="hero-image-card">
           <img
             src="/images/hero.jpg"
-            alt="A rescued dog looking up, ready for adoption"
+            alt="An adorable rescued dog and tabby cat sitting together in a sunlit home, ready for adoption"
             width="600"
             height="760"
             fetchpriority="high"
@@ -70,15 +70,16 @@ function handleAdopt() {
 h1 {
   font-size: var(--font-size-h1);
   color: var(--text-primary);
-  max-width: 12ch;
+  max-width: 13ch;
   margin-bottom: 1.5rem;
+  line-height: 1.12;
 }
 
 .hero-lede {
   font-size: clamp(1.05rem, 1.4vw, 1.25rem);
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--text-secondary);
-  max-width: 44ch;
+  max-width: 46ch;
   margin-bottom: 2rem;
 }
 
@@ -89,19 +90,20 @@ h1 {
   flex-wrap: wrap;
 }
 
-/* Signature: the pet-door arch */
+/* Rounded hero portrait card */
 .hero-portrait {
   position: relative;
   justify-self: end;
   width: min(100%, 420px);
 }
 
-.arch {
-  border-radius: var(--radius-arch);
+.hero-image-card {
+  border-radius: var(--radius-xl, 28px);
   overflow: hidden;
-  border: 1.5px solid var(--line-ink-strong);
-  box-shadow: var(--shadow-lg);
+  border: 1.5px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 20%));
+  box-shadow: var(--shadow-xl);
   aspect-ratio: 4 / 5;
+  background: var(--text-inverse);
 
   img {
     width: 100%;
@@ -112,13 +114,13 @@ h1 {
   }
 }
 
-.hero-portrait:hover .arch img {
+.hero-portrait:hover .hero-image-card img {
   scale: 1.04;
 }
 
 .sticker {
   position: absolute;
-  top: 8%;
+  top: 6%;
   right: -1.25rem;
   rotate: 8deg;
   background-color: var(--color-warning);

@@ -8,25 +8,39 @@ const router = useRouter()
 const goToDonate = () => {
   router.push('/donate')
 }
+
+const goToWishlist = () => {
+  router.push('/wishlist')
+}
 </script>
 
 <template>
   <section class="support-mission">
     <div class="content-wrapper">
-      <div class="support-text">
+      <div class="support-text" v-scroll-reveal>
         <p class="eyebrow">Support our work</p>
         <h2>Help us open more doors</h2>
         <p>
           We rely entirely on donations to provide shelter, medical care, and love to homeless pets
           in Southern California. Your support makes every rescue possible.
         </p>
-        <Button
-          class="donate-button"
-          title="Donate Now"
-          @click="goToDonate"
-          color="green"
-          size="large"
-        />
+        <div class="support-actions">
+          <Button
+            class="donate-button"
+            title="Donate Now"
+            @click="goToDonate"
+            color="green"
+            size="large"
+          />
+          <Button
+            class="wishlist-button"
+            title="Foster Supply Wishlist"
+            variant="secondary"
+            color="blue"
+            size="large"
+            @click="goToWishlist"
+          />
+        </div>
       </div>
     </div>
   </section>
@@ -80,8 +94,12 @@ const goToDonate = () => {
     margin-right: auto;
   }
 
-  .donate-button {
-    margin: 0 auto;
+  .support-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 }
 </style>

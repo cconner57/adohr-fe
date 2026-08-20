@@ -24,6 +24,35 @@ describe('PreQualModal.vue', () => {
     expect(wrapper.text()).toContain('All Household Members Onboard')
   })
 
+  it('renders dog-specific care criteria (fenced yard)', () => {
+    const wrapper = mount(PreQualModal, {
+      props: {
+        isOpen: true,
+        species: 'dog',
+      },
+      global: {
+        stubs: { Teleport: true },
+      },
+    })
+
+    expect(wrapper.text()).toContain('securely fenced yard')
+  })
+
+  it('renders cat-specific care criteria (lifetime indoor shelter) and in-store center info', () => {
+    const wrapper = mount(PreQualModal, {
+      props: {
+        isOpen: true,
+        species: 'cat',
+      },
+      global: {
+        stubs: { Teleport: true },
+      },
+    })
+
+    expect(wrapper.text()).toContain('lifetime indoor shelter')
+    expect(wrapper.text()).toContain('Cat Adoption Center')
+  })
+
   it('disables proceed button until all criteria are checked', async () => {
     const wrapper = mount(PreQualModal, {
       props: {
