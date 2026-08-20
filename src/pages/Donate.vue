@@ -115,7 +115,7 @@ const impactLedger = [
             <article class="way-card">
               <h3>Foster Supply Wishlist</h3>
               <p>Send needed food, kitten formula, litter, and supplies directly to our foster homes via Amazon &amp; Chewy.</p>
-              <RouterLink to="/wishlist" class="way-cta">View Wishlist →</RouterLink>
+              <RouterLink to="/wishlist" class="way-cta">View Wishlist</RouterLink>
             </article>
           </li>
         </ul>
