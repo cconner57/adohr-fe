@@ -6,6 +6,7 @@ import { calculateAge } from '../../../utils/date'
 import BondedPairBadge from '../../common/ui/BondedPairBadge.vue'
 import Button from '../../common/ui/Button.vue'
 import Capsules from '../../common/ui/Capsules.vue'
+import SpecialNeedsBadge from '../../common/ui/SpecialNeedsBadge.vue'
 import AdditionalInfo from '../additional-info/AdditionalInfo.vue'
 
 const props = defineProps<{
@@ -21,13 +22,24 @@ const emit = defineEmits<{
   'schedule-meet': []
 }>()
 
+const isSpecialNeeds = computed(() =>
+  Boolean(
+    props.pet.behavior?.specialNeeds ||
+      props.pet.descriptions?.specialNeeds ||
+      (props.pet.medical?.healthConcerns && props.pet.medical.healthConcerns.length > 0),
+  ),
+)
+
+const specialNeedsText = computed(
+  () => props.pet.behavior?.specialNeeds || props.pet.descriptions?.specialNeeds || '',
+)
+
 const statusBadge = computed(() => {
   const normalizedStatus = props.pet.details?.status?.trim().toLowerCase() ?? ''
+  if (props.isComingSoon || normalizedStatus === 'intake' || normalizedStatus === 'intake-processing' || normalizedStatus === 'intake processing') {
+    return { text: 'Coming Soon', class: 'badge-coming-soon', visible: true }
+  }
   switch (normalizedStatus) {
-    case 'intake':
-    case 'intake-processing':
-    case 'intake processing':
-      return { text: 'Processing', class: 'badge-tertiary', visible: true }
     case 'adoption-pending':
     case 'adoption pending':
     case 'pending':
@@ -65,12 +77,19 @@ const goodWithItems = computed(() => {
       </div>
       <h1 class="text-balance">{{ pet.name }}</h1>
 
-      <BondedPairBadge
-        v-if="pet.behavior?.bonded?.isBonded"
-        :bondedWithNames="pet.behavior?.bonded?.bondedWith"
-        size="md"
-        style="margin-bottom: 12px;"
-      />
+      <div class="header-badges">
+        <BondedPairBadge
+          v-if="pet.behavior?.bonded?.isBonded"
+          :bondedWithNames="pet.behavior?.bonded?.bondedWith"
+          size="md"
+        />
+
+        <SpecialNeedsBadge
+          v-if="isSpecialNeeds"
+          :text="specialNeedsText"
+          size="md"
+        />
+      </div>
 
       <div class="adopt-detail__traits">
         <Capsules v-if="pet?.species" :label="pet?.species" />
@@ -233,6 +252,18 @@ const goodWithItems = computed(() => {
   .badge-warning { background-color: var(--color-warning); }
   .badge-secondary { background-color: var(--color-secondary); color: var(--color-white); }
   .badge-danger { background-color: var(--color-danger); color: var(--color-white); }
+  .badge-coming-soon {
+    background-color: oklch(93% 0.06 200);
+    color: oklch(32% 0.12 200);
+    border: 1px solid oklch(75% 0.1 200);
+  }
+
+  .header-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
 
   .eyebrow {
     font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;

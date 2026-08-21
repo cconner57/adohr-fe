@@ -10,6 +10,7 @@ defineProps<{
     size: string[]
     sex: string
     goodWith: string[]
+    special?: string[]
   }
 }>()
 
@@ -17,7 +18,7 @@ const emit = defineEmits<{
   'set-filter': [filter: string]
   'toggle-filters': []
   'reset-filters': []
-  'remove-filter': [category: 'age' | 'size' | 'sex' | 'goodWith', value: string]
+  'remove-filter': [category: 'age' | 'size' | 'sex' | 'goodWith' | 'special', value: string]
   'clear-advanced-filters': []
   'update:search-query': [query: string]
   'open-matcher': []
@@ -148,6 +149,15 @@ const emit = defineEmits<{
       :aria-label="`Remove good with ${trait} filter`"
     >
       Good with {{ trait }} <span class="chip-x" aria-hidden="true">✕</span>
+    </button>
+    <button
+      v-for="tag in advancedFilters.special || []"
+      :key="`special-${tag}`"
+      class="chip-btn"
+      @click="emit('remove-filter', 'special', tag)"
+      :aria-label="`Remove ${tag} filter`"
+    >
+      {{ tag === 'special-needs' ? 'Special Needs' : tag === 'bonded' ? 'Bonded Pair' : tag === 'coming-soon' ? 'Coming Soon' : tag }} <span class="chip-x" aria-hidden="true">✕</span>
     </button>
     <button class="chip-clear-all" @click="emit('clear-advanced-filters')">Clear all</button>
   </div>

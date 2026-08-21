@@ -10,12 +10,19 @@ const props = defineProps<{
     size: string[]
     sex: string
     goodWith: string[]
+    special: string[]
   }
 }>()
 
 const emit = defineEmits<{
   close: []
-  apply: [filters: typeof props.currentFilters]
+  apply: [filters: {
+    age: string[]
+    size: string[]
+    sex: string
+    goodWith: string[]
+    special: string[]
+  }]
   clear: []
 }>()
 
@@ -24,17 +31,24 @@ const localFilters = ref({
   size: [] as string[],
   sex: '',
   goodWith: [] as string[],
+  special: [] as string[],
 })
 
 watch(
   () => props.currentFilters,
   (newVal) => {
     localFilters.value = JSON.parse(JSON.stringify(newVal))
+    if (!localFilters.value.special) {
+      localFilters.value.special = []
+    }
   },
   { deep: true, immediate: true },
 )
 
-const toggleArrayFilter = (category: 'age' | 'size' | 'goodWith', value: string) => {
+const toggleArrayFilter = (category: 'age' | 'size' | 'goodWith' | 'special', value: string) => {
+  if (!localFilters.value[category]) {
+    localFilters.value[category] = []
+  }
   const index = localFilters.value[category].indexOf(value)
   if (index === -1) {
     localFilters.value[category].push(value)
@@ -109,6 +123,24 @@ const applyFilters = () => {
             @click="toggleArrayFilter('goodWith', opt.toLowerCase())"
           >
             {{ opt }}
+          </button>
+        </div>
+      </section>
+
+      <section>
+        <h4>Special Tags</h4>
+        <div class="chips">
+          <button
+            v-for="opt in [
+              { label: 'Special Needs', value: 'special-needs' },
+              { label: 'Bonded Pair', value: 'bonded' },
+              { label: 'Coming Soon', value: 'coming-soon' }
+            ]"
+            :key="opt.value"
+            :class="{ active: localFilters.special?.includes(opt.value) }"
+            @click="toggleArrayFilter('special', opt.value)"
+          >
+            {{ opt.label }}
           </button>
         </div>
       </section>

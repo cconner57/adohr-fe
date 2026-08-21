@@ -27,6 +27,9 @@ defineProps<{
       :status="pet.details?.status ?? ''"
       :isBonded="Boolean(pet.behavior?.bonded?.isBonded)"
       :bondedWithNames="pet.behavior?.bonded?.bondedWith ?? null"
+      :isSpecialNeeds="Boolean(pet.behavior?.specialNeeds || pet.descriptions?.specialNeeds || (pet.medical?.healthConcerns && pet.medical.healthConcerns.length > 0))"
+      :specialNeedsText="pet.behavior?.specialNeeds || pet.descriptions?.specialNeeds || ''"
+      :isComingSoon="Boolean(pet.details?.status === 'intake')"
       :isAttendingWeekend="Boolean(pet.isAttendingWeekend ?? (pet.details?.status === 'available' && index % 3 === 0))"
     />
   </div>

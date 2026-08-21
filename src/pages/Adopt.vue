@@ -31,6 +31,7 @@ const advancedFilters = ref({
   size: [] as string[],
   sex: '',
   goodWith: [] as string[],
+  special: [] as string[],
 })
 
 const applyAdvancedFilters = (newFilters: typeof advancedFilters.value) => {
@@ -44,6 +45,7 @@ const clearFilters = () => {
     size: [],
     sex: '',
     goodWith: [],
+    special: [],
   }
   searchQuery.value = ''
   isAttendingWeekendOnly.value = false
@@ -99,8 +101,8 @@ const filteredPets = computed(() => {
     })
   }
 
-  // 4. Advanced Filters (age, size, sex, goodWith)
-  const { age, size, sex, goodWith } = advancedFilters.value
+  // 4. Advanced Filters (age, size, sex, goodWith, special tags)
+  const { age, size, sex, goodWith, special } = advancedFilters.value
 
   if (age.length > 0) {
     result = result.filter((p: IPet) => p.physical.ageGroup && age.includes(p.physical.ageGroup))
@@ -121,6 +123,28 @@ const filteredPets = computed(() => {
         if (trait === 'dogs') return p.behavior.isGoodWithDogs
         if (trait === 'cats') return p.behavior.isGoodWithCats
         return false
+      })
+    })
+  }
+
+  if (special && special.length > 0) {
+    result = result.filter((p: IPet) => {
+      return special.every((tag) => {
+        if (tag === 'special-needs') {
+          return Boolean(
+            p.behavior?.specialNeeds ||
+              p.descriptions?.specialNeeds ||
+              (p.medical?.healthConcerns && p.medical.healthConcerns.length > 0),
+          )
+        }
+        if (tag === 'bonded') {
+          return Boolean(p.behavior?.bonded?.isBonded)
+        }
+        if (tag === 'coming-soon') {
+          const norm = p.details?.status?.trim().toLowerCase() ?? ''
+          return norm === 'intake' || norm === 'intake-processing' || norm === 'intake processing'
+        }
+        return true
       })
     })
   }
@@ -177,7 +201,7 @@ const filterCount = computed(
   () => Object.values(advancedFilters.value).flat().filter(Boolean).length,
 )
 
-const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith', value: string) => {
+const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special', value: string) => {
   if (category === 'sex') {
     advancedFilters.value.sex = ''
   } else if (category === 'age') {
@@ -186,6 +210,8 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith', value: stri
     advancedFilters.value.size = advancedFilters.value.size.filter((v) => v !== value)
   } else if (category === 'goodWith') {
     advancedFilters.value.goodWith = advancedFilters.value.goodWith.filter((v) => v !== value)
+  } else if (category === 'special') {
+    advancedFilters.value.special = advancedFilters.value.special.filter((v) => v !== value)
   }
 }
 </script>
