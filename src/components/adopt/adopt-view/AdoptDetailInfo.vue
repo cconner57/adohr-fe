@@ -4,22 +4,13 @@ import { computed } from 'vue'
 import type { IPet } from '../../../models/common.ts'
 import { calculateAge } from '../../../utils/date'
 import BondedPairBadge from '../../common/ui/BondedPairBadge.vue'
-import Button from '../../common/ui/Button.vue'
 import Capsules from '../../common/ui/Capsules.vue'
 import SpecialNeedsBadge from '../../common/ui/SpecialNeedsBadge.vue'
 import AdditionalInfo from '../additional-info/AdditionalInfo.vue'
 
 const props = defineProps<{
   pet: IPet
-  isComingSoon: boolean
-  isStartAdoptionDisabled: boolean
-}>()
-
-const emit = defineEmits<{
-  'start-adoption': []
-  share: []
-  'request-info': []
-  'schedule-meet': []
+  isComingSoon?: boolean
 }>()
 
 const isSpecialNeeds = computed(() =>
@@ -163,33 +154,6 @@ const goodWithItems = computed(() => {
       </div>
 
       <p>{{ pet?.descriptions?.fun }}</p>
-      <div class="adopt-detail__actions">
-        <Button
-          title="Start Adoption"
-          color="blue"
-          @click="emit('start-adoption')"
-          :disabled="isStartAdoptionDisabled"
-          :fullWidth="true"
-        />
-        <Button title="Share" color="green" @click="emit('share')" :fullWidth="true" />
-        <Button
-          title="Request Information"
-          color="orange"
-          @click="emit('request-info')"
-          :fullWidth="true"
-        />
-        <Button
-          title="Schedule a Meet"
-          color="purple"
-          @click="emit('schedule-meet')"
-          :disabled="isComingSoon"
-          :fullWidth="true"
-        />
-      </div>
-      <output v-if="isComingSoon" class="coming-soon-banner">
-        This pet is coming soon. You can request information now, and scheduling opens once the pet
-        is available.
-      </output>
     </div>
     <AdditionalInfo :pet="pet" />
     <output v-if="pet.sponsored?.isSponsored" class="sponsored-banner">
@@ -220,12 +184,10 @@ const goodWithItems = computed(() => {
   width: 0;
   min-width: 0;
   height: auto;
-  min-height: 600px;
   box-shadow: var(--shadow-md);
 
   @media (width <= 1024px) {
     width: 100%;
-    min-height: auto;
     flex: auto;
   }
 }
@@ -305,36 +267,21 @@ const goodWithItems = computed(() => {
   }
 
   .behavior-tag {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    background-color: var(--color-primary-weak);
-    padding: 6px 14px;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: oklch(from var(--color-primary-weak) l c h / 35%);
+    border: 1px solid oklch(from var(--color-primary) l c h / 20%);
     border-radius: var(--radius-full);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    color: var(--color-primary-strong);
-    border: 1px solid var(--color-primary-border);
+    color: var(--text-primary);
     
     .tag-icon {
       color: var(--color-primary);
       stroke: var(--color-primary);
       flex-shrink: 0;
-    }
-  }
-
-  .adopt-detail__actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin-top: 1.25rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-
-    @media (width <= 440px) {
-      display: flex;
-      flex-direction: column;
     }
   }
 }
@@ -370,18 +317,5 @@ const goodWithItems = computed(() => {
     font-size: 0.8rem;
     color: var(--text-secondary);
   }
-}
-
-.coming-soon-banner {
-  display: block;
-  margin-top: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-md);
-  background-color: oklch(from var(--color-primary) 94% 0.025 h);
-  border: 1px solid oklch(from var(--color-primary) 78% 0.05 h);
-  color: oklch(from var(--color-primary) 30% 0.06 h);
-  font-size: 0.9rem;
-  font-weight: 600;
-  line-height: 1.45;
 }
 </style>

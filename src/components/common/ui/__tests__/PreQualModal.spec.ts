@@ -22,6 +22,7 @@ describe('PreQualModal.vue', () => {
     expect(wrapper.text()).toContain('Housing & Landlord Approval')
     expect(wrapper.text()).toContain('Veterinary & Lifetime Care Commitment')
     expect(wrapper.text()).toContain('All Household Members Onboard')
+    expect(wrapper.text()).toContain('Tax-Deductible Adoption Donation & Placement Policy')
   })
 
   it('renders dog-specific care criteria (fenced yard)', () => {
@@ -70,8 +71,8 @@ describe('PreQualModal.vue', () => {
     expect(proceedBtn?.props('disabled')).toBe(true)
 
     const checkboxes = wrapper.findAll('input[type="checkbox"]')
-    // Check first 4 checkboxes (age, housing, care, household)
-    for (let i = 0; i < 4; i++) {
+    // Check first 5 checkboxes (age, housing, care, household, donation)
+    for (let i = 0; i < 5; i++) {
       await checkboxes[i].setValue(true)
     }
 
@@ -94,7 +95,7 @@ describe('PreQualModal.vue', () => {
     })
 
     const checkboxes = wrapper.findAll('input[type="checkbox"]')
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
       await checkboxes[i].setValue(true)
     }
 

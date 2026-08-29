@@ -29,6 +29,10 @@ export const API_ENDPOINTS = {
   SHIFTS: `${API_BASE_URL}/v1/shifts`,
   SHIFTS_META_ROLES: `${API_BASE_URL}/v1/shifts/meta/roles`,
 
+  // Public Calendar & Events (Read-Only)
+  EVENTS_PUBLIC: `${API_BASE_URL}/v1/events/public`,
+  EVENTS_UPCOMING: `${API_BASE_URL}/v1/events/upcoming`,
+
   // Auth & Users
   VALIDATE_INVITE: (token: string) => `${API_BASE_URL}/validate-invite/${token}`,
   REGISTER: `${API_BASE_URL}/register`,

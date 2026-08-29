@@ -20,6 +20,7 @@ const ackAge = ref(false)
 const ackHousing = ref(false)
 const ackCare = ref(false)
 const ackHousehold = ref(false)
+const ackDonation = ref(false)
 
 const isCat = computed(() => props.species?.toLowerCase() === 'cat')
 const isDog = computed(() => props.species?.toLowerCase() === 'dog')
@@ -49,7 +50,7 @@ const fastTrackDescription = computed(() => {
 })
 
 const allAcknowledged = computed(() => {
-  return ackAge.value && ackHousing.value && ackCare.value && ackHousehold.value
+  return ackAge.value && ackHousing.value && ackCare.value && ackHousehold.value && ackDonation.value
 })
 
 const handleProceed = () => {
@@ -84,6 +85,7 @@ onUnmounted(() => {
       @click.self="emit('close')"
     >
       <div class="prequal-modal">
+        <div class="drawer-handle-bar" aria-hidden="true"></div>
         <header class="modal-header">
           <div class="header-icon">📋</div>
           <div>
@@ -102,7 +104,7 @@ onUnmounted(() => {
 
         <div class="modal-body">
           <p class="intro-text">
-            To ensure the best match for {{ petName ? petName : 'our rescues' }}, please confirm you meet our core adoption criteria before completing the application:
+            To ensure the best match for {{ petName ? petName : 'our rescues' }}, please confirm you meet our core adoption criteria. <strong>The 5 criteria below are required</strong> to proceed with your application, while the Fast-Track event review is optional:
           </p>
 
           <div class="checklist">
@@ -157,9 +159,22 @@ onUnmounted(() => {
                 <span>Everyone living in the home is enthusiastic and agrees to welcome this pet.</span>
               </div>
             </label>
+
+            <label class="check-item" :class="{ checked: ackDonation }">
+              <input type="checkbox" v-model="ackDonation" class="sr-only" />
+              <div class="custom-cb" :class="{ checked: ackDonation }" aria-hidden="true">
+                <svg v-if="ackDonation" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <div class="item-text">
+                <strong>Tax-Deductible Adoption Donation &amp; Placement Policy</strong>
+                <span>The adoption fee is a tax-deductible donation and is non-refundable. If an adopted or foster-to-adopt pet ends up not being a good fit, we will work with you to place a different available pet with you that would be a better match if one is available.</span>
+              </div>
+            </label>
           </div>
 
-          <!-- Fast-Track Toggle -->
+          <!-- Fast-Track Toggle (Optional) -->
           <div class="fast-track-box">
             <label class="fast-track-label">
               <input type="checkbox" v-model="isFastTrack" class="sr-only" />
@@ -169,7 +184,10 @@ onUnmounted(() => {
                 </svg>
               </div>
               <div class="fast-track-text">
-                <span class="ft-tag">{{ fastTrackTag }}</span>
+                <div class="ft-header">
+                  <span class="ft-tag">{{ fastTrackTag }}</span>
+                  <span class="ft-badge">Optional</span>
+                </div>
                 <p>{{ fastTrackDescription }}</p>
               </div>
             </label>
@@ -178,16 +196,18 @@ onUnmounted(() => {
 
         <footer class="modal-footer">
           <Button
-            title="Cancel"
-            variant="secondary"
-            color="blue"
-            @click="emit('close')"
-          />
-          <Button
             title="I'm Ready to Apply →"
             color="blue"
             :disabled="!allAcknowledged"
+            :fullWidth="true"
             @click="handleProceed"
+          />
+          <Button
+            title="Cancel"
+            variant="secondary"
+            color="blue"
+            :fullWidth="true"
+            @click="emit('close')"
           />
         </footer>
       </div>
@@ -195,245 +215,5 @@ onUnmounted(() => {
   </Teleport>
 </template>
 
-<style scoped lang="css">
-.prequal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: oklch(0% 0 0deg / 65%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: var(--z-modal, 2000);
-  padding: 1rem;
-  backdrop-filter: blur(4px);
-  animation: fadeIn 0.2s ease-out;
-}
+<style scoped src="./PreQualModal.css"></style>
 
-.prequal-modal {
-  background-color: var(--text-inverse);
-  color: var(--text-primary);
-  border-radius: var(--radius-lg, 16px);
-  width: 100%;
-  max-width: 580px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--shadow-xl);
-  border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-  overflow: hidden;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-  position: relative;
-
-  .header-icon {
-    font-size: 1.8rem;
-  }
-
-  .eyebrow {
-    font-family: var(--font-mono, monospace);
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-secondary);
-    display: block;
-  }
-
-  h2 {
-    font-size: 1.25rem;
-    font-weight: 800;
-    margin: 0;
-    line-height: 1.2;
-  }
-
-  .close-btn {
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-    background: transparent;
-    border: none;
-    font-size: 1.75rem;
-    color: var(--text-secondary);
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-
-    &:hover {
-      color: var(--text-primary);
-    }
-  }
-}
-
-.modal-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-
-  .intro-text {
-    font-size: 0.92rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-    margin: 0;
-  }
-}
-
-.checklist {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.custom-cb {
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
-  margin-top: 2px;
-  border-radius: 5px;
-  border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 25%));
-  background-color: var(--text-inverse);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-inverse);
-  flex-shrink: 0;
-  transition: all 0.15s ease;
-
-  &.checked {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-  }
-}
-
-.check-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: var(--radius-md, 10px);
-  border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.15s ease;
-
-  .item-text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-
-    strong {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    span {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      line-height: 1.4;
-    }
-  }
-
-  &:hover {
-    border-color: var(--color-primary);
-    background-color: oklch(from var(--color-primary-weak) l c h / 30%);
-
-    .custom-cb:not(.checked) {
-      border-color: var(--color-primary);
-    }
-  }
-
-  &.checked {
-    border-color: var(--color-primary);
-    background-color: oklch(from var(--color-primary-weak) l c h / 40%);
-  }
-}
-
-.fast-track-box {
-  background: linear-gradient(135deg, oklch(from var(--color-primary) 96% 0.05 h), oklch(from var(--color-warning) 96% 0.06 h));
-  border: 1.5px solid var(--color-warning);
-  border-radius: var(--radius-md, 10px);
-  padding: 12px 14px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    box-shadow: 0 2px 8px oklch(from var(--color-warning) 70% 0.1 h / 20%);
-  }
-
-  .fast-track-label {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    cursor: pointer;
-    user-select: none;
-
-    .ft-cb {
-      border-color: oklch(from var(--color-warning) 60% 0.15 h);
-      background-color: var(--text-inverse);
-
-      &.checked {
-        background-color: var(--color-warning);
-        border-color: var(--color-warning);
-        color: var(--color-primary);
-      }
-    }
-
-    .fast-track-text {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-
-      .ft-tag {
-        font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-        font-size: 0.74rem;
-        font-weight: 800;
-        color: var(--color-primary);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-
-      p {
-        font-size: 0.8rem;
-        color: var(--text-primary);
-        line-height: 1.45;
-        margin: 0;
-      }
-    }
-  }
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 1rem 1.5rem;
-  border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-  background-color: oklch(from var(--text-inverse) 98% c h);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-</style>

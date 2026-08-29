@@ -36,7 +36,7 @@ const impactLedger = [
     <section class="hero">
       <div class="content-wrapper" v-scroll-reveal>
         <p class="eyebrow">Every gift opens a door</p>
-        <h1>Help a rescue find <em>home</em></h1>
+        <h1>Help a rescue find a <em>home</em></h1>
         <p class="lead">
           ADOHR is volunteer-powered, so your donation goes directly to the animals: medical care,
           food, foster supplies, and the path to a forever family.

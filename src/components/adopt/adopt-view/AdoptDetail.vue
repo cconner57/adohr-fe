@@ -142,15 +142,16 @@ watch(
         :petName="pet.name"
         :petId="pet.id"
         :photos="pet.photos"
-      />
-      <AdoptDetailInfo
-        :pet="pet"
         :isComingSoon="isComingSoon"
         :isStartAdoptionDisabled="isStartAdoptionDisabled"
         @start-adoption="handleStartAdoption"
         @share="handleShare"
         @request-info="isInfoDrawerOpen = true"
         @schedule-meet="isDrawerOpen = true"
+      />
+      <AdoptDetailInfo
+        :pet="pet"
+        :isComingSoon="isComingSoon"
       />
     </div>
     <AdoptDetailAbout :pet="pet" :formattedFallbackStory="formattedFallbackStory" />

@@ -10,6 +10,7 @@ import PetSmartEventBanner from '@/components/adopt/events/PetSmartEventBanner.v
 import FilterPanel from '@/components/adopt/FilterPanel.vue'
 import PetMatcherModal, { type IMatcherCriteria } from '@/components/adopt/pet-matcher/PetMatcherModal.vue'
 import PetItemSkeleton from '@/components/common/pet-item/PetItemSkeleton.vue'
+import { useAdoptionEvents } from '@/composables/useAdoptionEvents'
 import type { IPet } from '@/models/common'
 import { usePetStore } from '@/stores/pets'
 
@@ -17,6 +18,7 @@ const props = defineProps<{ id?: string }>()
 const route = useRoute()
 const store = usePetStore()
 const { currentPets, isFetching } = storeToRefs(store)
+const { attendingPetIds } = useAdoptionEvents()
 
 const id = computed(() => props.id ?? (route.params.id as string | undefined))
 const detailPet = ref<IPet | null>(null)
@@ -96,9 +98,18 @@ const filteredPets = computed(() => {
 
   // 3. Attending Weekend Filter
   if (isAttendingWeekendOnly.value) {
-    result = result.filter((p: IPet, index: number) => {
-      return Boolean(p.isAttendingWeekend ?? (p.details?.status === 'available' && index % 3 === 0))
-    })
+    const activeIds = attendingPetIds.value
+    if (activeIds && activeIds.length > 0) {
+      result = result.filter(
+        (p: IPet) => activeIds.includes(p.id) || Boolean(p.isAttendingWeekend),
+      )
+    } else {
+      result = result.filter((p: IPet, index: number) => {
+        return Boolean(
+          p.isAttendingWeekend ?? (p.details?.status === 'available' && index % 3 === 0),
+        )
+      })
+    }
   }
 
   // 4. Advanced Filters (age, size, sex, goodWith, special tags)

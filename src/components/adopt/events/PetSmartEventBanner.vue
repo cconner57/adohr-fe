@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+
+import { useAdoptionEvents } from '@/composables/useAdoptionEvents'
 
 import Button from '../../common/ui/Button.vue'
 import EventPrepModal from './EventPrepModal.vue'
@@ -25,44 +27,21 @@ const emit = defineEmits<{
 const router = useRouter()
 const isPrepModalOpen = ref(false)
 
-// Automated client-side calculation of the upcoming Saturday & Sunday dates
-const nextEventDates = computed(() => {
-  const now = new Date()
-  const currentDay = now.getDay() // 0 = Sun, 1 = Mon, ... 6 = Sat
-  
-  const daysUntilSat = (6 - currentDay + 7) % 7
-  // If today is Sunday, we can either refer to today or the upcoming weekend
-  const isWeekendNow = currentDay === 0 || currentDay === 6
-  
-  const satDate = new Date(now)
-  if (currentDay === 6) {
-    // Today is Saturday
-    satDate.setDate(now.getDate())
-  } else if (currentDay === 0) {
-    // Today is Sunday, Sat was yesterday
-    satDate.setDate(now.getDate() - 1)
-  } else {
-    satDate.setDate(now.getDate() + daysUntilSat)
-  }
+const {
+  displayTitle,
+  displayAddress,
+  displayDates,
+  recurrenceText,
+  directionsUrl,
+  fetchUpcomingEvents,
+} = useAdoptionEvents()
 
-  const sunDate = new Date(satDate)
-  sunDate.setDate(satDate.getDate() + 1)
-
-  const satFormatted = satDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-  const sunFormatted = sunDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-
-  if (isWeekendNow) {
-    return `This Weekend · Sat, ${satFormatted} & Sun, ${sunFormatted}`
-  }
-  return `Next Weekend · Sat, ${satFormatted} & Sun, ${sunFormatted}`
+onMounted(() => {
+  fetchUpcomingEvents()
 })
 
 const handleDirections = () => {
-  window.open(
-    'https://maps.google.com/?q=PetSmart+3347+E+Foothill+Blvd+Pasadena+CA+91107',
-    '_blank',
-    'noopener,noreferrer',
-  )
+  window.open(directionsUrl.value, '_blank', 'noopener,noreferrer')
 }
 
 const handleFastTrack = () => {
@@ -75,14 +54,14 @@ const handleFastTrack = () => {
   <aside class="petsmart-banner" :class="[`variant-${variant}`]" aria-label="Weekend Adoption Event Info">
     <div class="banner-badge">
       <span class="live-dot" aria-hidden="true"></span>
-      <span>Every Sat &amp; Sun (12 PM &ndash; 4 PM)</span>
+      <span>{{ recurrenceText }}</span>
     </div>
 
     <div class="banner-content">
       <div class="text-block">
-        <h3 class="banner-title">Meet Our Adoptable Pets at PetSmart Pasadena</h3>
+        <h3 class="banner-title">{{ displayTitle }}</h3>
         <p class="banner-subtitle">
-          <strong>{{ nextEventDates }}</strong> &bull; 3347 E Foothill Blvd, Pasadena
+          <strong>{{ displayDates }}</strong> &bull; {{ displayAddress }}
         </p>
       </div>
 
@@ -103,7 +82,7 @@ const handleFastTrack = () => {
 
         <Button
           title="What to Bring"
-          :variant="variant === 'dark' ? 'secondary' : 'secondary'"
+          variant="secondary"
           :color="variant === 'dark' ? 'white' : 'blue'"
           size="small"
           class="what-to-bring-btn"
@@ -197,13 +176,15 @@ const handleFastTrack = () => {
           }
         }
 
-        :deep(.what-to-bring-btn) {
-          background-color: oklch(100% 0 0deg / 14%);
+        :deep(.what-to-bring-btn),
+        :deep(button.what-to-bring-btn),
+        :deep(.what-to-bring-btn span) {
+          background-color: oklch(100% 0 0deg / 16%) !important;
           color: #ffffff !important;
-          border: 1.5px solid oklch(100% 0 0deg / 45%) !important;
+          border: 1.5px solid oklch(100% 0 0deg / 50%) !important;
 
           &:hover {
-            background-color: oklch(100% 0 0deg / 28%);
+            background-color: oklch(100% 0 0deg / 30%) !important;
             border-color: #ffffff !important;
             color: #ffffff !important;
           }

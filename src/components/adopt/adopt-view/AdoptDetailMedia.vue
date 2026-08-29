@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
+import Button from '../../common/ui/Button.vue'
+
 const props = defineProps<{
   petPhotoUrl: string
   petName: string
   petId: string
   photos?: Array<{ url: string; isPrimary?: boolean; caption?: string }>
   videos?: Array<{ url: string; thumbnail?: string }>
+  isComingSoon?: boolean
+  isStartAdoptionDisabled?: boolean
+}>()
+
+const emit = defineEmits<{
+  'start-adoption': []
+  share: []
+  'request-info': []
+  'schedule-meet': []
 }>()
 
 const r2BaseUrl = computed(() => (import.meta.env.VITE_R2_PUBLIC_URL as string) ?? '')
@@ -140,6 +151,38 @@ watch(
       </button>
     </div>
 
+    <!-- Primary Action Buttons Container Card -->
+    <div class="adopt-detail__actions-card">
+      <div class="adopt-detail__actions">
+        <Button
+          title="Start Adoption"
+          color="blue"
+          @click="emit('start-adoption')"
+          :disabled="isStartAdoptionDisabled"
+          :fullWidth="true"
+        />
+        <Button title="Share" color="green" @click="emit('share')" :fullWidth="true" />
+        <Button
+          title="Request Information"
+          color="orange"
+          @click="emit('request-info')"
+          :fullWidth="true"
+        />
+        <Button
+          title="Schedule a Meet"
+          color="purple"
+          @click="emit('schedule-meet')"
+          :disabled="isComingSoon"
+          :fullWidth="true"
+        />
+      </div>
+
+      <output v-if="isComingSoon" class="coming-soon-banner">
+        This pet is coming soon. You can request information now, and scheduling opens once the pet
+        is available.
+      </output>
+    </div>
+
     <!-- Native Full-Screen Lightbox Modal -->
     <Teleport to="body">
       <div
@@ -190,257 +233,5 @@ watch(
   </div>
 </template>
 
-<style scoped lang="css">
-.adopt-detail__media-wrapper {
-  flex: 3;
-  width: 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+<style scoped src="./AdoptDetailMedia.css"></style>
 
-  @media (width <= 1024px) {
-    width: 100%;
-    flex: auto;
-  }
-}
-
-.adopt-detail__media {
-  position: relative;
-  width: 100%;
-  height: 560px;
-  border-radius: var(--radius-lg, 16px);
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  background-color: var(--color-primary-weak);
-
-  @media (width <= 1024px) {
-    height: 400px;
-  }
-
-  @media (width <= 480px) {
-    height: 320px;
-  }
-
-  img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center center;
-    border-radius: var(--radius-lg, 16px);
-    opacity: 0;
-    transition: opacity 300ms ease-in-out, scale 0.3s ease;
-    cursor: zoom-in;
-
-    &.loaded {
-      opacity: 1;
-    }
-
-    &:hover {
-      scale: 1.02;
-    }
-  }
-
-  .zoom-trigger-btn {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background-color: oklch(from var(--text-inverse) 95% c h / 90%);
-    border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 20%));
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    backdrop-filter: blur(4px);
-    box-shadow: var(--shadow-sm);
-    transition: all 0.15s ease;
-
-    &:hover {
-      background-color: var(--text-inverse);
-      scale: 1.08;
-    }
-  }
-}
-
-.img-placeholder {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: var(--radius-lg, 16px);
-  background: linear-gradient(
-    110deg,
-    hsl(from var(--color-gray-50) h s 97%) 8%,
-    hsl(from var(--color-gray-50) h s 92%) 18%,
-    hsl(from var(--color-gray-50) h s 97%) 33%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.2s linear infinite;
-}
-
-.img-fallback {
-  width: 100%;
-  height: 100%;
-  background-color: var(--color-primary-weak);
-  position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-color: var(--color-primary-border);
-    mask: url('/images/paw.svg') no-repeat;
-    mask-position: center center;
-    mask-size: 140px 140px;
-  }
-}
-
-.thumbnail-strip {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 4px 0;
-  scroll-snap-type: x mandatory;
-
-  .thumb-btn {
-    all: unset;
-    width: 64px;
-    height: 64px;
-    border-radius: var(--radius-md, 8px);
-    overflow: hidden;
-    cursor: pointer;
-    border: 2px solid transparent;
-    flex-shrink: 0;
-    scroll-snap-align: start;
-    transition: border-color 0.15s ease, opacity 0.15s ease;
-    opacity: 0.7;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    &:hover {
-      opacity: 1;
-    }
-
-    &.active {
-      border-color: var(--color-primary);
-      opacity: 1;
-      box-shadow: 0 0 0 2px var(--color-primary-border);
-    }
-  }
-}
-
-.lightbox-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: oklch(0% 0 0deg / 90%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: var(--z-modal, 2000);
-  backdrop-filter: blur(8px);
-  animation: fadeIn 0.2s ease-out;
-
-  .lightbox-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    max-width: 90vw;
-    max-height: 90vh;
-
-    .lightbox-img {
-      max-width: 100%;
-      max-height: 80vh;
-      object-fit: contain;
-      border-radius: var(--radius-md, 12px);
-      box-shadow: var(--shadow-xl);
-    }
-
-    .lightbox-counter {
-      color: var(--text-inverse);
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      background: oklch(0% 0 0deg / 50%);
-      padding: 4px 12px;
-      border-radius: var(--radius-full);
-    }
-  }
-
-  .lightbox-close-btn {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    background: transparent;
-    border: none;
-    color: var(--text-inverse);
-    font-size: 2.5rem;
-    line-height: 1;
-    cursor: pointer;
-    padding: 4px 12px;
-    border-radius: var(--radius-sm);
-    z-index: 10;
-
-    &:hover {
-      color: var(--color-secondary);
-    }
-  }
-
-  .lightbox-nav-btn {
-    position: absolute;
-    top: 50%;
-    translate: 0 -50%;
-    background: oklch(100% 0 0deg / 15%);
-    border: 1px solid oklch(100% 0 0deg / 30%);
-    color: var(--text-inverse);
-    font-size: 2.5rem;
-    line-height: 1;
-    cursor: pointer;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.15s ease;
-    z-index: 10;
-
-    &.prev {
-      left: 1.5rem;
-    }
-
-    &.next {
-      right: 1.5rem;
-    }
-
-    &:hover {
-      background: oklch(100% 0 0deg / 35%);
-    }
-
-    @media (width <= 480px) {
-      width: 40px;
-      height: 40px;
-      font-size: 1.8rem;
-    }
-  }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-</style>

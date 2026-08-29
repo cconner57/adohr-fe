@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import PetSmartEventBanner from '../PetSmartEventBanner.vue'
 
@@ -10,7 +10,11 @@ vi.mock('vue-router', () => ({
 }))
 
 describe('PetSmartEventBanner.vue', () => {
-  it('renders PetSmart event header information', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('renders event header information with resilient defaults', () => {
     const wrapper = mount(PetSmartEventBanner, {
       props: {
         showFilterButton: true,

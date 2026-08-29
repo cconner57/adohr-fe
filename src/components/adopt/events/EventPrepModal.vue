@@ -57,7 +57,7 @@ onUnmounted(() => {
               <line x1="16" y1="17" x2="8" y2="17" />
               <polyline points="10 9 9 9 8 9" />
             </svg>
-            <span>PetSmart Event Guide</span>
+            <span>IDOHR Event Guide</span>
           </div>
           <button
             type="button"
@@ -120,14 +120,16 @@ onUnmounted(() => {
 
             <li class="check-item">
               <div class="item-icon" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-                  <line x1="1" y1="10" x2="23" y2="10" />
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="23 7 16 12 23 17 23 7" />
+                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
                 </svg>
               </div>
               <div class="item-content">
-                <strong>Valid Government ID &amp; Adoption Fee</strong>
-                <p>We accept electronic payments (Venmo, PayPal, Zelle) or major credit cards for adoption fees.</p>
+                <strong>Home Walkthrough Video (2–3 mins)</strong>
+                <p>
+                  A 2–3 minute video recording of your home on your phone speeds up the process. We need to see every room to make sure it is safe for the pet, checking for things like toxic plants/flowers, hazardous items, and structural hazards (damaged parts of the house, mold, etc.).
+                </p>
               </div>
             </li>
           </ul>
