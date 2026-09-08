@@ -5,6 +5,8 @@ defineProps<{
   isFilterPanelOpen: boolean
   filterCount: number
   searchQuery?: string
+  isFavoritesOnly?: boolean
+  favoriteCount?: number
   advancedFilters?: {
     age: string[]
     size: string[]
@@ -17,6 +19,7 @@ defineProps<{
 const emit = defineEmits<{
   'set-filter': [filter: string]
   'toggle-filters': []
+  'toggle-favorites': []
   'reset-filters': []
   'remove-filter': [category: 'age' | 'size' | 'sex' | 'goodWith' | 'special', value: string]
   'clear-advanced-filters': []
@@ -98,6 +101,31 @@ const emit = defineEmits<{
       Pet Matcher Quiz
     </button>
 
+    <!-- Favorites Filter Button -->
+    <button
+      class="fav-filter-btn"
+      :class="{ active: isFavoritesOnly }"
+      type="button"
+      @click="emit('toggle-favorites')"
+      :aria-label="`Filter by favorited pets (${favoriteCount ?? 0})`"
+    >
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        :fill="isFavoritesOnly ? 'currentColor' : 'none'"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+      </svg>
+      <span>Favorites</span>
+      <span v-if="(favoriteCount ?? 0) > 0" class="badge">{{ favoriteCount }}</span>
+    </button>
+
     <button
       class="filter-btn"
       :class="{ active: isFilterPanelOpen }"
@@ -110,13 +138,21 @@ const emit = defineEmits<{
   </div>
 
   <div
-    v-if="!pet && filterCount > 0 && advancedFilters"
+    v-if="!pet && ((filterCount > 0 && advancedFilters) || isFavoritesOnly)"
     class="active-filter-chips"
     aria-label="Active filters"
   >
     <span class="active-chips-label">Filters:</span>
     <button
-      v-for="ageVal in advancedFilters.age"
+      v-if="isFavoritesOnly"
+      class="chip-btn chip-fav"
+      @click="emit('toggle-favorites')"
+      aria-label="Remove favorites filter"
+    >
+      ❤️ Favorites <span class="chip-x" aria-hidden="true">✕</span>
+    </button>
+    <button
+      v-for="ageVal in advancedFilters?.age || []"
       :key="`age-${ageVal}`"
       class="chip-btn"
       @click="emit('remove-filter', 'age', ageVal)"
@@ -125,7 +161,7 @@ const emit = defineEmits<{
       {{ ageVal }} <span class="chip-x" aria-hidden="true">✕</span>
     </button>
     <button
-      v-for="sizeVal in advancedFilters.size"
+      v-for="sizeVal in advancedFilters?.size || []"
       :key="`size-${sizeVal}`"
       class="chip-btn"
       @click="emit('remove-filter', 'size', sizeVal)"
@@ -134,7 +170,7 @@ const emit = defineEmits<{
       {{ sizeVal }} <span class="chip-x" aria-hidden="true">✕</span>
     </button>
     <button
-      v-if="advancedFilters.sex"
+      v-if="advancedFilters?.sex"
       class="chip-btn"
       @click="emit('remove-filter', 'sex', advancedFilters.sex)"
       :aria-label="`Remove ${advancedFilters.sex} filter`"
@@ -142,7 +178,7 @@ const emit = defineEmits<{
       {{ advancedFilters.sex }} <span class="chip-x" aria-hidden="true">✕</span>
     </button>
     <button
-      v-for="trait in advancedFilters.goodWith"
+      v-for="trait in advancedFilters?.goodWith || []"
       :key="`goodWith-${trait}`"
       class="chip-btn"
       @click="emit('remove-filter', 'goodWith', trait)"
@@ -151,16 +187,16 @@ const emit = defineEmits<{
       Good with {{ trait }} <span class="chip-x" aria-hidden="true">✕</span>
     </button>
     <button
-      v-for="tag in advancedFilters.special || []"
+      v-for="tag in advancedFilters?.special || []"
       :key="`special-${tag}`"
       class="chip-btn"
       @click="emit('remove-filter', 'special', tag)"
       :aria-label="`Remove ${tag} filter`"
     >
-      {{ tag === 'special-needs' ? 'Special Needs' : tag === 'bonded' ? 'Bonded Pair' : tag === 'coming-soon' ? 'Coming Soon' : tag }} <span class="chip-x" aria-hidden="true">✕</span>
+      {{ tag === 'special-needs' ? 'Special Needs' : tag === 'bonded' ? 'Bonded Pair' : tag === 'sponsored' ? 'Fee Sponsored' : tag === 'saved' ? 'Saved Pets' : tag === 'coming-soon' ? 'Coming Soon' : tag }} <span class="chip-x" aria-hidden="true">✕</span>
     </button>
     <button class="chip-clear-all" @click="emit('clear-advanced-filters')">Clear all</button>
   </div>
 </template>
 
-<style scoped src="../../pages/Adopt.css"></style>
+<style scoped src="./AdoptPageHeader.css"></style>

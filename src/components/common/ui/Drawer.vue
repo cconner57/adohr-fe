@@ -9,6 +9,7 @@ const props = withDefaults(
     title: string
     placement?: 'right' | 'left' | 'bottom'
     mobilePlacement?: 'right' | 'left' | 'bottom'
+    width?: string
   }>(),
   {
     placement: 'right',
@@ -88,6 +89,7 @@ const transitionName = computed(() => {
         v-if="isOpen"
         class="drawer-panel"
         :class="[`placement-${effectivePlacement}`]"
+        :style="effectivePlacement !== 'bottom' && props.width ? { maxWidth: props.width } : undefined"
         role="dialog"
         aria-labelledby="drawer-title"
         aria-modal="true"
@@ -118,6 +120,12 @@ const transitionName = computed(() => {
   background: rgb(0 0 0 / 50%);
   backdrop-filter: blur(4px);
   z-index: var(--z-toast);
+  transition: opacity 0.3s ease;
+  transition-behavior: allow-discrete;
+
+  @starting-style {
+    opacity: 0;
+  }
 }
 
 .drawer-panel {
@@ -127,6 +135,8 @@ const transitionName = computed(() => {
   z-index: var(--z-overlay);
   display: flex;
   flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  transition-behavior: allow-discrete;
 }
 
 /* Right Placement (Default Desktop) */
@@ -137,6 +147,10 @@ const transitionName = computed(() => {
   width: 100%;
   max-width: 400px;
   border-left: 1px solid var(--border-color);
+
+  @starting-style {
+    transform: translateX(100%);
+  }
 }
 
 /* Left Placement */
@@ -147,6 +161,10 @@ const transitionName = computed(() => {
   width: 100%;
   max-width: 400px;
   border-right: 1px solid var(--border-color);
+
+  @starting-style {
+    transform: translateX(-100%);
+  }
 }
 
 /* Bottom Placement (Mobile Sheet) */
@@ -159,6 +177,10 @@ const transitionName = computed(() => {
   border-top-right-radius: 20px;
   border-top: 1px solid var(--border-color);
   box-shadow: 0 -4px 24px rgb(0 0 0 / 15%);
+
+  @starting-style {
+    transform: translateY(100%);
+  }
 }
 
 .drawer-header {

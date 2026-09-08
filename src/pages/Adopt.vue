@@ -6,26 +6,35 @@ import { useRoute } from 'vue-router'
 import AdoptDetail from '@/components/adopt/adopt-view/AdoptDetail.vue'
 import AdoptSummary from '@/components/adopt/adopt-view/AdoptSummary.vue'
 import AdoptPageHeader from '@/components/adopt/AdoptPageHeader.vue'
-import PetSmartEventBanner from '@/components/adopt/events/PetSmartEventBanner.vue'
+import EventBanner from '@/components/adopt/events/EventBanner.vue'
 import FilterPanel from '@/components/adopt/FilterPanel.vue'
 import PetMatcherModal, { type IMatcherCriteria } from '@/components/adopt/pet-matcher/PetMatcherModal.vue'
 import PetItemSkeleton from '@/components/common/pet-item/PetItemSkeleton.vue'
 import { useAdoptionEvents } from '@/composables/useAdoptionEvents'
+import { useFavorites } from '@/composables/useFavorites'
 import type { IPet } from '@/models/common'
 import { usePetStore } from '@/stores/pets'
+import { getPetSpecialNeeds } from '@/utils/petNormalizer'
+
+const { attendingPetIds, fetchUpcomingEvents } = useAdoptionEvents()
+const { isFavorite, favoriteCount } = useFavorites()
 
 const props = defineProps<{ id?: string }>()
 const route = useRoute()
 const store = usePetStore()
 const { currentPets, isFetching } = storeToRefs(store)
-const { attendingPetIds } = useAdoptionEvents()
 
 const id = computed(() => props.id ?? (route.params.id as string | undefined))
 const detailPet = ref<IPet | null>(null)
 const isFilterPanelOpen = ref(false)
 const isMatcherOpen = ref(false)
 const isAttendingWeekendOnly = ref(false)
+const isFavoritesOnly = ref(false)
 const searchQuery = ref('')
+
+const toggleFavoritesOnly = () => {
+  isFavoritesOnly.value = !isFavoritesOnly.value
+}
 
 const activeFilter = ref('All')
 const advancedFilters = ref({
@@ -51,6 +60,7 @@ const clearFilters = () => {
   }
   searchQuery.value = ''
   isAttendingWeekendOnly.value = false
+  isFavoritesOnly.value = false
 }
 
 const resetAllFilters = () => {
@@ -69,11 +79,32 @@ const handleMatcherApply = (criteria: IMatcherCriteria) => {
   advancedFilters.value.goodWith = [...criteria.goodWith]
 }
 
+const applyRouteQueryFilters = (q: typeof route.query) => {
+  if (q.filter === 'weekend' || q.weekend === 'true' || q.weekendOnly === 'true') {
+    isAttendingWeekendOnly.value = true
+  } else if (q.filter === 'saved' || q.saved === 'true' || q.filter === 'favorites' || q.favorites === 'true') {
+    isFavoritesOnly.value = true
+  } else if (q.filter === 'sponsored' || q.sponsored === 'true') {
+    if (!advancedFilters.value.special.includes('sponsored')) {
+      advancedFilters.value.special.push('sponsored')
+    }
+  }
+}
+
 onMounted(() => {
+  fetchUpcomingEvents()
   if (!id.value) {
     store.fetchPetsList()
   }
+  applyRouteQueryFilters(route.query)
 })
+
+watch(
+  () => route.query,
+  (q) => {
+    applyRouteQueryFilters(q)
+  },
+)
 
 const filteredPets = computed(() => {
   let result = currentPets.value
@@ -101,7 +132,10 @@ const filteredPets = computed(() => {
     const activeIds = attendingPetIds.value
     if (activeIds && activeIds.length > 0) {
       result = result.filter(
-        (p: IPet) => activeIds.includes(p.id) || Boolean(p.isAttendingWeekend),
+        (p: IPet) =>
+          activeIds.includes(p.id) ||
+          (p.slug && activeIds.includes(p.slug)) ||
+          Boolean(p.isAttendingWeekend),
       )
     } else {
       result = result.filter((p: IPet, index: number) => {
@@ -110,6 +144,11 @@ const filteredPets = computed(() => {
         )
       })
     }
+  }
+
+  // 3b. Favorites Filter
+  if (isFavoritesOnly.value) {
+    result = result.filter((p: IPet) => isFavorite(p.slug || p.id))
   }
 
   // 4. Advanced Filters (age, size, sex, goodWith, special tags)
@@ -142,14 +181,16 @@ const filteredPets = computed(() => {
     result = result.filter((p: IPet) => {
       return special.every((tag) => {
         if (tag === 'special-needs') {
-          return Boolean(
-            p.behavior?.specialNeeds ||
-              p.descriptions?.specialNeeds ||
-              (p.medical?.healthConcerns && p.medical.healthConcerns.length > 0),
-          )
+          return getPetSpecialNeeds(p).isSpecialNeeds
         }
         if (tag === 'bonded') {
           return Boolean(p.behavior?.bonded?.isBonded)
+        }
+        if (tag === 'sponsored') {
+          return Boolean(p.sponsored?.isSponsored)
+        }
+        if (tag === 'saved') {
+          return isFavorite(p.slug || p.id)
         }
         if (tag === 'coming-soon') {
           const norm = p.details?.status?.trim().toLowerCase() ?? ''
@@ -237,23 +278,19 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special',
         :filterCount="filterCount"
         :advancedFilters="advancedFilters"
         :searchQuery="searchQuery"
+        :isFavoritesOnly="isFavoritesOnly"
+        :favoriteCount="favoriteCount"
         @update:search-query="searchQuery = $event"
         @set-filter="setFilter"
         @toggle-filters="isFilterPanelOpen = !isFilterPanelOpen"
+        @toggle-favorites="toggleFavoritesOnly"
         @reset-filters="resetAllFilters"
         @remove-filter="removeFilter"
         @clear-advanced-filters="clearFilters"
         @open-matcher="isMatcherOpen = true"
       />
 
-      <!-- PetSmart Weekend Banner -->
-      <PetSmartEventBanner
-        v-if="!pet"
-        :isFilterActive="isAttendingWeekendOnly"
-        :showFilterButton="true"
-        @toggle-filter="isAttendingWeekendOnly = !isAttendingWeekendOnly"
-      />
-
+      <!-- Filter Options Box -->
       <FilterPanel
         v-if="!pet"
         :isOpen="isFilterPanelOpen"
@@ -261,6 +298,16 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special',
         @close="isFilterPanelOpen = false"
         @apply="applyAdvancedFilters"
         @clear="clearFilters"
+      />
+
+      <!-- Weekend Event Banner (below filter options box) -->
+      <EventBanner
+        v-if="!pet"
+        :isFilterActive="isAttendingWeekendOnly"
+        :showFilterButton="true"
+        :showWhatToBringButton="true"
+        colorScheme="light"
+        @toggle-filter="isAttendingWeekendOnly = !isAttendingWeekendOnly"
       />
 
       <main aria-live="polite">
@@ -272,7 +319,26 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special',
           <AdoptDetail v-if="pet" :pet="pet!" />
           <AdoptSummary v-else-if="filteredPets.length > 0" :pets="filteredPets" />
           <div v-else class="empty-state">
-            <span class="empty-icon">🐾</span>
+            <div class="empty-icon-wrap" aria-hidden="true">
+              <svg width="42" height="42" viewBox="0 0 24 24" fill="currentColor">
+                <!-- Left paw print (bottom-left) -->
+                <g transform="translate(8, 14.2) rotate(-14) scale(0.85)">
+                  <ellipse cx="0" cy="2.5" rx="3.4" ry="2.7" />
+                  <circle cx="-4" cy="-1.4" r="1.4" />
+                  <circle cx="-1.5" cy="-4" r="1.5" />
+                  <circle cx="1.5" cy="-4" r="1.5" />
+                  <circle cx="4" cy="-1.4" r="1.4" />
+                </g>
+                <!-- Right paw print (top-right) -->
+                <g transform="translate(16, 9.8) rotate(14) scale(0.85)">
+                  <ellipse cx="0" cy="2.5" rx="3.4" ry="2.7" />
+                  <circle cx="-4" cy="-1.4" r="1.4" />
+                  <circle cx="-1.5" cy="-4" r="1.5" />
+                  <circle cx="1.5" cy="-4" r="1.5" />
+                  <circle cx="4" cy="-1.4" r="1.4" />
+                </g>
+              </svg>
+            </div>
             <h2>No pets found</h2>
             <p>We couldn't find any friends matching your current search and filters.</p>
             <div class="empty-actions">

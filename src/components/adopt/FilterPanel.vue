@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 
 import Button from '../common/ui/Button.vue'
+import Drawer from '../common/ui/Drawer.vue'
 
 const props = defineProps<{
   isOpen: boolean
@@ -61,15 +62,32 @@ const toggleSex = (value: string) => {
   localFilters.value.sex = localFilters.value.sex === value ? '' : value
 }
 
+const handleClear = () => {
+  localFilters.value = {
+    age: [],
+    size: [],
+    sex: '',
+    goodWith: [],
+    special: [],
+  }
+  emit('clear')
+}
+
 const applyFilters = () => {
   emit('apply', localFilters.value)
-
   emit('close')
 }
 </script>
 
 <template>
-  <div v-if="isOpen" class="filter-panel">
+  <Drawer
+    :isOpen="isOpen"
+    title="Filter Pets"
+    placement="right"
+    mobilePlacement="right"
+    width="440px"
+    @close="emit('close')"
+  >
     <div class="filter-sections">
       <section>
         <h4>Age</h4>
@@ -77,6 +95,7 @@ const applyFilters = () => {
           <button
             v-for="opt in ['Baby', 'Young', 'Adult', 'Senior']"
             :key="opt"
+            type="button"
             :class="{ active: localFilters.age.includes(opt.toLowerCase()) }"
             @click="toggleArrayFilter('age', opt.toLowerCase())"
           >
@@ -91,6 +110,7 @@ const applyFilters = () => {
           <button
             v-for="opt in ['Small', 'Medium', 'Large', 'Extra-Large']"
             :key="opt"
+            type="button"
             :class="{ active: localFilters.size.includes(opt.toLowerCase()) }"
             @click="toggleArrayFilter('size', opt.toLowerCase())"
           >
@@ -105,6 +125,7 @@ const applyFilters = () => {
           <button
             v-for="opt in ['Female', 'Male']"
             :key="opt"
+            type="button"
             :class="{ active: localFilters.sex === opt.toLowerCase() }"
             @click="toggleSex(opt.toLowerCase())"
           >
@@ -119,6 +140,7 @@ const applyFilters = () => {
           <button
             v-for="opt in ['Kids', 'Dogs', 'Cats']"
             :key="opt"
+            type="button"
             :class="{ active: localFilters.goodWith.includes(opt.toLowerCase()) }"
             @click="toggleArrayFilter('goodWith', opt.toLowerCase())"
           >
@@ -127,16 +149,19 @@ const applyFilters = () => {
         </div>
       </section>
 
-      <section>
+      <section class="special-tags-section">
         <h4>Special Tags</h4>
         <div class="chips">
           <button
             v-for="opt in [
               { label: 'Special Needs', value: 'special-needs' },
               { label: 'Bonded Pair', value: 'bonded' },
+              { label: 'Fee Sponsored', value: 'sponsored' },
+              { label: 'Saved Pets', value: 'saved' },
               { label: 'Coming Soon', value: 'coming-soon' }
             ]"
             :key="opt.value"
+            type="button"
             :class="{ active: localFilters.special?.includes(opt.value) }"
             @click="toggleArrayFilter('special', opt.value)"
           >
@@ -146,56 +171,34 @@ const applyFilters = () => {
       </section>
     </div>
 
-    <footer>
-      <Button title="Clear All" color="white" @click="$emit('clear')" size="medium" />
-      <div class="actions">
-        <Button title="Show Results" color="green" @click="applyFilters" size="medium" />
+    <template #footer>
+      <div class="filter-drawer-footer">
+        <Button title="Show Results" color="green" @click="applyFilters" size="medium" :fullWidth="true" />
+        <Button title="Clear All" color="white" @click="handleClear" size="medium" :fullWidth="true" />
       </div>
-    </footer>
-  </div>
+    </template>
+  </Drawer>
 </template>
 
 <style scoped>
-.filter-panel {
-  width: 100%;
-  max-width: 800px;
-  background: var(--color-white);
-  border-radius: 24px;
-  padding: 24px;
-  margin-bottom: 32px;
-  box-shadow: 0 4px 20px rgb(0 0 0 / 10%);
-  animation: slideDown 0.3s ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .filter-sections {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  margin-bottom: 24px;
+  gap: 22px;
 }
 
 section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 
   h4 {
     margin: 0;
-    font-size: 1rem;
-    color: #666;
-    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
 }
 
@@ -206,17 +209,23 @@ section {
 
   button {
     all: unset;
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: 1px solid #e0e0e0;
+    padding: 7px 16px;
+    border-radius: var(--radius-full, 9999px);
+    border: 1px solid var(--line-ink, #e0e0e0);
     background: #f8f9fa;
     font-size: 0.9rem;
-    color: #444;
+    font-weight: 500;
+    color: var(--text-primary);
     cursor: pointer;
     transition: all var(--transition-normal);
 
     &:hover {
       background: #eee;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
     }
 
     &.active {
@@ -227,42 +236,10 @@ section {
   }
 }
 
-footer {
+.filter-drawer-footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 16px;
-  border-top: 1px solid #eee;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.actions {
-  display: flex;
-  gap: 12px;
-}
-
-@media (width <= 480px) {
-  footer {
-    flex-direction: column-reverse;
-    align-items: stretch;
-  }
-
-  .actions {
-    width: 100%;
-    display: flex;
-    gap: 12px;
-
-    button {
-      width: 100%;
-    }
-  }
-}
-
-@media (width >= 600px) {
-  .filter-sections {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
 }
 </style>
