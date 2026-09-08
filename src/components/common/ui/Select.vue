@@ -112,8 +112,32 @@ const selectedLabel = computed(() => {
   return selected ? selected.label : props.placeholder
 })
 
+const highlightedIndex = ref(-1)
+let typeaheadBuffer = ''
+let typeaheadTimeout: ReturnType<typeof setTimeout> | null = null
+
+const scrollToHighlighted = () => {
+  nextTick(() => {
+    if (!menuRef.value) return
+    const highlightedEl = menuRef.value.querySelector('.option-item.is-highlighted') as HTMLElement | null
+    if (highlightedEl && typeof highlightedEl.scrollIntoView === 'function') {
+      highlightedEl.scrollIntoView({ block: 'nearest' })
+    }
+  })
+}
+
+const highlightCurrentOrFirst = () => {
+  const options = normalizedOptions.value
+  const currentIndex = options.findIndex((opt) => opt.value === props.modelValue)
+  highlightedIndex.value = currentIndex >= 0 ? currentIndex : 0
+  scrollToHighlighted()
+}
+
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value
+  if (isOpen.value) {
+    highlightCurrentOrFirst()
+  }
 }
 
 const selectOption = (value: string | number) => {
@@ -132,6 +156,118 @@ const selectOption = (value: string | number) => {
   }
 }
 
+const handleKeyDown = (event: KeyboardEvent) => {
+  const options = normalizedOptions.value
+  if (options.length === 0) return
+
+  if (event.key === ' ' || event.key === 'Enter') {
+    event.preventDefault()
+    if (!isOpen.value) {
+      isOpen.value = true
+      highlightCurrentOrFirst()
+    } else {
+      if (highlightedIndex.value >= 0 && highlightedIndex.value < options.length) {
+        selectOption(options[highlightedIndex.value].value)
+      } else {
+        isOpen.value = false
+      }
+    }
+    return
+  }
+
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    isOpen.value = false
+    return
+  }
+
+  if (event.key === 'Tab') {
+    if (isOpen.value) {
+      if (highlightedIndex.value >= 0 && highlightedIndex.value < options.length && !props.multiple) {
+        selectOption(options[highlightedIndex.value].value)
+      }
+      isOpen.value = false
+    }
+    return
+  }
+
+  if (event.key === 'ArrowDown') {
+    event.preventDefault()
+    if (!isOpen.value) {
+      isOpen.value = true
+      highlightCurrentOrFirst()
+    } else {
+      highlightedIndex.value = (highlightedIndex.value + 1) % options.length
+      scrollToHighlighted()
+    }
+    return
+  }
+
+  if (event.key === 'ArrowUp') {
+    event.preventDefault()
+    if (!isOpen.value) {
+      isOpen.value = true
+      highlightCurrentOrFirst()
+    } else {
+      highlightedIndex.value = (highlightedIndex.value - 1 + options.length) % options.length
+      scrollToHighlighted()
+    }
+    return
+  }
+
+  if (event.key === 'Home') {
+    event.preventDefault()
+    if (isOpen.value) {
+      highlightedIndex.value = 0
+      scrollToHighlighted()
+    }
+    return
+  }
+
+  if (event.key === 'End') {
+    event.preventDefault()
+    if (isOpen.value) {
+      highlightedIndex.value = options.length - 1
+      scrollToHighlighted()
+    }
+    return
+  }
+
+  // Typeahead key search (letters, numbers, etc.)
+  if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    event.preventDefault()
+    if (typeaheadTimeout) clearTimeout(typeaheadTimeout)
+
+    typeaheadBuffer += event.key.toLowerCase()
+    typeaheadTimeout = setTimeout(() => {
+      typeaheadBuffer = ''
+    }, 700)
+
+    const matchIndex = options.findIndex((opt) => {
+      const label = opt.label.toLowerCase()
+      const val = String(opt.value).toLowerCase()
+      return label.startsWith(typeaheadBuffer) || val.startsWith(typeaheadBuffer)
+    })
+
+    const fallbackIndex =
+      matchIndex === -1
+        ? options.findIndex((opt) => {
+            const label = opt.label.toLowerCase()
+            return label.includes(typeaheadBuffer)
+          })
+        : matchIndex
+
+    if (fallbackIndex !== -1) {
+      if (!isOpen.value) {
+        selectOption(options[fallbackIndex].value)
+      } else {
+        highlightedIndex.value = fallbackIndex
+        scrollToHighlighted()
+      }
+    }
+  }
+}
+
 const handleClickOutside = (event: MouseEvent) => {
   const isInsideTrigger = containerRef.value?.contains(event.target as Node)
   const isInsideMenu = menuRef.value?.contains(event.target as Node)
@@ -146,6 +282,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  if (typeaheadTimeout) clearTimeout(typeaheadTimeout)
   document.removeEventListener('click', handleClickOutside)
   window.removeEventListener('scroll', updateDropdownPosition, true)
   window.removeEventListener('resize', updateDropdownPosition)
@@ -175,9 +312,7 @@ onUnmounted(() => {
       :aria-controls="`${uid}-menu`"
       :aria-expanded="isOpen ? 'true' : 'false'"
       aria-haspopup="listbox"
-      @keydown.space.prevent="toggleDropdown"
-      @keydown.enter.prevent="toggleDropdown"
-      @keydown.esc="isOpen = false"
+      @keydown="handleKeyDown"
     >
       <span class="selected-text">{{ selectedLabel }}</span>
       <span class="chevron" aria-hidden="true">▼</span>
@@ -198,13 +333,14 @@ onUnmounted(() => {
         >
           <!-- sonar-disable-next-line ea87a864-3f73-4b99-a6da-5ad247605d70, dcbf4805-e189-4bc1-9b22-cfe80661405d, cc4490e1-b4ec-4652-9726-2e19cb607e89, 9aa55b62-e606-457d-877d-9b965ad0fe18, 79e22e78-99e2-48d8-ae6e-7608033939b6 -->
           <div
-            v-for="option in normalizedOptions"
+            v-for="(option, idx) in normalizedOptions"
             :key="option.value"
             class="option-item"
             :class="{
               'is-selected': multiple
                 ? Array.isArray(modelValue) && modelValue.includes(option.value)
                 : option.value === modelValue,
+              'is-highlighted': idx === highlightedIndex,
             }"
             role="option"
             :aria-selected="
@@ -217,6 +353,7 @@ onUnmounted(() => {
                   : 'false'
             "
             tabindex="-1"
+            @mouseenter="highlightedIndex = idx"
             @click="selectOption(option.value)"
           >
             {{ option.label }}
@@ -237,74 +374,7 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style scoped>
-.select-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 200px;
-}
-
-.select-container.is-fullwidth {
-  width: 100%;
-}
-
-.label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-}
-
-.select-trigger {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  font-size: 1rem;
-  font-family: inherit;
-  text-align: left;
-  background-color: var(--color-white);
-  color: var(--text-primary);
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: all var(--transition-normal);
-  user-select: none;
-
-  &:hover {
-    border-color: var(--color-primary-border-strong);
-  }
-
-  &.is-open {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px oklch(from var(--color-primary) l c h / 20%);
-  }
-}
-
-.select-trigger.is-placeholder .selected-text {
-  opacity: 0.8;
-}
-
-.selected-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-right: 8px;
-}
-
-.chevron {
-  font-size: 0.7rem;
-  opacity: 0.5;
-  transition: transform 0.2s;
-}
-
-.select-trigger.is-open .chevron {
-  transform: rotate(180deg);
-}
-</style>
+<style scoped src="./Select.css"></style>
 
 <style>
 /* Global styles for teleported menu */
@@ -339,7 +409,8 @@ onUnmounted(() => {
   transition: background 0.1s;
 }
 
-.options-menu.teleported-menu .option-item:hover {
+.options-menu.teleported-menu .option-item:hover,
+.options-menu.teleported-menu .option-item.is-highlighted {
   background-color: var(--color-neutral-weak, var(--color-gray-100));
 }
 
@@ -361,46 +432,5 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-</style>
-
-<style scoped>
-.select-container.variant-borderless {
-  width: 320px;
-  min-width: 80px;
-  margin-left: auto;
-
-  .select-trigger {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    padding: 0;
-    justify-content: flex-end;
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    font-weight: 400;
-
-    &:hover {
-      color: var(--color-primary);
-    }
-
-    .selected-text {
-      text-align: right;
-    }
-
-    .chevron {
-      margin-left: 4px;
-      font-size: 0.6rem;
-      opacity: 0.4;
-    }
-  }
-
-  .options-menu {
-    width: 200px;
-    right: 0;
-    left: auto;
-    border: 1px solid var(--color-gray-200);
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%);
-  }
 }
 </style>

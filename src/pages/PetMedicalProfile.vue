@@ -1,152 +1,184 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 
-import type { IPet, IVaccineRecord, IVaccineSeries } from '@/models/common'
-import { usePetStore } from '@/stores/pets'
+import Capsules from '@/components/common/ui/Capsules.vue'
+import Spinner from '@/components/common/ui/Spinner.vue'
+import MedicalDiagnosticsCard from '@/components/medical/MedicalDiagnosticsCard.vue'
+import MedicalDietCard from '@/components/medical/MedicalDietCard.vue'
+import MedicalDocumentsList from '@/components/medical/MedicalDocumentsList.vue'
+import MedicalIdentificationCard from '@/components/medical/MedicalIdentificationCard.vue'
+import MedicalMedicationsCard from '@/components/medical/MedicalMedicationsCard.vue'
+import MedicalVerificationGatekeeper from '@/components/medical/MedicalVerificationGatekeeper.vue'
+import { useMedicalRecords } from '@/composables/useMedicalRecords'
+import type {
+  IMedicalDocument,
+  IMedicalVerificationForm,
+  IPetMedicalPortalData,
+} from '@/models/common'
+import { calculateAge } from '@/utils/date'
+import {
+  buildCareTimeline,
+  buildDiagnosticTests,
+  buildDietInfo,
+  buildIdentificationInfo,
+  buildMedicationsList,
+  buildPhysicalTraitCapsules,
+  buildProceduresList,
+  buildVaccineRecords,
+  getSpayNeuterInfo,
+  getSpayNeuterLabels,
+  toDateLabel,
+} from '@/utils/medicalParser'
 
 const route = useRoute()
-const petStore = usePetStore()
+const router = useRouter()
+const {
+  isVerifying,
+  verificationError,
+  isVerifiedForPet,
+  getVerifiedToken,
+  verifyAccess,
+  fetchMedicalRecords,
+  clearVerification,
+} = useMedicalRecords()
 
 const isLoading = ref(true)
-const pet = ref<IPet | null>(null)
+const isVerified = ref(false)
+const portalData = ref<IPetMedicalPortalData | null>(null)
 
 const slug = computed(() => String(route.params.slug ?? '').trim())
 
-const isAllowedStatus = computed(() => {
-  const status = pet.value?.details?.status
-  return status === 'adopted' || status === 'archived' || status === 'available'
+const petName = computed(() => {
+  if (portalData.value?.name) return portalData.value.name
+  const raw = slug.value
+  return raw ? raw.charAt(0).toUpperCase() + raw.slice(1) : 'Pet'
 })
 
-const hasMedicalVisibility = computed(() => {
-  return pet.value?.profileSettings?.showMedicalHistory ?? true
+const petSpecies = computed(() => {
+  const sp = portalData.value?.species
+  return typeof sp === 'string' && sp.trim() ? sp.trim() : 'Cat'
 })
 
-const isVisible = computed(() => Boolean(pet.value && isAllowedStatus.value && hasMedicalVisibility.value))
-
-const toDateLabel = (value?: string | null) => {
-  if (!value) return 'Not provided'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-}
-
-interface IParsedVaccineRecord {
-  name: string
-  administered?: string | null
-  expires?: string | null
-  veterinarian?: string | null
-  status?: string | null
-}
-
-const parseVaccineRecord = (name: string, record?: IVaccineRecord): IParsedVaccineRecord | null => {
-  if (!record) return null
-  return {
-    name,
-    administered: toDateLabel(record.dateAdministered),
-    expires: record.expiresAt ? toDateLabel(record.expiresAt) : null,
-    veterinarian: record.veterinarian || null,
-  }
-}
-
-const expandSeriesObjects = (label: string, series?: IVaccineSeries): IParsedVaccineRecord[] => {
-  if (!series) return []
-  const rows: IParsedVaccineRecord[] = []
-  const round1 = parseVaccineRecord(`${label} Round 1`, series.round1)
-  const round2 = parseVaccineRecord(`${label} Round 2`, series.round2)
-  const round3 = parseVaccineRecord(`${label} Round 3`, series.round3)
-
-  if (round1) rows.push(round1)
-  if (round2) rows.push(round2)
-  if (round3) rows.push(round3)
-
-  if (rows.length === 0 && series.isComplete) {
-    rows.push({ name: label, status: 'Series marked complete' })
-  }
-  return rows
-}
-
-const vaccineRecords = computed(() => {
-  const vaccinations = pet.value?.medical?.vaccinations
-  if (!vaccinations) return [] as IParsedVaccineRecord[]
-  const lines: IParsedVaccineRecord[] = []
-
-  const rabies = parseVaccineRecord('Rabies', vaccinations.rabies)
-  if (rabies) lines.push(rabies)
-
-  const bordetella = parseVaccineRecord('Bordetella', vaccinations.bordetella)
-  if (bordetella) lines.push(bordetella)
-
-  const seriesLines = [
-    ...expandSeriesObjects('Canine Distemper', vaccinations.canineDistemper),
-    ...expandSeriesObjects('Feline Distemper', vaccinations.felineDistemper),
-    ...expandSeriesObjects('Feline Leukemia', vaccinations.felineLeukemia),
-    ...expandSeriesObjects('Leptospira', vaccinations.leptospira),
-  ]
-
-  return [...lines, ...seriesLines]
+const petSex = computed(() => {
+  const sx = portalData.value?.sex
+  return typeof sx === 'string' && sx.trim() ? sx.trim() : ''
 })
 
-const careTimeline = computed(() => {
-  if (!pet.value) return []
-  const events: Array<{ icon: string; title: string; date: string; note: string; status: 'completed' | 'current' }> = []
-
-  if (pet.value.createdAt) {
-    events.push({
-      icon: '🏠',
-      title: 'Rescue Intake & Initial Assessment',
-      date: toDateLabel(pet.value.createdAt),
-      note: 'Comprehensive veterinary intake, health check, and quarantine completed.',
-      status: 'completed',
-    })
-  }
-
-  if (pet.value.medical?.spayedOrNeuteredDate || pet.value.medical?.spayedOrNeutered) {
-    events.push({
-      icon: '🩺',
-      title: 'Spay / Neuter Surgery',
-      date: pet.value.medical.spayedOrNeuteredDate ? toDateLabel(pet.value.medical.spayedOrNeuteredDate) : 'Completed',
-      note: 'Sterilization procedure completed with full post-op recovery.',
-      status: 'completed',
-    })
-  }
-
-  if (pet.value.medical?.microchip?.microchipped) {
-    const chipId = pet.value.medical.microchip.microchipID
-    events.push({
-      icon: '🏷️',
-      title: 'Microchip Implantation & Registration',
-      date: 'Active',
-      note: chipId ? `Microchip #${chipId} registered with national database.` : 'Microchip implanted and registered.',
-      status: 'completed',
-    })
-  }
-
-  vaccineRecords.value.forEach((v) => {
-    events.push({
-      icon: '💉',
-      title: `Vaccination: ${v.name}`,
-      date: v.administered || 'Administered',
-      note: v.expires ? `Expires: ${v.expires}` : 'Up to date',
-      status: 'completed',
-    })
-  })
-
-  return events
+const petDob = computed(() => {
+  const d = portalData.value?.dob || portalData.value?.dateOfBirth
+  return typeof d === 'string' && d.trim() ? d.trim() : ''
 })
+
+const petAge = computed(() => {
+  if (!petDob.value) return ''
+  const calculated = calculateAge(petDob.value)
+  return calculated === '-' ? '' : calculated
+})
+
+const petStatus = computed(() => portalData.value?.status || 'adopted')
+const isImgError = ref(false)
+
+const petPhotoUrl = computed(() => {
+  const data = portalData.value as unknown as Record<string, unknown>
+  if (!data) return ''
+  if (typeof data.photoUrl === 'string' && data.photoUrl.trim()) return data.photoUrl.trim()
+  if (typeof data.photo_url === 'string' && data.photo_url.trim()) return data.photo_url.trim()
+  if (typeof data.imageUrl === 'string' && data.imageUrl.trim()) return data.imageUrl.trim()
+  if (typeof data.image_url === 'string' && data.image_url.trim()) return data.image_url.trim()
+  if (typeof data.photo === 'string' && data.photo.trim()) return data.photo.trim()
+  if (Array.isArray(data.photos) && data.photos.length > 0) {
+    const primary = (data.photos as Array<{ isPrimary?: boolean; url?: string }>).find(
+      (p) => p.isPrimary && p.url,
+    )
+    if (primary?.url) return primary.url
+    const first = (data.photos as Array<string | { url?: string }>)[0]
+    if (typeof first === 'string' && first.trim()) return first.trim()
+    if (first && typeof first === 'object' && 'url' in first && typeof first.url === 'string') {
+      return first.url
+    }
+  }
+  return ''
+})
+
+watch(petPhotoUrl, () => {
+  isImgError.value = false
+})
+
+const documents = computed<IMedicalDocument[]>(() => {
+  const docs = portalData.value?.medical?.documents ?? portalData.value?.documents
+  return Array.isArray(docs) ? docs : []
+})
+
+const vaccineRecords = computed(() => buildVaccineRecords(portalData.value))
+const spayNeuterInfo = computed(() => getSpayNeuterInfo(portalData.value))
+const spayNeuterLabels = computed(() =>
+  getSpayNeuterLabels(petSex.value, spayNeuterInfo.value.isSpayedNeutered),
+)
+const careTimeline = computed(() => buildCareTimeline(portalData.value, vaccineRecords.value))
+const physicalTraits = computed(() => buildPhysicalTraitCapsules(portalData.value))
+const identInfo = computed(() => buildIdentificationInfo(portalData.value))
+const diagnosticTests = computed(() => buildDiagnosticTests(portalData.value))
+const dietInfo = computed(() => buildDietInfo(portalData.value))
+const medicationsList = computed(() => buildMedicationsList(portalData.value))
+const proceduresList = computed(() => buildProceduresList(portalData.value))
+const healthSummary = computed(() => portalData.value?.medical?.healthSummary || null)
+
+const handlePrint = () => {
+  window.print()
+}
 
 const loadPet = async () => {
+  const currentSlug = slug.value
+  const hasLocalVerified = isVerifiedForPet(currentSlug) && Boolean(getVerifiedToken(currentSlug))
+
+  if (!hasLocalVerified) {
+    isVerified.value = false
+    portalData.value = null
+    isLoading.value = false
+    router.replace({ name: 'medical-records' })
+    return
+  }
+
   isLoading.value = true
   try {
-    const fromDetail = await petStore.fetchPetDetail(slug.value)
-    if (fromDetail) {
-      pet.value = fromDetail
-      return
+    const data = await fetchMedicalRecords(currentSlug)
+    if (data) {
+      portalData.value = data
+      isVerified.value = true
+    } else {
+      portalData.value = null
+      clearVerification(currentSlug)
+      isVerified.value = false
+      router.replace({ name: 'medical-records' })
     }
   } finally {
     isLoading.value = false
   }
 }
+
+const handleVerify = async (form: IMedicalVerificationForm) => {
+  const result = await verifyAccess(slug.value, form)
+  if (result.success) {
+    await loadPet()
+  }
+}
+
+onBeforeRouteLeave(() => {
+  clearVerification(slug.value)
+  portalData.value = null
+  isVerified.value = false
+})
+
+onUnmounted(() => {
+  clearVerification(slug.value)
+  portalData.value = null
+  isVerified.value = false
+})
+
+watch(slug, () => {
+  loadPet()
+})
 
 onMounted(async () => {
   await loadPet()
@@ -155,37 +187,194 @@ onMounted(async () => {
 
 <template>
   <section class="medical-shell">
-    <div class="medical-card">
-      <p v-if="isLoading" class="muted">Loading medical profile...</p>
+    <Transition name="portal-expand" mode="out-in">
+      <div v-if="isLoading" key="loading" class="medical-card loading-card" role="status" aria-live="polite">
+        <div class="spinner-wrap">
+          <Spinner />
+        </div>
+        <p class="loading-text">Loading medical profile...</p>
+      </div>
 
-      <template v-else-if="!pet">
-        <h1>Medical Profile Not Found</h1>
-        <p class="muted">We could not find a pet with that profile slug.</p>
-      </template>
+      <!-- Unverified State: Blurred Skeleton + Floating Gatekeeper Modal -->
+      <div v-else-if="!isVerified" key="gatekeeper" class="gatekeeper-stage">
+        <!-- Floating Interactive Gatekeeper Card -->
+        <div class="gatekeeper-modal-overlay">
+          <MedicalVerificationGatekeeper
+            :petName="petName"
+            :isVerifying="isVerifying"
+            :errorMessage="verificationError"
+            @verify="handleVerify"
+          />
+        </div>
 
-      <template v-else-if="!isVisible">
-        <h1>Medical Profile Unavailable</h1>
-        <p class="muted">
-          Medical records are currently restricted for this profile.
-        </p>
-      </template>
+        <!-- Blurred Background Skeleton Placeholder -->
+        <div class="medical-card blurred-skeleton" aria-hidden="true">
+          <header class="hero">
+            <div class="hero-top">
+              <span class="eyebrow">Veterinary &amp; Care Record</span>
+              <span class="status-badge">Adopted</span>
+            </div>
+            <div class="hero-content">
+              <div class="photo-placeholder"></div>
+              <div class="hero-text-placeholder">
+                <div class="skeleton-line name"></div>
+                <div class="skeleton-line capsules"></div>
+                <div class="skeleton-line sub"></div>
+              </div>
+            </div>
+          </header>
+          <article class="block">
+            <h2>Official Medical Documents &amp; PDFs</h2>
+            <div class="skeleton-doc-grid">
+              <div class="skeleton-doc-card"></div>
+              <div class="skeleton-doc-card"></div>
+            </div>
+          </article>
+        </div>
+      </div>
 
-      <template v-else>
+      <!-- Verified State: Full Unlocked Medical Dashboard -->
+      <div v-else-if="portalData" key="dashboard" class="medical-card unlocked-dashboard">
         <header class="hero">
           <div class="hero-top">
-            <span class="eyebrow">Veterinary &amp; Care Record</span>
-            <span class="status-badge" :class="pet.details?.status">{{ pet.details?.status }}</span>
+            <div class="eyebrow-group">
+              <span class="eyebrow">Veterinary &amp; Health Record</span>
+              <span class="verified-pill">✓ Verified Adopter Access</span>
+            </div>
+            <div class="top-actions">
+              <button
+                class="print-btn no-print"
+                type="button"
+                title="Print Official Medical Summary"
+                aria-label="Print Medical Summary"
+                @click="handlePrint"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <rect x="6" y="14" width="12" height="8" />
+                </svg>
+                <span>Print Record</span>
+              </button>
+              <span class="status-badge" :class="petStatus">{{ petStatus }}</span>
+            </div>
           </div>
-          <h1>{{ pet.name }}'s Medical Record</h1>
-          <p class="hero-sub">Official veterinary history and preventative care timeline managed by ADOHR.</p>
+
+          <div class="hero-main">
+            <div class="pet-avatar-wrap">
+              <img
+                v-if="petPhotoUrl && !isImgError"
+                :src="petPhotoUrl"
+                :alt="petName"
+                class="pet-avatar"
+                loading="lazy"
+                referrerpolicy="no-referrer"
+                @error="isImgError = true"
+              />
+              <div v-else class="pet-avatar-fallback" aria-hidden="true">
+                <span class="pet-avatar-initial">{{ petName ? petName.charAt(0).toUpperCase() : '🐾' }}</span>
+              </div>
+            </div>
+
+            <div class="hero-details">
+              <h1>{{ petName }}'s Medical Record</h1>
+              <div class="hero-traits">
+                <Capsules v-if="petSpecies" :label="petSpecies" />
+                <Capsules v-if="petSex" :label="petSex" />
+                <Capsules v-if="petAge" :label="petAge" />
+                <Capsules v-for="(trait, idx) in physicalTraits" :key="idx" :label="trait" />
+              </div>
+              <p class="hero-sub">Official veterinary health history and preventative care timeline managed by ADOHR.</p>
+            </div>
+          </div>
         </header>
 
+        <!-- PDF Documents Section -->
+        <MedicalDocumentsList :documents="documents" :petName="petName" />
+
+        <!-- Pet Identification & Official Tags -->
+        <MedicalIdentificationCard :ident="identInfo" />
+
         <!-- Chronological Care Timeline -->
-        <article class="block">
+        <article v-if="careTimeline.length > 0" class="block">
           <h2>Chronological Care Timeline</h2>
           <div class="timeline">
             <div v-for="(event, idx) in careTimeline" :key="idx" class="timeline-item">
-              <div class="timeline-icon">{{ event.icon }}</div>
+              <div class="timeline-icon" aria-hidden="true">
+                <svg
+                  v-if="event.type === 'surgery'"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .2.3V9a4 4 0 0 1-8 0V2.3z" />
+                  <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4" />
+                  <circle cx="20" cy="10" r="2" />
+                </svg>
+                <svg
+                  v-else-if="event.type === 'microchip'"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                  <line x1="7" y1="7" x2="7.01" y2="7" />
+                </svg>
+                <svg
+                  v-else-if="event.type === 'diagnostic'"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <path d="M8 13h2" />
+                  <path d="M8 17h8" />
+                </svg>
+                <svg
+                  v-else
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m18 2 4 4" />
+                  <path d="m17 7 3-3" />
+                  <path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5" />
+                  <path d="m9 11 4 4" />
+                  <path d="m5 19-3 3" />
+                  <path d="m14 4 6 6" />
+                </svg>
+              </div>
               <div class="timeline-content">
                 <div class="timeline-header">
                   <strong>{{ event.title }}</strong>
@@ -197,15 +386,18 @@ onMounted(async () => {
           </div>
         </article>
 
+        <!-- Diagnostic Testing Panel -->
+        <MedicalDiagnosticsCard :diagnostics="diagnosticTests" :petName="petName" />
+
         <!-- Spay/Neuter Status -->
         <article class="block">
-          <h2>Spay / Neuter Status</h2>
+          <h2>{{ spayNeuterLabels.sectionTitle }}</h2>
           <div class="status-row">
-            <span class="status-pill" :class="{ yes: pet.medical?.spayedOrNeutered }">
-              {{ pet.medical?.spayedOrNeutered ? '✓ Spayed/Neutered' : 'Pending Sterilization' }}
+            <span class="status-pill" :class="{ yes: spayNeuterInfo.isSpayedNeutered }">
+              {{ spayNeuterLabels.statusPill }}
             </span>
-            <span v-if="pet.medical?.spayedOrNeuteredDate" class="muted">
-              Procedure Date: {{ toDateLabel(pet.medical.spayedOrNeuteredDate) }}
+            <span v-if="spayNeuterInfo.spayNeuterDate" class="muted">
+              Procedure Date: {{ toDateLabel(spayNeuterInfo.spayNeuterDate) }}
             </span>
           </div>
         </article>
@@ -217,211 +409,40 @@ onMounted(async () => {
             <template v-for="(record, index) in vaccineRecords" :key="index">
               <dt>{{ record.name }}</dt>
               <dd>
-                <span v-if="record.status">{{ record.status }}</span>
-                <template v-else>
-                  <div v-if="record.administered">Administered: {{ record.administered }}</div>
-                  <div v-if="record.expires">Expires: {{ record.expires }}</div>
-                  <div v-if="record.veterinarian">Veterinarian: {{ record.veterinarian }}</div>
-                </template>
+                <div v-if="record.administered && record.administered !== 'Not provided'">
+                  Administered: {{ record.administered }}
+                </div>
+                <div v-if="record.expires">Expires: {{ record.expires }}</div>
+                <div v-if="record.veterinarian">Veterinarian: {{ record.veterinarian }}</div>
+                <div v-if="record.status" class="record-status">{{ record.status }}</div>
+                <div
+                  v-if="
+                    (!record.administered || record.administered === 'Not provided') &&
+                    !record.expires &&
+                    !record.veterinarian &&
+                    !record.status
+                  "
+                >
+                  Not provided
+                </div>
               </dd>
             </template>
           </dl>
           <p v-else class="muted">No specific vaccination line items listed.</p>
         </article>
-      </template>
-    </div>
+
+        <!-- Diet, Nutrition & Daily Guidelines -->
+        <MedicalDietCard :diet="dietInfo" :petName="petName" />
+
+        <!-- Surgeries, Medications & Clinical History -->
+        <MedicalMedicationsCard
+          :medications="medicationsList"
+          :procedures="proceduresList"
+          :healthSummary="healthSummary"
+        />
+      </div>
+    </Transition>
   </section>
 </template>
 
-<style scoped lang="css">
-.medical-shell {
-  min-height: 100vh;
-  padding: 9rem var(--layout-padding-side) 4rem;
-  background: var(--text-inverse);
-  color: var(--text-primary);
-}
-
-.medical-card {
-  max-width: 860px;
-  margin: 0 auto;
-  background: var(--text-inverse);
-  border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 14%));
-  border-radius: var(--radius-lg, 16px);
-  padding: clamp(24px, 4vw, 40px);
-  box-shadow: var(--shadow-lg);
-}
-
-.hero {
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 14%));
-
-  .hero-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-
-  .eyebrow {
-    font-family: ui-monospace, 'SF Mono', monospace;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--color-secondary);
-    letter-spacing: 0.1em;
-  }
-
-  .status-badge {
-    text-transform: capitalize;
-    font-size: 0.78rem;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: var(--radius-full);
-    background-color: oklch(from var(--color-secondary) 96% 0.04 h);
-    color: var(--color-secondary);
-  }
-
-  h1 {
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-    font-weight: 800;
-    color: var(--color-primary);
-    margin: 0 0 0.5rem;
-  }
-
-  .hero-sub {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    margin: 0;
-  }
-}
-
-.block {
-  margin-top: 1.75rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-
-  h2 {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    margin-bottom: 1rem;
-  }
-}
-
-.timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: relative;
-  padding-left: 8px;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 12px;
-    bottom: 12px;
-    left: 23px;
-    width: 2px;
-    background: var(--line-ink, oklch(from var(--text-primary) l c h / 15%));
-  }
-}
-
-.timeline-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  position: relative;
-  z-index: 1;
-
-  .timeline-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: var(--text-inverse);
-    border: 2px solid var(--color-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    flex-shrink: 0;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .timeline-content {
-    flex: 1;
-    background-color: oklch(from var(--color-primary-weak) l c h / 30%);
-    border-radius: var(--radius-md, 10px);
-    padding: 12px 16px;
-    border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 10%));
-
-    .timeline-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 8px;
-      margin-bottom: 4px;
-
-      strong { font-size: 0.92rem; color: var(--text-primary); }
-      .timeline-date {
-        font-family: ui-monospace, 'SF Mono', monospace;
-        font-size: 0.78rem;
-        color: var(--color-secondary);
-        font-weight: 600;
-      }
-    }
-
-    .timeline-note {
-      font-size: 0.84rem;
-      color: var(--text-secondary);
-      margin: 0;
-      line-height: 1.4;
-    }
-  }
-}
-
-.status-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  .status-pill {
-    padding: 4px 12px;
-    border-radius: var(--radius-full);
-    font-size: 0.85rem;
-    font-weight: 700;
-    background-color: oklch(from var(--color-secondary) 96% 0.04 h);
-    color: var(--color-secondary);
-
-    &.yes {
-      background-color: oklch(from var(--color-primary) 96% 0.05 h);
-      color: var(--color-primary);
-    }
-  }
-}
-
-.medical-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  dt {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-  }
-
-  dd {
-    margin: 0 0 8px 0;
-    padding-left: 12px;
-    border-left: 2px solid var(--color-secondary);
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-  }
-}
-
-.muted {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-</style>
+<style scoped src="./PetMedicalProfile.css"></style>

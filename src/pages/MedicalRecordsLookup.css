@@ -1,0 +1,116 @@
+.lookup-page {
+  min-height: 100vh;
+  padding: 6.5rem var(--layout-padding-side) 5rem;
+  background: var(--text-inverse);
+  color: var(--text-primary);
+}
+
+.lookup-shell {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.lookup-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    letter-spacing: 0.12em;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.25rem);
+    font-weight: 800;
+    color: var(--color-primary);
+    letter-spacing: -0.025em;
+    margin: 0 0 12px;
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+}
+
+.gatekeeper-wrap {
+  margin-bottom: 3rem;
+}
+
+.info-section {
+  border-top: 1px solid var(--line-ink);
+  padding-top: 3rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin: 0 0 1.5rem;
+    text-align: center;
+  }
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.faq-card {
+  background-color: var(--color-white);
+  border: 1.5px solid var(--line-ink);
+  border-radius: var(--radius-md);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .faq-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .faq-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background-color: oklch(from var(--color-secondary) 94% 0.05 h);
+    color: var(--color-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid oklch(from var(--color-secondary) 85% 0.08 h);
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  a {
+    color: var(--color-secondary);
+    font-weight: 600;
+    text-decoration: underline;
+  }
+}

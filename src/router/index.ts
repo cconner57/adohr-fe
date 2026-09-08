@@ -10,6 +10,7 @@ const Donate = () => import('../pages/Donate.vue')
 const Foster = () => import('../pages/Foster.vue')
 const HappyTails = () => import('../pages/HappyTails.vue')
 const PetMedicalProfile = () => import('../pages/PetMedicalProfile.vue')
+const MedicalRecordsLookup = () => import('../pages/MedicalRecordsLookup.vue')
 const NotFound = () => import('../pages/NotFound.vue')
 const News = () => import('../pages/News.vue')
 const PetAdoption = () => import('../pages/PetAdoption.vue')
@@ -29,7 +30,13 @@ const router = createRouter({
       component: About,
     },
     {
+      path: '/medical-records',
+      name: 'medical-records',
+      component: MedicalRecordsLookup,
+    },
+    {
       path: '/pets/:slug/medical',
+      name: 'pet-medical-profile',
       component: PetMedicalProfile,
     },
     { path: '/adopt', name: 'adopt-list', component: Adopt },
