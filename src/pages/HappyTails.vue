@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 import Footer from '@/components/common/footer/Footer.vue'
+import SubmitHappyTailModal from '@/components/happy-tails/SubmitHappyTailModal.vue'
 import { useScrollReveal } from '@/composables/useScrollReveal'
 import { useHappyTailsStore } from '@/stores/happyTails'
 import { formatDate } from '@/utils/date'
 
 const { vScrollReveal } = useScrollReveal()
+const route = useRoute()
 
 const happyTailsStore = useHappyTailsStore()
 const { sortedItems, isLoading, error } = storeToRefs(happyTailsStore)
 
 const currentFilter = ref<'all' | 'dog' | 'cat'>('all')
+const isSubmitModalOpen = ref(false)
 
 const filteredItems = computed(() => {
   if (currentFilter.value === 'all') return sortedItems.value
@@ -21,7 +25,19 @@ const filteredItems = computed(() => {
 
 onMounted(() => {
   happyTailsStore.fetchHappyTails()
+  if (route.query.submit === 'true') {
+    isSubmitModalOpen.value = true
+  }
 })
+
+watch(
+  () => route.query.submit,
+  (val) => {
+    if (val === 'true') {
+      isSubmitModalOpen.value = true
+    }
+  },
+)
 </script>
 
 <template>
@@ -31,6 +47,9 @@ onMounted(() => {
         <p class="eyebrow">From rescue to home</p>
         <h1>Happy Tails</h1>
         <p class="lead">Celebrating the beautiful journeys of adopted pets and the loving families who gave them a second chance at life.</p>
+        <button type="button" class="hero-submit-btn" @click="isSubmitModalOpen = true">
+          🐾 Share Your Happy Tail
+        </button>
       </div>
     </section>
 
@@ -113,6 +132,7 @@ onMounted(() => {
   </main>
   
   <Footer />
+  <SubmitHappyTailModal :isOpen="isSubmitModalOpen" @close="isSubmitModalOpen = false" />
 </template>
 
 <style scoped lang="css">
@@ -164,6 +184,28 @@ onMounted(() => {
     margin: 20px auto 0;
     line-height: 1.6;
     color: oklch(from var(--text-inverse) l c h / 88%);
+  }
+
+  .hero-submit-btn {
+    all: unset;
+    margin-top: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--color-warning);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 10px 24px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    box-shadow: 0 4px 14px oklch(0% 0 0deg / 25%);
+    transition: all 0.2s ease;
+
+    &:hover {
+      scale: 1.05;
+      background-color: oklch(from var(--color-warning) 92% c h);
+    }
   }
 }
 

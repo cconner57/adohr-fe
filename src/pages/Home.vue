@@ -2,7 +2,7 @@
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
-import PetSmartEventBanner from '@/components/adopt/events/PetSmartEventBanner.vue'
+import EventBanner from '@/components/adopt/events/EventBanner.vue'
 import Footer from '@/components/common/footer/Footer.vue'
 import BannerButton from '@/components/common/ui/BannerButton.vue'
 import HeroSection from '@/components/home/hero-section/HeroSection.vue'
@@ -10,16 +10,19 @@ import Impact from '@/components/home/impact/Impact.vue'
 import Mission from '@/components/home/mission/Mission.vue'
 import AdoptionSpotlight from '@/components/home/spotlight/AdoptionSpotlight.vue'
 import SuccessStories from '@/components/home/success-stories/SuccessStories.vue'
+import { useAdoptionEvents } from '@/composables/useAdoptionEvents'
 import { usePets } from '@/composables/usePets.ts'
 import { useScrollReveal } from '@/composables/useScrollReveal.ts'
 
 const router = useRouter()
 
 const { spotlightPets, loading, error, fetchSpotlight } = usePets()
+const { hasUpcomingEvents, fetchUpcomingEvents } = useAdoptionEvents()
 const { vScrollReveal } = useScrollReveal()
 
 onMounted(() => {
   fetchSpotlight()
+  fetchUpcomingEvents()
 })
 </script>
 
@@ -30,9 +33,14 @@ onMounted(() => {
 
     <main id="main-content">
       <!-- 2. Weekend Events Band -->
-      <section class="events-band" aria-label="Weekend Adoption Events">
+      <section v-if="hasUpcomingEvents" class="events-band" aria-label="Weekend Adoption Events">
         <div class="content-wrapper" v-scroll-reveal>
-          <PetSmartEventBanner :showFilterButton="false" variant="dark" />
+          <EventBanner
+            :showFilterButton="true"
+            :showWhatToBringButton="false"
+            colorScheme="dark"
+            @toggle-filter="router.push('/adopt?filter=weekend')"
+          />
         </div>
       </section>
 

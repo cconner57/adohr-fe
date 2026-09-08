@@ -1,16 +1,56 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
 import Button from '../../common/ui/Button.vue'
 
-defineProps<{
-  isOpen: boolean
-}>()
+interface IChecklistItem {
+  id: string
+  title: string
+  description: string
+  iconType: 'members' | 'carrier' | 'video'
+}
+
+const props = withDefaults(
+  defineProps<{
+    isOpen: boolean
+    initialSpecies?: 'cat' | 'dog'
+  }>(),
+  {
+    initialSpecies: 'cat',
+  },
+)
 
 const emit = defineEmits<{
   close: []
   fastTrack: []
 }>()
+
+const selectedSpecies = ref<'cat' | 'dog'>(props.initialSpecies)
+
+watch(
+  () => props.initialSpecies,
+  (newSpecies) => {
+    if (newSpecies) {
+      selectedSpecies.value = newSpecies
+    }
+  },
+)
+
+const catItems: IChecklistItem[] = [
+  { id: 'cat-members', title: 'All Household Members', description: 'Everyone living in the home should attend to ensure comfort and connection with your new cat or kitten.', iconType: 'members' },
+  { id: 'cat-carrier', title: 'Secure Cat Carrier (Hard or Soft-Sided)', description: 'Bring a secure hard-sided or soft-sided carrier. For cat safety, cats/kittens are never permitted to leave the event held in arms or without a carrier.', iconType: 'carrier' },
+  { id: 'cat-video', title: 'Home Walkthrough Video (2–3 mins)', description: 'A 2–3 minute video walkthrough of your home on your phone. We verify window screens are intact, toxic plants (like lilies) are removed, and a quiet initial adjustment room is ready.', iconType: 'video' },
+]
+
+const dogItems: IChecklistItem[] = [
+  { id: 'dog-members', title: 'All Household Members & Resident Dogs', description: 'Everyone living in the home AND any resident dogs should attend for supervised meet-and-greets to confirm compatibility.', iconType: 'members' },
+  { id: 'dog-leash', title: 'Leash, Collar & Harness', description: 'Bring a standard 4–6 ft leash and properly fitted martingale collar or harness. Retractable flexi-leashes are not permitted on-site.', iconType: 'carrier' },
+  { id: 'dog-video', title: 'Home & Yard Walkthrough Video (2–3 mins)', description: 'A 2–3 minute video showing your indoor space and yard perimeter (fence height, secure gates/latches, and no access to trash or toxic pool/lawn chemicals).', iconType: 'video' },
+]
+
+const currentItems = computed(() => {
+  return selectedSpecies.value === 'cat' ? catItems : dogItems
+})
 
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape') {
@@ -76,60 +116,93 @@ onUnmounted(() => {
             <strong>PetSmart Pasadena</strong> (3347 E Foothill Blvd). To make your adoption smooth and same-day ready, please bring:
           </p>
 
-          <ul class="checklist" role="list">
-            <li class="check-item">
-              <div class="item-icon" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                  <polyline points="9 22 9 12 15 12 15 22" />
+          <!-- Species Toggle with Vector SVGs -->
+          <div class="species-toggle-container">
+            <div class="species-toggle-group" role="tablist" aria-label="Adoption preparation pet type">
+              <button
+                type="button"
+                role="tab"
+                :aria-selected="selectedSpecies === 'cat'"
+                class="species-toggle-btn"
+                :class="{ active: selectedSpecies === 'cat' }"
+                @click="selectedSpecies = 'cat'"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="toggle-icon"
+                  aria-hidden="true"
+                >
+                  <path d="M12 5c-4 0-7.5 3-7.5 7.5 0 4.1 3.4 7.5 7.5 7.5s7.5-3.4 7.5-7.5c0-4.5-3.5-7.5-7.5-7.5z" />
+                  <path d="M4.8 9.5L3 3l6.5 2.5" />
+                  <path d="M19.2 9.5L21 3l-6.5 2.5" />
+                  <circle cx="9" cy="13" r="1" fill="currentColor" />
+                  <circle cx="15" cy="13" r="1" fill="currentColor" />
+                  <path d="M11 15.5h2l-1 1z" fill="currentColor" />
                 </svg>
-              </div>
-              <div class="item-content">
-                <strong>Housing &amp; Landlord Approval</strong>
-                <p>If you rent or have an HOA, bring a copy of your lease or pet policy showing pets are permitted.</p>
-              </div>
-            </li>
+                <span>Cats &amp; Kittens</span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                :aria-selected="selectedSpecies === 'dog'"
+                class="species-toggle-btn"
+                :class="{ active: selectedSpecies === 'dog' }"
+                @click="selectedSpecies = 'dog'"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="toggle-icon"
+                  aria-hidden="true"
+                >
+                  <path d="M12 4.5c-3.8 0-7 3-7 7 0 4.2 3.2 7.5 7 7.5s7-3.3 7-7.5c0-4-3.2-7-7-7z" />
+                  <path d="M5.5 8.5C3.5 10 2 13 2.5 15.5c.3 1.5 1.5 2 2.5 1" />
+                  <path d="M18.5 8.5c2 1.5 3.5 4.5 3 7-.3 1.5-1.5 2-2.5 1" />
+                  <circle cx="9" cy="11.5" r="1" fill="currentColor" />
+                  <circle cx="15" cy="11.5" r="1" fill="currentColor" />
+                  <path d="M10.5 15h3l-1.5 1.5z" fill="currentColor" />
+                  <path d="M12 16.5v2" />
+                </svg>
+                <span>Dogs &amp; Puppies</span>
+              </button>
+            </div>
+          </div>
 
-            <li class="check-item">
+          <!-- Dynamic Checklist Items -->
+          <ul class="checklist" role="list">
+            <li v-for="item in currentItems" :key="item.id" class="check-item">
               <div class="item-icon" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg v-if="item.iconType === 'members'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                   <circle cx="9" cy="7" r="4" />
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
                   <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                 </svg>
-              </div>
-              <div class="item-content">
-                <strong>All Household Members</strong>
-                <p>Everyone living in the home (including existing dogs for dog meet-and-greets) should attend to ensure a great match.</p>
-              </div>
-            </li>
-
-            <li class="check-item">
-              <div class="item-icon" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg v-else-if="item.iconType === 'carrier'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
                   <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                 </svg>
-              </div>
-              <div class="item-content">
-                <strong>Safe Transport Gear</strong>
-                <p>Bring a secure hard-sided cat carrier (for cats/kittens) or a secure leash &amp; collar (for dogs).</p>
-              </div>
-            </li>
-
-            <li class="check-item">
-              <div class="item-icon" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polygon points="23 7 16 12 23 17 23 7" />
                   <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
                 </svg>
               </div>
               <div class="item-content">
-                <strong>Home Walkthrough Video (2–3 mins)</strong>
-                <p>
-                  A 2–3 minute video recording of your home on your phone speeds up the process. We need to see every room to make sure it is safe for the pet, checking for things like toxic plants/flowers, hazardous items, and structural hazards (damaged parts of the house, mold, etc.).
-                </p>
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.description }}</p>
               </div>
             </li>
           </ul>
@@ -140,7 +213,12 @@ onUnmounted(() => {
               <line x1="12" y1="16" x2="12" y2="12" />
               <line x1="12" y1="8" x2="12.01" y2="8" />
             </svg>
-            <span><strong>Pro-Tip:</strong> Get pre-approved before Saturday so your application is on file when you arrive at PetSmart!</span>
+            <span v-if="selectedSpecies === 'cat'">
+              <strong>Cat Pro-Tip:</strong> Setting up a quiet safe room with food, water, litter box, and a scratcher will help your new kitty decompress comfortably during their first week!
+            </span>
+            <span v-else>
+              <strong>Dog Pro-Tip:</strong> Bring your resident dog's favorite high-value treats to make the supervised on-site meet-and-greet smooth and positive!
+            </span>
           </div>
         </div>
 
@@ -174,11 +252,18 @@ onUnmounted(() => {
   padding: 1rem;
   backdrop-filter: blur(6px);
   animation: fadeIn 0.2s ease-out;
+  transition: opacity 0.25s ease, backdrop-filter 0.25s ease;
+  transition-behavior: allow-discrete;
+
+  @starting-style {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
 }
 
 .event-prep-modal {
   background: var(--text-inverse);
-  border-radius: var(--radius-xl, 24px);
+  border-radius: var(--radius-conditional-xl, max(0px, min(var(--radius-xl, 24px), (100vw - 100%) * 9999)));
   border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
   box-shadow: var(--shadow-xl);
   width: 100%;
@@ -188,6 +273,13 @@ onUnmounted(() => {
   flex-direction: column;
   overflow: hidden;
   animation: slideUp 0.25s ease-out;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-behavior: allow-discrete;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
 }
 
 .modal-header {
@@ -244,7 +336,57 @@ onUnmounted(() => {
     font-size: 0.92rem;
     line-height: 1.55;
     color: var(--text-secondary);
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.species-toggle-container {
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.species-toggle-group {
+  display: inline-flex;
+  padding: 4px;
+  background-color: oklch(from var(--text-primary) l c h / 6%);
+  border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 14%));
+  border-radius: var(--radius-full);
+  gap: 4px;
+  width: 100%;
+  max-width: 360px;
+
+  .species-toggle-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    border: none;
+    background: transparent;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    .toggle-icon {
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    &:hover {
+      color: var(--text-primary);
+      background-color: oklch(from var(--text-primary) l c h / 4%);
+    }
+
+    &.active {
+      background-color: var(--color-primary);
+      color: var(--text-inverse);
+      box-shadow: 0 2px 8px oklch(from var(--color-primary) l c h / 30%);
+    }
   }
 }
 

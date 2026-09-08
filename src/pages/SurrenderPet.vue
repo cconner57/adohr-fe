@@ -217,21 +217,31 @@ const stepPrefix = computed(() => String(step.value + 1).padStart(2, '0'))
 
         <div class="actions">
           <Button
-            v-if="step > 0"
-            @click="prevStep"
+            type="button"
             title="Back"
             color="white"
             size="large"
-            :disabled="isSubmitting"
+            @click="prevStep"
+            :disabled="step === 0 || isSubmitting"
             style="border: 1px solid var(--color-primary); color: var(--color-primary)"
           />
           <Button
-            @click="handleSubmit"
-            type="submit"
-            :title="isSubmitting ? 'Submitting...' : step === 6 ? 'Submit' : 'Next'"
+            v-if="step < 6"
+            type="button"
+            title="Next"
             color="green"
-            :disabled="isSubmitting"
             size="large"
+            @click="handleSubmit"
+            :disabled="isSubmitting"
+          />
+          <Button
+            v-else
+            type="submit"
+            title="Submit Surrender Request"
+            color="green"
+            size="large"
+            @click="handleSubmit"
+            :loading="isSubmitting"
           />
         </div>
       </section>

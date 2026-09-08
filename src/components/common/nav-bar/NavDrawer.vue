@@ -142,6 +142,28 @@ onBeforeUnmount(() => {
           <RouterLink to="/volunteer" class="nav-link" @click="close">
             <span>Volunteer</span>
           </RouterLink>
+          <RouterLink to="/happy-tails" class="nav-link" @click="close">
+            <span>Happy Tails</span>
+          </RouterLink>
+          <RouterLink to="/wishlist" class="nav-link" @click="close">
+            <span>Wishlist</span>
+          </RouterLink>
+          <RouterLink to="/news" class="nav-link" @click="close">
+            <span>News</span>
+          </RouterLink>
+          <RouterLink to="/medical-records" class="nav-link" @click="close">
+            <span>Medical Records</span>
+          </RouterLink>
+
+          <div class="drawer-divider" aria-hidden="true" />
+
+          <RouterLink
+            to="/happy-tails?submit=true"
+            class="nav-link nav-link--community"
+            @click="close"
+          >
+            <span>🐾 Submit Your Happy Tail</span>
+          </RouterLink>
         </nav>
 
         <footer class="drawer-footer">
@@ -161,16 +183,16 @@ onBeforeUnmount(() => {
   padding: 8px;
   border-radius: var(--radius-lg);
   cursor: pointer;
-  color: var(--color-white);
+  color: var(--text-primary, #1e2522);
   transition: background-color 0.2s;
 }
 
 .hx-btn:hover {
-  background-color: rgb(255 255 255 / 10%);
+  background-color: oklch(from var(--text-primary) l c h / 8%);
 }
 
 .hx-btn:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
@@ -336,6 +358,26 @@ svg[data-open='true'] .hx-bot {
 .nav-link.router-link-active {
   background-color: var(--color-primary-weak);
   color: var(--color-primary);
+}
+
+.drawer-divider {
+  height: 1px;
+  background-color: var(--line-ink);
+  margin: 6px 16px;
+  opacity: 0.5;
+}
+
+.nav-link--community {
+  background-color: oklch(from var(--color-warning) l c h / 12%);
+  color: var(--color-primary);
+  border: 1px dashed oklch(from var(--color-warning) l c h / 50%);
+  font-size: 1rem;
+}
+
+.nav-link--community:hover {
+  background-color: var(--color-warning);
+  color: var(--text-inverse);
+  transform: translateX(4px);
 }
 
 .drawer-footer {

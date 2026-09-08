@@ -268,7 +268,7 @@ watch(
           <InputField
             :modelValue="formState.phoneNumber"
             @update:modelValue="(v: unknown) => (formState.phoneNumber = formatPhoneNumber(v as string))"
-            label="Phone Number" placeholder="(626) 555-0199" type="tel" inputmode="tel" autocomplete="tel" name="phoneNumber" maxlength="14"
+            label="Phone Number" placeholder="626-555-0199" type="tel" inputmode="tel" autocomplete="tel" name="phoneNumber" maxlength="14"
             :hasError="touched.phoneNumber && (!formState.phoneNumber || formState.phoneNumber.length < 10)" @blur="handleBlur('phoneNumber')"
           />
           <InputField
@@ -372,24 +372,34 @@ watch(
         </div>
 
         <!-- Wizard Navigation Controls -->
-        <div class="wizard-actions">
+        <footer class="actions">
           <Button
-            v-if="currentStep > 0"
-            type="button" title="← Previous Step" variant="secondary" color="blue" size="large"
+            type="button"
+            title="Back"
+            color="white"
+            size="large"
             @click="handlePrevStep"
+            :disabled="currentStep === 0 || isSubmitting"
+            style="border: 1px solid var(--color-primary); color: var(--color-primary)"
           />
-          <div class="spacer"></div>
           <Button
             v-if="currentStep < volunteerSteps.length - 1"
-            type="button" title="Next Step →" color="blue" size="large"
+            type="button"
+            title="Next"
+            color="green"
+            size="large"
             @click="handleNextStep"
+            :disabled="isSubmitting"
           />
           <Button
             v-else
-            type="submit" title="Submit Volunteer Application 🐾" color="green" size="large"
+            type="submit"
+            title="Submit Application"
+            color="green"
+            size="large"
             :loading="isSubmitting"
           />
-        </div>
+        </footer>
       </form>
     </div>
 
