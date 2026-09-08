@@ -2,7 +2,7 @@ import { reactive, ref } from 'vue'
 
 import { API_ENDPOINTS } from '@/constants/api'
 import type { IPet } from '@/models/common'
-import { getApiErrorMessage, withPublicOrgId } from '@/utils/api'
+import { getApiErrorMessage, PUBLIC_ORG_ID, withPublicOrgId } from '@/utils/api'
 
 type TInquirySource = 'schedule_meet' | 'request_info'
 
@@ -32,8 +32,12 @@ export function usePetInquiry(pet: IPet, source: TInquirySource) {
     try {
       const response = await fetch(withPublicOrgId(API_ENDPOINTS.PET_INQUIRY), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Org-Id': PUBLIC_ORG_ID,
+        },
         body: JSON.stringify({
+          orgId: PUBLIC_ORG_ID,
           fax_number: '',
           source,
           firstName: formData.firstName,

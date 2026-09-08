@@ -41,6 +41,11 @@ export const API_ENDPOINTS = {
   LOGOUT: `${API_BASE_URL}/users/logout`,
   USERS: `${API_BASE_URL}/users`,
 
+  // Medical Records & Portal
+  PET_MEDICAL_RECORDS: (idOrSlug: string) => `${API_BASE_URL}/api/pets/${idOrSlug}/medical`,
+  VERIFY_MEDICAL_ACCESS: (idOrSlug: string) => `${API_BASE_URL}/api/pets/${idOrSlug}/medical/verify`,
+  VERIFY_MEDICAL_ACCESS_GLOBAL: `${API_BASE_URL}/api/pets/medical/verify`,
+
   // Notifications
   NOTIFICATIONS_PUBLIC_KEY: `${API_BASE_URL}/v1/notifications/public-key`,
   NOTIFICATIONS_SUBSCRIBE: `${API_BASE_URL}/v1/notifications/subscribe`,

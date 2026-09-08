@@ -5,7 +5,7 @@ import { useDemoMode } from '../composables/useDemoMode'
 import { useMetrics } from '../composables/useMetrics'
 import { API_ENDPOINTS } from '../constants/api'
 import type { FormState } from '../models/adopt-form'
-import { fetchWithRetry, getApiErrorMessage, withPublicOrgId } from '../utils/api'
+import { fetchWithRetry, getApiErrorMessage, PUBLIC_ORG_ID, withPublicOrgId } from '../utils/api'
 import { usePetStore } from './pets'
 import { getAdoptionValidationErrors } from './validation/adoptionValidation'
 
@@ -204,6 +204,7 @@ export const useAdoptionStore = defineStore('adoption', () => {
 
     try {
       const payload = {
+        orgId: PUBLIC_ORG_ID,
         petId: petId || petStore.selectedPet?.id,
         ...formState,
       }
@@ -221,7 +222,10 @@ export const useAdoptionStore = defineStore('adoption', () => {
         withPublicOrgId(API_ENDPOINTS.ADOPTION_APPLICATION),
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Org-Id': PUBLIC_ORG_ID,
+          },
           body: JSON.stringify(payload),
         },
         {

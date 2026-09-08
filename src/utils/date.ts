@@ -1,16 +1,20 @@
 export function formatDigitDate(dateString?: string | null) {
-  if (!dateString) return '-'
+  if (!dateString || dateString.trim() === '' || dateString === '-' || dateString === 'null') return '-'
 
+  const trimmed = dateString.trim()
   let date: Date
 
-  if (dateString.length === 10 && dateString.includes('-')) {
-    const [y, m, d] = dateString.split('-').map(Number)
+  if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) {
+    const [y, m, d] = trimmed.slice(0, 10).split('-').map(Number)
+    date = new Date(y, m - 1, d)
+  } else if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(trimmed)) {
+    const [m, d, y] = trimmed.split('/').map(Number)
     date = new Date(y, m - 1, d)
   } else {
-    date = new Date(dateString)
+    date = new Date(trimmed)
   }
 
-  if (Number.isNaN(date.getTime())) return '-'
+  if (Number.isNaN(date.getTime())) return trimmed
 
   // Format as MM/DD/YYYY
   const mm = String(date.getMonth() + 1).padStart(2, '0')
@@ -21,18 +25,22 @@ export function formatDigitDate(dateString?: string | null) {
 }
 
 export function formatDate(dateStr?: string | null): string {
-  if (!dateStr) return '-'
+  if (!dateStr || dateStr.trim() === '' || dateStr === '-' || dateStr === 'null') return '-'
 
+  const trimmed = dateStr.trim()
   let date: Date
 
-  if (dateStr.length === 10 && dateStr.includes('-')) {
-    const [y, m, d] = dateStr.split('-').map(Number)
+  if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) {
+    const [y, m, d] = trimmed.slice(0, 10).split('-').map(Number)
+    date = new Date(y, m - 1, d)
+  } else if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(trimmed)) {
+    const [m, d, y] = trimmed.split('/').map(Number)
     date = new Date(y, m - 1, d)
   } else {
-    date = new Date(dateStr)
+    date = new Date(trimmed)
   }
 
-  if (Number.isNaN(date.getTime())) return '-'
+  if (Number.isNaN(date.getTime())) return trimmed
 
   return date.toLocaleDateString('en-US', {
     weekday: undefined,

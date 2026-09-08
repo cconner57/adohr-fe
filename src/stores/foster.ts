@@ -4,7 +4,7 @@ import { computed, ref } from 'vue'
 import { API_ENDPOINTS } from '@/constants/api'
 import { FOSTER_PAGES } from '@/constants/fosterQuestions'
 import type { IFosterFormState, TFosterSpecies } from '@/models/foster-form'
-import { getApiErrorMessage, withPublicOrgId } from '@/utils/api'
+import { getApiErrorMessage, PUBLIC_ORG_ID, withPublicOrgId } from '@/utils/api'
 
 const FOSTER_STORAGE_KEY = 'adohr_foster_form_v1'
 
@@ -161,8 +161,12 @@ export const useFosterStore = defineStore('foster', () => {
 
       const response = await fetch(withPublicOrgId(API_ENDPOINTS.FOSTER_APPLICATION), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Org-Id': PUBLIC_ORG_ID,
+        },
         body: JSON.stringify({
+          orgId: PUBLIC_ORG_ID,
           firstName,
           lastName,
           email,

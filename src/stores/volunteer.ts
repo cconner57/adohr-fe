@@ -5,7 +5,7 @@ import { useDemoMode } from '../composables/useDemoMode'
 import { useMetrics } from '../composables/useMetrics'
 import { API_ENDPOINTS } from '../constants/api'
 import type { IVolunteerFormState } from '../models/volunteer-form'
-import { getApiErrorMessage, withPublicOrgId } from '../utils/api'
+import { getApiErrorMessage, PUBLIC_ORG_ID, withPublicOrgId } from '../utils/api'
 import { getVolunteerValidationErrors } from './validation/volunteerValidation'
 
 const calculateVolunteerAge = (birthday: string): number | null => {
@@ -151,7 +151,10 @@ export const useVolunteerStore = defineStore('volunteer', () => {
       return true
     }
 
-    const payload: Partial<IVolunteerFormState> = { ...formState }
+    const payload: Partial<IVolunteerFormState> & { orgId?: string } = {
+      orgId: PUBLIC_ORG_ID,
+      ...formState,
+    }
     const derivedAge = calculateVolunteerAge(formState.birthday)
 
     payload.age = derivedAge
@@ -165,7 +168,10 @@ export const useVolunteerStore = defineStore('volunteer', () => {
     try {
       const response = await fetch(withPublicOrgId(API_ENDPOINTS.VOLUNTEER_APPLICATION), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Org-Id': PUBLIC_ORG_ID,
+        },
         body: JSON.stringify(payload),
       })
 

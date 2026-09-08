@@ -4,6 +4,7 @@ import { type Ref, ref } from 'vue'
 import { API_ENDPOINTS } from '../constants/api'
 import type { IPet } from '../models/common'
 import { PUBLIC_ORG_ID } from '../utils/api'
+import { extractPetsFromApiResponse } from '../utils/petNormalizer'
 
 export const usePetStore = defineStore('pets', () => {
   const currentPets = ref<IPet[]>([])
@@ -30,23 +31,6 @@ export const usePetStore = defineStore('pets', () => {
 
   const error = ref<string | null>(null)
 
-  const parsePetPayload = (json: unknown): IPet[] => {
-    if (!json || typeof json !== 'object') return []
-
-    const payload = (json as { data?: unknown }).data ?? json
-    if (Array.isArray(payload)) return payload as IPet[]
-
-    if (
-      payload &&
-      typeof payload === 'object' &&
-      Array.isArray((payload as { data?: unknown }).data)
-    ) {
-      return (payload as { data: IPet[] }).data
-    }
-
-    return []
-  }
-
   const fetchListByStatus = async (status: string) => {
     const params = new URLSearchParams({
       status,
@@ -55,13 +39,43 @@ export const usePetStore = defineStore('pets', () => {
       orgId: PUBLIC_ORG_ID,
     })
 
-    const response = await fetch(`${API_ENDPOINTS.PETS_LIST}?${params.toString()}`)
+    const headers: Record<string, string> = {
+      Accept: 'application/json',
+      'X-Org-Id': PUBLIC_ORG_ID,
+    }
+
+    let response = await fetch(`${API_ENDPOINTS.PETS_LIST}?${params.toString()}`, { headers })
+    // Only check /pets/available alias for 'available' status
+    if (!response.ok && status === 'available') {
+      const altUrl = `${API_ENDPOINTS.PETS_LIST}/available?orgId=${PUBLIC_ORG_ID}`
+      const altResp = await fetch(altUrl, { headers }).catch(() => null)
+      if (altResp && altResp.ok) {
+        response = altResp
+      }
+    }
+
     if (!response.ok) {
       throw new Error(`Failed to fetch pets with status: ${status}`)
     }
 
     const json = await response.json()
-    const firstPagePets = parsePetPayload(json)
+    let firstPagePets = extractPetsFromApiResponse(json)
+
+    if (firstPagePets.length === 0 && status === 'available') {
+      const altUrl = `${API_ENDPOINTS.PETS_LIST}/available?orgId=${PUBLIC_ORG_ID}`
+      try {
+        const altResp = await fetch(altUrl, { headers })
+        if (altResp.ok) {
+          const altJson = await altResp.json()
+          const altPets = extractPetsFromApiResponse(altJson)
+          if (altPets.length > 0) {
+            firstPagePets = altPets
+          }
+        }
+      } catch {
+        // Fallback silently
+      }
+    }
 
     const pageSize = 25
     if (firstPagePets.length < pageSize) {
@@ -80,13 +94,13 @@ export const usePetStore = defineStore('pets', () => {
         orgId: PUBLIC_ORG_ID,
       })
 
-      const pageResponse = await fetch(`${API_ENDPOINTS.PETS_LIST}?${pageParams.toString()}`)
+      const pageResponse = await fetch(`${API_ENDPOINTS.PETS_LIST}?${pageParams.toString()}`, { headers })
       if (!pageResponse.ok) {
         throw new Error(`Failed to fetch pets with status: ${status} (page ${page})`)
       }
 
       const pageJson = await pageResponse.json()
-      const pagePets = parsePetPayload(pageJson)
+      const pagePets = extractPetsFromApiResponse(pageJson)
 
       if (pagePets.length === 0) {
         break
@@ -108,7 +122,9 @@ export const usePetStore = defineStore('pets', () => {
     const dedupedPets = new Map<string, IPet>()
     const allPets = [...currentPets.value, ...pets]
     allPets.forEach((pet: IPet) => {
-      dedupedPets.set(pet.id, pet)
+      if (pet.id) {
+        dedupedPets.set(pet.id, pet)
+      }
     })
     currentPets.value = Array.from(dedupedPets.values())
   }
@@ -122,12 +138,12 @@ export const usePetStore = defineStore('pets', () => {
     isFetching.value = true
     error.value = null
     try {
-      const [availablePets, intakePets] = await Promise.all([
-        fetchListByStatus('available'),
-        fetchListByStatus('intake'),
-      ])
+      const availablePets = await fetchListByStatus('available').catch((err) => {
+        console.warn('Could not fetch available pets:', err)
+        return []
+      })
 
-      mergeIntoCurrentPets([...availablePets, ...intakePets])
+      mergeIntoCurrentPets(availablePets)
       lastFetched.value = Date.now()
     } catch (err: unknown) {
       console.error('Error fetching pets:', err)
@@ -157,16 +173,20 @@ export const usePetStore = defineStore('pets', () => {
     if (refreshedPet) return refreshedPet
 
     try {
-      const response = await fetch(`${API_ENDPOINTS.PET_DETAILS(idOrSlug)}?orgId=${PUBLIC_ORG_ID}`)
+      const headers = { Accept: 'application/json', 'X-Org-Id': PUBLIC_ORG_ID }
+      let response = await fetch(`${API_ENDPOINTS.PET_DETAILS(idOrSlug)}?orgId=${PUBLIC_ORG_ID}`, { headers })
+      if (!response.ok) {
+        response = await fetch(`${API_ENDPOINTS.PETS}/${idOrSlug}?orgId=${PUBLIC_ORG_ID}`, { headers })
+      }
       if (!response.ok) return null
 
       const json = await response.json()
-      const payload = (json as { data?: unknown }).data ?? json
-      if (!payload || typeof payload !== 'object') return null
-
-      const fetchedPet = payload as IPet
-      mergeIntoCurrentPets([fetchedPet])
-      return fetchedPet
+      const pets = extractPetsFromApiResponse(json)
+      if (pets.length > 0) {
+        mergeIntoCurrentPets([pets[0]])
+        return pets[0]
+      }
+      return null
     } catch (err) {
       console.warn('Pet detail endpoint unavailable, using cached list fallback', err)
       return null
@@ -201,8 +221,7 @@ export const usePetStore = defineStore('pets', () => {
 
       if (!response.ok) throw new Error('Failed to fetch admin pets')
       const json = await response.json()
-      const payload = json.data ?? json
-      adminPets.value = Array.isArray(payload) ? payload : payload.data || []
+      adminPets.value = extractPetsFromApiResponse(json)
       lastAdminFetched.value = Date.now()
       lastAdminParams.value = paramsString
     } catch (err) {
@@ -216,7 +235,6 @@ export const usePetStore = defineStore('pets', () => {
   const fetchAdoptedPets = async () => {
     isFetching.value = true
     try {
-      // Fetch specifically adopted pets, reasonable limit (e.g. 1000 to cover full year)
       const response = await fetch(
         `${API_ENDPOINTS.PETS}?status=adopted&limit=1000&orgId=${PUBLIC_ORG_ID}`,
         {
@@ -229,11 +247,25 @@ export const usePetStore = defineStore('pets', () => {
 
       if (!response.ok) throw new Error('Failed to fetch adopted pets')
       const json = await response.json()
-      const payload = json.data ?? json
-      adoptedPets.value = Array.isArray(payload) ? payload : payload.data || []
+      adoptedPets.value = extractPetsFromApiResponse(json)
     } catch (err) {
       console.error('Error fetching adopted pets:', err)
       throw err
+    } finally {
+      isFetching.value = false
+    }
+  }
+
+  const fetchMedicalLookupPets = async () => {
+    isFetching.value = true
+    try {
+      const [adoptedList, fosterList] = await Promise.all([
+        fetchListByStatus('adopted').catch(() => []),
+        fetchListByStatus('foster').catch(() => []),
+      ])
+      mergeIntoCurrentPets([...adoptedList, ...fosterList])
+    } catch (err) {
+      console.warn('Could not fetch adopted/foster list for medical lookup', err)
     } finally {
       isFetching.value = false
     }
@@ -273,7 +305,6 @@ export const usePetStore = defineStore('pets', () => {
   }
 
   const updatePet = async (pet: IPet) => {
-    // Optimistic update
     const updateInList = (list: Ref<IPet[]>) => {
       const idx = list.value.findIndex((p: IPet) => p.id === pet.id)
       if (idx !== -1) {
@@ -285,8 +316,6 @@ export const usePetStore = defineStore('pets', () => {
     updateInList(adminPets)
     updateInList(adoptedPets)
 
-    // Sanitize payload: Remove read-only fields that the backend does not expect
-    // Note: structuredClone fails with Vue proxy objects, so we use JSON.parse/stringify
     const payload: Partial<IPet> = JSON.parse(JSON.stringify(pet))
     delete payload.id
     delete payload.createdAt
@@ -303,13 +332,9 @@ export const usePetStore = defineStore('pets', () => {
       })
 
       if (!response.ok) throw new Error('Failed to update pet')
-
-      // Update successful, maybe fetch fresh data or just leave optimistic?
-      // Leaving optimistic is fine.
     } catch (err) {
       console.error('Error updating pet:', err)
-      // Revert or fetch?
-      await fetchPets(true) // Revert by fetching fresh
+      await fetchPets(true)
       throw err
     }
   }
@@ -357,6 +382,7 @@ export const usePetStore = defineStore('pets', () => {
 
     fetchPets,
     fetchPetsList,
+    fetchMedicalLookupPets,
     fetchPetDetail,
     fetchAdminPets,
     fetchAdoptedPets,

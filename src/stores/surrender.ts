@@ -5,7 +5,7 @@ import { useDemoMode } from '../composables/useDemoMode'
 import { useMetrics } from '../composables/useMetrics'
 import { API_ENDPOINTS } from '../constants/api'
 import type { SurrenderFormState } from '../models/surrender-form'
-import { getApiErrorMessage, withPublicOrgId } from '../utils/api'
+import { getApiErrorMessage, PUBLIC_ORG_ID, withPublicOrgId } from '../utils/api'
 import { getSurrenderValidationErrors } from './validation/surrenderValidation'
 
 const getInitialSurrenderFormState = (): SurrenderFormState => ({
@@ -237,7 +237,8 @@ export const useSurrenderStore = defineStore('surrender', () => {
   const buildFormData = () => {
     const raw = toRaw(formState)
     const fd = new FormData()
-    fd.append('data', JSON.stringify(serializableTextFields()))
+    fd.append('orgId', PUBLIC_ORG_ID)
+    fd.append('data', JSON.stringify({ orgId: PUBLIC_ORG_ID, ...serializableTextFields() }))
 
     const fullBody = toRaw(raw.fullBodyPhotoOfAnimal)
     const closeUp = toRaw(raw.closeUpPhotoOfAnimalFace)
@@ -272,12 +273,13 @@ export const useSurrenderStore = defineStore('surrender', () => {
       const useMultipart = hasFiles()
       const response = await fetch(withPublicOrgId(API_ENDPOINTS.SURRENDER_APPLICATION), {
         method: 'POST',
-        ...(useMultipart
-          ? { body: buildFormData() }
-          : {
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(serializableTextFields()),
-            }),
+        headers: {
+          ...(useMultipart ? {} : { 'Content-Type': 'application/json' }),
+          'X-Org-Id': PUBLIC_ORG_ID,
+        },
+        body: useMultipart
+          ? buildFormData()
+          : JSON.stringify({ orgId: PUBLIC_ORG_ID, ...serializableTextFields() }),
       })
 
       if (!response.ok) {
