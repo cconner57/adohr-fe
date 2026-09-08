@@ -216,8 +216,10 @@ const submitForm = async () => {
       <p v-if="apiError" class="error">{{ apiError }}</p>
 
       <p class="footer-note">We look forward to helping you find your new best friend!</p>
+    </template>
 
-      <div class="actions">
+    <template #footer v-if="!isSubmitted">
+      <div class="drawer-actions">
         <Button
           title="Submit"
           color="green"
@@ -366,9 +368,7 @@ form {
   }
 }
 
-.actions {
-  display: flex;
-  justify-content: center;
-  margin-top: 1.5rem;
+.drawer-actions {
+  width: 100%;
 }
 </style>

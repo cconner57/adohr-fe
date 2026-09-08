@@ -1,11 +1,15 @@
 <script setup lang="ts">
+import { useAdoptionEvents } from '../../../composables/useAdoptionEvents'
 import type { IPet } from '../../../models/common.ts'
 import { formatDate } from '../../../utils/common.ts'
+import { getPetSpecialNeeds } from '../../../utils/petNormalizer'
 import PetItem from '../../common/pet-item/PetItem.vue'
 
 defineProps<{
   pets: IPet[]
 }>()
+
+const { getPetAttendanceSchedule } = useAdoptionEvents()
 </script>
 
 <template>
@@ -21,16 +25,19 @@ defineProps<{
       :id="pet.slug || pet.id"
       :key="pet.id"
       :name="pet.name"
-      :photo="pet.photos?.find((p) => p.isPrimary)?.url"
+      :photo="pet.photos?.find((p) => p.isPrimary)?.url || pet.photos?.[0]?.url"
       :priority="index === 0"
       :isSponsored="pet.sponsored?.isSponsored ?? false"
       :status="pet.details?.status ?? ''"
       :isBonded="Boolean(pet.behavior?.bonded?.isBonded)"
       :bondedWithNames="pet.behavior?.bonded?.bondedWith ?? null"
-      :isSpecialNeeds="Boolean(pet.behavior?.specialNeeds || pet.descriptions?.specialNeeds || (pet.medical?.healthConcerns && pet.medical.healthConcerns.length > 0))"
-      :specialNeedsText="pet.behavior?.specialNeeds || pet.descriptions?.specialNeeds || ''"
+      :isSpecialNeeds="getPetSpecialNeeds(pet).isSpecialNeeds"
+      :specialNeedsText="'Special Needs'"
       :isComingSoon="Boolean(pet.details?.status === 'intake')"
-      :isAttendingWeekend="Boolean(pet.isAttendingWeekend ?? (pet.details?.status === 'available' && index % 3 === 0))"
+      :isAttendingWeekend="Boolean(getPetAttendanceSchedule(pet.id) || getPetAttendanceSchedule(pet.slug) || pet.isAttendingWeekend)"
+      :attendingScheduleText="getPetAttendanceSchedule(pet.id)?.scheduleText || getPetAttendanceSchedule(pet.slug)?.scheduleText || ''"
+      :attendingDaysText="getPetAttendanceSchedule(pet.id)?.shortDayText || getPetAttendanceSchedule(pet.slug)?.shortDayText || ''"
+      :attendingLocationText="getPetAttendanceSchedule(pet.id)?.displayLocation || getPetAttendanceSchedule(pet.slug)?.displayLocation || ''"
     />
   </div>
 </template>

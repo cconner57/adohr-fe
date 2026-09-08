@@ -5,25 +5,12 @@ import type { IPet } from '../../../models/common.ts'
 import { calculateAge } from '../../../utils/date'
 import BondedPairBadge from '../../common/ui/BondedPairBadge.vue'
 import Capsules from '../../common/ui/Capsules.vue'
-import SpecialNeedsBadge from '../../common/ui/SpecialNeedsBadge.vue'
 import AdditionalInfo from '../additional-info/AdditionalInfo.vue'
 
 const props = defineProps<{
   pet: IPet
   isComingSoon?: boolean
 }>()
-
-const isSpecialNeeds = computed(() =>
-  Boolean(
-    props.pet.behavior?.specialNeeds ||
-      props.pet.descriptions?.specialNeeds ||
-      (props.pet.medical?.healthConcerns && props.pet.medical.healthConcerns.length > 0),
-  ),
-)
-
-const specialNeedsText = computed(
-  () => props.pet.behavior?.specialNeeds || props.pet.descriptions?.specialNeeds || '',
-)
 
 const statusBadge = computed(() => {
   const normalizedStatus = props.pet.details?.status?.trim().toLowerCase() ?? ''
@@ -68,16 +55,9 @@ const goodWithItems = computed(() => {
       </div>
       <h1 class="text-balance">{{ pet.name }}</h1>
 
-      <div class="header-badges">
+      <div v-if="pet.behavior?.bonded?.isBonded" class="header-badges">
         <BondedPairBadge
-          v-if="pet.behavior?.bonded?.isBonded"
           :bondedWithNames="pet.behavior?.bonded?.bondedWith"
-          size="md"
-        />
-
-        <SpecialNeedsBadge
-          v-if="isSpecialNeeds"
-          :text="specialNeedsText"
           size="md"
         />
       </div>
@@ -153,7 +133,7 @@ const goodWithItems = computed(() => {
         </div>
       </div>
 
-      <p>{{ pet?.descriptions?.fun }}</p>
+      <p v-if="pet?.descriptions?.fun">{{ pet.descriptions.fun }}</p>
     </div>
     <AdditionalInfo :pet="pet" />
     <output v-if="pet.sponsored?.isSponsored" class="sponsored-banner">
@@ -174,7 +154,7 @@ const goodWithItems = computed(() => {
 .adopt-detail__info {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
   background-color: var(--text-inverse);
   color: var(--text-primary);
   padding: 32px;
@@ -248,6 +228,7 @@ const goodWithItems = computed(() => {
   & > p:not(.eyebrow) {
     line-height: 1.6;
     color: var(--text-secondary);
+    margin: 0.5rem 0 0;
   }
 
   .adopt-detail__traits {
@@ -263,7 +244,7 @@ const goodWithItems = computed(() => {
     display: flex;
     flex-flow: row wrap;
     gap: 8px;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.25rem;
   }
 
   .behavior-tag {

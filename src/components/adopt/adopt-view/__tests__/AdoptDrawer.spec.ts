@@ -41,7 +41,7 @@ const mountDrawer = () => {
     global: {
       stubs: {
         Drawer: {
-          template: '<div><slot /></div>',
+          template: '<div><slot /><slot name="footer" /></div>',
         },
       },
     },

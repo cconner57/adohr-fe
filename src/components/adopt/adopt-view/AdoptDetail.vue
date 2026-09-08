@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router'
 import type { IPet } from '../../../models/common.ts'
 import { useAdoptionStore } from '../../../stores/adoption'
 import { usePetStore } from '../../../stores/pets'
+import { useUIStore } from '../../../stores/ui'
 import { vibrate } from '../../../utils/haptics.ts'
 import PreQualModal from '../../common/ui/PreQualModal.vue'
 import AdoptDetailAbout from './AdoptDetailAbout.vue'
@@ -103,16 +104,33 @@ const handlePreQualProceed = () => {
   router.push(`/pet-adoption/${props.pet.id}`)
 }
 
-const handleShare = () => {
+const { showToast } = useUIStore()
+
+const copyToClipboard = async () => {
+  try {
+    await navigator.clipboard.writeText(globalThis.location.href)
+    showToast(`Link to ${props.pet.name} copied to clipboard! 🐾`, 'success')
+  } catch {
+    showToast('Failed to copy link.', 'error')
+  }
+}
+
+const handleShare = async () => {
   const shareData = {
     title: `Check out ${props.pet.name} for adoption!`,
     text: `I found ${props.pet.name} on ADOHR and thought you might be interested!`,
     url: globalThis.location.href,
   }
   if (navigator.share) {
-    navigator.share(shareData).catch((error) => console.log('Error sharing', error))
+    try {
+      await navigator.share(shareData)
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name !== 'AbortError') {
+        await copyToClipboard()
+      }
+    }
   } else {
-    alert('Sharing is not supported in this browser.')
+    await copyToClipboard()
   }
 }
 
@@ -141,6 +159,7 @@ watch(
         :petPhotoUrl="petPhotoUrl"
         :petName="pet.name"
         :petId="pet.id"
+        :pet="pet"
         :photos="pet.photos"
         :isComingSoon="isComingSoon"
         :isStartAdoptionDisabled="isStartAdoptionDisabled"

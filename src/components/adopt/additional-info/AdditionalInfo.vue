@@ -2,14 +2,46 @@
 import { computed } from 'vue'
 
 import type { IPet } from '../../../models/common.ts'
+import { getPetSpecialNeeds } from '../../../utils/petNormalizer'
 
 const props = defineProps<{
   pet: IPet
 }>()
 
 const isSpayedOrNeutered = (pet: IPet) => {
-  return pet?.sex === 'male' ? 'Neutered' : 'Spayed'
+  return pet?.sex?.toLowerCase() === 'male' ? 'Neutered' : 'Spayed'
 }
+
+const specialNeedsInfo = computed(() => getPetSpecialNeeds(props.pet))
+
+const healthSummaryText = computed(() => {
+  const parts: string[] = []
+
+  if (props.pet.medical?.vaccinationsUpToDate !== undefined && props.pet.medical?.vaccinationsUpToDate !== null) {
+    parts.push(props.pet.medical.vaccinationsUpToDate ? 'Vaccinated' : 'Not Vaccinated')
+  }
+
+  if (props.pet.medical?.spayedOrNeutered !== undefined && props.pet.medical?.spayedOrNeutered !== null) {
+    parts.push(
+      props.pet.medical.spayedOrNeutered
+        ? isSpayedOrNeutered(props.pet)
+        : `Not ${isSpayedOrNeutered(props.pet)}`,
+    )
+  }
+
+  if (props.pet.medical?.microchip?.microchipped !== undefined && props.pet.medical?.microchip?.microchipped !== null) {
+    parts.push(props.pet.medical.microchip.microchipped ? 'Microchipped' : 'Not Microchipped')
+  }
+
+  if (props.pet.medical?.felvPositive) {
+    parts.push('FeLV Positive')
+  }
+  if (props.pet.medical?.fivPositive) {
+    parts.push('FIV Positive')
+  }
+
+  return parts.length > 0 ? parts.join(', ') : 'N/A'
+})
 
 const normalizedBreed = computed(() => {
   const breed = props.pet.physical?.breed
@@ -54,15 +86,18 @@ const houseTrainedText = () => {
     </div>
     <div class="adopt-detail__additional-info__item">
       <p>Health</p>
-      <p>
-        {{ pet.medical?.vaccinationsUpToDate ? 'Vaccinated' : 'Not Vaccinated' }},
-        {{
-          pet.medical?.spayedOrNeutered
-            ? isSpayedOrNeutered(pet)
-            : `Not ${isSpayedOrNeutered(pet)}`
-        }},
-        {{ pet.medical?.microchip.microchipped ? 'Microchipped' : 'Not Microchipped' }}
-      </p>
+      <p>{{ healthSummaryText }}</p>
+    </div>
+    <div v-if="specialNeedsInfo.specialNeedsText" class="adopt-detail__additional-info__item">
+      <p>Special Needs</p>
+      <p>{{ specialNeedsInfo.specialNeedsText }}</p>
+    </div>
+    <div
+      v-if="pet.medical?.currentMedications && pet.medical.currentMedications.length > 0"
+      class="adopt-detail__additional-info__item"
+    >
+      <p>Medications</p>
+      <p>{{ pet.medical.currentMedications.join(', ') }}</p>
     </div>
     <div class="adopt-detail__additional-info__item">
       <p>Adoption Fee</p>
@@ -131,7 +166,9 @@ const houseTrainedText = () => {
   }
 
   & p:last-child {
-    font-weight: 700;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.45;
     width: 300px;
 
     &.sponsored-fee {
@@ -139,6 +176,7 @@ const houseTrainedText = () => {
     }
 
     @media (width <= 440px) {
+      font-size: 0.84rem;
       width: auto;
       flex: 1;
     }

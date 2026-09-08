@@ -1,17 +1,31 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
+import { useAdoptionEvents } from '../../../composables/useAdoptionEvents'
+import { useFavorites } from '../../../composables/useFavorites'
+import type { IPet } from '../../../models/common.ts'
+import { getPetSpecialNeeds } from '../../../utils/petNormalizer'
+import PetPhotoBadges from '../../common/pet-item/PetPhotoBadges.vue'
 import Button from '../../common/ui/Button.vue'
 
 const props = defineProps<{
   petPhotoUrl: string
   petName: string
   petId: string
+  pet?: IPet
   photos?: Array<{ url: string; isPrimary?: boolean; caption?: string }>
   videos?: Array<{ url: string; thumbnail?: string }>
   isComingSoon?: boolean
   isStartAdoptionDisabled?: boolean
 }>()
+
+const { getPetAttendanceSchedule } = useAdoptionEvents()
+const { isFavorite, toggleFavorite } = useFavorites()
+
+const attendanceSchedule = computed(() => {
+  if (!props.pet) return null
+  return getPetAttendanceSchedule(props.pet.id) || getPetAttendanceSchedule(props.pet.slug)
+})
 
 const emit = defineEmits<{
   'start-adoption': []
@@ -134,6 +148,44 @@ watch(
           <line x1="8" y1="11" x2="14" y2="11" />
         </svg>
       </button>
+
+      <button
+        type="button"
+        class="fav-trigger-btn"
+        :class="{ 'is-fav': isFavorite(petId) }"
+        :aria-label="isFavorite(petId) ? `Remove ${petName} from saved pets` : `Save ${petName} to favorites`"
+        @click.stop="toggleFavorite(petId, petName)"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          :fill="isFavorite(petId) ? 'currentColor' : 'none'"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+        </svg>
+      </button>
+
+      <PetPhotoBadges
+        v-if="pet"
+        size="lg"
+        :isAttendingWeekend="Boolean(attendanceSchedule || pet?.isAttendingWeekend)"
+        :attendingScheduleText="attendanceSchedule?.scheduleText || ''"
+        :attendingDaysText="attendanceSchedule?.shortDayText || ''"
+        :attendingLocationText="attendanceSchedule?.displayLocation || ''"
+        :status="pet.details?.status ?? ''"
+        :isComingSoon="props.isComingSoon || pet.details?.status === 'intake'"
+        :isSponsored="pet.sponsored?.isSponsored ?? false"
+        :isSpecialNeeds="getPetSpecialNeeds(pet).isSpecialNeeds"
+        :specialNeedsText="getPetSpecialNeeds(pet).specialNeedsText"
+        :isBonded="Boolean(pet.behavior?.bonded?.isBonded)"
+        :bondedWithNames="pet.behavior?.bonded?.bondedWith ?? null"
+      />
     </div>
 
     <!-- Multi-photo thumbnails strip if more than 1 photo -->
