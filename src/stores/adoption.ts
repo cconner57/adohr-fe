@@ -203,9 +203,112 @@ export const useAdoptionStore = defineStore('adoption', () => {
     submissionError.value = null
 
     try {
+      const resolvedPetId =
+        petId ||
+        (petStore.selectedPet?.id === 'unspecified' ? null : petStore.selectedPet?.id || null)
+
       const payload = {
-        petId: petId || petStore.selectedPet?.id,
-        ...formState,
+        petId: resolvedPetId,
+        secondPetId: formState.secondPetId || null,
+        petName:
+          petStore.selectedPet?.id === 'unspecified'
+            ? formState.generalPetName || null
+            : petStore.selectedPet?.petName || petStore.selectedPet?.name || null,
+        secondPetName:
+          petStore.currentPets.find((p) => p.id === formState.secondPetId)?.name || null,
+        firstName: formState.firstName,
+        lastName: formState.lastName,
+        age: formState.age !== null && formState.age !== undefined ? Number(formState.age) : null,
+        spouseFirstName: formState.spouseFirstName,
+        spouseLastName: formState.spouseLastName,
+        roommatesNames: formState.roommatesNames,
+        childrenNamesAges: formState.childrenNamesAges,
+        email: formState.email,
+        address: formState.address,
+        addressLine2: formState.addressLine2,
+        city: formState.city,
+        state: formState.state,
+        zip: formState.zip,
+        phoneNumber: formState.phoneNumber,
+        cellPhoneNumber: formState.cellPhoneNumber,
+        adultMembersAgreed: formState.adultMembersAgreed,
+
+        homeType: formState.homeType,
+        homeOwnership: formState.homeOwnership,
+        landlordName: formState.landlordName,
+        landlordPhoneNumber: formState.landlordPhoneNumber,
+        allowPets: formState.allowPets,
+        breedRestrictionsWeightLimit: formState.breedRestrictionsWeightLimit,
+        monthlyFee: formState.monthlyFee,
+        allergies: formState.allergies,
+        primaryOwner: formState.primaryOwner,
+        yearsAtAddress: formState.yearsAtAddress,
+        previousAddress: formState.previousAddress,
+        expectToMove: formState.expectToMove,
+        travelPlan: formState.travelPlan,
+
+        catAccess:
+          formState.catAccess && formState.catAccess.length > 0
+            ? formState.catAccess.join(', ')
+            : null,
+        catIndoorOutdoor: formState.catIndoorOutdoor,
+        catPreferenceBreed: formState.catPreferenceBreed,
+        catPreferencePhysical: formState.catPreferencePhysical,
+        catPreferencePersonality: formState.catPreferencePersonality,
+        catPreferenceNotWant: formState.catPreferenceNotWant,
+        whyInterested: formState.whyInterested,
+        adoptionReason: formState.adoptionReason,
+        ownCatBefore: formState.ownCatBefore,
+        ownKittenBefore: formState.ownKittenBefore,
+        alreadyHaveVeterinarian: formState.alreadyHaveVeterinarian,
+        catAllowedHomeArea: formState.catAllowedHomeArea,
+        catHomeAloneHours: formState.catHomeAloneHours,
+        catDisciplineType: formState.catDisciplineType,
+        catEscapeSteps: formState.catEscapeSteps,
+
+        currentPets: formState.currentPets || [],
+        currentlyHavePets: formState.currentlyHavePets,
+
+        pastPets: formState.pastPets || [],
+        ownPetsBefore: formState.ownPetsBefore,
+
+        bredAnimalDescription: formState.bredAnimalDescription,
+        ownedDeclawedOrDebarked: formState.ownedDeclawedOrDebarked,
+        movedWithPet: formState.movedWithPet,
+        ownedSpecialNeedsPet: formState.ownedSpecialNeedsPet,
+        mobilityDevice: formState.mobilityDevice,
+        surrenderConditions: formState.surrenderConditions || [],
+        surrenderPlan: formState.surrenderPlan,
+        foodTypeBrand: formState.foodTypeBrand,
+        affordVetCare: formState.affordVetCare,
+        affordEmergencyCost: formState.affordEmergencyCost,
+
+        agreementSignature1: formState.agreementSignature1,
+        agreementSignature2: formState.agreementSignature2,
+        agreementSignature3: formState.agreementSignature3,
+        signatureData: formState.signatureData,
+
+        dogWhySelected: formState.dogWhySelected,
+        dogHeardAbout: formState.dogHeardAbout || [],
+        dogFencedBackyard: formState.dogFencedBackyard,
+        dogHasPool: formState.dogHasPool,
+        dogPoolFence: formState.dogPoolFence,
+        dogHouseholdDescription: formState.dogHouseholdDescription || [],
+        dogKeptLocation: formState.dogKeptLocation || [],
+        dogSleepingLocation: formState.dogSleepingLocation || [],
+        dogAloneLocation: formState.dogAloneLocation || [],
+        dogExercisePotty: formState.dogExercisePotty,
+        dogCareResponsible: formState.dogCareResponsible,
+        dogAnnualExpense: formState.dogAnnualExpense,
+        dogTravelArrangements: formState.dogTravelArrangements,
+        dogWillingToPottyTrain: formState.dogWillingToPottyTrain,
+        dogTrainingExperience: formState.dogTrainingExperience || [],
+        dogWillingTrainingClass: formState.dogWillingTrainingClass,
+        dogConfinementTypes: formState.dogConfinementTypes || [],
+        dogBondingTime: formState.dogBondingTime,
+        dogDeniedOwnership: formState.dogDeniedOwnership,
+
+        fax_number: formState.fax_number || '',
       }
 
       if (isDemoMode.value) {
