@@ -100,8 +100,8 @@ const messageText = () => {
   color: var(--text-inverse);
   background-color: var(--color-primary);
   width: 96px;
-  height: 110px;
-  border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
+  height: 96px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
