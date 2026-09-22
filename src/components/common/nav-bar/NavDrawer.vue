@@ -106,7 +106,7 @@ onBeforeUnmount(() => {
       >
         <header class="drawer-header">
           <div class="drawer-brand">
-            <img src="/images/adohr-logo.jpg" alt="" class="drawer-logo" />
+            <img src="/images/adohr-logo.png" alt="ADOHR logo" class="drawer-logo" />
             <span class="drawer-title">ADOHR</span>
           </div>
           <button class="drawer-close" @click="close" aria-label="Close menu">

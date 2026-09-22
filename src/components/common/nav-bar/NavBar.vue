@@ -31,7 +31,7 @@ function handleDonate() {
     <nav v-if="isMobile || isTablet" class="nav-pill" aria-label="Primary navigation">
       <div class="nav-logo">
         <RouterLink to="/" class="nav-item">
-          <img src="/images/adohr-logo.jpg" alt="" />
+          <img src="/images/adohr-logo.png" alt="ADOHR logo" />
           <span class="brand-name">A Dream of Home</span>
         </RouterLink>
       </div>
@@ -40,7 +40,7 @@ function handleDonate() {
 
     <nav v-else class="nav-pill" aria-label="Primary navigation">
       <RouterLink to="/" class="brand">
-        <img src="/images/adohr-logo.jpg" alt="" />
+        <img src="/images/adohr-logo.png" alt="ADOHR logo" />
         <span class="brand-name">A Dream of Home</span>
       </RouterLink>
 
