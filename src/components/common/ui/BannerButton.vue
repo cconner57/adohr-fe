@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+
 const props = withDefaults(
   defineProps<{
-    imgSrc: string
+    imgSrc?: string
+    icon?: 'adopt' | 'foster' | 'donate' | 'paw' | 'home-heart' | 'heart'
     title: string
     subtitle: string
     color: string
@@ -10,6 +12,7 @@ const props = withDefaults(
   }>(),
   {
     imgSrc: '',
+    icon: undefined,
     title: 'Adopt a Pet',
     subtitle: 'Find your perfect companion',
     color: 'blue',
@@ -30,7 +33,49 @@ const imgSrcComputed = computed(() => (props.imgSrc && props.imgSrc.length ? pro
     }"
     :type="props.type"
   >
-    <img :src="imgSrcComputed" :alt="props.title" height="48" width="48" />
+    <svg
+      v-if="props.icon === 'adopt' || props.icon === 'paw'"
+      class="banner-icon"
+      width="48"
+      height="48"
+      viewBox="0 0 128 128"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <ellipse cx="28" cy="44" rx="11" ry="14" />
+      <ellipse cx="100" cy="44" rx="11" ry="14" />
+      <ellipse cx="52" cy="28" rx="11" ry="14" />
+      <ellipse cx="76" cy="28" rx="11" ry="14" />
+      <path d="M64 56c-20 0-36 15-36 32 0 11 9 20 22 20h28c13 0 22-9 22-20 0-17-16-32-36-32" />
+    </svg>
+
+    <svg
+      v-else-if="props.icon === 'foster' || props.icon === 'home-heart'"
+      class="banner-icon"
+      width="48"
+      height="48"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path
+        d="M12 3L2 12h3v8h14v-8h3L12 3zm0 5.5c1.4 0 2.5 1.1 2.5 2.5 0 1.9-2.5 3.8-2.5 3.8s-2.5-1.9-2.5-3.8c0-1.4 1.1-2.5 2.5-2.5z"
+      />
+    </svg>
+
+    <svg
+      v-else-if="props.icon === 'donate' || props.icon === 'heart'"
+      class="banner-icon"
+      width="48"
+      height="48"
+      viewBox="0 0 128 128"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M64 112 20 64c-10-12-10-30 4-40s30-4 40 12c10-16 26-22 40-12s14 28 4 40z" />
+    </svg>
+
+    <img v-else-if="imgSrcComputed" :src="imgSrcComputed" :alt="props.title" height="48" width="48" />
 
     <div class="banner-text">
       <h5>{{ props.title }}</h5>
@@ -67,6 +112,13 @@ const imgSrcComputed = computed(() => (props.imgSrc && props.imgSrc.length ? pro
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.banner-icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  color: #ffffff;
 }
 
 img {

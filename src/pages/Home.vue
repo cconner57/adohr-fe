@@ -90,6 +90,7 @@ onMounted(() => {
 
           <section class="call-to-action" aria-label="Ways to help" v-scroll-reveal>
             <BannerButton
+              icon="adopt"
               imgSrc="/images/paw.svg"
               title="Adopt a pet"
               subtitle="Find your perfect companion"
@@ -98,6 +99,7 @@ onMounted(() => {
               class="hover-scale"
             />
             <BannerButton
+              icon="foster"
               imgSrc="/images/hand.svg"
               title="Foster a pet"
               subtitle="Provide temporary care and save a life"
@@ -106,6 +108,7 @@ onMounted(() => {
               class="hover-scale"
             />
             <BannerButton
+              icon="donate"
               imgSrc="/images/heart.svg"
               title="Donate"
               subtitle="Help us rescue more animals"
