@@ -24,6 +24,8 @@ const species = ref<'cat' | 'dog'>('cat')
 const adoptionYear = ref(new Date().getFullYear().toString())
 const story = ref('')
 const photoUrl = ref('')
+const selectedFileName = ref('')
+const fileInputRef = ref<HTMLInputElement | null>(null)
 const isSubmitting = ref(false)
 const isSubmitted = ref(false)
 const formError = ref<string | null>(null)
@@ -56,11 +58,21 @@ function handlePhotoUpload(event: Event) {
     return
   }
 
+  selectedFileName.value = file.name
+
   const reader = new FileReader()
   reader.onload = (e) => {
     photoUrl.value = (e.target?.result as string) || ''
   }
   reader.readAsDataURL(file)
+}
+
+function clearPhoto() {
+  photoUrl.value = ''
+  selectedFileName.value = ''
+  if (fileInputRef.value) {
+    fileInputRef.value.value = ''
+  }
 }
 
 async function handleSubmit() {
@@ -120,6 +132,10 @@ function handleClose() {
     adopterEmail.value = ''
     story.value = ''
     photoUrl.value = ''
+    selectedFileName.value = ''
+    if (fileInputRef.value) {
+      fileInputRef.value.value = ''
+    }
     isSubmitted.value = false
   }, 300)
 }
@@ -244,12 +260,51 @@ function handleClose() {
 
               <div class="form-group">
                 <label for="ht-photo">Upload a Photo</label>
-                <input
-                  id="ht-photo"
-                  type="file"
-                  accept="image/*"
-                  @change="handlePhotoUpload"
-                />
+                <div class="file-upload-control">
+                  <input
+                    id="ht-photo"
+                    ref="fileInputRef"
+                    type="file"
+                    class="file-input-native"
+                    accept="image/*"
+                    @change="handlePhotoUpload"
+                  />
+                  <label for="ht-photo" class="file-picker-btn">
+                    <svg
+                      class="file-picker-icon"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                      <circle cx="9" cy="9" r="2" />
+                      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                    </svg>
+                    <span>Choose Photo</span>
+                  </label>
+                  <div class="file-status-wrap">
+                    <span class="file-status-text" :class="{ 'has-file': !!selectedFileName }">
+                      {{ selectedFileName || 'No file chosen' }}
+                    </span>
+                    <button
+                      v-if="selectedFileName"
+                      type="button"
+                      class="file-clear-btn"
+                      title="Remove photo"
+                      aria-label="Remove photo"
+                      @click="clearPhoto"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
                 <div v-if="photoUrl" class="photo-preview">
                   <img :src="photoUrl" alt="Uploaded preview" />
                 </div>
@@ -265,7 +320,34 @@ function handleClose() {
                   :disabled="isSubmitting"
                 >
                   <span v-if="isSubmitting">Submitting...</span>
-                  <span v-else>Submit Happy Tail 🐾</span>
+                  <span v-else class="submit-btn-inner">
+                    <span>Submit Happy Tail</span>
+                    <svg
+                      class="paw-icon"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <!-- Left paw print -->
+                      <g transform="translate(8, 14.2) rotate(-14) scale(0.85)">
+                        <ellipse cx="0" cy="2.5" rx="3.4" ry="2.7" />
+                        <circle cx="-4" cy="-1.4" r="1.4" />
+                        <circle cx="-1.5" cy="-4" r="1.5" />
+                        <circle cx="1.5" cy="-4" r="1.5" />
+                        <circle cx="4" cy="-1.4" r="1.4" />
+                      </g>
+                      <!-- Right paw print -->
+                      <g transform="translate(16, 9.8) rotate(14) scale(0.85)">
+                        <ellipse cx="0" cy="2.5" rx="3.4" ry="2.7" />
+                        <circle cx="-4" cy="-1.4" r="1.4" />
+                        <circle cx="-1.5" cy="-4" r="1.5" />
+                        <circle cx="1.5" cy="-4" r="1.5" />
+                        <circle cx="4" cy="-1.4" r="1.4" />
+                      </g>
+                    </svg>
+                  </span>
                 </button>
               </div>
             </form>
