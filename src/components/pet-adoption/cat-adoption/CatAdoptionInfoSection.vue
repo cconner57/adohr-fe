@@ -143,11 +143,20 @@ const goodToKnowItems = computed<IPolicyItem[]>(() => {
             <span>{{ item }}</span>
           </li>
         </ul>
-        <p class="policy-body">
-          {{ isCat ? 'Kittens' : 'Puppies' }} may not have completed every service at the time of adoption. By around 6 months
-          of age, {{ isCat ? 'kittens' : 'puppies' }} are expected to receive all required veterinary care listed above. If you
-          adopt a {{ isCat ? 'kitten' : 'puppy' }}, you agree to coordinate with an ADOHR director so your {{ animalLabel }} can attend
+        <p v-if="isCat" class="policy-body">
+          Kittens may not have completed every service at the time of adoption. By around 6 months
+          of age, kittens are expected to receive all required veterinary care listed above. If you
+          adopt a kitten, you agree to coordinate with an ADOHR director so your cat can attend
           required follow-up vet visits.
+        </p>
+        <p v-else class="policy-body">
+          Puppies may not have completed every service at the time of adoption. While smaller breeds
+          are typically spayed or neutered around 6 months of age, larger dogs are often recommended
+          to wait until they are older (typically between 12 to 18 months) to allow proper bone and
+          joint development. All other required puppy veterinary care will be completed on schedule.
+          If you adopt a puppy, you agree to coordinate with an ADOHR director and your veterinarian
+          so your dog can attend required follow-up visits and complete their spay or neuter at the
+          recommended age.
         </p>
         <p class="policy-body">
           These services would ordinarily cost well over $350. Additional donations are always
