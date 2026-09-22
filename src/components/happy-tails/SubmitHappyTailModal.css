@@ -97,6 +97,7 @@
   .form-row--2 {
     grid-template-columns: 1fr;
   }
+
   .modal-card {
     padding: 1.5rem;
   }
@@ -155,13 +156,13 @@
 }
 
 .form-error {
-  background-color: oklch(95% 0.08 25);
-  color: oklch(45% 0.22 25);
+  background-color: oklch(95% 0.08 25deg);
+  color: oklch(45% 0.22 25deg);
   padding: 10px 14px;
   border-radius: var(--radius-md);
   font-size: 0.88rem;
   font-weight: 600;
-  border: 1px solid oklch(75% 0.18 25);
+  border: 1px solid oklch(75% 0.18 25deg);
 }
 
 .form-actions {

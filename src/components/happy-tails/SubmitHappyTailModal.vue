@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
+import { useHappyTailsStore } from '@/stores/happyTails'
 import { useUIStore } from '@/stores/ui'
 import { vibrate } from '@/utils/haptics'
 
@@ -14,6 +15,7 @@ const emit = defineEmits<{
 }>()
 
 const uiStore = useUIStore()
+const happyTailsStore = useHappyTailsStore()
 
 const petName = ref('')
 const adopterName = ref('')
@@ -80,18 +82,33 @@ async function handleSubmit() {
   isSubmitting.value = true
   vibrate(50)
 
-  // Simulate server intake
-  await new Promise((resolve) => setTimeout(resolve, 800))
-  isSubmitting.value = false
-  isSubmitted.value = true
-  uiStore.showToast('Happy Tail submitted! Thank you! 🐾', 'success')
+  try {
+    await happyTailsStore.submitHappyTail({
+      petName: petName.value.trim(),
+      species: species.value,
+      adopterName: adopterName.value.trim(),
+      adopterEmail: adopterEmail.value.trim() || undefined,
+      story: story.value.trim(),
+      photoUrl: photoUrl.value.trim() || undefined,
+      adoptionYear: adoptionYear.value,
+    })
 
-  emit('submitted', {
-    petName: petName.value,
-    adopterName: adopterName.value,
-    species: species.value,
-    story: story.value,
-  })
+    isSubmitted.value = true
+    uiStore.showToast('Happy Tail submitted! Thank you! 🐾', 'success')
+
+    emit('submitted', {
+      petName: petName.value,
+      adopterName: adopterName.value,
+      species: species.value,
+      story: story.value,
+    })
+  } catch (err) {
+    formError.value =
+      err instanceof Error ? err.message : 'Submission failed. Please try again.'
+    uiStore.showToast('Failed to submit happy tail', 'error')
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 function handleClose() {

@@ -1,7 +1,7 @@
 export interface IHappyTail {
-  id: string
+  id: string | number
   petName: string
-  species: 'cat' | 'dog'
+  species: 'cat' | 'dog' | string
   adoptersName: string
   adoptedDate: string
   photoUrl: string
