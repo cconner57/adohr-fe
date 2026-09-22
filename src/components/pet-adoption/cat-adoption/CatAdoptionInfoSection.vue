@@ -93,6 +93,7 @@ const goodToKnowItems = computed<IPolicyItem[]>(() => {
 
 <template>
   <div class="info-section-wrapper">
+    <!-- Kitten Pairing Policy - commented out for now
     <div v-if="isKitten && isCat" class="kitten-notice" role="alert">
       <span class="kitten-notice-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -121,6 +122,7 @@ const goodToKnowItems = computed<IPolicyItem[]>(() => {
         </p>
       </div>
     </div>
+    -->
 
     <section class="intro-grid" :aria-label="`${animalLabel} adoption policies and included care`">
       <article class="policy-card">
