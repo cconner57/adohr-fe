@@ -204,7 +204,6 @@ export const useAdoptionStore = defineStore('adoption', () => {
 
     try {
       const payload = {
-        orgId: PUBLIC_ORG_ID,
         petId: petId || petStore.selectedPet?.id,
         ...formState,
       }

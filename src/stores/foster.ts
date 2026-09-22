@@ -166,7 +166,6 @@ export const useFosterStore = defineStore('foster', () => {
           'X-Org-Id': PUBLIC_ORG_ID,
         },
         body: JSON.stringify({
-          orgId: PUBLIC_ORG_ID,
           firstName,
           lastName,
           email,

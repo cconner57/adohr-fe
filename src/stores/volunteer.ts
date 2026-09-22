@@ -151,8 +151,7 @@ export const useVolunteerStore = defineStore('volunteer', () => {
       return true
     }
 
-    const payload: Partial<IVolunteerFormState> & { orgId?: string } = {
-      orgId: PUBLIC_ORG_ID,
+    const payload: Partial<IVolunteerFormState> = {
       ...formState,
     }
     const derivedAge = calculateVolunteerAge(formState.birthday)

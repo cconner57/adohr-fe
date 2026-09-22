@@ -37,7 +37,6 @@ export function usePetInquiry(pet: IPet, source: TInquirySource) {
           'X-Org-Id': PUBLIC_ORG_ID,
         },
         body: JSON.stringify({
-          orgId: PUBLIC_ORG_ID,
           fax_number: '',
           source,
           firstName: formData.firstName,

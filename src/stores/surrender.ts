@@ -238,7 +238,7 @@ export const useSurrenderStore = defineStore('surrender', () => {
     const raw = toRaw(formState)
     const fd = new FormData()
     fd.append('orgId', PUBLIC_ORG_ID)
-    fd.append('data', JSON.stringify({ orgId: PUBLIC_ORG_ID, ...serializableTextFields() }))
+    fd.append('data', JSON.stringify({ ...serializableTextFields() }))
 
     const fullBody = toRaw(raw.fullBodyPhotoOfAnimal)
     const closeUp = toRaw(raw.closeUpPhotoOfAnimalFace)
@@ -279,7 +279,7 @@ export const useSurrenderStore = defineStore('surrender', () => {
         },
         body: useMultipart
           ? buildFormData()
-          : JSON.stringify({ orgId: PUBLIC_ORG_ID, ...serializableTextFields() }),
+          : JSON.stringify({ ...serializableTextFields() }),
       })
 
       if (!response.ok) {
