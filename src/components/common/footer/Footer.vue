@@ -16,7 +16,6 @@ const currentYear = computed(() => new Date().getFullYear())
           <RouterLink to="/volunteer">Volunteer</RouterLink>
           <RouterLink to="/donate">Donate</RouterLink>
           <RouterLink to="/happy-tails">Happy Tails</RouterLink>
-          <RouterLink to="/happy-tails?submit=true" class="footer-highlight-link">Submit Happy Tail 🐾</RouterLink>
           <RouterLink to="/wishlist">Wishlist</RouterLink>
           <RouterLink to="/news">News</RouterLink>
           <RouterLink to="/medical-records">Medical Records</RouterLink>
