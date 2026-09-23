@@ -22,7 +22,6 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   close: []
-  fastTrack: []
 }>()
 
 const selectedSpecies = ref<'cat' | 'dog'>(props.initialSpecies)
@@ -229,13 +228,7 @@ onUnmounted(() => {
 
         <footer class="modal-footer">
           <Button
-            title="Fast-Track Pre-Approval"
-            color="blue"
-            @click="emit('fastTrack')"
-          />
-          <Button
             title="Got it, thanks!"
-            variant="secondary"
             color="blue"
             @click="emit('close')"
           />

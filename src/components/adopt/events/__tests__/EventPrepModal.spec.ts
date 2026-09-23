@@ -61,7 +61,27 @@ describe('EventPrepModal.vue', () => {
     expect(wrapper.emitted('close')).toBeTruthy()
   })
 
-  it('emits fastTrack when Fast-Track Pre-Approval button is clicked', async () => {
+  it('emits close when Got it, thanks! button is clicked', async () => {
+    const wrapper = mount(EventPrepModal, {
+      props: {
+        isOpen: true,
+      },
+      global: {
+        stubs: { Teleport: true },
+      },
+    })
+
+    const gotItBtn = wrapper
+      .findAllComponents({ name: 'Button' })
+      .find((b) => b.props('title') === 'Got it, thanks!')
+
+    expect(gotItBtn).toBeTruthy()
+    await gotItBtn!.trigger('click')
+
+    expect(wrapper.emitted('close')).toBeTruthy()
+  })
+
+  it('does not render Fast-Track Pre-Approval button', () => {
     const wrapper = mount(EventPrepModal, {
       props: {
         isOpen: true,
@@ -75,9 +95,6 @@ describe('EventPrepModal.vue', () => {
       .findAllComponents({ name: 'Button' })
       .find((b) => b.props('title') === 'Fast-Track Pre-Approval')
 
-    expect(fastTrackBtn).toBeTruthy()
-    await fastTrackBtn!.trigger('click')
-
-    expect(wrapper.emitted('fastTrack')).toBeTruthy()
+    expect(fastTrackBtn).toBeFalsy()
   })
 })

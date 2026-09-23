@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 import { useAdoptionEvents } from '@/composables/useAdoptionEvents'
 
@@ -35,7 +34,6 @@ const emit = defineEmits<{
   'toggle-filter': []
 }>()
 
-const router = useRouter()
 const isPrepModalOpen = ref(false)
 
 const {
@@ -52,11 +50,6 @@ const {
 onMounted(() => {
   fetchUpcomingEvents()
 })
-
-const handleFastTrack = () => {
-  isPrepModalOpen.value = false
-  router.push('/adopt')
-}
 </script>
 
 <template>
@@ -147,7 +140,6 @@ const handleFastTrack = () => {
     <EventPrepModal
       :isOpen="isPrepModalOpen"
       @close="isPrepModalOpen = false"
-      @fastTrack="handleFastTrack"
     />
   </aside>
 </template>
