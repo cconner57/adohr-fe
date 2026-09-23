@@ -19,10 +19,10 @@
         <div class="mission-image-card">
           <img
             src="/images/about-mission.jpg"
-            alt="A sweet rescued puppy and kitten sleeping warmly together"
+            alt="Rescued black cat sitting comfortably and looking at the camera"
             class="mission-image"
-            width="600"
-            height="800"
+            width="546"
+            height="1024"
           />
         </div>
       </div>
