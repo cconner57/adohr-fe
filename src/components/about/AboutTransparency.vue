@@ -86,7 +86,7 @@
                 </svg>
               </div>
               <span class="standard-title">Full Medical Care</span>
-              <span class="standard-desc">Vetted, vaccinated, spayed & microchipped</span>
+              <span class="standard-desc">Fully vetted, vaccinated & microchipped</span>
             </div>
 
             <div class="standard-item">
@@ -108,7 +108,7 @@
                 </svg>
               </div>
               <span class="standard-title">501(c)(3) Nonprofit</span>
-              <span class="standard-desc">Transparent reporting & tax-deductible gifts</span>
+              <span class="standard-desc">Tax-deductible gifts & public reporting</span>
             </div>
           </div>
         </div>
@@ -198,12 +198,14 @@
     background: oklch(from var(--text-primary) l c h / 3%);
     border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 14%));
     border-radius: var(--radius-xl, 24px);
-    padding: 2rem 2.5rem;
+    padding: 2.25rem 2rem;
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
+    width: 100%;
+    max-width: 560px;
 
     .showcase-label {
       font-family: ui-monospace, 'SF Mono', monospace;
@@ -230,11 +232,11 @@
     }
 
     .standards-grid {
-      display: flex;
-      gap: 1.5rem;
-      align-items: flex-start;
-      justify-content: center;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+      align-items: start;
+      width: 100%;
     }
 
     .standard-item {
@@ -242,57 +244,78 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      width: 120px;
-      gap: 8px;
+      gap: 10px;
+      width: 100%;
     }
 
     .standard-badge {
-      width: 78px;
-      height: 78px;
+      width: 68px;
+      height: 68px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-bottom: 2px;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
 
       &:hover {
         transform: translateY(-2px);
       }
+    }
 
-      &--volunteer {
-        background: oklch(96% 0.05 65deg);
-        border: 2px solid oklch(84% 0.12 65deg);
-        color: oklch(48% 0.16 65deg);
-        box-shadow: 0 4px 14px oklch(84% 0.1 65deg / 22%);
-      }
+    .standard-badge--volunteer {
+      background: oklch(96% 0.04 65deg);
+      border: 1.5px solid oklch(84% 0.1 65deg);
+      color: oklch(48% 0.16 65deg);
+      box-shadow: 0 4px 12px oklch(84% 0.1 65deg / 18%);
+    }
 
-      &--medical {
-        background: oklch(96% 0.04 150deg);
-        border: 2px solid oklch(80% 0.1 150deg);
-        color: var(--color-primary);
-        box-shadow: 0 4px 14px oklch(80% 0.08 150deg / 22%);
-      }
+    .standard-badge--medical {
+      background: oklch(96% 0.04 150deg);
+      border: 1.5px solid oklch(80% 0.1 150deg);
+      color: var(--color-primary);
+      box-shadow: 0 4px 12px oklch(80% 0.08 150deg / 18%);
+    }
 
-      &--nonprofit {
-        background: oklch(96% 0.03 240deg);
-        border: 2px solid oklch(80% 0.08 240deg);
-        color: oklch(45% 0.12 240deg);
-        box-shadow: 0 4px 14px oklch(80% 0.08 240deg / 22%);
-      }
+    .standard-badge--nonprofit {
+      background: oklch(96% 0.03 240deg);
+      border: 1.5px solid oklch(80% 0.08 240deg);
+      color: oklch(45% 0.12 240deg);
+      box-shadow: 0 4px 12px oklch(80% 0.08 240deg / 18%);
     }
 
     .standard-title {
-      font-size: 0.88rem;
+      font-size: 0.95rem;
       font-weight: 800;
       color: var(--text-primary);
       line-height: 1.25;
-      margin-top: 4px;
+      letter-spacing: -0.01em;
+      min-height: 2.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
     }
 
     .standard-desc {
-      font-size: 0.74rem;
+      font-size: 0.82rem;
       color: var(--text-secondary);
-      line-height: 1.35;
+      line-height: 1.45;
+      text-align: center;
+      max-width: 155px;
+      text-wrap: balance;
+    }
+
+    @media (width <= 520px) {
+      .standards-grid {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+      }
+
+      .standard-title {
+        min-height: auto;
+      }
     }
   }
 
