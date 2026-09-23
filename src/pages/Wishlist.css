@@ -269,14 +269,41 @@
       flex-grow: 1;
     }
 
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
+    }
+
     .cost-badge {
-      align-self: flex-start;
       background: var(--surface-secondary, oklch(from var(--text-primary) 98% 0 h));
       color: var(--text-secondary);
       font-family: var(--font-mono, ui-monospace, SF Mono, monospace);
       font-size: 0.8rem;
       padding: 4px 8px;
       border-radius: 4px;
+    }
+
+    .item-link {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full, 9999px);
+      background: oklch(from var(--color-primary-weak) l c h / 30%);
+      transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+
+      &:hover {
+        background: var(--color-primary);
+        color: var(--text-inverse);
+        transform: translateY(-1px);
+      }
     }
   }
 }

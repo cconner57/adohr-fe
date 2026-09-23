@@ -54,4 +54,7 @@ export const API_ENDPOINTS = {
   // Happy Tails
   HAPPY_TAILS_PUBLIC: `${API_BASE_URL}/v1/public/happy-tails`,
   HAPPY_TAILS_SUBMIT: `${API_BASE_URL}/v1/public/happy-tails`,
+
+  // Public Wishlist
+  WISHLIST_PUBLIC: `${API_BASE_URL}/v1/public/wishlist`,
 }

@@ -61,7 +61,7 @@ defineProps<{
   </svg>
 
   <svg
-    v-else-if="name === 'treats' || name === 'kong' || name === 'chew'"
+    v-else-if="name === 'bone' || name === 'treats' || name === 'kong' || name === 'chew'"
     width="22"
     height="22"
     viewBox="0 0 24 24"
@@ -144,7 +144,7 @@ defineProps<{
   </svg>
 
   <svg
-    v-else-if="name === 'first-aid'"
+    v-else-if="name === 'firstAid' || name === 'first-aid'"
     width="22"
     height="22"
     viewBox="0 0 24 24"
@@ -251,7 +251,7 @@ defineProps<{
   </svg>
 
   <svg
-    v-else-if="name === 'pads'"
+    v-else-if="name === 'pad' || name === 'pads'"
     width="22"
     height="22"
     viewBox="0 0 24 24"
@@ -370,6 +370,43 @@ defineProps<{
     <rect x="13" y="3" width="8" height="8" rx="1" />
     <rect x="3" y="13" width="8" height="8" rx="1" />
     <path d="M13 17h8M17 13v8" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'basket'"
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m5 11 4-7" />
+    <path d="m19 11-4-7" />
+    <path d="M2 11h20" />
+    <path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.6-7.4" />
+    <path d="m9 11 1 9" />
+    <path d="m15 11-1 9" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'heart'"
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path
+      d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+    />
   </svg>
 
   <!-- Default Pet Paw Icon -->

@@ -89,7 +89,7 @@ onMounted(() => {
             <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
           <strong>Urgent Needs:</strong>
-          <span>We are critically low on {{ urgentItems.map(i => i.name).join(', ') }}</span>
+          <span>We are critically low on {{ urgentItems.map(i => i.title || i.name).join(', ') }}</span>
         </div>
       </div>
     </section>
@@ -119,9 +119,21 @@ onMounted(() => {
               </div>
               <span class="priority-badge" :class="item.priority">{{ item.priority }}</span>
             </div>
-            <h3>{{ item.name }}</h3>
+            <h3>{{ item.title || item.name }}</h3>
             <p class="desc">{{ item.description }}</p>
-            <span class="cost-badge">Est. {{ item.estimatedCost }}</span>
+            <div class="card-footer">
+              <span class="cost-badge">Est. {{ item.priceEstimate || item.estimatedCost }}</span>
+              <a
+                v-if="item.url"
+                :href="item.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="item-link"
+                :aria-label="`Buy ${item.title || item.name} on external store`"
+              >
+                Buy / Donate ↗
+              </a>
+            </div>
           </article>
         </div>
       </div>
