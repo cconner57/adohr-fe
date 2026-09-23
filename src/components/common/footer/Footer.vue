@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
+const props = withDefaults(
+  defineProps<{
+    borderTopColor?: 'dark' | 'white' | 'inverse'
+  }>(),
+  {
+    borderTopColor: 'dark',
+  },
+)
+
 const currentYear = computed(() => new Date().getFullYear())
 </script>
 
 <template>
-  <footer class="footer">
+  <footer class="footer" :class="[`border-top-${props.borderTopColor}`]">
     <div class="footer-inner">
       <h2 class="footer-headline">Every pet, <span class="footer-accent">home.</span></h2>
 
@@ -48,6 +57,11 @@ const currentYear = computed(() => new Date().getFullYear())
   color: var(--text-inverse);
   border-top: 1.5px solid var(--text-primary);
   padding: clamp(48px, 8vw, 96px) var(--layout-padding-side) clamp(28px, 4vw, 48px);
+}
+
+.footer.border-top-white,
+.footer.border-top-inverse {
+  border-top-color: var(--text-inverse);
 }
 
 .footer-inner {

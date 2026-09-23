@@ -20,7 +20,7 @@ import Footer from '@/components/common/footer/Footer.vue'
     <AboutFAQ />
     <SupportOurMission />
     <SurrenderCat />
-    <Footer />
+    <Footer borderTopColor="white" />
   </main>
 </template>
 
@@ -36,6 +36,10 @@ import Footer from '@/components/common/footer/Footer.vue'
     margin: 0 auto;
     box-sizing: border-box;
   }
+}
+
+.about :deep(.footer) {
+  border-top-color: var(--text-inverse);
 }
 
 :deep(.reveal) {
