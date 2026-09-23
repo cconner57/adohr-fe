@@ -21,7 +21,7 @@
       <img
         src="/images/mission-care.jpg"
         alt="A dedicated rescue caregiver smiling warmly while holding a small rescue dog"
-        width="768"
+        width="764"
         height="1024"
       />
     </div>
