@@ -139,23 +139,23 @@ h1 {
 .card-dog {
   top: 0;
   right: 0;
-  width: 80%;
-  height: 68%;
+  width: 78%;
+  height: 65%;
   border: 2px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 20%));
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
   transform: rotate(2deg);
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 
   img {
-    object-position: center 25%;
+    object-position: center 30%;
   }
 }
 
 .card-cat {
   bottom: 0;
   left: 0;
-  width: 67%;
-  height: 58%;
+  width: 68%;
+  height: 68%;
   border: 4px solid var(--text-inverse);
   box-shadow: 0 22px 48px rgba(0, 0, 0, 0.22);
   transform: rotate(-2.5deg);
@@ -163,7 +163,7 @@ h1 {
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 
   img {
-    object-position: center 15%;
+    object-position: center 75%;
   }
 }
 
