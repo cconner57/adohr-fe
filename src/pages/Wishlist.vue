@@ -47,12 +47,25 @@ onMounted(() => {
         </p>
         
         <div class="quick-links">
-          <a href="https://www.amazon.com/hz/wishlist/ls/adohr" target="_blank" rel="noopener noreferrer" class="shop-btn amazon-btn">
-            Shop Amazon Wishlist ↗
-          </a>
-          <a href="https://www.chewy.com/g/adohr" target="_blank" rel="noopener noreferrer" class="shop-btn chewy-btn">
-            Shop Chewy Wishlist ↗
-          </a>
+          <!-- Online store wishlists disabled until official lists are set up -->
+          <button
+            type="button"
+            class="shop-btn amazon-btn"
+            disabled
+            aria-disabled="true"
+            title="Amazon Wishlist coming soon"
+          >
+            Amazon Wishlist (Coming Soon)
+          </button>
+          <button
+            type="button"
+            class="shop-btn chewy-btn"
+            disabled
+            aria-disabled="true"
+            title="Chewy Wishlist coming soon"
+          >
+            Chewy Wishlist (Coming Soon)
+          </button>
         </div>
       </div>
     </section>
@@ -123,7 +136,7 @@ onMounted(() => {
           <li class="step-card">
             <span class="step-num">1</span>
             <h3>Browse or Shop Online</h3>
-            <p>Browse our list of needs above, or use our 1-click Amazon and Chewy wishlists to send items directly to us.</p>
+            <p>Browse our list of needs above, or use our upcoming 1-click Amazon and Chewy wishlists once available to send items directly to us.</p>
           </li>
           <li class="step-card">
             <span class="step-num">2</span>
