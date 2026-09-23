@@ -22,11 +22,11 @@ function handleAdopt() {
         </p>
         <h1>
           Connecting rescued pets with loving
-          <span class="display-accent">forever&nbsp;homes.</span>
+          <span class="display-accent">forever&nbsp;homes</span>
         </h1>
         <p class="hero-lede">
           We rescue cats and dogs across Southern California, provide medical care and loving foster
-          homes, and match them with families ready for a lifetime companion.
+          homes, and match them with families ready for a lifetime companion
         </p>
         <div class="hero-actions">
           <Button title="Meet the pets" color="blue" size="large" @click="handleAdopt" />
