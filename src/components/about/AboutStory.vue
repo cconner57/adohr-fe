@@ -15,15 +15,16 @@
         <p class="eyebrow">Our story</p>
         <h2>A fresh start built on years of experience</h2>
         <p>
-          While A Dream of Home Rescue (ADOHR) is a newly founded organization, our foundation is built 
-          on years of hands-on experience in the Southern California rescue community. Our team of 
-          veteran volunteers and fosters recently came together to launch this new chapter, driven by a 
-          shared vision of a highly transparent, animal-first rescue.
+          A Dream of Home Rescue may be a newer name, but our roots in Southern California rescue
+          run deep. We are a close-knit group of longtime volunteers, fosters, and animal advocates
+          who came together with a simple promise: to put animals first, every single day, with
+          complete openness and honesty.
         </p>
         <p>
-          What began as a dedicated circle of passionate rescuers has blossomed into a growing 
-          family of adopters and supporters. Together, we believe that compassion changes lives—both 
-          animal and human.
+          Every pet who enters our care is treated like family from the very start. With the help of
+          our amazing foster homes, dedicated adopters, and kind supporters, we get to watch second
+          chances turn into lifelong happy endings. We believe with all our hearts that compassion
+          changes lives, both animal and human.
         </p>
       </div>
     </div>
