@@ -61,14 +61,29 @@ describe('useHappyTailsStore', () => {
     expect(store.items[0].adoptedDate).toBe('2025')
   })
 
-  it('falls back to MOCK_HAPPY_TAILS if fetch fails', async () => {
+  it('handles fetch failure gracefully and keeps items empty', async () => {
     const fetchMock = vi.fn().mockRejectedValue(new Error('Network error'))
     vi.stubGlobal('fetch', fetchMock)
 
     const store = useHappyTailsStore()
     await store.fetchHappyTails()
 
-    expect(store.items.length).toBeGreaterThan(0)
+    expect(store.items).toEqual([])
+    expect(store.isLoading).toBe(false)
+    expect(store.error).toBe('Network error')
+  })
+
+  it('keeps items empty when API returns empty list', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ happyTails: [] }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const store = useHappyTailsStore()
+    await store.fetchHappyTails()
+
+    expect(store.items).toEqual([])
     expect(store.isLoading).toBe(false)
   })
 

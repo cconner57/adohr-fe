@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 import { API_ENDPOINTS } from '@/constants/api'
-import { MOCK_HAPPY_TAILS } from '@/constants/mockHappyTails'
 import type { IHappyTail, IHappyTailSubmission } from '@/models/happy-tails'
 import { PUBLIC_ORG_ID } from '@/utils/api'
 
@@ -118,11 +117,11 @@ export const useHappyTailsStore = defineStore('happyTails', () => {
         }
       }
 
-      // Fallback to mock data if API returned empty list or error
-      items.value = MOCK_HAPPY_TAILS
-    } catch {
-      // Fallback gracefully to mock data for resilience
-      items.value = MOCK_HAPPY_TAILS
+      // Empty list from API or no published stories yet
+      items.value = []
+    } catch (err) {
+      items.value = []
+      error.value = err instanceof Error ? err.message : 'Failed to load happy tails'
     } finally {
       isLoading.value = false
     }
