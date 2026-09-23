@@ -41,6 +41,15 @@ describe('useWishlistStore', () => {
       expect(normalized.url).toBe('https://chewy.com/item-101')
     })
 
+    it('strips redundant leading Est. prefix from priceEstimate or estimatedCost', () => {
+      const normalized = normalizeWishlistItem({
+        id: 'item-est',
+        priceEstimate: 'Est. $45–60',
+      })
+      expect(normalized.priceEstimate).toBe('$45–60')
+      expect(normalized.estimatedCost).toBe('$45–60')
+    })
+
     it('falls back to defaults when optional fields are missing', () => {
       const normalized = normalizeWishlistItem({
         id: 'item-empty',

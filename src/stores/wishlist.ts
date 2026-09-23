@@ -14,7 +14,8 @@ import { PUBLIC_ORG_ID } from '@/utils/api'
 
 export const normalizeWishlistItem = (raw: IRawWishlistItem): IWishlistItem => {
   const name = raw.title || raw.name || 'Care Item'
-  const estimatedCost = raw.priceEstimate || raw.estimatedCost || ''
+  const rawCost = (raw.priceEstimate || raw.estimatedCost || '').trim()
+  const cleanCost = rawCost.replace(/^est\.?\s*/i, '')
   const priority = (raw.priority?.toLowerCase() || 'medium') as WishlistPriority
   const category = (raw.category?.toLowerCase() || 'comfort') as WishlistCategory
 
@@ -25,8 +26,8 @@ export const normalizeWishlistItem = (raw: IRawWishlistItem): IWishlistItem => {
     category,
     priority,
     description: raw.description || '',
-    estimatedCost,
-    priceEstimate: estimatedCost,
+    estimatedCost: cleanCost,
+    priceEstimate: cleanCost,
     icon: raw.icon || 'heart',
     url: raw.url || '',
   }

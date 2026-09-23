@@ -122,7 +122,7 @@ onMounted(() => {
             <h3>{{ item.title || item.name }}</h3>
             <p class="desc">{{ item.description }}</p>
             <div class="card-footer">
-              <span class="cost-badge">Est. {{ item.priceEstimate || item.estimatedCost }}</span>
+              <span v-if="item.priceEstimate || item.estimatedCost" class="cost-badge">Est. {{ item.priceEstimate || item.estimatedCost }}</span>
               <a
                 v-if="item.url"
                 :href="item.url"
