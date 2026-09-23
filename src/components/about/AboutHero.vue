@@ -25,7 +25,7 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 1600px;
+    max-width: 1240px;
     margin: 0 auto;
   }
 

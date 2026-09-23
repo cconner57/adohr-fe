@@ -16,16 +16,10 @@ import SurrenderCat from '@/components/about/surrender/SurrenderCat.vue'
     <AboutMission />
     <AboutTransparency />
     <AboutLocations />
-
-    <section class="faq-section">
-      <div class="content-wrapper">
-        <AboutFAQ />
-      </div>
-    </section>
-
+    <AboutFAQ />
     <SupportOurMission />
+    <SurrenderCat />
   </main>
-  <SurrenderCat />
 </template>
 
 <style scoped lang="css">
@@ -36,16 +30,9 @@ import SurrenderCat from '@/components/about/surrender/SurrenderCat.vue'
 
   .content-wrapper {
     width: 100%;
-    max-width: 1600px;
+    max-width: 1240px;
     margin: 0 auto;
     box-sizing: border-box;
-  }
-
-  .faq-section {
-    background-color: var(--text-inverse);
-    display: flex;
-    justify-content: center;
-    padding: 0;
   }
 }
 

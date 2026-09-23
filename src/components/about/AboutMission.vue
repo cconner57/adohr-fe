@@ -36,27 +36,27 @@
   color: var(--text-inverse);
   display: flex;
   justify-content: center;
-  padding: 90px var(--layout-padding-side);
+  padding: clamp(64px, 8vw, 96px) var(--layout-padding-side);
 
   .content-wrapper {
     width: 100%;
-    max-width: 1600px;
+    max-width: 1240px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 4rem;
+    gap: clamp(2.5rem, 5vw, 4rem);
   }
 
   .mission-text {
     flex: 1;
+    max-width: 580px;
   }
 
   .image-wrapper {
     display: flex;
     justify-content: flex-end;
     flex: 1;
-    max-width: 450px;
   }
 
   .mission-image-card {
@@ -67,6 +67,8 @@
     border: 1.5px solid oklch(100% 0 0deg / 24%);
     box-shadow: var(--shadow-xl);
     background: var(--text-inverse);
+    width: 100%;
+    max-width: 380px;
   }
 
   .eyebrow {
@@ -90,7 +92,6 @@
 
   p:not(.eyebrow) {
     font-size: 1.15rem;
-    max-width: 600px;
     margin-top: 16px;
     font-weight: 400;
     line-height: 1.65;
@@ -99,8 +100,7 @@
 
   img {
     display: block;
-    width: 280px;
-    max-width: 100%;
+    width: 100%;
     height: auto;
     object-fit: cover;
     transition: transform 0.4s ease;

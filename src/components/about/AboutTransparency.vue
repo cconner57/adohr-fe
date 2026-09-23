@@ -150,17 +150,17 @@
   background-color: var(--text-inverse);
   display: flex;
   justify-content: center;
-  padding: 90px var(--layout-padding-side);
+  padding: clamp(64px, 8vw, 96px) var(--layout-padding-side);
   border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
 
   .content-wrapper {
     width: 100%;
-    max-width: 1600px;
+    max-width: 1240px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 4rem;
+    gap: clamp(2.5rem, 5vw, 4rem);
   }
 
   .eyebrow {
@@ -191,7 +191,7 @@
   .awards-container {
     flex: 1;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .awards-showcase {
@@ -205,7 +205,7 @@
     align-items: center;
     gap: 1.5rem;
     width: 100%;
-    max-width: 560px;
+    max-width: 480px;
 
     .showcase-label {
       font-family: ui-monospace, 'SF Mono', monospace;
@@ -320,11 +320,12 @@
   }
 
   .notice {
-    text-align: right;
+    text-align: left;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
     flex: 1;
+    max-width: 580px;
 
     .small {
       font-size: 0.85rem;
@@ -366,6 +367,8 @@
     .awards-container {
       order: -1;
       width: 100%;
+      display: flex;
+      justify-content: center;
     }
 
     .awards-showcase {

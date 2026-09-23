@@ -50,7 +50,7 @@ const goToWishlist = () => {
 .support-mission {
   background-color: var(--text-inverse);
   color: var(--text-primary);
-  padding: clamp(60px, 8vw, 100px) var(--layout-padding-side);
+  padding: clamp(64px, 8vw, 96px) var(--layout-padding-side);
   display: flex;
   justify-content: center;
   text-align: center;
@@ -58,7 +58,7 @@ const goToWishlist = () => {
 
   .content-wrapper {
     width: 100%;
-    max-width: 800px;
+    max-width: 1240px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;

@@ -38,11 +38,11 @@
   color: var(--text-inverse);
   display: flex;
   justify-content: center;
-  padding: 90px var(--layout-padding-side);
+  padding: clamp(64px, 8vw, 96px) var(--layout-padding-side);
 
   .content-wrapper {
     width: 100%;
-    max-width: 680px;
+    max-width: 1240px;
     margin: 0 auto;
     text-align: center;
     display: flex;
@@ -83,8 +83,9 @@
   }
 
   .location-hours {
-    margin-top: 1.25rem;
-    max-width: 720px;
+    margin-top: 1.5rem;
+    width: 100%;
+    max-width: 760px;
 
     .hours-heading {
       font-size: 1.15rem;

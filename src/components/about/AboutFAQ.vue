@@ -95,55 +95,65 @@ const faqGroups = [
 
 <template>
   <section class="about-faq" aria-labelledby="about-faq-title">
-    <p class="eyebrow">Before you ask</p>
-    <h2 id="about-faq-title">Adoption FAQs</h2>
-    <div class="groups">
-      <section
-        v-for="group in faqGroups"
-        :key="group.title"
-        class="group"
-        :aria-label="group.title"
-      >
-        <h3>{{ group.title }}</h3>
-        <div class="faq-list">
-          <details
-            v-for="faqItem in group.items"
-            :key="`${group.title}-${faqItem.question}`"
-            class="faq-details"
-          >
-            <summary class="faq-question">
-              <svg
-                class="arrow"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  d="M9 6l6 6-6 6"
-                  stroke="currentColor"
-                  stroke-width="2.2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              {{ faqItem.question }}
-            </summary>
-            <p class="faq-answer">{{ faqItem.answer }}</p>
-          </details>
-        </div>
-      </section>
+    <div class="content-wrapper">
+      <p class="eyebrow">Before you ask</p>
+      <h2 id="about-faq-title">Adoption FAQs</h2>
+      <div class="groups">
+        <section
+          v-for="group in faqGroups"
+          :key="group.title"
+          class="group"
+          :aria-label="group.title"
+        >
+          <h3>{{ group.title }}</h3>
+          <div class="faq-list">
+            <details
+              v-for="faqItem in group.items"
+              :key="`${group.title}-${faqItem.question}`"
+              class="faq-details"
+            >
+              <summary class="faq-question">
+                <svg
+                  class="arrow"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M9 6l6 6-6 6"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                {{ faqItem.question }}
+              </summary>
+              <p class="faq-answer">{{ faqItem.answer }}</p>
+            </details>
+          </div>
+        </section>
+      </div>
     </div>
   </section>
 </template>
 
 <style scoped lang="css">
 .about-faq {
-  padding: 90px var(--layout-padding-side);
+  padding: clamp(64px, 8vw, 96px) var(--layout-padding-side);
   background-color: var(--text-inverse);
   color: var(--text-primary);
+  display: flex;
+  justify-content: center;
+
+  .content-wrapper {
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+  }
 
   .eyebrow {
     font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
@@ -169,7 +179,8 @@ const faqGroups = [
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0;
-    max-width: 1600px;
+    width: 100%;
+    max-width: 1240px;
     margin: 0 auto;
     border-top: 1px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 32%));
   }
