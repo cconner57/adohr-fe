@@ -51,4 +51,15 @@ describe('AdoptPageHeader.vue', () => {
     expect(activeChip.exists()).toBe(true)
     expect(activeChip.text()).toContain('Favorites')
   })
+
+  it('groups favorites and filters buttons inside filter-actions-group for row alignment', () => {
+    const wrapper = mount(AdoptPageHeader, {
+      props: defaultProps,
+    })
+
+    const actionsGroup = wrapper.find('.filter-actions-group')
+    expect(actionsGroup.exists()).toBe(true)
+    expect(actionsGroup.find('.fav-filter-btn').exists()).toBe(true)
+    expect(actionsGroup.find('.filter-btn').exists()).toBe(true)
+  })
 })

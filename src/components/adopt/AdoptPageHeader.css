@@ -111,6 +111,14 @@
     justify-content: center;
   }
 
+  .filter-actions-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
   .divider {
     width: 1px;
     height: 24px;
@@ -346,6 +354,22 @@
       height: 1px;
       margin: 0;
     }
+
+    .filter-actions-group {
+      display: flex;
+      flex-flow: row nowrap;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+@media (width <= 360px) {
+  .filters .filter-actions-group button {
+    padding: 8px 14px;
+    font-size: 0.85rem;
   }
 }
 

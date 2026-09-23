@@ -101,40 +101,42 @@ const emit = defineEmits<{
       Pet Matcher Quiz
     </button>
 
-    <!-- Favorites Filter Button -->
-    <button
-      class="fav-filter-btn"
-      :class="{ active: isFavoritesOnly }"
-      type="button"
-      @click="emit('toggle-favorites')"
-      :aria-label="`Filter by favorited pets (${favoriteCount ?? 0})`"
-    >
-      <svg
-        width="15"
-        height="15"
-        viewBox="0 0 24 24"
-        :fill="isFavoritesOnly ? 'currentColor' : 'none'"
-        stroke="currentColor"
-        stroke-width="2.2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
+    <div class="filter-actions-group">
+      <!-- Favorites Filter Button -->
+      <button
+        class="fav-filter-btn"
+        :class="{ active: isFavoritesOnly }"
+        type="button"
+        @click="emit('toggle-favorites')"
+        :aria-label="`Filter by favorited pets (${favoriteCount ?? 0})`"
       >
-        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-      </svg>
-      <span>Favorites</span>
-      <span v-if="(favoriteCount ?? 0) > 0" class="badge">{{ favoriteCount }}</span>
-    </button>
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          :fill="isFavoritesOnly ? 'currentColor' : 'none'"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+        </svg>
+        <span>Favorites</span>
+        <span v-if="(favoriteCount ?? 0) > 0" class="badge">{{ favoriteCount }}</span>
+      </button>
 
-    <button
-      class="filter-btn"
-      :class="{ active: isFilterPanelOpen }"
-      @click="emit('toggle-filters')"
-      :aria-expanded="isFilterPanelOpen"
-    >
-      Filters
-      <span v-if="filterCount" class="badge">{{ filterCount }}</span>
-    </button>
+      <button
+        class="filter-btn"
+        :class="{ active: isFilterPanelOpen }"
+        @click="emit('toggle-filters')"
+        :aria-expanded="isFilterPanelOpen"
+      >
+        Filters
+        <span v-if="filterCount" class="badge">{{ filterCount }}</span>
+      </button>
+    </div>
   </div>
 
   <div
