@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import { prefetchRoute, scheduleIdlePrefetch } from '../../../utils/prefetch.ts'
 import { useIsMobile, useIsTablet } from '../../../utils/useIsMobile.ts'
 import Button from '../ui/Button.vue'
 import NavDrawer from './NavDrawer.vue'
@@ -21,6 +22,16 @@ watch(
 const isMobile = useIsMobile()
 const isTablet = useIsTablet()
 
+onMounted(() => {
+  scheduleIdlePrefetch()
+})
+
+function handleNavClick(targetPath: string) {
+  if (route.path === targetPath) {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
 function handleDonate() {
   router.push('/donate')
 }
@@ -30,7 +41,11 @@ function handleDonate() {
   <div class="nav-bar">
     <nav v-if="isMobile || isTablet" class="nav-pill" aria-label="Primary navigation">
       <div class="nav-logo">
-        <RouterLink to="/" class="nav-item">
+        <RouterLink
+          to="/"
+          class="nav-item"
+          @click="handleNavClick('/')"
+        >
           <img src="/images/adohr-logo.png" alt="ADOHR logo" />
           <span class="brand-name">A Dream of Home</span>
         </RouterLink>
@@ -39,14 +54,23 @@ function handleDonate() {
     </nav>
 
     <nav v-else class="nav-pill" aria-label="Primary navigation">
-      <RouterLink to="/" class="brand">
+      <RouterLink
+        to="/"
+        class="brand"
+        @click="handleNavClick('/')"
+      >
         <img src="/images/adohr-logo.png" alt="ADOHR logo" />
         <span class="brand-name">A Dream of Home</span>
       </RouterLink>
 
       <ul class="nav-links" role="list">
         <li>
-          <RouterLink to="/" class="nav-item" active-class="active">
+          <RouterLink
+            to="/"
+            class="nav-item"
+            active-class="active"
+            @click="handleNavClick('/')"
+          >
             <p data-text="Home">Home</p>
           </RouterLink>
         </li>
@@ -56,6 +80,9 @@ function handleDonate() {
             class="nav-item"
             active-class="active"
             :class="{ active: route.path.startsWith('/surrender') }"
+            @pointerenter="prefetchRoute('/about')"
+            @focus="prefetchRoute('/about')"
+            @click="handleNavClick('/about')"
           >
             <p data-text="About">About</p>
           </RouterLink>
@@ -68,23 +95,48 @@ function handleDonate() {
             :class="{
               active: route.path.startsWith('/adopt') || route.path.startsWith('/pet-adoption'),
             }"
+            @pointerenter="prefetchRoute('/adopt')"
+            @focus="prefetchRoute('/adopt')"
+            @click="handleNavClick('/adopt')"
           >
             <p data-text="Adopt">Adopt</p>
           </RouterLink>
         </li>
         <li>
-          <RouterLink to="/foster" class="nav-item" active-class="active">
+          <RouterLink
+            to="/foster"
+            class="nav-item"
+            active-class="active"
+            @pointerenter="prefetchRoute('/foster')"
+            @focus="prefetchRoute('/foster')"
+            @click="handleNavClick('/foster')"
+          >
             <p data-text="Foster">Foster</p>
           </RouterLink>
         </li>
         <li>
-          <RouterLink to="/volunteer" class="nav-item" active-class="active">
+          <RouterLink
+            to="/volunteer"
+            class="nav-item"
+            active-class="active"
+            @pointerenter="prefetchRoute('/volunteer')"
+            @focus="prefetchRoute('/volunteer')"
+            @click="handleNavClick('/volunteer')"
+          >
             <p data-text="Volunteer">Volunteer</p>
           </RouterLink>
         </li>
       </ul>
 
-      <Button title="Donate" color="blue" size="small" class="nav-cta" @click="handleDonate" />
+      <Button
+        title="Donate"
+        color="blue"
+        size="small"
+        class="nav-cta"
+        @pointerenter="prefetchRoute('/donate')"
+        @focus="prefetchRoute('/donate')"
+        @click="handleDonate"
+      />
     </nav>
   </div>
 </template>
@@ -118,6 +170,7 @@ function handleDonate() {
     backdrop-filter: blur(14px);
     /* stylelint-disable-next-line property-no-vendor-prefix */
     -webkit-backdrop-filter: blur(14px);
+    user-select: none;
   }
 
   .brand {
@@ -126,6 +179,7 @@ function handleDonate() {
     gap: 0.625rem;
     text-decoration: none;
     flex-shrink: 0;
+    user-select: none;
 
     img {
       height: 36px;
@@ -147,11 +201,12 @@ function handleDonate() {
 
   .nav-links {
     display: flex;
-    gap: clamp(1rem, 2.5vw, 2.25rem);
+    gap: clamp(0.25rem, 1vw, 0.75rem);
     align-items: center;
     list-style: none;
     margin: 0;
     padding: 0;
+    user-select: none;
 
     li {
       display: flex;
@@ -165,7 +220,14 @@ function handleDonate() {
       color: var(--text-primary);
       text-decoration: none;
       position: relative;
-      padding: 0.375rem 0;
+      padding: 0.45rem 0.65rem;
+      border-radius: var(--radius-full);
+      user-select: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
 
       p {
         font-size: 0.98rem;
@@ -187,7 +249,7 @@ function handleDonate() {
       &::before {
         content: '';
         position: absolute;
-        bottom: -2px;
+        bottom: 1px;
         left: 50%;
         translate: -50% 0;
         width: 5px;

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+
+import { prefetchRoute } from '../../../utils/prefetch.ts'
 
 const props = withDefaults(
   defineProps<{
@@ -20,6 +23,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: boolean]
 }>()
 
+const route = useRoute()
 const open = ref(!!props.modelValue)
 const panelEl = ref<HTMLElement | null>(null)
 const prevActive = ref<HTMLElement | null>(null)
@@ -50,6 +54,14 @@ function toggle() {
 function close() {
   emit('update:modelValue', false)
 }
+
+function handleDrawerNavClick(targetPath: string) {
+  close()
+  if (route.path === targetPath) {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
 function onKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape') {
     e.preventDefault()
@@ -127,31 +139,83 @@ onBeforeUnmount(() => {
         </header>
 
         <nav class="drawer-content">
-          <RouterLink to="/" class="nav-link" @click="close">
+          <RouterLink
+            to="/"
+            class="nav-link"
+            @click="handleDrawerNavClick('/')"
+          >
             <span>Home</span>
           </RouterLink>
-          <RouterLink to="/about" class="nav-link" @click="close">
+          <RouterLink
+            to="/about"
+            class="nav-link"
+            @pointerenter="prefetchRoute('/about')"
+            @focus="prefetchRoute('/about')"
+            @click="handleDrawerNavClick('/about')"
+          >
             <span>About</span>
           </RouterLink>
-          <RouterLink to="/adopt" class="nav-link" @click="close">
+          <RouterLink
+            to="/adopt"
+            class="nav-link"
+            @pointerenter="prefetchRoute('/adopt')"
+            @focus="prefetchRoute('/adopt')"
+            @click="handleDrawerNavClick('/adopt')"
+          >
             <span>Adopt</span>
           </RouterLink>
-          <RouterLink to="/foster" class="nav-link" @click="close">
+          <RouterLink
+            to="/foster"
+            class="nav-link"
+            @pointerenter="prefetchRoute('/foster')"
+            @focus="prefetchRoute('/foster')"
+            @click="handleDrawerNavClick('/foster')"
+          >
             <span>Foster</span>
           </RouterLink>
-          <RouterLink to="/volunteer" class="nav-link" @click="close">
+          <RouterLink
+            to="/volunteer"
+            class="nav-link"
+            @pointerenter="prefetchRoute('/volunteer')"
+            @focus="prefetchRoute('/volunteer')"
+            @click="handleDrawerNavClick('/volunteer')"
+          >
             <span>Volunteer</span>
           </RouterLink>
-          <RouterLink to="/happy-tails" class="nav-link" @click="close">
+          <RouterLink
+            to="/happy-tails"
+            class="nav-link"
+            @pointerenter="prefetchRoute('/happy-tails')"
+            @focus="prefetchRoute('/happy-tails')"
+            @click="handleDrawerNavClick('/happy-tails')"
+          >
             <span>Happy Tails</span>
           </RouterLink>
-          <RouterLink to="/wishlist" class="nav-link" @click="close">
+          <RouterLink
+            to="/wishlist"
+            class="nav-link"
+            @pointerenter="prefetchRoute('/wishlist')"
+            @focus="prefetchRoute('/wishlist')"
+            @click="handleDrawerNavClick('/wishlist')"
+          >
             <span>Wishlist</span>
           </RouterLink>
-          <RouterLink to="/news" class="nav-link" @click="close">
+          <RouterLink
+            to="/news"
+            class="nav-link"
+            @pointerenter="prefetchRoute('/news')"
+            @focus="prefetchRoute('/news')"
+            @click="handleDrawerNavClick('/news')"
+          >
             <span>News</span>
           </RouterLink>
-          <RouterLink to="/medical-records" class="nav-link" @click="close">
+          <RouterLink
+            to="/medical-records"
+            class="nav-link"
+            @pointerenter="prefetchRoute('/medical-records')"
+            @focus="prefetchRoute('/medical-records')"
+            @click="handleDrawerNavClick('/medical-records')"
+          >
             <span>Medical Records</span>
           </RouterLink>
 
@@ -160,14 +224,24 @@ onBeforeUnmount(() => {
           <RouterLink
             to="/happy-tails?submit=true"
             class="nav-link nav-link--community"
-            @click="close"
+            @pointerenter="prefetchRoute('/happy-tails')"
+            @focus="prefetchRoute('/happy-tails')"
+            @click="handleDrawerNavClick('/happy-tails?submit=true')"
           >
             <span>🐾 Submit Your Happy Tail</span>
           </RouterLink>
         </nav>
 
         <footer class="drawer-footer">
-          <RouterLink to="/donate" class="donate-btn" @click="close">Donate</RouterLink>
+          <RouterLink
+            to="/donate"
+            class="donate-btn"
+            @pointerenter="prefetchRoute('/donate')"
+            @focus="prefetchRoute('/donate')"
+            @click="handleDrawerNavClick('/donate')"
+          >
+            Donate
+          </RouterLink>
         </footer>
       </aside>
     </transition>
@@ -209,29 +283,13 @@ line {
     opacity 0.18s ease;
 }
 
-.hx-top {
-  transform: translateY(0) rotate(0);
-}
+.hx-top { transform: translateY(0) rotate(0); }
+.hx-mid { opacity: 1; }
+.hx-bot { transform: translateY(0) rotate(0); }
 
-.hx-mid {
-  opacity: 1;
-}
-
-.hx-bot {
-  transform: translateY(0) rotate(0);
-}
-
-svg[data-open='true'] .hx-top {
-  transform: translateY(6px) rotate(45deg);
-}
-
-svg[data-open='true'] .hx-mid {
-  opacity: 0;
-}
-
-svg[data-open='true'] .hx-bot {
-  transform: translateY(-6px) rotate(-45deg);
-}
+svg[data-open='true'] .hx-top { transform: translateY(6px) rotate(45deg); }
+svg[data-open='true'] .hx-mid { opacity: 0; }
+svg[data-open='true'] .hx-bot { transform: translateY(-6px) rotate(-45deg); }
 
 .fade-enter-from,
 .fade-leave-to {
@@ -334,6 +392,7 @@ svg[data-open='true'] .hx-bot {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  user-select: none;
 }
 
 .nav-link {
@@ -346,6 +405,9 @@ svg[data-open='true'] .hx-bot {
   font-weight: 600;
   font-size: 1.1rem;
   transition: all var(--transition-normal);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
 }
 
 .nav-link:hover,
@@ -398,6 +460,8 @@ svg[data-open='true'] .hx-bot {
   font-weight: 700;
   font-size: 1.1rem;
   box-shadow: 0 4px 12px oklch(from var(--color-primary) l c h / 15%);
+  user-select: none;
+  cursor: pointer;
   transition:
     transform 0.2s,
     box-shadow 0.2s;

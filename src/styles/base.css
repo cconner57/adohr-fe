@@ -330,6 +330,7 @@ label,
 ::view-transition-new(root) {
   animation-duration: 0.3s;
   mix-blend-mode: normal;
+  pointer-events: none;
 }
 
 ::view-transition-old(root) {

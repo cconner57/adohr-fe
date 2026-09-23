@@ -107,15 +107,47 @@ router.beforeEach(async () => {
 router.beforeResolve((to, from, next) => {
   const doc = document as unknown as CustomViewTransitionDocument
 
-  if (!doc.startViewTransition || from === START_LOCATION) {
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+
+  if (
+    !doc.startViewTransition ||
+    from === START_LOCATION ||
+    to.path === from.path ||
+    prefersReducedMotion
+  ) {
     next()
     return
   }
 
-  doc.startViewTransition(async () => {
-    next()
-    await nextTick()
-  })
+  let called = false
+  const safeNext = (toLocation?: Parameters<typeof next>[0]) => {
+    if (!called) {
+      called = true
+      if (toLocation !== undefined) {
+        next(toLocation)
+      } else {
+        next()
+      }
+    }
+  }
+
+  try {
+    const transition = doc.startViewTransition(async () => {
+      safeNext()
+      await nextTick()
+    })
+
+    if (transition && typeof transition.catch === 'function') {
+      transition.catch(() => {
+        // Suppress AbortError when a transition is superseded
+      })
+    }
+  } catch (err) {
+    console.debug('View transition fallback:', err)
+    safeNext()
+  }
 })
 
 router.afterEach((to) => {

@@ -19,6 +19,7 @@ const showNavBar = computed(() => {
 </script>
 
 <template>
+  <div v-if="uiStore.isLoading" class="route-progress-bar" aria-hidden="true" />
   <Toast
     :show="uiStore.toast.show"
     :message="uiStore.toast.message"
@@ -31,4 +32,31 @@ const showNavBar = computed(() => {
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+.route-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  z-index: 9999;
+  pointer-events: none;
+  animation: route-progress 1.2s ease-in-out infinite;
+  box-shadow: 0 0 10px oklch(from var(--color-primary) l c h / 60%);
+}
+
+@keyframes route-progress {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  50% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+</style>
