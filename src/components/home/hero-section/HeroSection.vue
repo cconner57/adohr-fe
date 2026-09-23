@@ -111,7 +111,7 @@ h1 {
   position: relative;
   justify-self: end;
   width: min(100%, 420px);
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1.15;
 }
 
 .hero-duo-cards {
@@ -125,6 +125,7 @@ h1 {
   border-radius: var(--radius-xl, 26px);
   overflow: hidden;
   background: var(--text-inverse);
+  aspect-ratio: 1 / 1;
 
   img {
     width: 100%;
@@ -138,8 +139,7 @@ h1 {
 .card-dog {
   top: 0;
   right: 0;
-  width: 78%;
-  height: 65%;
+  width: 76%;
   border: 2px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 20%));
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
   transform: rotate(2deg);
@@ -154,7 +154,6 @@ h1 {
   bottom: 0;
   left: 0;
   width: 68%;
-  height: 68%;
   border: 4px solid var(--text-inverse);
   box-shadow: 0 22px 48px rgba(0, 0, 0, 0.22);
   transform: rotate(-2.5deg);
@@ -162,7 +161,7 @@ h1 {
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 
   img {
-    object-position: center 75%;
+    object-position: center 70%;
   }
 }
 
