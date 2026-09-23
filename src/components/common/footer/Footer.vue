@@ -24,9 +24,11 @@ const currentYear = computed(() => new Date().getFullYear())
         </nav>
 
         <div class="footer-social">
-          <p class="footer-label">Follow along</p>
-          <a href="https://www.facebook.com/IDOHR.ORG" aria-label="Facebook">Facebook ↗</a>
-          <a href="https://www.instagram.com/idohrcats/" aria-label="Instagram">Instagram ↗</a>
+          <span class="footer-label">Follow along</span>
+          <div class="footer-social-links">
+            <a href="https://www.facebook.com/IDOHR.ORG" target="_blank" rel="noopener noreferrer" aria-label="Facebook">Facebook ↗</a>
+            <a href="https://www.instagram.com/idohrcats/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Instagram ↗</a>
+          </div>
         </div>
       </div>
 
@@ -101,9 +103,9 @@ const currentYear = computed(() => new Date().getFullYear())
 
 .footer-social {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  align-items: flex-end;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
 
   .footer-label {
     font-family: var(--font-mono);
@@ -113,10 +115,17 @@ const currentYear = computed(() => new Date().getFullYear())
     color: oklch(from var(--text-inverse) l c h / 82%);
   }
 
+  .footer-social-links {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
   a {
     color: var(--text-inverse);
     text-decoration: none;
     font-weight: 500;
+    white-space: nowrap;
 
     &:hover {
       color: var(--color-warning);
@@ -144,7 +153,7 @@ const currentYear = computed(() => new Date().getFullYear())
   }
 
   .footer-social {
-    align-items: flex-start;
+    gap: 0.75rem 1.25rem;
   }
 }
 </style>
