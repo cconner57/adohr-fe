@@ -20,9 +20,9 @@
     <div class="image-container">
       <img
         src="/images/mission-care.jpg"
-        alt="A loving foster caregiver caring for a rescued dog and cat in a warm home"
-        width="600"
-        height="450"
+        alt="A dedicated rescue caregiver smiling warmly while holding a small rescue dog"
+        width="768"
+        height="1024"
       />
     </div>
   </section>
@@ -87,7 +87,7 @@
 
   .image-container {
     justify-self: end;
-    width: min(100%, 420px);
+    width: min(100%, 360px);
     border-radius: var(--radius-xl, 24px);
     overflow: hidden;
     border: 1.5px solid oklch(from var(--text-inverse) l c h / 35%);
@@ -97,8 +97,9 @@
     img {
       width: 100%;
       height: 100%;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 3 / 4;
       object-fit: cover;
+      display: block;
       transition: transform 0.4s ease;
     }
 
@@ -113,7 +114,7 @@
     .image-container {
       justify-self: center;
       order: -1;
-      width: min(100%, 340px);
+      width: min(100%, 320px);
     }
   }
 }
