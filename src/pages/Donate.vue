@@ -6,8 +6,7 @@ import { useScrollReveal } from '@/composables/useScrollReveal'
 
 const { vScrollReveal } = useScrollReveal()
 
-// Donation URLs
-const PAYPAL_URL = 'https://www.paypal.com/donate'
+// Donation URLs (Online donation checkout temporarily disabled until Stripe integration)
 const ZELLE_EMAIL = 'donate@adohr.org'
 
 const isCopied = ref(false)
@@ -68,9 +67,14 @@ const impactLedger = [
                 <span class="ledger-covers">{{ row.covers }}</span>
               </div>
             </div>
-            <a class="sponsor-btn" :href="PAYPAL_URL" target="_blank" rel="noopener noreferrer">
+            <button
+              type="button"
+              class="sponsor-btn"
+              disabled
+              aria-disabled="true"
+            >
               Sponsor ${{ row.amount }} →
-            </a>
+            </button>
           </li>
         </ul>
       </div>
@@ -91,9 +95,14 @@ const impactLedger = [
             <p>Join a dedicated group of recurring donors who keep our foster homes stocked year-round. Monthly gifts provide predictable, life-saving funds for animals needing emergency care.</p>
           </div>
           <div class="vip-action">
-            <a class="way-cta vip-cta" :href="PAYPAL_URL" target="_blank" rel="noopener noreferrer">
+            <button
+              type="button"
+              class="way-cta vip-cta"
+              disabled
+              aria-disabled="true"
+            >
               Join the Pack
-            </a>
+            </button>
           </div>
         </div>
 
@@ -102,7 +111,14 @@ const impactLedger = [
             <article class="way-card">
               <h3>One-Time Gift</h3>
               <p>Make a direct, one-time contribution through PayPal to support an animal's immediate needs.</p>
-              <a class="way-cta" :href="PAYPAL_URL" target="_blank" rel="noopener noreferrer">Donate Online</a>
+              <button
+                type="button"
+                class="way-cta"
+                disabled
+                aria-disabled="true"
+              >
+                Donate Online
+              </button>
             </article>
           </li>
           <li class="way-item">
@@ -266,8 +282,16 @@ const impactLedger = [
       .sponsor-btn {
         padding: 8px 16px; font-size: 0.85rem; font-weight: 700; color: var(--text-inverse);
         background-color: var(--color-primary); border-radius: var(--radius-full); text-decoration: none;
-        white-space: nowrap; transition: transform 0.15s ease, background-color 0.15s ease;
-        &:hover { background-color: var(--color-secondary); transform: translateY(-1px); }
+        white-space: nowrap; transition: transform 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
+        border: none; font-family: inherit; cursor: pointer;
+        &:hover:not(:disabled) { background-color: var(--color-secondary); transform: translateY(-1px); }
+        &:disabled,
+        &[disabled] {
+          opacity: 0.6;
+          cursor: not-allowed;
+          box-shadow: none;
+          transform: none;
+        }
       }
     }
   }
@@ -301,7 +325,16 @@ const impactLedger = [
       .vip-cta {
         background-color: var(--color-warning); color: var(--color-primary); font-weight: 800;
         padding: 0.9rem 1.8rem; border-radius: var(--radius-full); text-decoration: none; white-space: nowrap;
-        &:hover { background-color: #fff; }
+        border: none; font-family: inherit; font-size: 1rem; cursor: pointer;
+        transition: background-color 0.15s ease, opacity 0.15s ease;
+        &:hover:not(:disabled) { background-color: #fff; }
+        &:disabled,
+        &[disabled] {
+          opacity: 0.6;
+          cursor: not-allowed;
+          box-shadow: none;
+          transform: none;
+        }
       }
     }
 
@@ -356,9 +389,22 @@ const impactLedger = [
         border-radius: var(--radius-full);
         text-decoration: none;
         text-align: center;
+        border: none;
+        font-family: inherit;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: background-color 0.15s ease, opacity 0.15s ease;
 
-        &:hover {
+        &:hover:not(:disabled) {
           background-color: var(--color-primary);
+        }
+
+        &:disabled,
+        &[disabled] {
+          opacity: 0.6;
+          cursor: not-allowed;
+          box-shadow: none;
+          transform: none;
         }
       }
     }
