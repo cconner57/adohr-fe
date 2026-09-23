@@ -50,7 +50,6 @@ onMounted(() => {
             />
             <ImagePlaceholder
               v-else-if="item.imageUrl"
-              :label="item.category"
               icon="photo"
             />
             <div class="news-card__content">

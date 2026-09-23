@@ -158,7 +158,6 @@ function handleAdopt() {
       />
       <ImagePlaceholder
         v-else
-        :label="props.name"
         icon="paw"
         @click="handleAdopt"
       />

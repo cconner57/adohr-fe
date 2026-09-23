@@ -45,7 +45,6 @@ withDefaults(
         <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
       </svg>
     </div>
-    <span v-if="label" class="fallback-label">{{ label }}</span>
   </div>
 </template>
 
@@ -87,23 +86,8 @@ withDefaults(
   opacity: 0.85;
 }
 
-.fallback-label {
-  font-family: var(--font-display, inherit);
-  font-weight: 700;
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-  letter-spacing: -0.01em;
-  text-align: center;
-  padding: 0 0.5rem;
-  max-width: 90%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .size-small {
   min-height: 50px;
-  gap: 0.25rem;
 
   .fallback-icon-wrap {
     width: 32px;
@@ -114,15 +98,10 @@ withDefaults(
     width: 18px;
     height: 18px;
   }
-
-  .fallback-label {
-    font-size: 0.75rem;
-  }
 }
 
 .size-large {
   min-height: 220px;
-  gap: 0.75rem;
 
   .fallback-icon-wrap {
     width: 76px;
@@ -132,10 +111,6 @@ withDefaults(
   .fallback-svg {
     width: 42px;
     height: 42px;
-  }
-
-  .fallback-label {
-    font-size: 1rem;
   }
 }
 </style>

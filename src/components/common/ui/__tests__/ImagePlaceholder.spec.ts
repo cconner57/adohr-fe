@@ -10,11 +10,12 @@ describe('ImagePlaceholder.vue', () => {
     expect(wrapper.find('.fallback-svg').exists()).toBe(true)
   })
 
-  it('renders label when provided', () => {
+  it('does not render text label in placeholder even when label prop is provided', () => {
     const wrapper = mount(ImagePlaceholder, {
       props: { label: 'Luna' },
     })
-    expect(wrapper.find('.fallback-label').text()).toBe('Luna')
+    expect(wrapper.find('.fallback-label').exists()).toBe(false)
+    expect(wrapper.text()).toBe('')
   })
 
   it('renders photo icon when icon prop is photo', () => {

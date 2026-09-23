@@ -133,7 +133,6 @@ watch(
               />
               <ImagePlaceholder
                 v-else
-                :label="item.petName"
                 icon="paw"
               />
             </div>

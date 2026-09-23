@@ -49,7 +49,6 @@ const stories = computed(() => {
           />
           <ImagePlaceholder
             v-else
-            :label="story.petName"
             icon="paw"
           />
         </div>
