@@ -34,14 +34,27 @@ function handleAdopt() {
       </div>
 
       <div class="hero-portrait">
-        <div class="hero-image-card">
-          <img
-            src="/images/hero.jpg"
-            alt="An adorable rescued dog and tabby cat sitting together in a sunlit home, ready for adoption"
-            width="600"
-            height="760"
-            fetchpriority="high"
-          />
+        <div class="hero-duo-cards">
+          <!-- Primary: Rescued puppy in lush greenery -->
+          <div class="duo-card card-dog">
+            <img
+              src="/images/hero-dog.jpg"
+              alt="Rescued puppy with Adopt Me collar resting in green grass, ready for adoption"
+              width="1024"
+              height="1024"
+              fetchpriority="high"
+            />
+          </div>
+
+          <!-- Secondary: Rescued tuxedo cat on purple blanket -->
+          <div class="duo-card card-cat">
+            <img
+              src="/images/hero-cat.jpg"
+              alt="Rescued tuxedo cat with bright yellow eyes on a soft purple mat, ready for adoption"
+              width="768"
+              height="1024"
+            />
+          </div>
         </div>
         <span class="sticker" aria-hidden="true">Rescued<br />&amp; ready</span>
       </div>
@@ -94,38 +107,102 @@ h1 {
   flex-wrap: wrap;
 }
 
-/* Rounded hero portrait card */
+/* Rounded hero portrait duo cards */
 .hero-portrait {
   position: relative;
   justify-self: end;
   width: min(100%, 420px);
+  aspect-ratio: 4 / 5;
 }
 
-.hero-image-card {
-  border-radius: var(--radius-xl, 28px);
+.hero-duo-cards {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.duo-card {
+  position: absolute;
+  border-radius: var(--radius-xl, 26px);
   overflow: hidden;
-  border: 1.5px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 20%));
-  box-shadow: var(--shadow-xl);
-  aspect-ratio: 4 / 5;
   background: var(--text-inverse);
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center center;
-    transition: scale 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 }
 
-.hero-portrait:hover .hero-image-card img {
-  scale: 1.04;
+.card-dog {
+  top: 0;
+  right: 0;
+  width: 80%;
+  height: 68%;
+  border: 2px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 20%));
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
+  transform: rotate(2deg);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  img {
+    object-position: center 25%;
+  }
+}
+
+.card-cat {
+  bottom: 0;
+  left: 0;
+  width: 67%;
+  height: 58%;
+  border: 4px solid var(--text-inverse);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.22);
+  transform: rotate(-2.5deg);
+  z-index: 2;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  img {
+    object-position: center 15%;
+  }
+}
+
+.hero-portrait:hover {
+  .card-dog {
+    transform: translateY(-4px) rotate(3.5deg);
+
+    img {
+      transform: scale(1.04);
+    }
+  }
+
+  .card-cat {
+    transform: translateY(-8px) rotate(-3.5deg);
+
+    img {
+      transform: scale(1.04);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-dog,
+  .card-cat,
+  .hero-portrait:hover .card-dog,
+  .hero-portrait:hover .card-cat,
+  .card-dog img,
+  .card-cat img,
+  .hero-portrait:hover .card-dog img,
+  .hero-portrait:hover .card-cat img {
+    transform: none;
+    transition: none;
+  }
 }
 
 .sticker {
   position: absolute;
-  top: 6%;
-  right: -1.25rem;
+  top: 4%;
+  right: -1rem;
   rotate: 8deg;
   width: 96px;
   height: 96px;
@@ -145,7 +222,7 @@ h1 {
   justify-content: center;
   box-shadow: var(--shadow-md);
   pointer-events: none;
-  z-index: 2;
+  z-index: 3;
 }
 
 @media (width <= 900px) {
