@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { PUBLIC_ORG_ID } from '@/utils/api'
 
-import { useHappyTailsStore } from '../happyTails'
+import { normalizeHappyTailPhotoUrl, useHappyTailsStore } from '../happyTails'
 
 describe('useHappyTailsStore', () => {
   beforeEach(() => {
@@ -183,5 +183,42 @@ describe('useHappyTailsStore', () => {
         story: 'A wonderful story about our rescue pet.',
       }),
     ).rejects.toThrow('pet name is required')
+  })
+
+  describe('normalizeHappyTailPhotoUrl', () => {
+    const testR2 = 'https://pub-768b3a497dc648f2895152092bf57934.r2.dev'
+
+    it('returns empty string for null, undefined, or empty values', () => {
+      expect(normalizeHappyTailPhotoUrl(null)).toBe('')
+      expect(normalizeHappyTailPhotoUrl(undefined)).toBe('')
+      expect(normalizeHappyTailPhotoUrl('')).toBe('')
+      expect(normalizeHappyTailPhotoUrl('   ')).toBe('')
+    })
+
+    it('maps api.adoption-os.com photo URLs to public R2 bucket', () => {
+      const apiPhoto = 'https://api.adoption-os.com/happy-tails/1790139065-photo.jpeg'
+      expect(normalizeHappyTailPhotoUrl(apiPhoto, testR2)).toBe(
+        'https://pub-768b3a497dc648f2895152092bf57934.r2.dev/happy-tails/1790139065-photo.jpeg',
+      )
+    })
+
+    it('preserves already normalized public R2 URLs', () => {
+      const r2Photo = 'https://pub-768b3a497dc648f2895152092bf57934.r2.dev/happy-tails/1790139065-photo.jpeg'
+      expect(normalizeHappyTailPhotoUrl(r2Photo, testR2)).toBe(r2Photo)
+    })
+
+    it('maps relative happy-tails paths to public R2 bucket', () => {
+      expect(normalizeHappyTailPhotoUrl('happy-tails/123-photo.jpg', testR2)).toBe(
+        'https://pub-768b3a497dc648f2895152092bf57934.r2.dev/happy-tails/123-photo.jpg',
+      )
+      expect(normalizeHappyTailPhotoUrl('/happy-tails/123-photo.jpg', testR2)).toBe(
+        'https://pub-768b3a497dc648f2895152092bf57934.r2.dev/happy-tails/123-photo.jpg',
+      )
+    })
+
+    it('leaves standard external image URLs unchanged', () => {
+      const externalUrl = 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba'
+      expect(normalizeHappyTailPhotoUrl(externalUrl, testR2)).toBe(externalUrl)
+    })
   })
 })

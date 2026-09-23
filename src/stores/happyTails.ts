@@ -45,6 +45,38 @@ interface ISubmitResponse {
   userMessage?: string
 }
 
+const DEFAULT_R2_PUBLIC_URL = 'https://pub-768b3a497dc648f2895152092bf57934.r2.dev'
+
+export const normalizeHappyTailPhotoUrl = (
+  u?: string | null,
+  baseUrl: string = (import.meta.env.VITE_R2_PUBLIC_URL as string) || DEFAULT_R2_PUBLIC_URL,
+): string => {
+  if (!u) return ''
+  const trimmed = u.trim()
+  if (!trimmed) return ''
+
+  const cleanBase = baseUrl.replace(/\/+$/, '')
+
+  // If already pointing to the configured public R2 storage URL
+  if (cleanBase && trimmed.startsWith(cleanBase)) {
+    return trimmed
+  }
+
+  // If the path contains /happy-tails/ (e.g. from https://api.adoption-os.com/happy-tails/1790139065-photo.jpeg)
+  if (trimmed.includes('/happy-tails/')) {
+    const idx = trimmed.indexOf('/happy-tails/')
+    const relativePath = trimmed.substring(idx + 1)
+    return `${cleanBase}/${relativePath}`
+  }
+
+  // If relative path starting with happy-tails/
+  if (trimmed.startsWith('happy-tails/')) {
+    return `${cleanBase}/${trimmed}`
+  }
+
+  return trimmed
+}
+
 export const useHappyTailsStore = defineStore('happyTails', () => {
   const items = ref<IHappyTail[]>([])
   const isLoading = ref(false)
@@ -97,17 +129,6 @@ export const useHappyTailsStore = defineStore('happyTails', () => {
               speciesNormalized = 'other'
             }
 
-            const normalizePhoto = (u?: string) => {
-              if (!u) return ''
-              if (u.includes('.r2.dev/')) {
-                const parts = u.split('.r2.dev/')
-                if (parts.length === 2) {
-                  return `https://api.adoption-os.com/${parts[1]}`
-                }
-              }
-              return u
-            }
-
             return {
               id: String(t.id),
               orgId: t.orgId,
@@ -117,8 +138,8 @@ export const useHappyTailsStore = defineStore('happyTails', () => {
               adoptersName: adopter,
               story: storyText,
               testimonial: storyText,
-              photoUrl: normalizePhoto(t.photoUrl),
-              beforePhotoUrl: normalizePhoto(t.beforePhotoUrl) || undefined,
+              photoUrl: normalizeHappyTailPhotoUrl(t.photoUrl),
+              beforePhotoUrl: normalizeHappyTailPhotoUrl(t.beforePhotoUrl) || undefined,
               adoptionDate: dateStr,
               adoptedDate: dateStr,
               status: t.status,
