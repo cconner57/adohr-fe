@@ -13,10 +13,12 @@ const { vScrollReveal } = useScrollReveal()
 const route = useRoute()
 
 const happyTailsStore = useHappyTailsStore()
-const { sortedItems, isLoading, error } = storeToRefs(happyTailsStore)
+const { sortedItems, totalStories, isLoading, error } = storeToRefs(happyTailsStore)
 
 const currentFilter = ref<'all' | 'dog' | 'cat'>('all')
 const isSubmitModalOpen = ref(false)
+
+const formattedTotalStories = computed(() => totalStories.value.toLocaleString())
 
 const filteredItems = computed(() => {
   if (currentFilter.value === 'all') return sortedItems.value
@@ -56,7 +58,7 @@ watch(
     <section class="stats-bar">
       <div class="content-wrapper" v-scroll-reveal>
         <div class="stat">
-          <span class="stat-number">5,243</span>
+          <span class="stat-number">{{ formattedTotalStories }}</span>
           <span class="stat-label">alumni and counting</span>
         </div>
       </div>

@@ -18,6 +18,7 @@ describe('useHappyTailsStore', () => {
   it('initializes with empty items and non-loading state', () => {
     const store = useHappyTailsStore()
     expect(store.items).toEqual([])
+    expect(store.totalStories).toBe(0)
     expect(store.isLoading).toBe(false)
     expect(store.error).toBeNull()
   })
@@ -53,6 +54,7 @@ describe('useHappyTailsStore', () => {
     expect(calledInit.headers['X-Org-Id']).toBe(PUBLIC_ORG_ID)
 
     expect(store.items).toHaveLength(1)
+    expect(store.totalStories).toBe(1)
     expect(store.items[0].petName).toBe('Adrian')
     expect(store.items[0].adopterName).toBe('Chris C.')
     expect(store.items[0].adoptersName).toBe('Chris C.')

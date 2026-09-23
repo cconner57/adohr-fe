@@ -56,6 +56,8 @@ export const useHappyTailsStore = defineStore('happyTails', () => {
     })
   })
 
+  const totalStories = computed(() => items.value.length)
+
   const fetchHappyTails = async () => {
     isLoading.value = true
     error.value = null
@@ -211,6 +213,7 @@ export const useHappyTailsStore = defineStore('happyTails', () => {
     isLoading,
     error,
     sortedItems,
+    totalStories,
     fetchHappyTails,
     submitHappyTail,
   }
