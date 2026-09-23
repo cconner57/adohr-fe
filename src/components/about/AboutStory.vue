@@ -5,9 +5,9 @@
         <div class="story-image-card">
           <img
             src="/images/about-story.jpg"
-            alt="ADOHR team of veteran volunteers, fosters, and rescued pets together outdoors"
-            width="600"
-            height="450"
+            alt="Two bonded rescue cats cuddling closely together"
+            width="720"
+            height="960"
           />
         </div>
       </div>
@@ -64,14 +64,14 @@
     box-shadow: var(--shadow-lg);
     background: var(--text-inverse);
     width: 100%;
-    max-width: 480px;
+    max-width: 380px;
   }
 
   img {
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 4;
     object-fit: cover;
     transition: transform 0.4s ease;
   }
