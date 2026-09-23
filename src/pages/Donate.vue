@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+import Footer from '@/components/common/footer/Footer.vue'
 import { useScrollReveal } from '@/composables/useScrollReveal'
 
 const { vScrollReveal } = useScrollReveal()
@@ -153,6 +154,8 @@ const impactLedger = [
         </div>
       </div>
     </section>
+
+    <Footer />
   </main>
 </template>
 
