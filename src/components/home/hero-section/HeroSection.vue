@@ -15,7 +15,11 @@ function handleAdopt() {
   <section class="hero-section">
     <div class="hero-inner">
       <div class="hero-copy">
-        <p class="eyebrow hero-eyebrow">Cat &amp; dog rescue · Southern California</p>
+        <p class="eyebrow hero-eyebrow">
+          <span class="hero-eyebrow-main">Cat &amp; dog rescue</span>
+          <span class="hero-eyebrow-divider"> · </span>
+          <span class="hero-eyebrow-location">Southern California</span>
+        </p>
         <h1>
           Connecting rescued pets with loving
           <span class="display-accent">forever&nbsp;homes.</span>
@@ -123,20 +127,25 @@ h1 {
   top: 6%;
   right: -1.25rem;
   rotate: 8deg;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
   background-color: var(--color-warning);
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.9rem;
+  font-weight: 800;
+  font-size: 0.82rem;
   line-height: 1.15;
   text-align: center;
-  padding: 1.1rem 0.8rem;
-  border-radius: var(--radius-full);
+  padding: 0.4rem;
   border: 1.5px solid var(--text-primary);
-  aspect-ratio: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   box-shadow: var(--shadow-md);
+  pointer-events: none;
+  z-index: 2;
 }
 
 @media (width <= 900px) {
@@ -163,7 +172,26 @@ h1 {
   }
 
   .sticker {
-    right: -0.5rem;
+    top: -0.5rem;
+    right: 0.25rem;
+    width: 82px;
+    height: 82px;
+    font-size: 0.74rem;
+    line-height: 1.15;
+    rotate: 6deg;
+  }
+}
+
+@media (width <= 640px) {
+  .hero-eyebrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+
+    .hero-eyebrow-divider {
+      display: none;
+    }
   }
 }
 </style>

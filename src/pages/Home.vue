@@ -175,6 +175,10 @@ onMounted(() => {
   border-block: 2px solid var(--line-ink, oklch(from var(--text-primary) l c h / 20%));
   padding: clamp(36px, 5vw, 56px) 0;
   box-shadow: inset 0 2px 10px oklch(from var(--text-primary) l c h / 8%);
+
+  @media (width <= 640px) {
+    padding: 24px 0;
+  }
 }
 
 .section {
