@@ -44,6 +44,6 @@ describe('HeroSection.vue', () => {
     expect(catImg.attributes('src')).toBe('/images/hero-cat.jpg')
     expect(catImg.attributes('alt')).toContain('Rescued tuxedo cat')
 
-    expect(wrapper.find('.sticker').text()).toContain('Rescued')
+    expect(wrapper.find('.sticker').exists()).toBe(false)
   })
 })

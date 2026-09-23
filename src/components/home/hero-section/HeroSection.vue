@@ -56,7 +56,6 @@ function handleAdopt() {
             />
           </div>
         </div>
-        <span class="sticker" aria-hidden="true">Rescued<br />&amp; ready</span>
       </div>
     </div>
   </section>
@@ -199,32 +198,6 @@ h1 {
   }
 }
 
-.sticker {
-  position: absolute;
-  top: 4%;
-  right: -1rem;
-  rotate: 8deg;
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background-color: var(--color-warning);
-  color: var(--text-primary);
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 0.82rem;
-  line-height: 1.15;
-  text-align: center;
-  padding: 0.4rem;
-  border: 1.5px solid var(--text-primary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-md);
-  pointer-events: none;
-  z-index: 3;
-}
-
 @media (width <= 900px) {
   .hero-inner {
     grid-template-columns: 1fr;
@@ -246,16 +219,6 @@ h1 {
   .hero-portrait {
     justify-self: center;
     width: min(100%, 340px);
-  }
-
-  .sticker {
-    top: -0.5rem;
-    right: 0.25rem;
-    width: 82px;
-    height: 82px;
-    font-size: 0.74rem;
-    line-height: 1.15;
-    rotate: 6deg;
   }
 }
 
