@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 import { API_ENDPOINTS } from '@/constants/api'
-import { MOCK_WISHLIST } from '@/constants/mockWishlist'
 import type {
   IPublicWishlistResponse,
   IRawWishlistItem,
@@ -68,17 +67,15 @@ export const useWishlistStore = defineStore('wishlist', () => {
       if (response.ok) {
         const payload: IPublicWishlistResponse = await response.json()
         const rawItems = payload.items || payload.data?.items || []
-        if (rawItems.length > 0) {
-          items.value = rawItems.map(normalizeWishlistItem)
-          return
-        }
+        items.value = rawItems.map(normalizeWishlistItem)
+        return
       }
 
-      // Graceful fallback to curated supply list if endpoint returns empty/unavailable
-      items.value = MOCK_WISHLIST.map(normalizeWishlistItem)
+      items.value = []
+      error.value = 'Unable to load wishlist at this time.'
     } catch {
-      // Graceful offline/network fallback
-      items.value = MOCK_WISHLIST.map(normalizeWishlistItem)
+      items.value = []
+      error.value = 'Unable to load wishlist at this time.'
     } finally {
       isLoading.value = false
     }

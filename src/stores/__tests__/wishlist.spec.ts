@@ -1,7 +1,6 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { MOCK_WISHLIST } from '@/constants/mockWishlist'
 import { PUBLIC_ORG_ID } from '@/utils/api'
 
 import { normalizeWishlistItem, useWishlistStore } from '../wishlist'
@@ -154,33 +153,7 @@ describe('useWishlistStore', () => {
       expect(calledUrl).toContain('category=medical')
     })
 
-    it('falls back to mock wishlist if API request fails with network error', async () => {
-      const fetchMock = vi.fn().mockRejectedValue(new Error('Network error'))
-      vi.stubGlobal('fetch', fetchMock)
-
-      const store = useWishlistStore()
-      await store.fetchWishlist()
-
-      expect(store.items.length).toBeGreaterThan(0)
-      expect(store.items.length).toBe(MOCK_WISHLIST.length)
-      expect(store.items[0].title).toBe(MOCK_WISHLIST[0].name)
-    })
-
-    it('falls back to mock wishlist if API returns non-200 status', async () => {
-      const fetchMock = vi.fn().mockResolvedValue({
-        ok: false,
-        status: 404,
-      })
-      vi.stubGlobal('fetch', fetchMock)
-
-      const store = useWishlistStore()
-      await store.fetchWishlist()
-
-      expect(store.items.length).toBeGreaterThan(0)
-      expect(store.items.length).toBe(MOCK_WISHLIST.length)
-    })
-
-    it('falls back to mock wishlist if API returns empty list', async () => {
+    it('sets items to empty list when API returns empty items', async () => {
       const fetchMock = vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({ count: 0, items: [] }),
@@ -190,7 +163,35 @@ describe('useWishlistStore', () => {
       const store = useWishlistStore()
       await store.fetchWishlist()
 
-      expect(store.items.length).toBe(MOCK_WISHLIST.length)
+      expect(store.items).toHaveLength(0)
+      expect(store.urgentItems).toHaveLength(0)
+      expect(store.isLoading).toBe(false)
+      expect(store.error).toBeNull()
+    })
+
+    it('sets items to empty list and sets error when API returns non-200 status', async () => {
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 404,
+      })
+      vi.stubGlobal('fetch', fetchMock)
+
+      const store = useWishlistStore()
+      await store.fetchWishlist()
+
+      expect(store.items).toEqual([])
+      expect(store.error).toBe('Unable to load wishlist at this time.')
+    })
+
+    it('sets items to empty list and sets error when API request fails with network error', async () => {
+      const fetchMock = vi.fn().mockRejectedValue(new Error('Network error'))
+      vi.stubGlobal('fetch', fetchMock)
+
+      const store = useWishlistStore()
+      await store.fetchWishlist()
+
+      expect(store.items).toEqual([])
+      expect(store.error).toBe('Unable to load wishlist at this time.')
     })
   })
 })

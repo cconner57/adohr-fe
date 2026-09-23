@@ -142,4 +142,35 @@ describe('Wishlist.vue', () => {
     expect(secondCard.find('h3').text()).toBe('Fleece Blankets')
     expect(secondCard.find('.item-link').exists()).toBe(false)
   })
+
+  it('renders "No items at this time" empty state and hides category filters when API returns 0 items', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        count: 0,
+        items: [],
+      }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const wrapper = mount(Wishlist, {
+      global: {
+        directives: {
+          'scroll-reveal': {},
+        },
+        stubs: {
+          Footer: true,
+          WishlistIcon: true,
+        },
+      },
+    })
+
+    await flushPromises()
+
+    expect(wrapper.find('.empty-state').exists()).toBe(true)
+    expect(wrapper.find('.empty-title').text()).toBe('No items at this time')
+    expect(wrapper.find('.urgent-banner').exists()).toBe(false)
+    expect(wrapper.find('.category-filters').exists()).toBe(false)
+    expect(wrapper.findAll('.supply-card')).toHaveLength(0)
+  })
 })

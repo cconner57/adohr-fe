@@ -11,7 +11,7 @@ import { useWishlistStore } from '@/stores/wishlist'
 const { vScrollReveal } = useScrollReveal()
 
 const wishlistStore = useWishlistStore()
-const { isLoading, error, urgentItems } = storeToRefs(wishlistStore)
+const { items, isLoading, error, urgentItems } = storeToRefs(wishlistStore)
 
 const activeCategory = ref<WishlistCategory | 'all'>('all')
 
@@ -96,7 +96,7 @@ onMounted(() => {
 
     <section class="supplies-section" aria-labelledby="supplies-title">
       <div class="content-wrapper">
-        <div class="category-filters" v-scroll-reveal>
+        <div v-if="items.length > 0" class="category-filters" v-scroll-reveal>
           <button
             v-for="cat in categories"
             :key="cat.value"
@@ -110,6 +110,27 @@ onMounted(() => {
 
         <div v-if="isLoading" class="status">Loading supplies...</div>
         <div v-else-if="error" class="status error">{{ error }}</div>
+
+        <div v-else-if="displayedItems.length === 0" class="empty-state" role="status">
+          <svg
+            class="empty-icon"
+            width="44"
+            height="44"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+          </svg>
+          <p class="empty-title">No items at this time</p>
+          <p class="empty-subtitle">
+            Our wishlist currently has no items requested. Check back soon or consider supporting our rescue with a direct donation.
+          </p>
+        </div>
         
         <div v-else class="supply-grid" role="list">
           <article v-for="item in displayedItems" :key="item.id" class="supply-card" v-scroll-reveal>
