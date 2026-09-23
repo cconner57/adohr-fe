@@ -8,6 +8,7 @@ import { goToAdopt } from '../../../utils/navigate.ts'
 import BondedPairBadge from '../ui/BondedPairBadge.vue'
 import Button from '../ui/Button.vue'
 import Capsules from '../ui/Capsules.vue'
+import ImagePlaceholder from '../ui/ImagePlaceholder.vue'
 import PetPhotoBadges from './PetPhotoBadges.vue'
 
 const props = defineProps({
@@ -155,7 +156,12 @@ function handleAdopt() {
         @error="onImgError"
         @click="handleAdopt"
       />
-      <div v-else class="img-fallback" aria-hidden="true" @click="handleAdopt"></div>
+      <ImagePlaceholder
+        v-else
+        :label="props.name"
+        icon="paw"
+        @click="handleAdopt"
+      />
 
       <button
         type="button"

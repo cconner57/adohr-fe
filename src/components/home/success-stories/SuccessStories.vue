@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
+import ImagePlaceholder from '@/components/common/ui/ImagePlaceholder.vue'
 import { useHappyTailsStore } from '@/stores/happyTails'
 
 const happyTailsStore = useHappyTailsStore()
 const { sortedItems } = storeToRefs(happyTailsStore)
+
+const failedImages = ref<Set<string | number>>(new Set())
+
+function onImageError(id: string | number) {
+  failedImages.value.add(id)
+}
 
 const stories = computed(() => {
   const featured = sortedItems.value.filter(s => s.isFeatured)
@@ -33,10 +40,17 @@ const stories = computed(() => {
       <article v-for="story in stories" :key="story.id" class="story-card">
         <div class="story-image-wrap">
           <img
+            v-if="story.photoUrl && !failedImages.has(story.id)"
             :src="story.photoUrl"
             :alt="`${story.petName} with ${story.adoptersName}`"
             class="story-img"
             loading="lazy"
+            @error="onImageError(story.id)"
+          />
+          <ImagePlaceholder
+            v-else
+            :label="story.petName"
+            icon="paw"
           />
         </div>
         <div class="story-content">

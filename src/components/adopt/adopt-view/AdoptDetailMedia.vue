@@ -7,6 +7,7 @@ import type { IPet } from '../../../models/common.ts'
 import { getPetSpecialNeeds } from '../../../utils/petNormalizer'
 import PetPhotoBadges from '../../common/pet-item/PetPhotoBadges.vue'
 import Button from '../../common/ui/Button.vue'
+import ImagePlaceholder from '../../common/ui/ImagePlaceholder.vue'
 
 const props = defineProps<{
   petPhotoUrl: string
@@ -56,6 +57,7 @@ const activeIndex = ref(0)
 const isLightboxOpen = ref(false)
 const imgError = ref(false)
 const isImageLoaded = ref(false)
+const failedThumbs = ref<Set<number>>(new Set())
 
 const activePhoto = computed(() => {
   if (resolvedPhotos.value.length === 0) return null
@@ -132,7 +134,12 @@ watch(
         :aria-label="`Zoom photo of ${petName}`"
       />
 
-      <div v-else class="img-fallback" aria-hidden="true"></div>
+      <ImagePlaceholder
+        v-else
+        :label="petName"
+        icon="paw"
+        size="large"
+      />
 
       <button
         v-if="activePhoto && !imgError"
@@ -199,7 +206,18 @@ watch(
         :aria-selected="activeIndex === idx"
         @click="activeIndex = idx"
       >
-        <img :src="photo.url" :alt="`${petName} photo ${idx + 1}`" loading="lazy" />
+        <img
+          v-if="!failedThumbs.has(idx)"
+          :src="photo.url"
+          :alt="`${petName} photo ${idx + 1}`"
+          loading="lazy"
+          @error="failedThumbs.add(idx)"
+        />
+        <ImagePlaceholder
+          v-else
+          icon="paw"
+          size="small"
+        />
       </button>
     </div>
 

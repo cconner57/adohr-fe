@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 
+import ImagePlaceholder from '@/components/common/ui/ImagePlaceholder.vue'
 import { useNewsStore } from '@/stores/news'
 import { formatDate } from '@/utils/date'
 
 const newsStore = useNewsStore()
 const { sortedItems, isLoading, error } = storeToRefs(newsStore)
+const failedImages = ref<Set<string | number>>(new Set())
 
 onMounted(() => {
   newsStore.fetchNews()
@@ -39,7 +41,18 @@ onMounted(() => {
         <p v-else-if="error" class="status error">{{ error }}</p>
         <template v-else>
           <article v-for="item in sortedItems" :key="item.id" class="news-card">
-            <img v-if="item.imageUrl" :src="item.imageUrl" alt="" loading="lazy" />
+            <img
+              v-if="item.imageUrl && !failedImages.has(item.id)"
+              :src="item.imageUrl"
+              alt=""
+              loading="lazy"
+              @error="failedImages.add(item.id)"
+            />
+            <ImagePlaceholder
+              v-else-if="item.imageUrl"
+              :label="item.category"
+              icon="photo"
+            />
             <div class="news-card__content">
               <p class="meta">{{ item.category }} · {{ formatDate(item.publishedAt) }}</p>
               <h2>{{ item.title }}</h2>
@@ -213,9 +226,11 @@ onMounted(() => {
     0% {
       opacity: 0.6;
     }
+
     50% {
       opacity: 0.3;
     }
+
     100% {
       opacity: 0.6;
     }

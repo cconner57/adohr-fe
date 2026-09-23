@@ -4,6 +4,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import Footer from '@/components/common/footer/Footer.vue'
+import ImagePlaceholder from '@/components/common/ui/ImagePlaceholder.vue'
 import SubmitHappyTailModal from '@/components/happy-tails/SubmitHappyTailModal.vue'
 import { useScrollReveal } from '@/composables/useScrollReveal'
 import { useHappyTailsStore } from '@/stores/happyTails'
@@ -17,6 +18,11 @@ const { sortedItems, totalStories, isLoading, error } = storeToRefs(happyTailsSt
 
 const currentFilter = ref<'all' | 'dog' | 'cat'>('all')
 const isSubmitModalOpen = ref(false)
+const failedImages = ref<Set<string | number>>(new Set())
+
+function onImageError(id: string | number) {
+  failedImages.value.add(id)
+}
 
 const formattedTotalStories = computed(() => totalStories.value.toLocaleString())
 
@@ -118,7 +124,18 @@ watch(
         <div v-else class="masonry-grid">
           <article v-for="item in filteredItems" :key="item.id" class="tail-card" v-scroll-reveal>
             <div class="img-wrapper">
-              <img :src="item.photoUrl" :alt="item.petName" loading="lazy" />
+              <img
+                v-if="item.photoUrl && !failedImages.has(item.id)"
+                :src="item.photoUrl"
+                :alt="item.petName"
+                loading="lazy"
+                @error="onImageError(item.id)"
+              />
+              <ImagePlaceholder
+                v-else
+                :label="item.petName"
+                icon="paw"
+              />
             </div>
             <div class="tail-card__content">
               <div class="header">
