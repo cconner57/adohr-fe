@@ -7,6 +7,7 @@ import AboutStory from '@/components/about/AboutStory.vue'
 import AboutTransparency from '@/components/about/AboutTransparency.vue'
 import SupportOurMission from '@/components/about/SupportOurMission.vue'
 import SurrenderCat from '@/components/about/surrender/SurrenderCat.vue'
+import Footer from '@/components/common/footer/Footer.vue'
 </script>
 
 <template>
@@ -19,6 +20,7 @@ import SurrenderCat from '@/components/about/surrender/SurrenderCat.vue'
     <AboutFAQ />
     <SupportOurMission />
     <SurrenderCat />
+    <Footer />
   </main>
 </template>
 
