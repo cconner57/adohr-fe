@@ -68,7 +68,8 @@
     box-shadow: var(--shadow-xl);
     background: var(--text-inverse);
     width: 100%;
-    max-width: 380px;
+    max-width: 350px;
+    aspect-ratio: 4 / 5;
   }
 
   .eyebrow {
@@ -101,8 +102,9 @@
   img {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
+    object-position: center 20%;
     transition: transform 0.4s ease;
   }
 
