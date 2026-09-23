@@ -46,4 +46,24 @@ describe('Wishlist.vue', () => {
     expect(amazonBtn.text()).toContain('Coming Soon')
     expect(chewyBtn.text()).toContain('Coming Soon')
   })
+
+  it('renders exactly 2 help steps and excludes Ship Directly', () => {
+    const wrapper = mount(Wishlist, {
+      global: {
+        directives: {
+          'scroll-reveal': {},
+        },
+        stubs: {
+          Footer: true,
+          WishlistIcon: true,
+        },
+      },
+    })
+
+    const steps = wrapper.findAll('.step-card')
+    expect(steps).toHaveLength(2)
+    expect(steps[0].text()).toContain('Browse or Shop Online')
+    expect(steps[1].text()).toContain('Drop Off Locally')
+    expect(wrapper.text()).not.toContain('Ship Directly')
+  })
 })

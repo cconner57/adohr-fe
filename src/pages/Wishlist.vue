@@ -140,11 +140,6 @@ onMounted(() => {
           </li>
           <li class="step-card">
             <span class="step-num">2</span>
-            <h3>Ship Directly</h3>
-            <p>If you prefer to buy elsewhere, you can ship directly to our PO Box: <br><strong>PO Box 5543, Pasadena, CA 91107</strong></p>
-          </li>
-          <li class="step-card">
-            <span class="step-num">3</span>
             <h3>Drop Off Locally</h3>
             <p>Bring physical donations to our weekend adoption events at <strong>PetSmart Pasadena (3347 E Foothill Blvd)</strong>.</p>
           </li>
