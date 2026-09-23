@@ -1,33 +1,24 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 
-const stories = [
-  {
-    id: 1,
-    name: 'Buster',
-    image: '/images/happy-tail-buster.jpg',
-    quote: '"Buster is the best thing that ever happened to our family. He brings so much joy every single day!"',
-    family: 'The Smith Family',
-  },
-  {
-    id: 2,
-    name: 'Luna',
-    image: '/images/happy-tail-luna.jpg',
-    quote: '"We came in looking for a dog, but Luna chose us. She has made our house feel like a real home."',
-    family: 'Sarah & Mark',
-  },
-  {
-    id: 3,
-    name: 'Oliver',
-    image: '/images/happy-tail-oliver.jpg',
-    quote: '"Oliver was so shy when we first fostered him, but now he rules the house and our hearts!"',
-    family: 'Jessica T.',
-  },
-]
+import { useHappyTailsStore } from '@/stores/happyTails'
+
+const happyTailsStore = useHappyTailsStore()
+const { sortedItems } = storeToRefs(happyTailsStore)
+
+const stories = computed(() => {
+  const featured = sortedItems.value.filter(s => s.isFeatured)
+  if (featured.length >= 3) {
+    return featured.slice(0, 3)
+  }
+  return sortedItems.value.slice(0, 3)
+})
 </script>
 
 <template>
-  <div class="success-stories">
+  <div v-if="stories.length > 0" class="success-stories">
     <header class="stories-header">
       <div class="header-left">
         <p class="eyebrow">Happy Tails</p>
@@ -41,12 +32,17 @@ const stories = [
     <div class="stories-list">
       <article v-for="story in stories" :key="story.id" class="story-card">
         <div class="story-image-wrap">
-          <img :src="story.image" :alt="`${story.name} with ${story.family}`" class="story-img" />
+          <img
+            :src="story.photoUrl"
+            :alt="`${story.petName} with ${story.adoptersName}`"
+            class="story-img"
+            loading="lazy"
+          />
         </div>
         <div class="story-content">
-          <h3>{{ story.name }}</h3>
-          <p class="quote">{{ story.quote }}</p>
-          <p class="family">— {{ story.family }}</p>
+          <h3>{{ story.petName }}</h3>
+          <p class="quote">"{{ story.testimonial || story.story }}"</p>
+          <p class="family">— {{ story.adoptersName }}</p>
         </div>
       </article>
     </div>
@@ -110,7 +106,7 @@ const stories = [
   gap: clamp(1.25rem, 2.5vw, 2rem);
   width: 100%;
 
-  @media (max-width: 900px) {
+  @media (width <= 900px) {
     grid-template-columns: 1fr;
   }
 

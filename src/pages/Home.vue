@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import EventBanner from '@/components/adopt/events/EventBanner.vue'
@@ -13,6 +14,7 @@ import SuccessStories from '@/components/home/success-stories/SuccessStories.vue
 import { useAdoptionEvents } from '@/composables/useAdoptionEvents'
 import { usePets } from '@/composables/usePets.ts'
 import { useScrollReveal } from '@/composables/useScrollReveal.ts'
+import { useHappyTailsStore } from '@/stores/happyTails'
 
 const router = useRouter()
 
@@ -20,9 +22,14 @@ const { spotlightPets, loading, error, fetchSpotlight } = usePets()
 const { hasUpcomingEvents, fetchUpcomingEvents } = useAdoptionEvents()
 const { vScrollReveal } = useScrollReveal()
 
+const happyTailsStore = useHappyTailsStore()
+const { sortedItems } = storeToRefs(happyTailsStore)
+const hasSuccessStories = computed(() => sortedItems.value.length > 0)
+
 onMounted(() => {
   fetchSpotlight()
   fetchUpcomingEvents()
+  happyTailsStore.fetchHappyTails()
 })
 </script>
 
@@ -68,7 +75,11 @@ onMounted(() => {
       </section>
 
       <!-- 5. Success Stories Section -->
-      <section class="section success-stories-section" aria-label="Success Stories">
+      <section
+        v-if="hasSuccessStories"
+        class="section success-stories-section"
+        aria-label="Success Stories"
+      >
         <div class="content-wrapper" v-scroll-reveal>
           <SuccessStories />
         </div>
