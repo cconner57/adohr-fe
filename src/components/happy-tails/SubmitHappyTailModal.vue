@@ -20,10 +20,11 @@ const happyTailsStore = useHappyTailsStore()
 const petName = ref('')
 const adopterName = ref('')
 const adopterEmail = ref('')
-const species = ref<'cat' | 'dog'>('cat')
+const species = ref<'cat' | 'dog' | 'other'>('cat')
 const adoptionYear = ref(new Date().getFullYear().toString())
 const story = ref('')
 const photoUrl = ref('')
+const selectedFile = ref<File | null>(null)
 const selectedFileName = ref('')
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const isSubmitting = ref(false)
@@ -53,11 +54,19 @@ function handlePhotoUpload(event: Event) {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (!file) return
 
-  if (!file.type.startsWith('image/')) {
-    formError.value = 'Please select a valid image file.'
+  const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+  if (!validTypes.includes(file.type) && !file.type.startsWith('image/')) {
+    formError.value = 'Please select a valid image file (.jpg, .jpeg, .png, or .webp).'
     return
   }
 
+  if (file.size > 10 * 1024 * 1024) {
+    formError.value = 'Photo must be under 10MB.'
+    return
+  }
+
+  formError.value = null
+  selectedFile.value = file
   selectedFileName.value = file.name
 
   const reader = new FileReader()
@@ -68,6 +77,7 @@ function handlePhotoUpload(event: Event) {
 }
 
 function clearPhoto() {
+  selectedFile.value = null
   photoUrl.value = ''
   selectedFileName.value = ''
   if (fileInputRef.value) {
@@ -82,12 +92,28 @@ async function handleSubmit() {
     formError.value = 'Please enter your pet’s name.'
     return
   }
+  if (petName.value.trim().length > 100) {
+    formError.value = 'Pet’s name must be 100 characters or fewer.'
+    return
+  }
   if (!adopterName.value.trim()) {
     formError.value = 'Please enter your name.'
     return
   }
-  if (!story.value.trim() || story.value.trim().length < 20) {
-    formError.value = 'Please write at least a few sentences about your pet’s journey (min 20 characters).'
+  if (adopterName.value.trim().length > 100) {
+    formError.value = 'Your name must be 100 characters or fewer.'
+    return
+  }
+  if (adopterEmail.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adopterEmail.value.trim())) {
+    formError.value = 'Please enter a valid email address.'
+    return
+  }
+  if (!story.value.trim() || story.value.trim().length < 10) {
+    formError.value = 'Please write at least 10 characters about your pet’s journey.'
+    return
+  }
+  if (story.value.trim().length > 5000) {
+    formError.value = 'Story must be 5,000 characters or fewer.'
     return
   }
 
@@ -101,8 +127,8 @@ async function handleSubmit() {
       adopterName: adopterName.value.trim(),
       adopterEmail: adopterEmail.value.trim() || undefined,
       story: story.value.trim(),
-      photoUrl: photoUrl.value.trim() || undefined,
-      adoptionYear: adoptionYear.value,
+      photoFile: selectedFile.value,
+      adoptionYear: adoptionYear.value.trim() || undefined,
     })
 
     isSubmitted.value = true
@@ -131,6 +157,7 @@ function handleClose() {
     adopterName.value = ''
     adopterEmail.value = ''
     story.value = ''
+    selectedFile.value = null
     photoUrl.value = ''
     selectedFileName.value = ''
     if (fileInputRef.value) {
@@ -210,6 +237,7 @@ function handleClose() {
                   <select id="ht-species" v-model="species">
                     <option value="cat">Cat / Kitten</option>
                     <option value="dog">Dog / Puppy</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
               </div>
@@ -266,7 +294,7 @@ function handleClose() {
                     ref="fileInputRef"
                     type="file"
                     class="file-input-native"
-                    accept="image/*"
+                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
                     @change="handlePhotoUpload"
                   />
                   <label for="ht-photo" class="file-picker-btn">

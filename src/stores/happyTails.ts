@@ -3,11 +3,12 @@ import { computed, ref } from 'vue'
 
 import { API_ENDPOINTS } from '@/constants/api'
 import { MOCK_HAPPY_TAILS } from '@/constants/mockHappyTails'
-import type { IHappyTail } from '@/models/happy-tails'
-import { PUBLIC_ORG_ID, withPublicOrgId } from '@/utils/api'
+import type { IHappyTail, IHappyTailSubmission } from '@/models/happy-tails'
+import { PUBLIC_ORG_ID } from '@/utils/api'
 
 interface IRawHappyTail {
   id: string | number
+  orgId?: string
   petName: string
   species?: string
   adopterName?: string
@@ -18,6 +19,10 @@ interface IRawHappyTail {
   beforePhotoUrl?: string
   adoptionDate?: string
   adoptedDate?: string
+  adoptionYear?: string
+  status?: 'pending' | 'published' | 'approved' | 'rejected'
+  isFeatured?: boolean
+  publishedAt?: string
 }
 
 interface IHappyTailPayload {
@@ -27,6 +32,18 @@ interface IHappyTailPayload {
   }
   happyTails?: IRawHappyTail[]
   stories?: IRawHappyTail[]
+}
+
+interface ISubmitResponse {
+  status?: string
+  message?: string
+  happyTail?: IRawHappyTail
+  error?: {
+    code?: string
+    message?: string
+    field?: string
+  } | string
+  userMessage?: string
 }
 
 export const useHappyTailsStore = defineStore('happyTails', () => {
@@ -45,8 +62,11 @@ export const useHappyTailsStore = defineStore('happyTails', () => {
     error.value = null
 
     try {
-      const url = withPublicOrgId(API_ENDPOINTS.HAPPY_TAILS_PUBLIC, PUBLIC_ORG_ID)
-      const response = await fetch(url, {
+      const url = new URL(API_ENDPOINTS.HAPPY_TAILS_PUBLIC)
+      url.searchParams.set('org_id', PUBLIC_ORG_ID)
+      url.searchParams.set('orgId', PUBLIC_ORG_ID)
+
+      const response = await fetch(url.toString(), {
         headers: {
           Accept: 'application/json',
           'X-Org-Id': PUBLIC_ORG_ID,
@@ -56,23 +76,44 @@ export const useHappyTailsStore = defineStore('happyTails', () => {
       if (response.ok) {
         const payload: IHappyTailPayload = await response.json()
         const rawTails =
-          payload.data?.happyTails ||
-          payload.data?.stories ||
           payload.happyTails ||
           payload.stories ||
+          payload.data?.happyTails ||
+          payload.data?.stories ||
           []
 
         if (rawTails.length > 0) {
-          items.value = rawTails.map((t) => ({
-            id: String(t.id),
-            petName: t.petName,
-            species: t.species === 'cat' ? 'cat' : 'dog',
-            adoptersName: t.adoptersName || t.adopterName || 'Loving Family',
-            adoptedDate: t.adoptedDate || t.adoptionDate || new Date().toISOString().slice(0, 10),
-            photoUrl: t.photoUrl || '',
-            testimonial: t.testimonial || t.story || '',
-            beforePhotoUrl: t.beforePhotoUrl || undefined,
-          }))
+          items.value = rawTails.map((t) => {
+            const adopter = t.adopterName || t.adoptersName || 'Loving Family'
+            const storyText = t.story || t.testimonial || ''
+            const dateStr =
+              t.adoptionDate || t.adoptedDate || t.adoptionYear || new Date().toISOString().slice(0, 10)
+
+            let speciesNormalized: 'cat' | 'dog' | 'other' = 'cat'
+            if (t.species === 'dog') {
+              speciesNormalized = 'dog'
+            } else if (t.species === 'other') {
+              speciesNormalized = 'other'
+            }
+
+            return {
+              id: String(t.id),
+              orgId: t.orgId,
+              petName: t.petName,
+              species: speciesNormalized,
+              adopterName: adopter,
+              adoptersName: adopter,
+              story: storyText,
+              testimonial: storyText,
+              photoUrl: t.photoUrl || '',
+              beforePhotoUrl: t.beforePhotoUrl || undefined,
+              adoptionDate: dateStr,
+              adoptedDate: dateStr,
+              status: t.status,
+              isFeatured: t.isFeatured,
+              publishedAt: t.publishedAt,
+            }
+          })
           return
         }
       }
@@ -87,44 +128,83 @@ export const useHappyTailsStore = defineStore('happyTails', () => {
     }
   }
 
-  const submitHappyTail = async (submission: {
-    petName: string
-    species: 'cat' | 'dog'
-    adopterName: string
-    adopterEmail?: string
-    story: string
-    photoUrl?: string
-    adoptionYear?: string
-  }) => {
-    const response = await fetch(API_ENDPOINTS.HAPPY_TAILS_SUBMIT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Org-Id': PUBLIC_ORG_ID,
-      },
-      body: JSON.stringify({
-        orgId: PUBLIC_ORG_ID,
-        petName: submission.petName,
-        species: submission.species,
-        adopterName: submission.adopterName,
-        adopterEmail: submission.adopterEmail,
-        story: submission.story,
-        photoUrl: submission.photoUrl,
-        adoptionYear: submission.adoptionYear,
-      }),
-    })
+  const submitHappyTail = async (submission: IHappyTailSubmission) => {
+    const url = new URL(API_ENDPOINTS.HAPPY_TAILS_SUBMIT)
+    url.searchParams.set('org_id', PUBLIC_ORG_ID)
 
-    if (!response.ok) {
-      const errPayload = (await response.json().catch(() => null)) as {
-        userMessage?: string
-        error?: { message?: string }
-      } | null
-      throw new Error(
-        errPayload?.userMessage || errPayload?.error?.message || 'Failed to submit happy tail',
-      )
+    let response: Response
+
+    if (submission.photoFile) {
+      // Option A: multipart/form-data for file uploads
+      const formData = new FormData()
+      formData.append('petName', submission.petName.trim())
+      formData.append('species', submission.species.trim())
+      formData.append('adopterName', submission.adopterName.trim())
+      if (submission.adopterEmail?.trim()) {
+        formData.append('adopterEmail', submission.adopterEmail.trim())
+      }
+      if (submission.adoptionYear?.trim()) {
+        formData.append('adoptionYear', submission.adoptionYear.trim())
+      }
+      formData.append('story', submission.story.trim())
+      formData.append('photo', submission.photoFile)
+
+      response = await fetch(url.toString(), {
+        method: 'POST',
+        headers: {
+          'X-Org-Id': PUBLIC_ORG_ID,
+          Accept: 'application/json',
+        },
+        body: formData,
+      })
+    } else {
+      // Option B: application/json when no local file is attached
+      const bodyPayload: Record<string, unknown> = {
+        petName: submission.petName.trim(),
+        species: submission.species.trim(),
+        adopterName: submission.adopterName.trim(),
+        story: submission.story.trim(),
+      }
+      if (submission.adopterEmail?.trim()) {
+        bodyPayload.adopterEmail = submission.adopterEmail.trim()
+      }
+      if (submission.adoptionYear?.trim()) {
+        bodyPayload.adoptionYear = submission.adoptionYear.trim()
+      }
+      if (submission.photoUrl?.trim()) {
+        bodyPayload.photoUrl = submission.photoUrl.trim()
+      }
+
+      response = await fetch(url.toString(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Org-Id': PUBLIC_ORG_ID,
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(bodyPayload),
+      })
     }
 
-    return true
+    if (!response.ok) {
+      const errPayload = (await response.json().catch(() => null)) as ISubmitResponse | null
+      let errMsg = 'Failed to submit happy tail'
+      if (errPayload) {
+        if (typeof errPayload.error === 'string') {
+          errMsg = errPayload.error
+        } else if (errPayload.error?.message) {
+          errMsg = errPayload.error.message
+        } else if (errPayload.message) {
+          errMsg = errPayload.message
+        } else if (errPayload.userMessage) {
+          errMsg = errPayload.userMessage
+        }
+      }
+      throw new Error(errMsg)
+    }
+
+    const result = (await response.json().catch(() => null)) as ISubmitResponse | null
+    return result || { status: 'success' }
   }
 
   return {

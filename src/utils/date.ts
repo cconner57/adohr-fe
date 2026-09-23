@@ -2,6 +2,7 @@ export function formatDigitDate(dateString?: string | null) {
   if (!dateString || dateString.trim() === '' || dateString === '-' || dateString === 'null') return '-'
 
   const trimmed = dateString.trim()
+  if (/^\d{4}$/.test(trimmed)) return trimmed
   let date: Date
 
   if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) {
@@ -28,6 +29,7 @@ export function formatDate(dateStr?: string | null): string {
   if (!dateStr || dateStr.trim() === '' || dateStr === '-' || dateStr === 'null') return '-'
 
   const trimmed = dateStr.trim()
+  if (/^\d{4}$/.test(trimmed)) return trimmed
   let date: Date
 
   if (/^\d{4}-\d{2}-\d{2}/.test(trimmed)) {

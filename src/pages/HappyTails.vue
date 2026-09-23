@@ -110,7 +110,7 @@ watch(
             <div class="tail-card__content">
               <div class="header">
                 <h2>{{ item.petName }}</h2>
-                <span class="capsule">{{ item.species === 'dog' ? 'Dog' : 'Cat' }}</span>
+                <span class="capsule">{{ item.species === 'dog' ? 'Dog' : item.species === 'cat' ? 'Cat' : 'Alumni' }}</span>
               </div>
               <p class="meta">Adopted by {{ item.adoptersName }} · {{ formatDate(item.adoptedDate) }}</p>
               <blockquote class="testimonial">

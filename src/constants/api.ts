@@ -52,6 +52,6 @@ export const API_ENDPOINTS = {
   NOTIFICATIONS_TEST: `${API_BASE_URL}/v1/notifications/test`,
 
   // Happy Tails
-  HAPPY_TAILS_PUBLIC: `${API_BASE_URL}/public/happy-tails`,
-  HAPPY_TAILS_SUBMIT: `${API_BASE_URL}/public/happy-tails`,
+  HAPPY_TAILS_PUBLIC: `${API_BASE_URL}/v1/public/happy-tails`,
+  HAPPY_TAILS_SUBMIT: `${API_BASE_URL}/v1/public/happy-tails`,
 }
