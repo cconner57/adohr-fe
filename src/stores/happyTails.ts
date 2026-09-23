@@ -97,6 +97,17 @@ export const useHappyTailsStore = defineStore('happyTails', () => {
               speciesNormalized = 'other'
             }
 
+            const normalizePhoto = (u?: string) => {
+              if (!u) return ''
+              if (u.includes('.r2.dev/')) {
+                const parts = u.split('.r2.dev/')
+                if (parts.length === 2) {
+                  return `https://api.adoption-os.com/${parts[1]}`
+                }
+              }
+              return u
+            }
+
             return {
               id: String(t.id),
               orgId: t.orgId,
@@ -106,8 +117,8 @@ export const useHappyTailsStore = defineStore('happyTails', () => {
               adoptersName: adopter,
               story: storyText,
               testimonial: storyText,
-              photoUrl: t.photoUrl || '',
-              beforePhotoUrl: t.beforePhotoUrl || undefined,
+              photoUrl: normalizePhoto(t.photoUrl),
+              beforePhotoUrl: normalizePhoto(t.beforePhotoUrl) || undefined,
               adoptionDate: dateStr,
               adoptedDate: dateStr,
               status: t.status,
