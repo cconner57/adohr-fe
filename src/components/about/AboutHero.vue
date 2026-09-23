@@ -1,7 +1,7 @@
 <template>
   <section class="hero" v-scroll-reveal>
     <div class="content-wrapper">
-      <p class="eyebrow">Est. 2016 · Southern California</p>
+      <p class="eyebrow">Est. 2026 · Southern California</p>
       <h1>The people behind <em>the door</em></h1>
       <p class="lead">
         A Dream of Home Rescue (ADOHR) is a volunteer-powered nonprofit helping homeless cats and
