@@ -2,14 +2,14 @@
   <section class="mission">
     <div class="content-wrapper">
       <div v-scroll-reveal class="mission-text">
-        <p class="eyebrow text-on-teal">Our mission</p>
-        <h2 class="text-on-teal">One tail, one paw, one heart at a time</h2>
-        <p class="text-on-teal">
+        <p class="eyebrow">Our mission</p>
+        <h2>One tail, one paw, one heart at a time</h2>
+        <p>
           We rescue, rehabilitate, and rehome animals in need—one tail, one paw, one heart at a
           time. Every animal receives medical care, a safe foster home, love-based socialization,
           and a path to a forever family.
         </p>
-        <ul class="ticks text-on-teal">
+        <ul class="ticks">
           <li>Vaccinations, microchipping, and spay/neuter</li>
           <li>Medical treatment and behavioral support</li>
           <li>Adopter education and lifetime support</li>

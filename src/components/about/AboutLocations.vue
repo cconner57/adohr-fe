@@ -6,7 +6,15 @@
       <p>We host many volunteer and adoption activities through our PetSmart partner location.</p>
       <address>
         PetSmart Pasadena<br />
-        3347 E Foothill Blvd, Pasadena, CA 91107
+        <a
+          href="https://maps.google.com/?q=PetSmart+3347+E+Foothill+Blvd+Pasadena+CA+91107"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="map-link"
+        >
+          3347 E Foothill Blvd, Pasadena, CA 91107
+          <span class="external-icon" aria-hidden="true">↗</span>
+        </a>
       </address>
       <div class="location-hours">
         <p class="hours-heading">Visiting Hours &amp; Adoption Events</p>
@@ -80,6 +88,29 @@
     font-weight: 700;
     line-height: 1.5;
     color: var(--text-inverse);
+
+    .map-link {
+      color: var(--color-warning);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      display: inline-inline;
+      transition: opacity var(--transition-fast);
+
+      &:hover {
+        opacity: 0.85;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-warning);
+        outline-offset: 2px;
+        border-radius: var(--radius-sm);
+      }
+
+      .external-icon {
+        font-size: 0.85em;
+        margin-left: 2px;
+      }
+    }
   }
 
   .location-hours {

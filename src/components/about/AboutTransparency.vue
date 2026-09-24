@@ -1,46 +1,7 @@
-<script setup lang="ts">
-// import Candid from '@/components/common/candid-award/Candid.vue'
-</script>
-
 <template>
   <section class="transparency">
     <div class="content-wrapper">
       <div class="awards-container" v-scroll-reveal>
-        <!-- Commented out Candid / GuideStar awards pending updated profile for ADOHR
-        <div class="awards-showcase">
-          <p class="showcase-label">Recognized by Candid · GuideStar</p>
-          <div class="awards-grid">
-            <a
-              href="https://www.guidestar.org/profile/81-0780050"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="View ADOHR 2024 Gold Candid profile"
-              class="seal-link"
-            >
-              <Candid type="Gold" year="2024" />
-            </a>
-            <a
-              href="https://www.guidestar.org/profile/81-0780050"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="View ADOHR 2023 Gold Candid profile"
-              class="seal-link"
-            >
-              <Candid type="Gold" year="2023" />
-            </a>
-            <a
-              href="https://www.guidestar.org/profile/81-0780050"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="View ADOHR 2022 Silver Candid profile"
-              class="seal-link"
-            >
-              <Candid type="Silver" year="2022" />
-            </a>
-          </div>
-        </div>
-        -->
-
         <!-- Rescue Transparency Standards -->
         <div class="awards-showcase standards-showcase">
           <p class="showcase-label">Our Standards · Rescue Transparency</p>
@@ -122,19 +83,6 @@
           annual updates and operate with financial transparency.
         </p>
         <p class="small mono">EIN: 81-0780050 · PO Box 5543, Pasadena, CA 91107</p>
-        <!-- Commented out Candid profile link for now
-        <p class="small">
-          Candid Seals recognize nonprofit transparency and profile completeness.
-          <a
-            class="candid-link-row"
-            href="https://app.candid.org/profile/9498927/i-dream-of-home-rescue-inc-81-0780050"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View our Candid profile ↗
-          </a>
-        </p>
-        -->
         <p class="small">
           All contributions directly fund animal rescue, medical treatments, foster supplies, and
           rehoming efforts across Southern California.
@@ -215,20 +163,6 @@
       letter-spacing: 0.1em;
       color: var(--text-secondary);
       margin: 0;
-    }
-
-    .awards-grid {
-      display: flex;
-      gap: 1.75rem;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .seal-link {
-      display: inline-block;
-      transition: transform 0.2s ease;
-      text-decoration: none;
     }
 
     .standards-grid {
@@ -337,22 +271,6 @@
         letter-spacing: 0.02em;
         padding-top: 14px;
         border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-      }
-
-      a {
-        color: var(--color-secondary);
-        font-weight: 700;
-        text-decoration: underline;
-        text-underline-offset: 3px;
-
-        &:hover {
-          color: var(--color-primary);
-        }
-      }
-
-      .candid-link-row {
-        display: block;
-        margin-top: 6px;
       }
     }
   }
