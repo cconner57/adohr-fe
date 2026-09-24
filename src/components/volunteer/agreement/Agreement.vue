@@ -60,6 +60,7 @@ const emit = defineEmits<{
         />
       </div>
       <InputSignature
+        id="volunteerSignature"
         label="Signature"
         placeholder=""
         :modelValue="signature"
@@ -91,6 +92,7 @@ const emit = defineEmits<{
         />
       </div>
       <InputSignature
+        id="parentGuardianSignature"
         label="Parent/Guardian Signature"
         placeholder=""
         :modelValue="parentSignature"

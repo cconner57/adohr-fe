@@ -1,28 +1,54 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
-const { label, hasError } = defineProps<{
-  label?: string
-  modelValue?: string | null
-  hasError?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    id?: string
+    label?: string
+    modelValue?: string | null
+    hasError?: boolean
+    placeholder?: string
+  }>(),
+  {
+    id: undefined,
+    label: 'Please sign below:',
+    modelValue: null,
+    hasError: false,
+    placeholder: '',
+  },
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string | null]
 }>()
 
+const uniqueId = `signature-${Math.random().toString(36).slice(2, 9)}`
+const elementId = computed(() => props.id || uniqueId)
+
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const isDrawing = ref(false)
-const signatureData = ref<string | null>(null)
+const signatureData = ref<string | null>(props.modelValue ?? null)
 
 let context: CanvasRenderingContext2D | null = null
+
+const redrawSignature = (dataUrl: string) => {
+  if (!context || !canvasRef.value) return
+  const img = new Image()
+  img.onload = () => {
+    if (context && canvasRef.value) {
+      const rect = canvasRef.value.getBoundingClientRect()
+      context.drawImage(img, 0, 0, rect.width, rect.height)
+    }
+  }
+  img.src = dataUrl
+}
+
 const getEventPosition = (event: MouseEvent | TouchEvent) => {
   if (canvasRef.value) {
     const rect = canvasRef.value.getBoundingClientRect()
     if (event instanceof MouseEvent) {
       return {
         offsetX: event.clientX - rect.left,
-
         offsetY: event.clientY - rect.top,
       }
     } else {
@@ -53,6 +79,7 @@ const draw = (event: MouseEvent | TouchEvent) => {
 }
 
 const stopDrawing = () => {
+  if (!isDrawing.value) return
   isDrawing.value = false
   if (context) {
     context.closePath()
@@ -64,8 +91,8 @@ const stopDrawing = () => {
 
 const clearCanvas = () => {
   if (context && canvasRef.value) {
-    context.fillStyle = '#ffffff'
-    context.fillRect(0, 0, canvasRef.value.width, canvasRef.value.height)
+    const rect = canvasRef.value.getBoundingClientRect()
+    context.clearRect(0, 0, rect.width, rect.height)
     signatureData.value = null
     emit('update:modelValue', null)
   }
@@ -86,16 +113,35 @@ const scaleCanvas = () => {
       context.lineWidth = 2
       context.lineCap = 'round'
       context.strokeStyle = '#000'
-      context.lineCap = 'round'
-      context.strokeStyle = '#000'
+    }
+
+    const currentSig = signatureData.value || props.modelValue
+    if (currentSig) {
+      redrawSignature(currentSig)
     }
   }
 }
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    if (newVal !== signatureData.value) {
+      signatureData.value = newVal
+      if (newVal) {
+        nextTick(() => redrawSignature(newVal))
+      } else if (context && canvasRef.value) {
+        const rect = canvasRef.value.getBoundingClientRect()
+        context.clearRect(0, 0, rect.width, rect.height)
+      }
+    }
+  },
+)
 
 let resizeObserver: ResizeObserver | null = null
 
 onMounted(() => {
   if (canvasRef.value) {
+    scaleCanvas()
     resizeObserver = new ResizeObserver(() => {
       scaleCanvas()
     })
@@ -111,14 +157,14 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="signature-container" :class="{ 'has-error': hasError }">
-    <label for="signatureCanvas" class="signature-label">{{ label || 'Please sign below:' }}</label>
+  <div class="signature-container" :class="{ 'has-error': props.hasError }">
+    <label :for="elementId" class="signature-label">{{ props.label }}</label>
     <canvas
-      id="signatureCanvas"
+      :id="elementId"
       ref="canvasRef"
       class="signature-canvas"
       role="img"
-      :aria-label="label || 'Signature canvas'"
+      :aria-label="props.label"
       width="500"
       height="200"
       @mousedown="startDrawing"
@@ -130,7 +176,7 @@ onUnmounted(() => {
       @touchend.prevent="stopDrawing"
     ></canvas>
     <div class="signature-actions">
-      <button @click.prevent="clearCanvas">Clear</button>
+      <button type="button" @click.prevent="clearCanvas">Clear</button>
     </div>
   </div>
 </template>

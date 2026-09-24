@@ -197,6 +197,7 @@ const adoptionShifts = computed(() =>
             v-if="slot.type !== 'fixed'"
             class="day-selection-wrapper"
             :class="{ 'is-open': isSlotChecked(slot.value) }"
+            :inert="!isSlotChecked(slot.value)"
             @click.stop
           >
             <div class="day-selection-content">
@@ -208,6 +209,8 @@ const adoptionShifts = computed(() =>
                   type="button"
                   class="day-chip"
                   :class="{ 'is-active': isDaySelected(slot.value, day) }"
+                  :tabindex="isSlotChecked(slot.value) ? 0 : -1"
+                  :aria-pressed="isDaySelected(slot.value, day)"
                   @click="toggleDay(slot.value, day)"
                   :aria-label="'Select ' + day + ' for ' + slot.label"
                 >
@@ -262,6 +265,7 @@ const adoptionShifts = computed(() =>
             v-if="slot.type !== 'fixed'"
             class="day-selection-wrapper"
             :class="{ 'is-open': isSlotChecked(slot.value) }"
+            :inert="!isSlotChecked(slot.value)"
             @click.stop
           >
             <div class="day-selection-content">
@@ -273,6 +277,8 @@ const adoptionShifts = computed(() =>
                   type="button"
                   class="day-chip"
                   :class="{ 'is-active': isDaySelected(slot.value, day) }"
+                  :tabindex="isSlotChecked(slot.value) ? 0 : -1"
+                  :aria-pressed="isDaySelected(slot.value, day)"
                   @click="toggleDay(slot.value, day)"
                   :aria-label="'Select ' + day + ' for ' + slot.label"
                 >
@@ -457,8 +463,9 @@ const adoptionShifts = computed(() =>
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2rem;
-  height: 2rem;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  position: relative;
   border-radius: 50%;
   border: 1px solid var(--border-color);
   background: var(--color-white);
@@ -467,6 +474,12 @@ const adoptionShifts = computed(() =>
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.day-chip::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
 }
 
 .day-chip:hover {
