@@ -22,7 +22,10 @@
           <article class="schedule-item">
             <p class="schedule-title">Cat Center Volunteer Hours</p>
             <p class="schedule-days">Monday through Friday</p>
-            <p class="schedule-time">10:00 AM to 12:00 PM and 6:00 PM to 8:00 PM</p>
+            <p class="schedule-time">
+              10:00 AM to 12:00 PM and<br />
+              6:00 PM to 8:00 PM
+            </p>
           </article>
           <article class="schedule-item">
             <p class="schedule-title">Adoption Events</p>
