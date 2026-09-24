@@ -174,9 +174,7 @@ export const useSurrenderStore = defineStore('surrender', () => {
 
   const isStepValid = computed(() => {
     if (isDemoMode.value) return true
-    if (step.value === 0) return !!selectedAnimal.value
-    if (step.value === 1) return validationErrors.value.length === 0
-    return true
+    return validationErrors.value.length === 0
   })
 
   const { submitMetric } = useMetrics()

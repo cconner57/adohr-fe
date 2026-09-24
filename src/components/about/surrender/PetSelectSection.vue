@@ -1,10 +1,12 @@
 <script setup lang="ts">
-const { formError, selectedAnimal } = defineProps<{
+const props = defineProps<{
   formError: boolean
   selectedAnimal: 'dog' | 'cat' | null
 }>()
 
-const emit = defineEmits(['update:selectedAnimal'])
+const emit = defineEmits<{
+  'update:selectedAnimal': [value: 'dog' | 'cat']
+}>()
 
 const updateSelectedAnimal = (value: 'dog' | 'cat') => {
   emit('update:selectedAnimal', value)
@@ -14,13 +16,13 @@ const updateSelectedAnimal = (value: 'dog' | 'cat') => {
 <template>
   <div class="pet-select-container">
     <h2 class="select-question-title">Will you be surrendering Dog(s) or Cat(s)?</h2>
-    <div class="times" :class="{ 'has-error': formError }">
-      <label class="time-card" :class="{ selected: selectedAnimal === 'dog' }">
+    <div class="times" :class="{ 'has-error': props.formError }">
+      <label class="time-card" :class="{ selected: props.selectedAnimal === 'dog' }">
         <input
           type="radio"
           name="animal"
           value="dog"
-          :checked="selectedAnimal === 'dog'"
+          :checked="props.selectedAnimal === 'dog'"
           @change="updateSelectedAnimal('dog')"
         />
         <div class="time-card__content">
@@ -29,12 +31,12 @@ const updateSelectedAnimal = (value: 'dog' | 'cat') => {
         </div>
       </label>
 
-      <label class="time-card" :class="{ selected: selectedAnimal === 'cat' }">
+      <label class="time-card" :class="{ selected: props.selectedAnimal === 'cat' }">
         <input
           type="radio"
           name="animal"
           value="cat"
-          :checked="selectedAnimal === 'cat'"
+          :checked="props.selectedAnimal === 'cat'"
           @change="updateSelectedAnimal('cat')"
         />
         <div class="time-card__content">
@@ -93,6 +95,11 @@ const updateSelectedAnimal = (value: 'dog' | 'cat') => {
     background: oklch(from var(--color-primary) 96% 0.04 h);
     border-color: var(--color-primary);
     box-shadow: 0 0 0 1px var(--color-primary) inset;
+  }
+
+  &:has(input:focus-visible) {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 }
 

@@ -1,17 +1,25 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, ref, watch } from 'vue'
 
-import type { SurrenderFormState } from '../../../models/surrender-form.ts'
-import ButtonToggle from '../../common/ui/ButtonToggle.vue'
-import InputGrid from '../../common/ui/InputGrid.vue'
-import InputTextArea from '../../common/ui/InputTextArea.vue'
+import ButtonToggle from '@/components/common/ui/ButtonToggle.vue'
+import InputGrid from '@/components/common/ui/InputGrid.vue'
+import InputTextArea from '@/components/common/ui/InputTextArea.vue'
+import { useSurrenderStore } from '@/stores/surrender'
 
-const { formState } = defineProps<{
-  formState: SurrenderFormState
-  touched: Record<string, boolean>
-  handleBlur: (_field: string) => void // eslint-disable-line no-unused-vars
-  hasAttemptedSubmit: boolean
+const props = defineProps<{
+  selectedAnimal?: string
 }>()
+
+const surrenderStore = useSurrenderStore()
+const { formState } = surrenderStore
+const { selectedAnimal: storeAnimal } = storeToRefs(surrenderStore)
+
+const animalLabel = computed(() => {
+  if (props.selectedAnimal) return props.selectedAnimal
+  if (!storeAnimal.value) return 'Pet'
+  return storeAnimal.value.charAt(0).toUpperCase() + storeAnimal.value.slice(1)
+})
 
 const behaviorRows = [
   'examine',
@@ -98,7 +106,7 @@ watch(
     <h2 class="section-title">Medical History</h2>
     <div class="medical-grid">
       <InputTextArea
-        label="Please list all veterniarians that have seen the cat, including address and number"
+        :label="`Please list all veterinarians that have seen the ${animalLabel.toLowerCase()}, including address and number`"
         placeholder="List veterinarians, addresses, and phone numbers"
         :spanFull="true"
         :modelValue="formState.animalVeterinarianList"
@@ -106,20 +114,20 @@ watch(
       />
 
       <ButtonToggle
-        label="Does the cat see a veterinarian at least once a year?"
+        :label="`Does the ${animalLabel.toLowerCase()} see a veterinarian at least once a year?`"
         :modelValue="formState.animalVeterinarianYearlyVisits"
         @update:modelValue="(val) => (formState.animalVeterinarianYearlyVisits = val as string)"
       />
 
       <ButtonToggle
-        label="Is the cat spayed/neutered?"
+        :label="`Is the ${animalLabel.toLowerCase()} spayed/neutered?`"
         :modelValue="formState.animalSpayedNeutered"
         @update:modelValue="(val) => (formState.animalSpayedNeutered = val as string)"
       />
 
       <fieldset class="field" aria-labelledby="vaccine-legend">
         <legend id="vaccine-legend" class="field-label">
-          What vaccinations has the cat received?
+          What vaccinations has the {{ animalLabel.toLowerCase() }} received?
         </legend>
         <div class="chips">
           <label class="chip" v-for="option in vaccineOptions" :key="option">
@@ -141,7 +149,7 @@ watch(
       />
 
       <ButtonToggle
-        label="Has the cat been tested for heartworm?"
+        :label="`Has the ${animalLabel.toLowerCase()} been tested for heartworm?`"
         :modelValue="formState.animalTestedHeartworm"
         @update:modelValue="(val) => (formState.animalTestedHeartworm = val as string)"
       />
@@ -183,7 +191,7 @@ watch(
       />
 
       <InputGrid
-        label="Check if the cat has ever shown any of the following behaviors when handled by a vet or groomer"
+        :label="`Check if the ${animalLabel.toLowerCase()} has ever shown any of the following behaviors when handled by a vet or groomer`"
         :rows="behaviorRows"
         :columns="behaviorColumns"
         :modelValue="formState.animalVetOrGroomerBehavior"
@@ -208,7 +216,7 @@ watch(
       />
 
       <ButtonToggle
-        label="Is the cat currently taking any medications?"
+        :label="`Is the ${animalLabel.toLowerCase()} currently taking any medications?`"
         :modelValue="formState.animalCurrentMedications"
         @update:modelValue="(val) => (formState.animalCurrentMedications = val as string)"
       />
@@ -222,7 +230,7 @@ watch(
       />
 
       <ButtonToggle
-        label="Does the cat have to be muzzled at the veterinarians?"
+        :label="`Does the ${animalLabel.toLowerCase()} have to be muzzled at the veterinarians?`"
         :modelValue="formState.animalVetMuzzled"
         @update:modelValue="(val) => (formState.animalVetMuzzled = val as string)"
       />

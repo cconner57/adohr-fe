@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, reactive, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import {
@@ -13,6 +13,7 @@ import {
 } from '@/components/about/surrender/index.ts'
 import PetSelectSection from '@/components/about/surrender/PetSelectSection.vue'
 import SurrenderSteps from '@/components/about/surrender/SurrenderSteps.vue'
+import Footer from '@/components/common/footer/Footer.vue'
 import FormSubmitted from '@/components/common/form-submitted/FormSubmitted.vue'
 import Button from '@/components/common/ui/Button.vue'
 import { useMetrics } from '@/composables/useMetrics'
@@ -27,7 +28,6 @@ onMounted(() => {
 const router = useRouter()
 const surrenderStore = useSurrenderStore()
 const {
-  formState,
   step,
   isSubmitted,
   isSubmitting,
@@ -38,7 +38,14 @@ const {
   isStepValid,
   hasSavedDraft,
 } = storeToRefs(surrenderStore)
-const { nextStep, prevStep, resetForm, submitApplication, clearPersistedState } = surrenderStore
+const {
+  formState,
+  nextStep,
+  prevStep,
+  resetForm,
+  submitApplication,
+  clearPersistedState,
+} = surrenderStore
 
 const touched = reactive<Record<string, boolean>>({})
 
@@ -82,13 +89,24 @@ const handleClearDraft = () => {
   resetForm()
 }
 
+let debounceTimeout: ReturnType<typeof setTimeout> | null = null
 watch(
   () => [selectedAnimal.value, formState],
   () => {
-    surrenderStore.persistState()
+    if (debounceTimeout) clearTimeout(debounceTimeout)
+    debounceTimeout = setTimeout(() => {
+      surrenderStore.persistState()
+    }, 300)
   },
   { deep: true },
 )
+
+onBeforeUnmount(() => {
+  if (debounceTimeout) {
+    clearTimeout(debounceTimeout)
+    surrenderStore.persistState()
+  }
+})
 
 const headerText = computed(() => {
   if (!selectedAnimal.value || step.value === 0) {
@@ -106,152 +124,158 @@ const stepPrefix = computed(() => String(step.value + 1).padStart(2, '0'))
 </script>
 
 <template>
-  <section class="page-shell">
-    <div v-if="!isSubmitted" class="form-container">
-      <section
-        class="form-card"
-        :style="{ '--step-prefix': `'${stepPrefix}'` }"
-        aria-labelledby="form-title"
-      >
-        <div class="form-header">
-          <p class="eyebrow">Intake · Surrender</p>
-          <div class="title-row">
-            <img v-if="selectedAnimal === 'cat' && step > 0" src="/images/cat.png" alt="cat" />
-            <img v-if="selectedAnimal === 'dog' && step > 0" src="/images/dog.png" alt="dog" />
-            <h1 id="form-title">{{ headerText }}</h1>
-          </div>
-          <p class="lead-note">
-            Start by telling us which pet you need to surrender. We'll only ask what we need to find
-            the best path forward.
-          </p>
-        </div>
-
-        <!-- Draft Auto-Save Banner -->
-        <div v-if="hasSavedDraft && step > 0" class="draft-badge-bar">
-          <span class="draft-indicator">
-            <span class="dot"></span>
-            Draft auto-saved · Step {{ step }} of 6
-          </span>
-          <button type="button" class="clear-draft-btn" @click="handleClearDraft">
-            Clear Draft
-          </button>
-        </div>
-
-        <SurrenderSteps
-          v-if="selectedAnimal && step > 0"
-          :formStep="step"
-          :selectedAnimal="selectedAnimal"
-        />
-
-        <PetSelectSection
-          v-if="step === 0"
-          :formError="formError"
-          :selectedAnimal="selectedAnimal"
-          @update:selectedAnimal="(value: any) => (selectedAnimal = value)"
-        />
-        <HouseholdSection
-          v-if="step === 1 && selectedAnimal"
-          :formState="formState"
-          :touched="touched"
-          :handleBlur="handleBlur"
-          :hasAttemptedSubmit="hasAttemptedSubmit"
-          :selectedAnimal="formattedAnimal"
-        />
-        <BehaviorSection
-          v-if="step === 2 && selectedAnimal"
-          :formState="formState"
-          :touched="touched"
-          :handleBlur="handleBlur"
-          :hasAttemptedSubmit="hasAttemptedSubmit"
-          :selectedAnimal="formattedAnimal"
-        />
-        <AggressiveSection
-          v-if="step === 3 && selectedAnimal"
-          :formState="formState"
-          :touched="touched"
-          :handleBlur="handleBlur"
-          :hasAttemptedSubmit="hasAttemptedSubmit"
-          :selectedAnimal="formattedAnimal"
-        />
-        <MedicalSection
-          v-if="step === 4 && selectedAnimal"
-          :formState="formState"
-          :touched="touched"
-          :handleBlur="handleBlur"
-          :hasAttemptedSubmit="hasAttemptedSubmit"
-          :selectedAnimal="formattedAnimal"
-        />
-        <FeedingSection
-          v-if="step === 5 && selectedAnimal"
-          :formState="formState"
-          :touched="touched"
-          :handleBlur="handleBlur"
-          :hasAttemptedSubmit="hasAttemptedSubmit"
-          :selectedAnimal="formattedAnimal"
-        />
-        <OtherSection
-          v-if="step === 6 && selectedAnimal"
-          :formState="formState"
-          :touched="touched"
-          :handleBlur="handleBlur"
-          :hasAttemptedSubmit="hasAttemptedSubmit"
-          :selectedAnimal="formattedAnimal"
-        />
-
-        <div
-          v-if="hasAttemptedSubmit && validationErrors.length > 0"
-          class="validation-summary"
-          tabindex="-1"
-          role="alert"
-          aria-live="assertive"
+  <main class="surrender-page">
+    <section class="page-shell">
+      <div v-if="!isSubmitted" class="form-container">
+        <section
+          class="form-card"
+          :style="{ '--step-prefix': `'${stepPrefix}'` }"
+          aria-labelledby="form-title"
         >
-          <p class="summary-title">Please complete the following required fields:</p>
-          <div class="tags">
-            <span v-for="err in validationErrors" :key="err" class="tag is-danger">{{ err }}</span>
+          <div class="form-header">
+            <p class="eyebrow">Intake · Surrender</p>
+            <div class="title-row">
+              <img
+                v-if="selectedAnimal === 'cat' && step > 0"
+                src="/images/cat.png"
+                alt="Cat illustration"
+                width="40"
+                height="40"
+              />
+              <img
+                v-if="selectedAnimal === 'dog' && step > 0"
+                src="/images/dog.png"
+                alt="Dog illustration"
+                width="40"
+                height="40"
+              />
+              <h1 id="form-title">{{ headerText }}</h1>
+            </div>
+            <p class="lead-note">
+              Start by telling us which pet you need to surrender. We'll only ask what we need to find
+              the best path forward.
+            </p>
           </div>
-        </div>
 
-        <div v-if="submissionError" class="validation-summary" role="alert" aria-live="polite">
-          <p class="summary-title">{{ submissionError }}</p>
-        </div>
+          <!-- Draft Auto-Save Banner -->
+          <div v-if="hasSavedDraft && step > 0" class="draft-badge-bar">
+            <span class="draft-indicator">
+              <span class="dot"></span>
+              Draft auto-saved · Step {{ step }} of 6
+            </span>
+            <button type="button" class="clear-draft-btn" @click="handleClearDraft">
+              Clear Draft
+            </button>
+          </div>
 
-        <div class="actions">
-          <Button
-            type="button"
-            title="Back"
-            color="white"
-            size="large"
-            @click="prevStep"
-            :disabled="step === 0 || isSubmitting"
-            style="border: 1px solid var(--color-primary); color: var(--color-primary)"
+          <SurrenderSteps
+            v-if="selectedAnimal && step > 0"
+            :formStep="step"
+            :selectedAnimal="selectedAnimal"
           />
-          <Button
-            v-if="step < 6"
-            type="button"
-            title="Next"
-            color="green"
-            size="large"
-            @click="handleSubmit"
-            :disabled="isSubmitting"
-          />
-          <Button
-            v-else
-            type="submit"
-            title="Submit Surrender Request"
-            color="green"
-            size="large"
-            @click="handleSubmit"
-            :loading="isSubmitting"
-          />
-        </div>
-      </section>
-    </div>
 
-    <FormSubmitted v-else @reset="handleReset" formType="surrender" />
-  </section>
+          <PetSelectSection
+            v-if="step === 0"
+            :formError="formError"
+            :selectedAnimal="selectedAnimal"
+            @update:selectedAnimal="(value: 'dog' | 'cat') => (selectedAnimal = value)"
+          />
+          <HouseholdSection
+            v-if="step === 1 && selectedAnimal"
+            :touched="touched"
+            :handleBlur="handleBlur"
+            :hasAttemptedSubmit="hasAttemptedSubmit"
+            :selectedAnimal="formattedAnimal"
+          />
+          <BehaviorSection
+            v-if="step === 2 && selectedAnimal"
+            :touched="touched"
+            :handleBlur="handleBlur"
+            :hasAttemptedSubmit="hasAttemptedSubmit"
+            :selectedAnimal="formattedAnimal"
+          />
+          <AggressiveSection
+            v-if="step === 3 && selectedAnimal"
+            :selectedAnimal="formattedAnimal"
+          />
+          <MedicalSection
+            v-if="step === 4 && selectedAnimal"
+            :selectedAnimal="formattedAnimal"
+          />
+          <FeedingSection
+            v-if="step === 5 && selectedAnimal"
+            :touched="touched"
+            :handleBlur="handleBlur"
+            :hasAttemptedSubmit="hasAttemptedSubmit"
+            :selectedAnimal="formattedAnimal"
+          />
+          <OtherSection
+            v-if="step === 6 && selectedAnimal"
+            :selectedAnimal="formattedAnimal"
+          />
+
+          <div
+            v-if="hasAttemptedSubmit && validationErrors.length > 0"
+            class="validation-summary"
+            tabindex="-1"
+            role="alert"
+            aria-live="assertive"
+          >
+            <p class="summary-title">Please complete the following required fields:</p>
+            <div class="tags">
+              <span v-for="err in validationErrors" :key="err" class="tag is-danger">{{ err }}</span>
+            </div>
+          </div>
+
+          <div v-if="submissionError" class="validation-summary" role="alert" aria-live="polite">
+            <p class="summary-title">{{ submissionError }}</p>
+          </div>
+
+          <div class="actions">
+            <Button
+              type="button"
+              title="Back"
+              color="white"
+              size="large"
+              @click="prevStep"
+              :disabled="step === 0 || isSubmitting"
+              style="border: 1px solid var(--color-primary); color: var(--color-primary)"
+            />
+            <Button
+              v-if="step < 6"
+              type="button"
+              title="Next"
+              color="green"
+              size="large"
+              @click="handleSubmit"
+              :disabled="isSubmitting"
+            />
+            <Button
+              v-else
+              type="submit"
+              title="Submit Surrender Request"
+              color="green"
+              size="large"
+              @click="handleSubmit"
+              :loading="isSubmitting"
+            />
+          </div>
+        </section>
+      </div>
+
+      <FormSubmitted v-else @reset="handleReset" formType="surrender" />
+    </section>
+
+    <Footer borderTopColor="white" />
+  </main>
 </template>
 
 <style scoped lang="css">
+.surrender-page {
+  background-color: var(--color-primary);
+  width: 100%;
+}
+
 .page-shell {
   min-height: 100vh;
   background-color: var(--color-primary);

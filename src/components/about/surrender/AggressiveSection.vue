@@ -1,17 +1,24 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted } from 'vue'
 
-import type { SurrenderFormState } from '../../../models/surrender-form.ts'
-import ButtonToggle from '../../common/ui/ButtonToggle.vue'
-import InputTextArea from '../../common/ui/InputTextArea.vue'
+import ButtonToggle from '@/components/common/ui/ButtonToggle.vue'
+import InputTextArea from '@/components/common/ui/InputTextArea.vue'
+import { useSurrenderStore } from '@/stores/surrender'
 
-const { formState, selectedAnimal } = defineProps<{
-  formState: SurrenderFormState
-  touched: Record<string, boolean>
-  handleBlur: (_field: string) => void // eslint-disable-line no-unused-vars
-  hasAttemptedSubmit: boolean
-  selectedAnimal: string
+const props = defineProps<{
+  selectedAnimal?: string
 }>()
+
+const surrenderStore = useSurrenderStore()
+const { formState } = surrenderStore
+const { selectedAnimal: storeAnimal } = storeToRefs(surrenderStore)
+
+const animalLabel = computed(() => {
+  if (props.selectedAnimal) return props.selectedAnimal
+  if (!storeAnimal.value) return 'Pet'
+  return storeAnimal.value.charAt(0).toUpperCase() + storeAnimal.value.slice(1)
+})
 
 onMounted(() => {
   if (!formState.animalEverAttackedPeople) {
@@ -28,7 +35,7 @@ onMounted(() => {
     <h2 class="section-title">Aggressive Behavior</h2>
     <div class="aggressive-grid">
       <ButtonToggle
-        :label="`Has the ${selectedAnimal.toLowerCase()} ever attacked or bit a person?`"
+        :label="`Has the ${animalLabel.toLowerCase()} ever attacked or bit a person?`"
         :modelValue="formState.animalEverAttackedPeople"
         @update:modelValue="(val) => (formState.animalEverAttackedPeople = val as string)"
       />
@@ -40,7 +47,7 @@ onMounted(() => {
         @update:modelValue="(val) => (formState.animalEverAttackedPeopleExplanation = val || '')"
       />
       <ButtonToggle
-        :label="`Has the ${selectedAnimal.toLowerCase()} ever attacked or bit a cat?`"
+        :label="`Has the ${animalLabel.toLowerCase()} ever attacked or bit another animal?`"
         :modelValue="formState.animalEverAttackedOtherCats"
         @update:modelValue="(val) => (formState.animalEverAttackedOtherCats = val as string)"
       />

@@ -1,18 +1,29 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted } from 'vue'
 
-import type { SurrenderFormState } from '../../../models/surrender-form.ts'
-import ButtonToggle from '../../common/ui/ButtonToggle.vue'
-import InputField from '../../common/ui/InputField.vue'
-import InputSelectGroup from '../../common/ui/InputSelectGroup.vue'
+import ButtonToggle from '@/components/common/ui/ButtonToggle.vue'
+import InputField from '@/components/common/ui/InputField.vue'
+import InputSelectGroup from '@/components/common/ui/InputSelectGroup.vue'
+import { useSurrenderStore } from '@/stores/surrender'
 
-const { formState, touched, handleBlur, hasAttemptedSubmit, selectedAnimal } = defineProps<{
-  formState: SurrenderFormState
+const props = defineProps<{
   touched: Record<string, boolean>
-  handleBlur: (_field: string) => void // eslint-disable-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
+  handleBlur: (field: string) => void
   hasAttemptedSubmit: boolean
-  selectedAnimal: string
+  selectedAnimal?: string
 }>()
+
+const surrenderStore = useSurrenderStore()
+const { formState } = surrenderStore
+const { selectedAnimal: storeAnimal } = storeToRefs(surrenderStore)
+
+const animalLabel = computed(() => {
+  if (props.selectedAnimal) return props.selectedAnimal
+  if (!storeAnimal.value) return 'Pet'
+  return storeAnimal.value.charAt(0).toUpperCase() + storeAnimal.value.slice(1)
+})
 
 onMounted(() => {
   if (!formState.animalFoodTreats) {
@@ -26,21 +37,23 @@ onMounted(() => {
     <h2 class="section-title">Feeding</h2>
     <div class="feeding-grid">
       <ButtonToggle
-        :label="`Does the ${selectedAnimal.toLowerCase()} get treats?`"
+        :label="`Does the ${animalLabel.toLowerCase()} get treats?`"
         :modelValue="formState.animalFoodTreats"
-        @update:modelValue="(val) => (formState.animalFoodTreats = val as any)"
+        @update:modelValue="(val) => (formState.animalFoodTreats = String(val ?? ''))"
       />
       <InputField
-        :label="`If yes, what treats does the ${selectedAnimal.toLowerCase()} like?`"
+        :label="`If yes, what treats does the ${animalLabel.toLowerCase()} like?`"
         placeholder="Answer"
         :modelValue="formState.animalFoodTreatsExplanation"
-        @update:modelValue="(val) => (formState.animalFoodTreatsExplanation = val as string)"
+        @update:modelValue="(val) => (formState.animalFoodTreatsExplanation = String(val ?? ''))"
       />
       <InputSelectGroup
-        :label="`What type of food does the ${selectedAnimal.toLowerCase()} eat?`"
+        :label="`What type of food does the ${animalLabel.toLowerCase()} eat?`"
         :options="['Canned', 'Dry', 'Soft', 'Table scraps', 'Raw', 'Home cooked']"
         :modelValue="formState.animalTypeOfFood"
-        @update:modelValue="(val) => (formState.animalTypeOfFood = val as any)"
+        @update:modelValue="
+          (val) => (formState.animalTypeOfFood = Array.isArray(val) ? val.join(', ') : String(val ?? ''))
+        "
         :hasError="
           (touched.animalTypeOfFood && !formState.animalTypeOfFood) ||
           (hasAttemptedSubmit && !formState.animalTypeOfFood)
@@ -49,10 +62,12 @@ onMounted(() => {
         :multiple="true"
       />
       <InputSelectGroup
-        :label="`How many times a day is the ${selectedAnimal.toLowerCase()} fed?`"
+        :label="`How many times a day is the ${animalLabel.toLowerCase()} fed?`"
         :options="['1 time', '2 times', '3 times', 'Free feeds']"
         :modelValue="formState.animalEatingFrequency"
-        @update:modelValue="(val) => (formState.animalEatingFrequency = val as any)"
+        @update:modelValue="
+          (val) => (formState.animalEatingFrequency = Array.isArray(val) ? val.join(', ') : String(val ?? ''))
+        "
         :hasError="
           (touched.animalEatingFrequency && !formState.animalEatingFrequency) ||
           (hasAttemptedSubmit && !formState.animalEatingFrequency)
@@ -70,7 +85,9 @@ onMounted(() => {
           'Other',
         ]"
         :modelValue="formState.animalAmountOfFood"
-        @update:modelValue="(val) => (formState.animalAmountOfFood = val as any)"
+        @update:modelValue="
+          (val) => (formState.animalAmountOfFood = Array.isArray(val) ? val.join(', ') : String(val ?? ''))
+        "
         :hasError="
           (touched.animalAmountOfFood && !formState.animalAmountOfFood) ||
           (hasAttemptedSubmit && !formState.animalAmountOfFood)

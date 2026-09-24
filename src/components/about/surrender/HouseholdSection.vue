@@ -1,30 +1,43 @@
 <script setup lang="ts">
-import type { SurrenderFormState } from '../../../models/surrender-form.ts'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+
+import ButtonToggle from '@/components/common/ui/ButtonToggle.vue'
+import HoneypotField from '@/components/common/ui/HoneypotField.vue'
+import InputField from '@/components/common/ui/InputField.vue'
+import InputSelectGroup from '@/components/common/ui/InputSelectGroup.vue'
+import InputTextArea from '@/components/common/ui/InputTextArea.vue'
+import { useSurrenderStore } from '@/stores/surrender'
 import {
   formatPhoneNumber,
   sanitizeAddress,
   sanitizeCity,
   sanitizeName,
   sanitizeZip,
-} from '../../../utils/validators.ts'
-import ButtonToggle from '../../common/ui/ButtonToggle.vue'
-import HoneypotField from '../../common/ui/HoneypotField.vue'
-import InputField from '../../common/ui/InputField.vue'
-import InputSelectGroup from '../../common/ui/InputSelectGroup.vue'
-import InputTextArea from '../../common/ui/InputTextArea.vue'
+} from '@/utils/validators'
 
-const { formState, touched, handleBlur, hasAttemptedSubmit, selectedAnimal } = defineProps<{
-  formState: SurrenderFormState
+const props = defineProps<{
   touched: Record<string, boolean>
-  handleBlur: (_field: string) => void // eslint-disable-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
+  handleBlur: (field: string) => void
   hasAttemptedSubmit: boolean
-  selectedAnimal: string
+  selectedAnimal?: string
 }>()
+
+const surrenderStore = useSurrenderStore()
+const { formState } = surrenderStore
+const { selectedAnimal: storeAnimal } = storeToRefs(surrenderStore)
+
+const animalLabel = computed(() => {
+  if (props.selectedAnimal) return props.selectedAnimal
+  if (!storeAnimal.value) return 'Pet'
+  return storeAnimal.value.charAt(0).toUpperCase() + storeAnimal.value.slice(1)
+})
 </script>
 
 <template>
   <div class="household-section">
-    <h2 class="section-title">{{ selectedAnimal }} & Household Information</h2>
+    <h2 class="section-title">{{ animalLabel }} & Household Information</h2>
     <HoneypotField
       :model-value="formState.fax_number || null"
       @update:model-value="(val) => (formState.fax_number = val as string)"
@@ -111,8 +124,8 @@ const { formState, touched, handleBlur, hasAttemptedSubmit, selectedAnimal } = d
 
       <InputTextArea
         class="full-width"
-        :label="`When do you need to surrender your ${selectedAnimal.toLowerCase()}`"
-        :placeholder="`When do you need to surrender your ${selectedAnimal.toLowerCase()}`"
+        :label="`When do you need to surrender your ${animalLabel.toLowerCase()}`"
+        :placeholder="`When do you need to surrender your ${animalLabel.toLowerCase()}`"
         :modelValue="formState.whenToSurrenderAnimal"
         @update:modelValue="(val) => (formState.whenToSurrenderAnimal = val ?? '')"
         :hasError="
@@ -157,8 +170,8 @@ const { formState, touched, handleBlur, hasAttemptedSubmit, selectedAnimal } = d
 
       <InputTextArea
         class="full-width"
-        :label="`How long have you had your ${selectedAnimal.toLowerCase()}?`"
-        :placeholder="`How long have you had your ${selectedAnimal.toLowerCase()}?`"
+        :label="`How long have you had your ${animalLabel.toLowerCase()}?`"
+        :placeholder="`How long have you had your ${animalLabel.toLowerCase()}?`"
         :modelValue="formState.animalOwnershipDuration"
         @update:modelValue="(val) => (formState.animalOwnershipDuration = val ?? '')"
         :hasError="
@@ -169,8 +182,8 @@ const { formState, touched, handleBlur, hasAttemptedSubmit, selectedAnimal } = d
       />
       <InputTextArea
         class="full-width"
-        :label="`Where did you get your ${selectedAnimal.toLowerCase()}?`"
-        :placeholder="`Where did you get your ${selectedAnimal.toLowerCase()}?`"
+        :label="`Where did you get your ${animalLabel.toLowerCase()}?`"
+        :placeholder="`Where did you get your ${animalLabel.toLowerCase()}?`"
         :modelValue="formState.animalLocationFound"
         @update:modelValue="(val) => (formState.animalLocationFound = val ?? '')"
         :hasError="
@@ -181,8 +194,8 @@ const { formState, touched, handleBlur, hasAttemptedSubmit, selectedAnimal } = d
       />
       <InputTextArea
         class="full-width"
-        :label="`Why are you surrendering your ${selectedAnimal.toLowerCase()}?`"
-        :placeholder="`Why are you surrendering your ${selectedAnimal.toLowerCase()}?`"
+        :label="`Why are you surrendering your ${animalLabel.toLowerCase()}?`"
+        :placeholder="`Why are you surrendering your ${animalLabel.toLowerCase()}?`"
         :modelValue="formState.animalWhySurrendered"
         @update:modelValue="(val) => (formState.animalWhySurrendered = val ?? '')"
         :hasError="
@@ -291,7 +304,7 @@ const { formState, touched, handleBlur, hasAttemptedSubmit, selectedAnimal } = d
     </div>
     <section class="full-width">
       <InputSelectGroup
-        :label="`What other animals did the ${selectedAnimal.toLowerCase()} live with?`"
+        :label="`What other animals did the ${animalLabel.toLowerCase()} live with?`"
         :options="['Dogs', 'Cats', 'Other', 'No other animals']"
         :modelValue="formState.otherPetsInHousehold"
         @update:modelValue="(val) => (formState.otherPetsInHousehold = val as string)"
@@ -306,187 +319,5 @@ const { formState, touched, handleBlur, hasAttemptedSubmit, selectedAnimal } = d
   </div>
 </template>
 
-<style scoped lang="css">
-.household-section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+<style scoped src="./HouseholdSection.css"></style>
 
-  .household-grid {
-    border: 0;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-
-    @media (width >= 768px) {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .full-width {
-      grid-column: 1 / -1;
-    }
-  }
-
-  fieldset.field {
-    border: 0;
-    padding: 0;
-    margin: 0;
-  }
-
-  .label {
-    margin-bottom: 8px;
-    font-weight: 600;
-  }
-
-  .household-members-section {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 16px;
-    margin-bottom: 24px;
-
-    .subtitle {
-      color: var(--text-primary);
-      margin-top: -8px;
-      margin-bottom: 8px;
-    }
-
-    .member-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      background: var(--color-neutral-surface);
-      padding: 16px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-color);
-
-      @media (width <= 640px) {
-        flex-direction: column;
-        align-items: stretch;
-      }
-    }
-
-    .field-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .gender-group,
-    .age-group,
-    .quantity-group {
-      flex: 1;
-      width: 0;
-
-      @media (width <= 640px) {
-        width: 100%;
-        flex: none;
-      }
-    }
-
-    .gender-group .label {
-      @media (width <= 640px) {
-        text-align: center;
-      }
-    }
-
-    .field-label {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--color-neutral-strong);
-    }
-
-    .gender-toggle {
-      display: flex;
-      background: var(--text-inverse);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 4px;
-      height: 48px;
-
-      .toggle-btn {
-        flex: 1;
-        border: none;
-        background: transparent;
-        border-radius: var(--radius-sm);
-        font-weight: 500;
-        color: var(--color-neutral-text-soft);
-        cursor: pointer;
-        padding: 0 4px;
-        transition: all var(--transition-normal);
-
-        &.active {
-          background: color-mix(in srgb, var(--color-primary) 10%, #fff);
-          border: 1px solid var(--color-primary);
-          box-shadow: 0 0 0 1px var(--color-primary) inset;
-          color: var(--text-primary);
-          font-weight: 600;
-        }
-      }
-    }
-
-    .clean-input {
-      margin-bottom: 0 !important;
-    }
-
-    .remove-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      border: 1px solid var(--color-danger-light);
-      background: var(--text-inverse);
-      color: var(--color-danger);
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      transition: all var(--transition-normal);
-      flex-shrink: 0;
-      margin-top: 29px;
-
-      &:hover {
-        background: var(--color-danger-surface);
-      }
-
-      @media (width <= 640px) {
-        margin-top: 0;
-        width: 100%;
-        height: 40px;
-      }
-    }
-
-    .add-btn {
-      align-self: flex-start;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 20px;
-      background: var(--text-inverse);
-      border: 1px dashed var(--border-color);
-      border-radius: var(--radius-md);
-      color: var(--color-neutral-text-soft);
-      font-weight: 500;
-      cursor: pointer;
-      transition: all var(--transition-normal);
-
-      &:hover {
-        border: 1px solid var(--color-primary);
-        background: color-mix(in srgb, var(--color-primary) 10%, #fff);
-        color: var(--text-primary);
-        box-shadow: 0 0 0 1px var(--color-primary) inset;
-        font-weight: 600;
-      }
-    }
-  }
-}
-
-fieldset.has-error .chips {
-  outline: 2px solid var(--color-danger);
-  border-color: var(--color-danger);
-  border-radius: var(--radius-lg);
-  padding: 8px;
-}
-</style>

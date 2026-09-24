@@ -4,7 +4,7 @@ export interface IHouseholdMember {
   count: number
 }
 
-export interface SurrenderFormState {
+export interface ISurrenderFormState {
   fax_number?: string
   firstName: string
   lastName: string
@@ -80,3 +80,6 @@ export interface SurrenderFormState {
   closeUpPhotoOfAnimalFace: string | File | (string | File)[] | null
   copiesOfRecords: string | File | (string | File)[] | null
 }
+
+export type SurrenderFormState = ISurrenderFormState
+

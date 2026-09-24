@@ -1,64 +1,65 @@
 <script setup lang="ts">
-const {
-  formStep,
-  selectedAnimal,
-  vertical = false,
-} = defineProps<{
-  formStep: number
-  selectedAnimal: 'dog' | 'cat' | null
-  vertical?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    formStep: number
+    selectedAnimal: 'dog' | 'cat' | null
+    vertical?: boolean
+  }>(),
+  {
+    vertical: false,
+  },
+)
 </script>
 
 <template>
-  <ol class="steps-container" :class="{ vertical }">
+  <ol class="steps-container" :class="{ vertical: props.vertical }">
     <li
       class="step"
-      :class="{ active: formStep >= 1 }"
-      :aria-current="formStep === 1 ? 'step' : undefined"
+      :class="{ active: props.formStep >= 1 }"
+      :aria-current="props.formStep === 1 ? 'step' : undefined"
     >
       <div class="step-number">1</div>
       <div class="step-label">Household</div>
     </li>
     <li
       class="step"
-      :class="{ active: formStep >= 2 }"
-      :aria-current="formStep === 2 ? 'step' : undefined"
+      :class="{ active: props.formStep >= 2 }"
+      :aria-current="props.formStep === 2 ? 'step' : undefined"
     >
       <div class="step-number">2</div>
       <div class="step-label">Behavior</div>
     </li>
     <li
       class="step"
-      :class="{ active: formStep >= 3 }"
-      :aria-current="formStep === 3 ? 'step' : undefined"
+      :class="{ active: props.formStep >= 3 }"
+      :aria-current="props.formStep === 3 ? 'step' : undefined"
     >
       <div class="step-number">3</div>
       <div class="step-label">Aggression</div>
     </li>
     <li
       class="step"
-      v-if="selectedAnimal === 'cat'"
-      :class="{ active: formStep >= 4 }"
-      :aria-current="formStep === 4 ? 'step' : undefined"
+      v-if="props.selectedAnimal === 'cat'"
+      :class="{ active: props.formStep >= 4 }"
+      :aria-current="props.formStep === 4 ? 'step' : undefined"
     >
       <div class="step-number">4</div>
       <div class="step-label">Medical</div>
     </li>
     <li
       class="step"
-      :class="{ active: formStep >= 5 }"
-      :aria-current="formStep === (selectedAnimal === 'cat' ? 5 : 4) ? 'step' : undefined"
+      :class="{ active: props.formStep >= 5 }"
+      :aria-current="props.formStep === (props.selectedAnimal === 'cat' ? 5 : 4) ? 'step' : undefined"
     >
-      <div class="step-number">{{ selectedAnimal === 'cat' ? 5 : 4 }}</div>
+      <div class="step-number">{{ props.selectedAnimal === 'cat' ? 5 : 4 }}</div>
       <div class="step-label">Feeding</div>
     </li>
     <li
       class="step"
-      :class="{ active: formStep >= 6 }"
-      :aria-current="formStep === (selectedAnimal === 'cat' ? 6 : 5) ? 'step' : undefined"
+      :class="{ active: props.formStep >= 6 }"
+      :aria-current="props.formStep === (props.selectedAnimal === 'cat' ? 6 : 5) ? 'step' : undefined"
     >
-      <div class="step-number">{{ selectedAnimal === 'cat' ? 6 : 5 }}</div>
+      <div class="step-number">{{ props.selectedAnimal === 'cat' ? 6 : 5 }}</div>
       <div class="step-label">Other</div>
     </li>
   </ol>

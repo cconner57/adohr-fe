@@ -1,19 +1,30 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted } from 'vue'
 
-import type { SurrenderFormState } from '../../../models/surrender-form.ts'
-import ButtonToggle from '../../common/ui/ButtonToggle.vue'
-import InputGrid from '../../common/ui/InputGrid.vue'
-import InputSelectGroup from '../../common/ui/InputSelectGroup.vue'
-import InputTextArea from '../../common/ui/InputTextArea.vue'
+import ButtonToggle from '@/components/common/ui/ButtonToggle.vue'
+import InputGrid from '@/components/common/ui/InputGrid.vue'
+import InputSelectGroup from '@/components/common/ui/InputSelectGroup.vue'
+import InputTextArea from '@/components/common/ui/InputTextArea.vue'
+import { useSurrenderStore } from '@/stores/surrender'
 
-const { formState, touched, handleBlur, hasAttemptedSubmit, selectedAnimal } = defineProps<{
-  formState: SurrenderFormState
+const props = defineProps<{
   touched: Record<string, boolean>
-  handleBlur: (_field: string) => void // eslint-disable-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
+  handleBlur: (field: string) => void
   hasAttemptedSubmit: boolean
-  selectedAnimal: string
+  selectedAnimal?: string
 }>()
+
+const surrenderStore = useSurrenderStore()
+const { formState } = surrenderStore
+const { selectedAnimal: storeAnimal } = storeToRefs(surrenderStore)
+
+const animalLabel = computed(() => {
+  if (props.selectedAnimal) return props.selectedAnimal
+  if (!storeAnimal.value) return 'Pet'
+  return storeAnimal.value.charAt(0).toUpperCase() + storeAnimal.value.slice(1)
+})
 
 const peopleRows = ['men', 'women', 'children']
 const peopleColumns = [
@@ -92,7 +103,7 @@ onMounted(() => {
     <h2 class="section-title">Behavior</h2>
     <div class="behavior-grid">
       <InputGrid
-        :label="`How does the ${selectedAnimal.toLowerCase()} usually behave towards people they do know?`"
+        :label="`How does the ${animalLabel.toLowerCase()} usually behave towards people they do know?`"
         :rows="peopleRows"
         :columns="peopleColumns"
         :modelValue="formState.animalsBehaviorTowardsKnownPeople"
@@ -101,7 +112,7 @@ onMounted(() => {
         :singleSelect="true"
       />
       <InputGrid
-        :label="`How does the ${selectedAnimal.toLowerCase()} usually behave towards animals they do not know?`"
+        :label="`How does the ${animalLabel.toLowerCase()} usually behave towards animals they do not know?`"
         :rows="unknownsRows"
         :columns="unknownsColumns"
         :modelValue="formState.animalsBehaviorTowardsStrangers"
@@ -110,7 +121,7 @@ onMounted(() => {
         :singleSelect="true"
       />
       <InputGrid
-        :label="`How does the ${selectedAnimal.toLowerCase()} usually behave towards animals they know`"
+        :label="`How does the ${animalLabel.toLowerCase()} usually behave towards animals they know`"
         :rows="knownsRows"
         :columns="knownsColumns"
         :modelValue="formState.animalsBehaviorTowardsKnownAnimals"
@@ -126,7 +137,7 @@ onMounted(() => {
         @update:modelValue="(val) => (formState.commentsOnBehavior = val || '')"
       />
       <InputSelectGroup
-        :label="`How does the ${selectedAnimal.toLowerCase()} usually react when an unfamiliar person approaches or enters the yard or house?`"
+        :label="`How does the ${animalLabel.toLowerCase()} usually react when an unfamiliar person approaches or enters the yard or house?`"
         :options="['Friendly', 'Afraid', 'Barks', 'Shows Teeth/Hisses', 'Will Bite/Scratch']"
         :modelValue="formState.animalsReactionToNewPeople"
         @update:modelValue="(val) => (formState.animalsReactionToNewPeople = val as string)"
@@ -138,7 +149,7 @@ onMounted(() => {
         :multiple="true"
       />
       <InputSelectGroup
-        :label="`Is the ${selectedAnimal.toLowerCase()} housetrained?`"
+        :label="`Is the ${animalLabel.toLowerCase()} housetrained?`"
         :options="['Yes', 'No', 'Partially']"
         :modelValue="formState.animalHouseTrained"
         @update:modelValue="(val) => (formState.animalHouseTrained = val as string)"
@@ -149,7 +160,7 @@ onMounted(() => {
         @blur="handleBlur('animalHouseTrained')"
       />
       <InputSelectGroup
-        :label="`Where does the ${selectedAnimal.toLowerCase()} spend the majority of their time?`"
+        :label="`Where does the ${animalLabel.toLowerCase()} spend the majority of their time?`"
         :options="[
           'Inside the house, runs free',
           'Inside the house, crated',
@@ -167,7 +178,7 @@ onMounted(() => {
         @blur="handleBlur('animalSpendMajorityOfTime')"
       />
       <InputSelectGroup
-        :label="`How many hours a day is the ${selectedAnimal.toLowerCase()} left alone without a human?`"
+        :label="`How many hours a day is the ${animalLabel.toLowerCase()} left alone without a human?`"
         :options="['Never', '1-3 hours', '4-8 hours', '9-12 hours', 'Over 12 hours']"
         :modelValue="formState.animalLeftAloneDuration"
         @update:modelValue="(val) => (formState.animalLeftAloneDuration = val as string)"
@@ -189,7 +200,7 @@ onMounted(() => {
         @blur="handleBlur('animalWhenLeftAlone')"
       />
       <InputSelectGroup
-        :label="`When left alone, does the ${selectedAnimal.toLowerCase()} usually show any of the following behaviors?`"
+        :label="`When left alone, does the ${animalLabel.toLowerCase()} usually show any of the following behaviors?`"
         :options="['Destroy household items', 'Urinate/Deficate', 'Cry', 'None of these', 'Other']"
         :modelValue="formState.animalLeftAloneBehaviors"
         @update:modelValue="(val) => (formState.animalLeftAloneBehaviors = val as string)"
@@ -201,7 +212,7 @@ onMounted(() => {
         :multiple="true"
       />
       <InputSelectGroup
-        :label="`When the ${selectedAnimal.toLowerCase()} plays, do they typically...`"
+        :label="`When the ${animalLabel.toLowerCase()} plays, do they typically...`"
         :options="['Jumps', 'Hiss', 'Bites lightly', 'Bites hard', 'None of these', 'Other']"
         :modelValue="formState.animalHowItPlays"
         @update:modelValue="(val) => (formState.animalHowItPlays = val as string)"
@@ -213,7 +224,7 @@ onMounted(() => {
         :multiple="true"
       />
       <InputSelectGroup
-        :label="`What toys does the ${selectedAnimal.toLowerCase()} like?`"
+        :label="`What toys does the ${animalLabel.toLowerCase()} like?`"
         :options="['Balls', 'Plush', 'Squeaky', 'Tug toy', 'None', 'Other']"
         :modelValue="formState.animalToysItLikes"
         @update:modelValue="(val) => (formState.animalToysItLikes = val as string)"
@@ -225,7 +236,7 @@ onMounted(() => {
         :multiple="true"
       />
       <InputSelectGroup
-        :label="`What games does the ${selectedAnimal.toLowerCase()} like?`"
+        :label="`What games does the ${animalLabel.toLowerCase()} like?`"
         :options="['Tug', 'Chase', 'Wrestling', 'None', 'Other']"
         :modelValue="formState.animalGamesItLikes"
         @update:modelValue="(val) => (formState.animalGamesItLikes = val as string)"
@@ -237,7 +248,7 @@ onMounted(() => {
         :multiple="true"
       />
       <ButtonToggle
-        :label="`Is the ${selectedAnimal.toLowerCase()} scared of anything?`"
+        :label="`Is the ${animalLabel.toLowerCase()} scared of anything?`"
         :modelValue="formState.animalScaredOfAnything"
         @update:modelValue="(val) => (formState.animalScaredOfAnything = val as string)"
       />
@@ -249,19 +260,19 @@ onMounted(() => {
         @update:modelValue="(val) => (formState.animalScaredOfAnythingExplanation = val || '')"
       />
       <InputTextArea
-        :label="`Please tell us the ${selectedAnimal.toLowerCase()} bad habits`"
+        :label="`Please tell us the ${animalLabel.toLowerCase()} bad habits`"
         placeholder="Describe habits"
         :spanFull="false"
         :modelValue="formState.animalBadHabits"
         @update:modelValue="(val) => (formState.animalBadHabits = val || '')"
       />
       <ButtonToggle
-        :label="`Is the ${selectedAnimal.toLowerCase()} allowed on furniture?`"
+        :label="`Is the ${animalLabel.toLowerCase()} allowed on furniture?`"
         :modelValue="formState.animalAllowedOnFurniture"
         @update:modelValue="(val) => (formState.animalAllowedOnFurniture = val as string)"
       />
       <InputSelectGroup
-        :label="`Where does the ${selectedAnimal.toLowerCase()} usually sleep at overnight?`"
+        :label="`Where does the ${animalLabel.toLowerCase()} usually sleep at overnight?`"
         :options="[
           'Crate',
           'Floor',
@@ -282,14 +293,14 @@ onMounted(() => {
         :multiple="true"
       />
       <InputTextArea
-        :label="`Describe the ${selectedAnimal.toLowerCase()} reaction if a person or other cat gets near or attempts to take food he/she is eating`"
+        :label="`Describe the ${animalLabel.toLowerCase()} reaction if a person or other animal gets near or attempts to take food he/she is eating`"
         placeholder="Describe reaction"
         :spanFull="false"
         :modelValue="formState.animalBehaviorFoodOthers"
         @update:modelValue="(val) => (formState.animalBehaviorFoodOthers = val || '')"
       />
       <InputSelectGroup
-        :label="`Does the ${selectedAnimal.toLowerCase()} have problems riding in cars?`"
+        :label="`Does the ${animalLabel.toLowerCase()} have problems riding in cars?`"
         :options="['Yes', 'No', 'Don\'t know']"
         :modelValue="formState.animalProblemsRidingInCar"
         @update:modelValue="(val) => (formState.animalProblemsRidingInCar = val as string)"
@@ -300,7 +311,7 @@ onMounted(() => {
         @blur="handleBlur('animalProblemsRidingInCar')"
       />
       <InputTextArea
-        label="`If yes, please explain`"
+        label="If yes, please explain"
         placeholder="Explanation"
         :spanFull="false"
         :modelValue="formState.animalProblemsRidingInCarExplanation"
@@ -319,7 +330,7 @@ onMounted(() => {
         @update:modelValue="(val) => (formState.animalEscapedBeforeExplanation = val || '')"
       />
       <InputTextArea
-        label="Describe the pets reaction if a person or other cat attempts to take a toy they are playing with"
+        :label="`Describe the ${animalLabel.toLowerCase()} reaction if a person or other animal attempts to take a toy they are playing with`"
         placeholder="Describe reaction"
         :spanFull="false"
         :modelValue="formState.animalBehaviorToysOthers"

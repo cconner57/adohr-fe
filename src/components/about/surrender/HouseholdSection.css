@@ -1,0 +1,182 @@
+.household-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .household-grid {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @media (width >= 768px) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+  }
+
+  fieldset.field {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .label {
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .household-members-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+    margin-bottom: 24px;
+
+    .subtitle {
+      color: var(--text-primary);
+      margin-top: -8px;
+      margin-bottom: 8px;
+    }
+
+    .member-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: var(--color-neutral-surface);
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+
+      @media (width <= 640px) {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .gender-group,
+    .age-group,
+    .quantity-group {
+      flex: 1;
+      width: 0;
+
+      @media (width <= 640px) {
+        width: 100%;
+        flex: none;
+      }
+    }
+
+    .gender-group .label {
+      @media (width <= 640px) {
+        text-align: center;
+      }
+    }
+
+    .field-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-neutral-strong);
+    }
+
+    .gender-toggle {
+      display: flex;
+      background: var(--text-inverse);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      height: 48px;
+
+      .toggle-btn {
+        flex: 1;
+        border: none;
+        background: transparent;
+        border-radius: var(--radius-sm);
+        font-weight: 500;
+        color: var(--color-neutral-text-soft);
+        cursor: pointer;
+        padding: 0 4px;
+        transition: all var(--transition-normal);
+
+        &.active {
+          background: color-mix(in srgb, var(--color-primary) 10%, #fff);
+          border: 1px solid var(--color-primary);
+          box-shadow: 0 0 0 1px var(--color-primary) inset;
+          color: var(--text-primary);
+          font-weight: 600;
+        }
+      }
+    }
+
+    .clean-input {
+      margin-bottom: 0 !important;
+    }
+
+    .remove-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--color-danger-light);
+      background: var(--text-inverse);
+      color: var(--color-danger);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      flex-shrink: 0;
+      margin-top: 29px;
+
+      &:hover {
+        background: var(--color-danger-surface);
+      }
+
+      @media (width <= 640px) {
+        margin-top: 0;
+        width: 100%;
+        height: 40px;
+      }
+    }
+
+    .add-btn {
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: var(--text-inverse);
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--color-neutral-text-soft);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+
+      &:hover {
+        border: 1px solid var(--color-primary);
+        background: color-mix(in srgb, var(--color-primary) 10%, #fff);
+        color: var(--text-primary);
+        box-shadow: 0 0 0 1px var(--color-primary) inset;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+fieldset.has-error .chips {
+  outline: 2px solid var(--color-danger);
+  border-color: var(--color-danger);
+  border-radius: var(--radius-lg);
+  padding: 8px;
+}
