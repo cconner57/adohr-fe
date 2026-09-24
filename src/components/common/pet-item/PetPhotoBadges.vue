@@ -111,15 +111,6 @@ const singleTopBadge = computed<IPhotoBadge | null>(() => {
       ariaLabel: statusBadge.value.text,
     }
   }
-  if (props.isSponsored) {
-    return {
-      id: 'sponsored',
-      text: 'Sponsored',
-      class: 'badge-sponsored',
-      icon: 'star',
-      ariaLabel: 'Adoption fee sponsored',
-    }
-  }
   return null
 })
 
@@ -134,7 +125,7 @@ const bottomDockBadges = computed<IPhotoBadge[]>(() => {
       ariaLabel: statusBadge.value.text,
     })
   }
-  if (props.isSponsored && singleTopBadge.value?.id !== 'sponsored') {
+  if (props.isSponsored) {
     badges.push({
       id: 'sponsored',
       text: 'Sponsored',
@@ -248,10 +239,17 @@ function collapseDockBadge() {
         :key="badge.id"
         type="button"
         class="dock-badge"
-        :class="[badge.class, { 'is-expanded': expandedBadgeId === badge.id }]"
+        :class="[
+          badge.class,
+          {
+            'is-standalone': bottomDockBadges.length === 1,
+            'is-expanded': bottomDockBadges.length > 1 && expandedBadgeId === badge.id,
+          },
+        ]"
         :aria-label="badge.ariaLabel"
-        :aria-expanded="expandedBadgeId === badge.id"
-        @click.stop="toggleDockBadge(badge.id)"
+        :aria-expanded="bottomDockBadges.length > 1 ? expandedBadgeId === badge.id : undefined"
+        :tabindex="bottomDockBadges.length === 1 ? -1 : undefined"
+        @click.stop="bottomDockBadges.length > 1 ? toggleDockBadge(badge.id) : undefined"
       >
         <svg
           v-if="badge.icon === 'coming-soon'"
