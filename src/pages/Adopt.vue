@@ -8,7 +8,7 @@ import AdoptSummary from '@/components/adopt/adopt-view/AdoptSummary.vue'
 import AdoptPageHeader from '@/components/adopt/AdoptPageHeader.vue'
 import EventBanner from '@/components/adopt/events/EventBanner.vue'
 import FilterPanel from '@/components/adopt/FilterPanel.vue'
-import PetMatcherModal, { type IMatcherCriteria } from '@/components/adopt/pet-matcher/PetMatcherModal.vue'
+import PetMatcherDrawer, { type IMatcherCriteria } from '@/components/adopt/pet-matcher/PetMatcherDrawer.vue'
 import PetItemSkeleton from '@/components/common/pet-item/PetItemSkeleton.vue'
 import { useAdoptionEvents } from '@/composables/useAdoptionEvents'
 import { useFavorites } from '@/composables/useFavorites'
@@ -22,7 +22,7 @@ const { isFavorite, favoriteCount } = useFavorites()
 const props = defineProps<{ id?: string }>()
 const route = useRoute()
 const store = usePetStore()
-const { currentPets, isFetching } = storeToRefs(store)
+const { currentPets, isFetching, error } = storeToRefs(store)
 
 const id = computed(() => props.id ?? (route.params.id as string | undefined))
 const detailPet = ref<IPet | null>(null)
@@ -315,6 +315,22 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special',
         <div v-if="isFetching" class="skeleton-grid" aria-label="Loading adoptable pets...">
           <PetItemSkeleton v-for="n in 8" :key="`skeleton-${n}`" />
         </div>
+        <div v-else-if="error && currentPets.length === 0" class="empty-state error-state" role="alert">
+          <div class="empty-icon-wrap error-icon-wrap" aria-hidden="true">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <h2>Unable to load adoptable pets</h2>
+          <p>{{ error }}</p>
+          <div class="empty-actions">
+            <button class="reset-btn retry-btn" @click="store.fetchPetsList(true)">
+              Try again
+            </button>
+          </div>
+        </div>
         <template v-else>
           <AdoptDetail v-if="pet" :pet="pet!" />
           <AdoptSummary v-else-if="filteredPets.length > 0" :pets="filteredPets" />
@@ -351,7 +367,7 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special',
         </template>
       </main>
 
-      <PetMatcherModal
+      <PetMatcherDrawer
         :isOpen="isMatcherOpen"
         @close="isMatcherOpen = false"
         @apply="handleMatcherApply"

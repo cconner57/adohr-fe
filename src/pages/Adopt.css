@@ -137,59 +137,21 @@ main {
   width: 100%;
 }
 
-.general-application {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  color: var(--text-inverse);
-  margin-top: 4rem;
-  padding: 3rem;
-  background: oklch(from var(--color-primary) calc(l - 0.05) c h);
-  border-radius: var(--radius-lg);
-  border: 1.5px dashed oklch(from var(--text-inverse) l c h / 40%);
-  width: 100%;
-  max-width: 820px;
-  margin-left: auto;
-  margin-right: auto;
+.empty-state.error-state {
+  .error-icon-wrap {
+    color: var(--color-danger, #ef4444);
+    background: oklch(from var(--color-danger) l c h / 15%);
+    border-color: oklch(from var(--color-danger) l c h / 35%);
+    box-shadow: 0 4px 16px oklch(0% 0 0deg / 25%), 0 0 16px oklch(from var(--color-danger) l c h / 20%);
+  }
 
-  h2 {
-    font-size: clamp(1.6rem, 3vw, 2.25rem);
-    margin-bottom: 0.5rem;
+  .retry-btn {
+    background-color: var(--color-secondary);
     color: var(--text-inverse);
-  }
 
-  p {
-    font-size: 1.05rem;
-    opacity: 0.9;
-    margin-bottom: 2rem;
-    max-width: 500px;
-    line-height: 1.6;
-  }
-
-  .application-buttons {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    button {
-      min-width: 240px;
-    }
-  }
-
-  @media (width <= 600px) {
-    padding: 2rem 1.5rem;
-    margin-top: 2rem;
-
-    .application-buttons {
-      flex-direction: column;
-      width: 100%;
-
-      button {
-        width: 100%;
-        min-width: 0;
-      }
+    &:hover {
+      background-color: oklch(from var(--color-secondary) 48% 0.16 h);
+      box-shadow: 0 6px 0 -2px oklch(0% 0 0deg / 40%);
     }
   }
 }

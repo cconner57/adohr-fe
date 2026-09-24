@@ -1,11 +1,11 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import PetMatcherModal from '../PetMatcherModal.vue'
+import PetMatcherDrawer from '../PetMatcherDrawer.vue'
 
-describe('PetMatcherModal.vue', () => {
+describe('PetMatcherDrawer.vue', () => {
   it('renders step 1 when open', () => {
-    const wrapper = mount(PetMatcherModal, {
+    const wrapper = mount(PetMatcherDrawer, {
       props: {
         isOpen: true,
       },
@@ -23,7 +23,7 @@ describe('PetMatcherModal.vue', () => {
   })
 
   it('navigates through steps on next button click', async () => {
-    const wrapper = mount(PetMatcherModal, {
+    const wrapper = mount(PetMatcherDrawer, {
       props: {
         isOpen: true,
       },

@@ -78,14 +78,23 @@ const emit = defineEmits<{
       <button
         class="reset-btn"
         :class="{ active: activeFilter === 'All' }"
+        :aria-pressed="activeFilter === 'All'"
         @click="emit('reset-filters')"
       >
         View All Pets
       </button>
-      <button :class="{ active: activeFilter === 'Cat' }" @click="emit('set-filter', 'Cat')">
+      <button
+        :class="{ active: activeFilter === 'Cat' }"
+        :aria-pressed="activeFilter === 'Cat'"
+        @click="emit('set-filter', 'Cat')"
+      >
         Cats
       </button>
-      <button :class="{ active: activeFilter === 'Dog' }" @click="emit('set-filter', 'Dog')">
+      <button
+        :class="{ active: activeFilter === 'Dog' }"
+        :aria-pressed="activeFilter === 'Dog'"
+        @click="emit('set-filter', 'Dog')"
+      >
         Dogs
       </button>
     </div>
@@ -107,6 +116,7 @@ const emit = defineEmits<{
         class="fav-filter-btn"
         :class="{ active: isFavoritesOnly }"
         type="button"
+        :aria-pressed="isFavoritesOnly"
         @click="emit('toggle-favorites')"
         :aria-label="`Filter by favorited pets (${favoriteCount ?? 0})`"
       >
