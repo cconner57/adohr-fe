@@ -23,6 +23,7 @@ const mockLiveEvent = {
       endTime: '16:00',
       location: 'PetSmart Pasadena',
       address: '3347 E Foothill Blvd, Pasadena',
+      attendingPetIds: ['pet-1'],
     },
   ],
 }
@@ -77,7 +78,6 @@ describe('EventBanner.vue', () => {
       },
     })
     await new Promise((resolve) => setTimeout(resolve, 30))
-
     const filterBtn = wrapper.find('.filter-toggle-btn')
     expect(filterBtn.exists()).toBe(true)
     expect(filterBtn.text()).toContain('Pets Attending Event')
@@ -177,5 +177,54 @@ describe('EventBanner.vue', () => {
     expect(tabs.length).toBeGreaterThanOrEqual(2)
     expect(wrapper.text()).toContain('PetSmart Pasadena')
     expect(wrapper.text()).toContain('Petco Burbank')
+  })
+
+  it('hides Pets Attending Event button when active event has no attending pets', async () => {
+    const eventWithoutPets = {
+      events: [
+        {
+          id: 'evt-empty',
+          title: 'PetSmart Upland Adoption Event',
+          type: 'adoption-event',
+          startDate: '2026-09-06',
+          startTime: '12:00',
+          endTime: '16:00',
+          location: 'PetSmart Upland',
+          address: 'Upland, CA',
+          attendingPetIds: [],
+        },
+      ],
+    }
+
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => eventWithoutPets,
+    } as Response)
+
+    const wrapper = mount(EventBanner, {
+      props: {
+        showFilterButton: true,
+      },
+    })
+    await new Promise((resolve) => setTimeout(resolve, 30))
+
+    expect(wrapper.find('.filter-toggle-btn').exists()).toBe(false)
+  })
+
+  it('respects hasAttendingPets boolean prop if provided explicitly', async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => mockLiveEvent,
+    } as Response)
+
+    const wrapper = mount(EventBanner, {
+      props: {
+        showFilterButton: true,
+        hasAttendingPets: false,
+      },
+    })
+    await new Promise((resolve) => setTimeout(resolve, 30))
+
+    expect(wrapper.find('.filter-toggle-btn').exists()).toBe(false)
   })
 })

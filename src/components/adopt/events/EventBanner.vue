@@ -14,6 +14,7 @@ const props = withDefaults(
     showActions?: boolean
     variant?: 'light' | 'dark' | 'forest' | 'cream'
     colorScheme?: 'light' | 'dark' | 'forest' | 'cream'
+    hasAttendingPets?: boolean | null
   }>(),
   {
     isFilterActive: false,
@@ -21,6 +22,7 @@ const props = withDefaults(
     showWhatToBringButton: true,
     showActions: true,
     variant: 'light',
+    hasAttendingPets: null,
   },
 )
 
@@ -40,12 +42,21 @@ const {
   formattedUpcomingEvents,
   hasUpcomingEvents,
   activeEventIndex,
+  attendingPetIds,
+  attendingPets,
   selectEvent,
   displayTitle,
   displayDates,
   recurrenceText,
   fetchUpcomingEvents,
 } = useAdoptionEvents()
+
+const hasAttendingPetsForActiveEvent = computed(() => {
+  if (typeof props.hasAttendingPets === 'boolean') {
+    return props.hasAttendingPets
+  }
+  return (attendingPetIds.value?.length ?? 0) > 0 || (attendingPets.value?.length ?? 0) > 0
+})
 
 onMounted(() => {
   fetchUpcomingEvents()
@@ -110,9 +121,9 @@ onMounted(() => {
         </div>
       </div>
 
-      <div v-if="(showFilterButton || showWhatToBringButton) && showActions" class="banner-actions">
+      <div v-if="((showFilterButton && hasAttendingPetsForActiveEvent) || showWhatToBringButton) && showActions" class="banner-actions">
         <button
-          v-if="showFilterButton"
+          v-if="showFilterButton && hasAttendingPetsForActiveEvent"
           type="button"
           class="filter-toggle-btn"
           :class="{ active: isFilterActive }"

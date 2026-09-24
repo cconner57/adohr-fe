@@ -32,6 +32,23 @@ const isAttendingWeekendOnly = ref(false)
 const isFavoritesOnly = ref(false)
 const searchQuery = ref('')
 
+const hasPetsForActiveEvent = computed(() => {
+  const activeIds = attendingPetIds.value
+  if (!activeIds || activeIds.length === 0) return false
+  if (currentPets.value.length > 0) {
+    return currentPets.value.some(
+      (p: IPet) => activeIds.includes(p.id) || Boolean(p.slug && activeIds.includes(p.slug)),
+    )
+  }
+  return true
+})
+
+watch(hasPetsForActiveEvent, (hasPets) => {
+  if (!hasPets && isAttendingWeekendOnly.value) {
+    isAttendingWeekendOnly.value = false
+  }
+})
+
 const toggleFavoritesOnly = () => {
   isFavoritesOnly.value = !isFavoritesOnly.value
 }
@@ -134,15 +151,10 @@ const filteredPets = computed(() => {
       result = result.filter(
         (p: IPet) =>
           activeIds.includes(p.id) ||
-          (p.slug && activeIds.includes(p.slug)) ||
-          Boolean(p.isAttendingWeekend),
+          Boolean(p.slug && activeIds.includes(p.slug)),
       )
     } else {
-      result = result.filter((p: IPet, index: number) => {
-        return Boolean(
-          p.isAttendingWeekend ?? (p.details?.status === 'available' && index % 3 === 0),
-        )
-      })
+      result = []
     }
   }
 
@@ -305,6 +317,7 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special',
         v-if="!pet"
         :isFilterActive="isAttendingWeekendOnly"
         :showFilterButton="true"
+        :hasAttendingPets="hasPetsForActiveEvent"
         :showWhatToBringButton="true"
         colorScheme="light"
         @toggle-filter="isAttendingWeekendOnly = !isAttendingWeekendOnly"
