@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 
+import Button from '@/components/common/ui/Button.vue'
 import { useAdoptionEvents } from '@/composables/useAdoptionEvents'
 
-import Button from '../../common/ui/Button.vue'
-import EventPrepModal from './EventPrepModal.vue'
+import EventPrepDrawer from './EventPrepDrawer.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -137,7 +137,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <EventPrepModal
+    <EventPrepDrawer
       :isOpen="isPrepModalOpen"
       @close="isPrepModalOpen = false"
     />

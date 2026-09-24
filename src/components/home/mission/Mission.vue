@@ -4,7 +4,7 @@
   <section class="mission">
     <div class="mission-text">
       <p class="eyebrow mission-eyebrow">Our mission</p>
-      <h4>Shelter, food, care, and love until the right door opens</h4>
+      <h2>Shelter, food, care, and love until the right door opens</h2>
       <p class="mission-copy">
         A Dream of Home Rescue (ADOHR) rescues abandoned, unwanted, and surrendered animals. While
         we search for loving homes, we give them what every animal deserves: shelter, food,
@@ -46,6 +46,7 @@
     margin-bottom: 1rem;
   }
 
+  h2,
   h4 {
     font-size: var(--font-size-h3);
     color: var(--text-inverse);

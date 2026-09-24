@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { resetAdoptionEventsState } from '@/composables/useAdoptionEvents'
 
 import EventBanner from '../EventBanner.vue'
+import EventPrepDrawer from '../EventPrepDrawer.vue'
 
 vi.mock('vue-router', () => ({
   useRouter: () => ({
@@ -103,7 +104,7 @@ describe('EventBanner.vue', () => {
     expect(prepBtn).toBeTruthy()
     await prepBtn!.trigger('click')
 
-    expect(wrapper.findComponent({ name: 'EventPrepModal' }).props('isOpen')).toBe(true)
+    expect(wrapper.findComponent(EventPrepDrawer).props('isOpen')).toBe(true)
   })
 
   it('hides both action buttons when showFilterButton and showWhatToBringButton are false', async () => {

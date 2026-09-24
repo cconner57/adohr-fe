@@ -13,7 +13,7 @@ describe('BannerButton', () => {
       },
     })
 
-    expect(wrapper.find('h5').text()).toBe('Adopt a Pet')
+    expect(wrapper.find('.banner-title').text()).toBe('Adopt a Pet')
     expect(wrapper.find('p').text()).toBe('Find your perfect companion')
     expect(wrapper.classes()).toContain('button-color-blue')
   })

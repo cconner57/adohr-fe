@@ -1,32 +1,49 @@
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
-import type { IPet } from '../models/common'
-import { usePetStore } from '../stores/pets'
+import type { IPet } from '@/models/common'
+import { usePetStore } from '@/stores/pets'
 
-export function usePets() {
+export const usePets = () => {
   const store = usePetStore()
   const { currentPets, isFetching: loading } = storeToRefs(store)
 
   const SESSION_CACHE_KEY = 'adohr_spotlight_pets'
-  const cached = sessionStorage.getItem(SESSION_CACHE_KEY)
-  const cachedPets = ref<IPet[]>(cached ? JSON.parse(cached) : [])
+  let initialCache: IPet[] = []
+  try {
+    const cached = typeof window !== 'undefined' ? sessionStorage.getItem(SESSION_CACHE_KEY) : null
+    if (cached) {
+      initialCache = JSON.parse(cached)
+    }
+  } catch {
+    // Ignore storage parse failure
+  }
+  const cachedPets = ref<IPet[]>(initialCache)
 
   const spotlightPets = computed(() => {
     const featured = currentPets.value.filter((p) => p.profileSettings?.isSpotlightFeatured)
     const candidates = featured.length > 0 ? featured : currentPets.value
-    const freshPets = candidates.slice(0, 4)
-
-    if (freshPets.length > 0) {
-      if (JSON.stringify(freshPets) !== JSON.stringify(cachedPets.value)) {
-        cachedPets.value = freshPets
-        sessionStorage.setItem(SESSION_CACHE_KEY, JSON.stringify(freshPets))
-      }
-      return freshPets
-    }
-
-    return cachedPets.value
+    const fresh = candidates.slice(0, 4)
+    return fresh.length > 0 ? fresh : cachedPets.value
   })
+
+  watch(
+    () => currentPets.value,
+    (pets) => {
+      const featured = pets.filter((p) => p.profileSettings?.isSpotlightFeatured)
+      const candidates = featured.length > 0 ? featured : pets
+      const fresh = candidates.slice(0, 4)
+      if (fresh.length > 0 && typeof window !== 'undefined') {
+        cachedPets.value = fresh
+        try {
+          sessionStorage.setItem(SESSION_CACHE_KEY, JSON.stringify(fresh))
+        } catch {
+          // Ignore storage quota error
+        }
+      }
+    },
+    { immediate: true },
+  )
 
   const fetchSpotlight = async () => {
     await store.fetchPets()
@@ -39,3 +56,4 @@ export function usePets() {
     fetchSpotlight,
   }
 }
+

@@ -78,7 +78,7 @@ const imgSrcComputed = computed(() => (props.imgSrc && props.imgSrc.length ? pro
     <img v-else-if="imgSrcComputed" :src="imgSrcComputed" :alt="props.title" height="48" width="48" />
 
     <div class="banner-text">
-      <h5>{{ props.title }}</h5>
+      <span class="banner-title">{{ props.title }}</span>
       <p>{{ props.subtitle }}</p>
     </div>
   </button>
@@ -131,11 +131,13 @@ img {
   filter: brightness(0) invert(1);
 }
 
+.banner-title,
 h5 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
   color: inherit;
+  display: block;
 }
 
 p {

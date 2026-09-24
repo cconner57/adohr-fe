@@ -4,8 +4,6 @@ import { computed, onMounted } from 'vue'
 
 import { usePetStore } from '@/stores/pets'
 
-import Spinner from '../../common/ui/Spinner.vue'
-
 const currentYear = new Date().getFullYear()
 const previousYear = currentYear - 1
 
@@ -28,13 +26,16 @@ onMounted(() => {
   <section class="impact">
     <header class="impact-header">
       <p class="eyebrow">Our impact</p>
-      <h4>Every number is a <span class="display-accent">life changed.</span></h4>
+      <h2>Every number is a <span class="display-accent">life changed.</span></h2>
     </header>
 
     <div class="stat-rows">
       <div class="stat-row">
         <span class="stat-year">{{ previousYear }}</span>
-        <div v-if="isLoading" class="loader-container"><Spinner /></div>
+        <div v-if="isLoading" class="stat-skeleton" aria-hidden="true">
+          <div class="stat-count-skeleton"></div>
+          <div class="stat-desc-skeleton"></div>
+        </div>
         <template v-else>
           <span class="stat-count">{{ countPrevious }}</span>
           <span class="stat-desc">{{ getLabel(countPrevious) }}</span>
@@ -43,7 +44,10 @@ onMounted(() => {
 
       <div class="stat-row stat-row--current">
         <span class="stat-year">{{ currentYear }} <em>so far</em></span>
-        <div v-if="isLoading" class="loader-container"><Spinner /></div>
+        <div v-if="isLoading" class="stat-skeleton" aria-hidden="true">
+          <div class="stat-count-skeleton"></div>
+          <div class="stat-desc-skeleton"></div>
+        </div>
         <template v-else>
           <span class="stat-count">{{ countCurrent }}</span>
           <span class="stat-desc">{{ getLabel(countCurrent) }}</span>
@@ -54,12 +58,6 @@ onMounted(() => {
 </template>
 
 <style scoped lang="css">
-.loader-container {
-  display: flex;
-  align-items: center;
-  min-height: 80px;
-}
-
 .impact {
   width: 100%;
   display: flex;
@@ -76,6 +74,7 @@ onMounted(() => {
     color: var(--color-secondary);
   }
 
+  h2,
   h4 {
     font-size: var(--font-size-h2);
     color: var(--text-primary);
@@ -132,10 +131,60 @@ onMounted(() => {
   line-height: 1.45;
 }
 
+.stat-skeleton {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  grid-column: 2 / -1;
+}
+
+.stat-count-skeleton {
+  width: 140px;
+  height: clamp(3.5rem, 9vw, 6.5rem);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    110deg,
+    oklch(from var(--text-primary) l c h / 6%) 8%,
+    oklch(from var(--text-primary) l c h / 14%) 18%,
+    oklch(from var(--text-primary) l c h / 6%) 33%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+.stat-desc-skeleton {
+  width: 180px;
+  height: 1.25rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    110deg,
+    oklch(from var(--text-primary) l c h / 4%) 8%,
+    oklch(from var(--text-primary) l c h / 10%) 18%,
+    oklch(from var(--text-primary) l c h / 4%) 33%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 @media (width <= 600px) {
   .stat-row {
     grid-template-columns: 1fr;
     gap: 0.375rem;
+  }
+
+  .stat-skeleton {
+    flex-direction: column;
+    gap: 0.5rem;
+    grid-column: 1;
   }
 }
 </style>
