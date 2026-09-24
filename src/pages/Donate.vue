@@ -22,6 +22,19 @@ const copyEIN = async () => {
   }
 }
 
+const isZelleCopied = ref(false)
+const copyZelle = async () => {
+  try {
+    await navigator.clipboard.writeText(ZELLE_EMAIL)
+    isZelleCopied.value = true
+    setTimeout(() => {
+      isZelleCopied.value = false
+    }, 2500)
+  } catch (err) {
+    console.error('Clipboard copy failed', err)
+  }
+}
+
 const impactLedger = [
   { amount: 25, title: 'Intake Vaccines & Deworming', covers: 'Essential initial vaccines and preventative deworming for one rescue' },
   { amount: 60, title: 'Microchip & Registration', covers: 'A lifetime-registered microchip ensuring the pet can always find their way home' },
@@ -41,6 +54,14 @@ const impactLedger = [
           ADOHR is volunteer-powered, so your donation goes directly to the animals: medical care,
           food, foster supplies, and the path to a forever family.
         </p>
+
+        <div class="online-giving-notice" role="status">
+          <span class="notice-badge">Coming Soon</span>
+          <div class="notice-text">
+            <strong>Online checkout is launching in October!</strong>
+            <span> In the meantime, you can donate instantly with zero processing fees via Zelle below or by mailing a check.</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -72,6 +93,7 @@ const impactLedger = [
               class="sponsor-btn"
               disabled
               aria-disabled="true"
+              title="Online checkout launching soon! Please donate via Zelle below."
             >
               Sponsor ${{ row.amount }} →
             </button>
@@ -100,6 +122,7 @@ const impactLedger = [
               class="way-cta vip-cta"
               disabled
               aria-disabled="true"
+              title="Online checkout launching soon! Please donate via Zelle below."
             >
               Join the Pack
             </button>
@@ -116,6 +139,7 @@ const impactLedger = [
                 class="way-cta"
                 disabled
                 aria-disabled="true"
+                title="Online checkout launching soon! Please donate via Zelle below."
               >
                 Donate Online
               </button>
@@ -125,7 +149,17 @@ const impactLedger = [
             <article class="way-card">
               <h3>Send via Zelle</h3>
               <p>Zelle transfers reach us with zero processing fees, so 100% of your gift goes directly to the animals.</p>
-              <p class="way-detail">{{ ZELLE_EMAIL }}</p>
+              <div class="zelle-box">
+                <span class="way-detail">{{ ZELLE_EMAIL }}</span>
+                <button
+                  type="button"
+                  class="copy-zelle-btn"
+                  @click="copyZelle"
+                  aria-label="Copy Zelle email to clipboard"
+                >
+                  {{ isZelleCopied ? '✓ Copied!' : 'Copy Zelle Email' }}
+                </button>
+              </div>
             </article>
           </li>
           <li class="way-item">
@@ -175,271 +209,5 @@ const impactLedger = [
   </main>
 </template>
 
-<style scoped lang="css">
-.donate {
-  width: 100%;
-  overflow: hidden;
-  background-color: var(--text-inverse);
-  color: var(--text-primary);
+<style scoped src="./Donate.css"></style>
 
-  .content-wrapper {
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 var(--layout-padding-side);
-  }
-
-  .eyebrow {
-    font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--color-secondary);
-    margin-bottom: 12px;
-  }
-
-  .section-lead {
-    font-size: 1.05rem;
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
-  }
-
-  .hero {
-    padding: clamp(120px, 12vw, 150px) 0 clamp(40px, 6vw, 60px);
-    text-align: center;
-    background-color: var(--color-primary);
-    color: var(--text-inverse);
-
-    .eyebrow { color: var(--color-warning); }
-    h1 {
-      font-size: clamp(2.4rem, 6vw, 4.5rem);
-      font-weight: 800;
-      letter-spacing: -0.025em;
-      margin-bottom: 1rem;
-      line-height: 1.1;
-      em { font-style: italic; color: var(--color-warning); }
-    }
-    .lead {
-      font-size: clamp(1.05rem, 2vw, 1.25rem);
-      max-width: 640px;
-      margin: 0 auto;
-      line-height: 1.6;
-      color: oklch(from var(--text-inverse) l c h / 90%);
-    }
-  }
-
-  .trust-banner {
-    padding: 16px 0;
-    background-color: oklch(from var(--color-secondary) 96% 0.04 h);
-    text-align: center;
-    border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-    .legal {
-      font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      margin: 0;
-    }
-  }
-
-  .impact {
-    padding: clamp(60px, 8vw, 90px) 0;
-    border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-    h2 { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 0.5rem; }
-
-    .ledger {
-      list-style: none; padding: 0; margin: 0;
-      border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .ledger-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-      background-color: var(--text-inverse);
-      transition: background-color 0.2s ease;
-      &:last-child { border-bottom: none; }
-      &:hover { background-color: oklch(from var(--color-primary-weak) l c h / 30%); }
-
-      .ledger-left {
-        display: flex; align-items: center; gap: 1.5rem;
-        @media (max-width: 640px) { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-      }
-      .ledger-amount {
-        font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-        font-size: 1.35rem; font-weight: 800; color: var(--color-primary); min-width: 80px;
-      }
-      .ledger-info {
-        display: flex; flex-direction: column; gap: 2px;
-        strong { font-size: 0.95rem; color: var(--text-primary); }
-        .ledger-covers { font-size: 0.85rem; color: var(--text-secondary); }
-      }
-      .sponsor-btn {
-        padding: 8px 16px; font-size: 0.85rem; font-weight: 700; color: var(--text-inverse);
-        background-color: var(--color-primary); border-radius: var(--radius-full); text-decoration: none;
-        white-space: nowrap; transition: transform 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
-        border: none; font-family: inherit; cursor: pointer;
-        &:hover:not(:disabled) { background-color: var(--color-secondary); transform: translateY(-1px); }
-        &:disabled,
-        &[disabled] {
-          opacity: 0.6;
-          cursor: not-allowed;
-          box-shadow: none;
-          transform: none;
-        }
-      }
-    }
-  }
-
-  .ways {
-    padding: clamp(60px, 8vw, 90px) 0;
-    border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-    h2 { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 2rem; }
-
-    .vip-card {
-      background-color: var(--color-primary);
-      color: var(--text-inverse);
-      border-radius: var(--radius-lg);
-      padding: 2.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 2rem;
-      box-shadow: var(--shadow-lg);
-      margin-bottom: 2.5rem;
-      border: 1px solid var(--text-primary);
-      @media (max-width: 768px) { flex-direction: column; align-items: flex-start; }
-
-      .vip-badge {
-        display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px;
-        background: oklch(100% 0 0deg / 15%); border-radius: var(--radius-full);
-        font-size: 0.78rem; font-weight: 700; color: var(--color-warning); margin-bottom: 0.75rem;
-      }
-      h3 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-inverse); }
-      p { font-size: 0.95rem; color: oklch(100% 0 0deg / 85%); line-height: 1.5; max-width: 580px; }
-      .vip-cta {
-        background-color: var(--color-warning); color: var(--color-primary); font-weight: 800;
-        padding: 0.9rem 1.8rem; border-radius: var(--radius-full); text-decoration: none; white-space: nowrap;
-        border: none; font-family: inherit; font-size: 1rem; cursor: pointer;
-        transition: background-color 0.15s ease, opacity 0.15s ease;
-        &:hover:not(:disabled) { background-color: #fff; }
-        &:disabled,
-        &[disabled] {
-          opacity: 0.6;
-          cursor: not-allowed;
-          box-shadow: none;
-          transform: none;
-        }
-      }
-    }
-
-    .ways-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      @media (max-width: 800px) {
-        grid-template-columns: 1fr;
-      }
-    }
-    .way-card {
-      background: var(--text-inverse);
-      border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
-      border-radius: var(--radius-lg);
-      padding: 1.75rem;
-      display: flex;
-      flex-direction: column;
-      box-shadow: var(--shadow-sm);
-      height: 100%;
-
-      h3 {
-        font-size: 1.2rem;
-        font-weight: 800;
-        margin-bottom: 0.75rem;
-      }
-
-      p {
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        line-height: 1.5;
-        margin-bottom: 1rem;
-      }
-
-      .way-detail {
-        font-family: ui-monospace, 'SF Mono', monospace;
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: var(--color-primary);
-        margin-top: auto;
-      }
-
-      .way-cta {
-        margin-top: auto;
-        padding: 0.7rem 1.2rem;
-        background-color: var(--color-secondary);
-        color: var(--text-inverse);
-        font-weight: 700;
-        border-radius: var(--radius-full);
-        text-decoration: none;
-        text-align: center;
-        border: none;
-        font-family: inherit;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: background-color 0.15s ease, opacity 0.15s ease;
-
-        &:hover:not(:disabled) {
-          background-color: var(--color-primary);
-        }
-
-        &:disabled,
-        &[disabled] {
-          opacity: 0.6;
-          cursor: not-allowed;
-          box-shadow: none;
-          transform: none;
-        }
-      }
-    }
-  }
-
-  .employer-match {
-    padding: clamp(60px, 8vw, 90px) 0;
-    h2 { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 0.5rem; }
-    .match-lead { font-size: 1.05rem; color: var(--text-secondary); max-width: 700px; margin-bottom: 2rem; }
-
-    .match-card {
-      display: grid; grid-template-columns: 1.4fr 1fr; gap: 2rem; background: var(--text-inverse);
-      border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%)); border-radius: var(--radius-lg);
-      padding: 2rem; box-shadow: var(--shadow-md);
-      @media (max-width: 768px) { grid-template-columns: 1fr; }
-
-      .match-steps {
-        padding-left: 1.25rem; font-size: 0.92rem; color: var(--text-primary); line-height: 1.6;
-        li { margin-bottom: 0.5rem; }
-      }
-
-      .match-ein-box {
-        background: oklch(from var(--color-primary) 96% 0.04 h); border: 1.5px dashed var(--color-primary);
-        border-radius: var(--radius-md); padding: 1.5rem; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px;
-
-        .ein-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-secondary); letter-spacing: 0.1em; }
-        .ein-code { font-family: ui-monospace, 'SF Mono', monospace; font-size: 1.8rem; font-weight: 900; color: var(--color-primary); }
-        .copy-btn {
-          background-color: var(--color-primary); color: var(--text-inverse); border: none; padding: 8px 18px;
-          border-radius: var(--radius-full); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.15s ease;
-          &:hover { background-color: var(--color-secondary); transform: scale(1.03); }
-        }
-        .ein-sub { font-size: 0.78rem; color: var(--text-secondary); margin-top: 4px; }
-      }
-    }
-  }
-}
-</style>
