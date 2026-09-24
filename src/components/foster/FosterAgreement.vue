@@ -1,13 +1,10 @@
 <script setup lang="ts">
+import InputField from '@/components/common/ui/InputField.vue'
 import InputSignature from '@/components/common/ui/InputSignature.vue'
-import type { IFosterQuestion } from '@/models/foster-form'
 
 defineProps<{
   answers: Record<string, string>
-  // eslint-disable-next-line no-unused-vars
-  getVisibleQuestion: (id: string) => IFosterQuestion | undefined
-  // eslint-disable-next-line no-unused-vars
-  questionHasError: (question: IFosterQuestion) => boolean
+  errors?: Record<string, boolean>
 }>()
 
 const emit = defineEmits<{
@@ -29,41 +26,34 @@ const emit = defineEmits<{
         full name below.
       </p>
 
-      <article
-        v-if="getVisibleQuestion('q94')"
-        class="question-card"
-        :class="{
-          'has-error': questionHasError(getVisibleQuestion('q94')!),
-        }"
-      >
+      <div class="agreement-card">
         <div class="agreement-ack-row">
           <div class="agreement-ack-item">
-            <label for="q94">Type your name</label>
-            <input
+            <InputField
               id="q94"
-              type="text"
-              :value="answers.q94 ?? ''"
-              :aria-invalid="questionHasError(getVisibleQuestion('q94')!)"
-              @input="emit('update-answer', 'q94', ($event.target as HTMLInputElement).value)"
+              name="q94"
+              label="Type your name"
+              placeholder="Full legal name"
+              :modelValue="answers.q94 ?? ''"
+              :hasError="!!errors?.q94"
+              @update:modelValue="(val) => emit('update-answer', 'q94', String(val ?? ''))"
             />
           </div>
 
-          <div
-            v-if="getVisibleQuestion('q94_date')"
-            class="agreement-ack-item"
-            :class="{ 'has-error': questionHasError(getVisibleQuestion('q94_date')!) }"
-          >
-            <label for="q94_date">Date</label>
-            <input
+          <div class="agreement-ack-item">
+            <InputField
               id="q94_date"
+              name="q94_date"
               type="date"
-              :value="answers.q94_date ?? ''"
-              :aria-invalid="questionHasError(getVisibleQuestion('q94_date')!)"
-              @input="emit('update-answer', 'q94_date', ($event.target as HTMLInputElement).value)"
+              label="Date"
+              placeholder="YYYY-MM-DD"
+              :modelValue="answers.q94_date ?? ''"
+              :hasError="!!errors?.q94_date"
+              @update:modelValue="(val) => emit('update-answer', 'q94_date', String(val ?? ''))"
             />
           </div>
         </div>
-      </article>
+      </div>
 
       <p>
         If approved as a foster, I agree to follow all ADOHR policies and instructions, maintain
@@ -80,52 +70,44 @@ const emit = defineEmits<{
         below.
       </p>
 
-      <article
-        v-if="getVisibleQuestion('q95')"
-        class="question-card"
-        :class="{ 'has-error': questionHasError(getVisibleQuestion('q95')!) }"
-      >
+      <div class="agreement-card">
         <div class="agreement-ack-row">
           <div class="agreement-ack-item">
-            <label for="q95">Type your name</label>
-            <input
+            <InputField
               id="q95"
-              type="text"
-              :value="answers.q95 ?? ''"
-              :aria-invalid="questionHasError(getVisibleQuestion('q95')!)"
-              @input="emit('update-answer', 'q95', ($event.target as HTMLInputElement).value)"
+              name="q95"
+              label="Type your name"
+              placeholder="Full legal name"
+              :modelValue="answers.q95 ?? ''"
+              :hasError="!!errors?.q95"
+              @update:modelValue="(val) => emit('update-answer', 'q95', String(val ?? ''))"
             />
           </div>
 
-          <div
-            v-if="getVisibleQuestion('q95_date')"
-            class="agreement-ack-item"
-            :class="{ 'has-error': questionHasError(getVisibleQuestion('q95_date')!) }"
-          >
-            <label for="q95_date">Date</label>
-            <input
+          <div class="agreement-ack-item">
+            <InputField
               id="q95_date"
+              name="q95_date"
               type="date"
-              :value="answers.q95_date ?? ''"
-              :aria-invalid="questionHasError(getVisibleQuestion('q95_date')!)"
-              @input="emit('update-answer', 'q95_date', ($event.target as HTMLInputElement).value)"
+              label="Date"
+              placeholder="YYYY-MM-DD"
+              :modelValue="answers.q95_date ?? ''"
+              :hasError="!!errors?.q95_date"
+              @update:modelValue="(val) => emit('update-answer', 'q95_date', String(val ?? ''))"
             />
           </div>
         </div>
-      </article>
+      </div>
 
-      <article
-        v-if="getVisibleQuestion('q100')"
-        class="question-card signature-card"
-        :class="{ 'has-error': questionHasError(getVisibleQuestion('q100')!) }"
-      >
+      <div class="agreement-card signature-card">
         <InputSignature
+          id="fosterSignature"
           label="Signature"
           :modelValue="answers.q100 ?? null"
-          :hasError="questionHasError(getVisibleQuestion('q100')!)"
+          :hasError="!!errors?.q100"
           @update:modelValue="(val) => emit('update-answer', 'q100', val ?? '')"
         />
-      </article>
+      </div>
     </div>
   </div>
 </template>
@@ -168,35 +150,5 @@ const emit = defineEmits<{
 .agreement-ack-item {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-
-  label {
-    font-size: 1rem;
-    color: var(--text-primary);
-  }
-
-  input {
-    width: 100%;
-    border: 1px solid var(--color-neutral-border);
-    border-radius: var(--radius-md);
-    padding: 12px 16px;
-    font: inherit;
-    font-size: 1rem;
-    color: var(--text-primary);
-    background-color: var(--color-white);
-    box-shadow: var(--shadow-md);
-    min-height: 48px;
-
-    &:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px oklch(from var(--color-primary) l c h / 20%);
-    }
-  }
-
-  &.has-error input {
-    border-color: var(--color-danger) !important;
-    outline: 1px solid var(--color-danger);
-  }
 }
 </style>

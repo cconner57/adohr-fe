@@ -16,38 +16,40 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <article class="question-card" :class="{ 'has-error': hasError }">
-    <label :for="question.id">
-      {{ questionLabel }}
-    </label>
-
-    <textarea
-      v-if="question.type === 'textarea'"
-      :id="question.id"
-      rows="3"
-      :value="modelValue"
-      :aria-invalid="hasError"
-      @input="emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
-    ></textarea>
-
+  <div class="question-card" :class="{ 'has-error': hasError }">
     <InputSelectGroup
-      v-else-if="question.type === 'select'"
-      label=""
+      v-if="question.type === 'select'"
+      :label="questionLabel"
       :options="question.options ?? []"
       :modelValue="modelValue"
       :hasError="hasError"
       @update:modelValue="(val) => emit('update:modelValue', String(val ?? ''))"
     />
 
-    <input
-      v-else
-      :id="question.id"
-      :type="inputType"
-      :value="modelValue"
-      :aria-invalid="hasError"
-      @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-    />
-  </article>
+    <template v-else>
+      <label :for="question.id">
+        {{ questionLabel }}
+      </label>
+
+      <textarea
+        v-if="question.type === 'textarea'"
+        :id="question.id"
+        rows="3"
+        :value="modelValue"
+        :aria-invalid="hasError"
+        @input="emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
+      ></textarea>
+
+      <input
+        v-else
+        :id="question.id"
+        :type="inputType"
+        :value="modelValue"
+        :aria-invalid="hasError"
+        @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+      />
+    </template>
+  </div>
 </template>
 
 <style scoped lang="css">

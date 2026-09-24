@@ -105,8 +105,13 @@ export const useFosterStore = defineStore('foster', () => {
       return
     }
 
-    state.value.speciesPreference = persisted.speciesPreference
-    state.value.currentStep = Math.max(1, Math.min(10, persisted.currentStep))
+    const rawStep = Math.max(1, Number(persisted.currentStep) || 1)
+    let mappedStep = 1
+    if (rawStep >= 10) mappedStep = 4
+    else if (rawStep >= 6) mappedStep = 3
+    else if (rawStep >= 4) mappedStep = 2
+    else mappedStep = rawStep
+    state.value.currentStep = Math.min(4, Math.max(1, mappedStep))
     state.value.answers = persisted.answers
     hasSavedProgress.value = true
   }
@@ -131,7 +136,7 @@ export const useFosterStore = defineStore('foster', () => {
   }
 
   const goToNextStep = () => {
-    if (state.value.currentStep >= 10) return
+    if (state.value.currentStep >= 4) return
 
     saveProgressOnNext()
     state.value.currentStep += 1
@@ -196,7 +201,7 @@ export const useFosterStore = defineStore('foster', () => {
     }
   }
 
-  const progressLabel = computed(() => `Page ${state.value.currentStep} of 10`)
+  const progressLabel = computed(() => `Stage ${state.value.currentStep} of 4`)
 
   const hasSavedDraft = computed(() => {
     return Boolean(

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
+import Footer from '@/components/common/footer/Footer.vue'
 import FormSubmitted from '@/components/common/form-submitted/FormSubmitted.vue'
 import Button from '@/components/common/ui/Button.vue'
 import InputSelectGroup from '@/components/common/ui/InputSelectGroup.vue'
@@ -11,7 +12,7 @@ import FosterQuestionCard from '@/components/foster/FosterQuestionCard.vue'
 import AdoptionSteps from '@/components/pet-adoption/adoption-steps/AdoptionSteps.vue'
 import ApplicationHeader from '@/components/volunteer/application-header/ApplicationHeader.vue'
 import { FOSTER_PAGES } from '@/constants/fosterQuestions'
-import type { IFosterQuestion, TFosterSpecies } from '@/models/foster-form'
+import type { IFosterPage, IFosterQuestion, TFosterSpecies } from '@/models/foster-form'
 import { useFosterStore } from '@/stores/foster'
 
 const router = useRouter()
@@ -26,35 +27,68 @@ onMounted(() => {
   fosterStore.loadProgress()
 })
 
-const currentPage = computed(() => FOSTER_PAGES[state.value.currentStep - 1])
+const fosterStepLabels = [
+  'Applicant & Home',
+  'Pet History',
+  'Care & Skills',
+  'Agreement',
+]
 
-const currentVisibleQuestions = computed(() => {
+const fosterStages = computed(() => [
+  {
+    stage: 1,
+    title: 'Applicant & Home',
+    pages: [FOSTER_PAGES[0], FOSTER_PAGES[1], FOSTER_PAGES[2]],
+  },
+  {
+    stage: 2,
+    title: 'Pet History',
+    pages: [FOSTER_PAGES[3], FOSTER_PAGES[4]],
+  },
+  {
+    stage: 3,
+    title: 'Care & Skills',
+    pages: [FOSTER_PAGES[5], FOSTER_PAGES[6], FOSTER_PAGES[7], FOSTER_PAGES[8]],
+  },
+  {
+    stage: 4,
+    title: 'Agreement & Release',
+    pages: [FOSTER_PAGES[9]],
+  },
+])
+
+const currentStage = computed(
+  () => fosterStages.value[state.value.currentStep - 1] ?? fosterStages.value[0],
+)
+
+const isQuestionVisible = (q: IFosterQuestion, pageId: number) => {
   const species = state.value.speciesPreference
-  const page = currentPage.value
   const housingStatus = (state.value.answers.q11 ?? '').trim()
   const hasCurrentPets = (state.value.answers.q30_hasCurrentPets ?? '').trim()
   const hasPastPets = (state.value.answers.q40_hasPastPets ?? '').trim()
 
-  return page.questions.filter((q) => {
-    if (q.id === 'q12') return housingStatus === 'Rent' || housingStatus === 'Live with family'
-    if (page.id === 4 && q.id !== 'q30_hasCurrentPets') return hasCurrentPets === 'Yes'
-    if (page.id === 5 && q.id !== 'q40_hasPastPets') return hasPastPets === 'Yes'
+  if (q.id === 'q12') return housingStatus === 'Rent' || housingStatus === 'Live with family'
+  if (pageId === 4 && q.id !== 'q30_hasCurrentPets') return hasCurrentPets === 'Yes'
+  if (pageId === 5 && q.id !== 'q40_hasPastPets') return hasPastPets === 'Yes'
 
-    const scope = q.speciesScope ?? 'all'
-    if (scope === 'all') return true
-    if (species === 'both') return true
-    return scope === species
-  })
-})
+  const scope = q.speciesScope ?? 'all'
+  if (scope === 'all') return true
+  if (species === 'both') return true
+  return scope === species
+}
 
-const isQuestionRequired = (question: IFosterQuestion) => {
-  if (currentPage.value.id === 4) {
+const getPageVisibleQuestions = (page: IFosterPage) => {
+  return page.questions.filter((q) => isQuestionVisible(q, page.id))
+}
+
+const isQuestionRequired = (question: IFosterQuestion, pageId: number) => {
+  if (pageId === 4) {
     return (
       question.id === 'q30_hasCurrentPets' ||
       state.value.answers.q30_hasCurrentPets?.trim() === 'Yes'
     )
   }
-  if (currentPage.value.id === 5) {
+  if (pageId === 5) {
     return (
       question.id === 'q40_hasPastPets' || state.value.answers.q40_hasPastPets?.trim() === 'Yes'
     )
@@ -67,6 +101,21 @@ const getTodayLocalIsoDate = () => {
   const tzOffset = now.getTimezoneOffset() * 60000
   return new Date(now.getTime() - tzOffset).toISOString().slice(0, 10)
 }
+
+watch(
+  () => state.value.currentStep,
+  (step) => {
+    if (step === 4) {
+      if (!state.value.answers.q94_date) {
+        state.value.answers.q94_date = getTodayLocalIsoDate()
+      }
+      if (!state.value.answers.q95_date) {
+        state.value.answers.q95_date = getTodayLocalIsoDate()
+      }
+    }
+  },
+  { immediate: true },
+)
 
 const getSpeciesText = () => {
   const pref = state.value.speciesPreference
@@ -88,11 +137,11 @@ const questionLabel = (question: IFosterQuestion) => {
     .replace(/This species/g, speciesText.charAt(0).toUpperCase() + speciesText.slice(1))
 }
 
-const getQuestionValidationIssue = (question: IFosterQuestion) => {
+const getQuestionValidationIssue = (question: IFosterQuestion, pageId: number) => {
   const value = state.value.answers[question.id] ?? ''
   const label = questionLabel(question).replace(/^Page\s+\d+:\s*/, '')
 
-  if (isQuestionRequired(question) && !value.trim()) return label
+  if (isQuestionRequired(question, pageId) && !value.trim()) return label
   if (question.type === 'email' && value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()))
     return label
 
@@ -105,7 +154,7 @@ const getQuestionValidationIssue = (question: IFosterQuestion) => {
       (now.getMonth() === date.getMonth() && now.getDate() < date.getDate())
     )
       age--
-    if (age < 18) return label
+    if (age < 18) return `${label} (must be 18+)`
   }
 
   if (
@@ -119,15 +168,46 @@ const getQuestionValidationIssue = (question: IFosterQuestion) => {
   return null
 }
 
+const agreementErrors = computed<Record<string, boolean>>(() => {
+  if (!attemptedValidation.value || state.value.currentStep !== 4) return {}
+  const res: Record<string, boolean> = {}
+  const page10 = FOSTER_PAGES[9]
+  if (page10) {
+    page10.questions.forEach((q) => {
+      const issue = getQuestionValidationIssue(q, 10)
+      if (issue) res[q.id] = true
+    })
+  }
+  return res
+})
+
+const currentStageVisibleQuestions = computed(() => {
+  return currentStage.value.pages.flatMap((page) =>
+    getPageVisibleQuestions(page).map((q) => ({ question: q, pageId: page.id })),
+  )
+})
+
 const validationErrors = computed(() => {
   if (!attemptedValidation.value) return []
   const issues = new Set<string>()
   if (state.value.currentStep === 1 && !state.value.speciesPreference)
     issues.add('Foster Preference')
-  currentVisibleQuestions.value.forEach((q) => {
-    const issue = getQuestionValidationIssue(q)
-    if (issue) issues.add(issue)
-  })
+
+  if (state.value.currentStep < 4) {
+    currentStageVisibleQuestions.value.forEach(({ question, pageId }) => {
+      const issue = getQuestionValidationIssue(question, pageId)
+      if (issue) issues.add(issue)
+    })
+  } else {
+    const page10 = FOSTER_PAGES[9]
+    if (page10) {
+      page10.questions.forEach((q) => {
+        const issue = getQuestionValidationIssue(q, 10)
+        if (issue) issues.add(issue)
+      })
+    }
+  }
+
   return Array.from(issues)
 })
 
@@ -165,6 +245,14 @@ const onSubmit = async () => {
   }
 }
 
+const handleFormSubmit = () => {
+  if (state.value.currentStep < 4) {
+    onNext()
+  } else {
+    onSubmit()
+  }
+}
+
 const onReset = async () => {
   fosterStore.startNewForm()
   await router.push('/')
@@ -174,168 +262,185 @@ const handleClearDraft = () => {
   clearPersistedState()
 }
 
+let debounceTimeout: ReturnType<typeof setTimeout> | null = null
 watch(
   () => [state.value.speciesPreference, state.value.answers],
   () => {
-    fosterStore.persistState()
+    if (debounceTimeout) clearTimeout(debounceTimeout)
+    debounceTimeout = setTimeout(() => {
+      fosterStore.persistState()
+    }, 300)
   },
   { deep: true },
 )
+
+onBeforeUnmount(() => {
+  if (debounceTimeout) {
+    clearTimeout(debounceTimeout)
+    fosterStore.persistState()
+  }
+})
 
 const getInputType = (type: string) => {
   if (['email', 'tel', 'date', 'number'].includes(type)) return type
   return 'text'
 }
-
-const fosterStepLabels = [
-  'Profile',
-  'Home',
-  'Environment',
-  'Pets',
-  'History',
-  'Skills',
-  'Care',
-  'Commitment',
-  'Scenarios',
-  'Agreement',
-]
 </script>
 
 <template>
-  <section class="page-shell">
-    <div v-if="!state.isSubmitted" class="form-container">
-      <form
-        class="form-card"
-        :style="{ '--step-prefix': `'${String(state.currentStep).padStart(2, '0')}'` }"
-        aria-label="Foster Application"
-        novalidate
-        @submit.prevent
-      >
-        <ApplicationHeader
-          header-title="Foster"
-          :header-text="
-            state.currentStep === 1 ? 'Thank you for opening your home to a rescue pet.' : undefined
-          "
-        />
-
-        <section class="progress-panel">
-          <AdoptionSteps :currentStep="state.currentStep - 1" :steps="fosterStepLabels" />
-        </section>
-
-        <!-- Draft Auto-Save Banner -->
-        <div v-if="hasSavedDraft" class="draft-badge-bar">
-          <span class="draft-indicator">
-            <span class="dot"></span>
-            Draft auto-saved · Step {{ state.currentStep }} of {{ fosterStepLabels.length }}
-          </span>
-          <button type="button" class="clear-draft-btn" @click="handleClearDraft">
-            Clear Draft
-          </button>
-        </div>
-
-        <fieldset v-if="state.currentStep === 1" class="section-block species">
-          <legend class="section-title">Foster Preference</legend>
-          <p class="section-copy">What species are you currently available to foster?</p>
-          <InputSelectGroup
-            label=""
-            :options="[
-              { label: 'Cats', value: 'cat' },
-              { label: 'Dogs', value: 'dog' },
-              { label: 'Both', value: 'both' },
-            ]"
-            :modelValue="state.speciesPreference"
-            :hasError="attemptedValidation && state.currentStep === 1 && !state.speciesPreference"
-            @update:modelValue="
-              (val) => fosterStore.setSpeciesPreference((val as TFosterSpecies) ?? '')
+  <main class="foster-page">
+    <section class="page-shell">
+      <div v-if="!state.isSubmitted" class="form-container">
+        <form
+          class="form-card"
+          :style="{ '--step-prefix': `'${String(state.currentStep).padStart(2, '0')}'` }"
+          aria-label="Foster Application"
+          novalidate
+          @submit.prevent="handleFormSubmit"
+        >
+          <ApplicationHeader
+            header-title="Foster"
+            :header-text="
+              state.currentStep === 1
+                ? 'Thank you for opening your home to a rescue pet.'
+                : undefined
             "
           />
-        </fieldset>
 
-        <fieldset class="section-block">
-          <legend v-if="state.currentStep < 10" class="section-title">
-            {{ currentPage.title.replace(/^Page\s+\d+:\s*/, '') }}
-          </legend>
-          <legend v-else class="section-title">
-            Foster Care Agreement & Release
-          </legend>
+          <section class="progress-panel">
+            <AdoptionSteps :currentStep="state.currentStep - 1" :steps="fosterStepLabels" />
+          </section>
 
-          <div v-if="state.currentStep < 10" class="questions-grid">
-            <FosterQuestionCard
-              v-for="question in currentVisibleQuestions"
-              :key="question.id"
-              :question="question"
-              :modelValue="state.answers[question.id] ?? ''"
-              :hasError="attemptedValidation && !!getQuestionValidationIssue(question)"
-              :inputType="getInputType(question.type)"
-              :questionLabel="questionLabel(question)"
-              @update:modelValue="(val) => fosterStore.setAnswer(question.id, val)"
-              :class="{
-                'full-row':
-                  (state.currentStep === 4 && question.id === 'q30_hasCurrentPets') ||
-                  (state.currentStep === 5 && question.id === 'q40_hasPastPets'),
-              }"
+          <!-- Draft Auto-Save Banner -->
+          <div v-if="hasSavedDraft" class="draft-badge-bar">
+            <span class="draft-indicator">
+              <span class="dot"></span>
+              Draft auto-saved · Step {{ state.currentStep }} of {{ fosterStepLabels.length }}
+            </span>
+            <button type="button" class="clear-draft-btn" @click="handleClearDraft">
+              Clear Draft
+            </button>
+          </div>
+
+          <!-- STAGES 1, 2, 3: Form Questions -->
+          <template v-if="state.currentStep < 4">
+            <fieldset v-if="state.currentStep === 1" class="section-block species">
+              <legend class="section-title">Foster Preference</legend>
+              <p class="section-copy">What species are you currently available to foster?</p>
+              <InputSelectGroup
+                label=""
+                :options="[
+                  { label: 'Cats', value: 'cat' },
+                  { label: 'Dogs', value: 'dog' },
+                  { label: 'Both', value: 'both' },
+                ]"
+                :modelValue="state.speciesPreference"
+                :hasError="
+                  attemptedValidation && state.currentStep === 1 && !state.speciesPreference
+                "
+                @update:modelValue="
+                  (val) => fosterStore.setSpeciesPreference((val as TFosterSpecies) ?? '')
+                "
+              />
+            </fieldset>
+
+            <fieldset
+              v-for="page in currentStage.pages"
+              :key="page.id"
+              class="section-block"
+            >
+              <legend class="section-title">
+                {{ page.title.replace(/^Page\s+\d+:\s*/, '') }}
+              </legend>
+              <div class="questions-grid">
+                <FosterQuestionCard
+                  v-for="question in getPageVisibleQuestions(page)"
+                  :key="question.id"
+                  :question="question"
+                  :modelValue="state.answers[question.id] ?? ''"
+                  :hasError="
+                    attemptedValidation && !!getQuestionValidationIssue(question, page.id)
+                  "
+                  :inputType="getInputType(question.type)"
+                  :questionLabel="questionLabel(question)"
+                  @update:modelValue="(val) => fosterStore.setAnswer(question.id, val)"
+                  :class="{
+                    'full-row':
+                      (page.id === 4 && question.id === 'q30_hasCurrentPets') ||
+                      (page.id === 5 && question.id === 'q40_hasPastPets'),
+                  }"
+                />
+              </div>
+            </fieldset>
+          </template>
+
+          <!-- STAGE 4: Agreement & Release -->
+          <template v-else>
+            <fieldset class="section-block">
+              <legend class="section-title">Foster Care Agreement & Release</legend>
+              <FosterAgreement
+                :answers="state.answers"
+                :errors="agreementErrors"
+                @update-answer="(id, val) => fosterStore.setAnswer(id, val)"
+              />
+            </fieldset>
+          </template>
+
+          <div
+            v-if="attemptedValidation && validationErrors.length > 0"
+            class="validation-summary"
+            tabindex="-1"
+            role="alert"
+            aria-live="assertive"
+          >
+            <p class="summary-title">Please complete the following required fields:</p>
+            <div class="tags">
+              <span v-for="err in validationErrors" :key="err" class="tag is-danger">{{
+                err
+              }}</span>
+            </div>
+          </div>
+
+          <div v-if="validationError" class="validation-summary error-alert" role="alert">
+            <p class="summary-title">Submission Error</p>
+            <p>{{ validationError }}</p>
+          </div>
+
+          <footer class="actions">
+            <Button
+              type="button"
+              title="Back"
+              color="white"
+              size="large"
+              @click="onBack"
+              :disabled="state.currentStep === 1 || state.isSubmitting"
+              style="border: 1px solid var(--color-primary); color: var(--color-primary)"
             />
-          </div>
+            <Button
+              v-if="state.currentStep < 4"
+              type="submit"
+              title="Next"
+              color="green"
+              size="large"
+              :disabled="state.isSubmitting"
+            />
+            <Button
+              v-else
+              type="submit"
+              title="Submit Application"
+              color="green"
+              size="large"
+              :loading="state.isSubmitting"
+              :disabled="state.isSubmitting"
+            />
+          </footer>
+        </form>
+      </div>
+      <FormSubmitted v-else formType="foster" @reset="onReset" />
+    </section>
 
-          <FosterAgreement
-            v-else
-            :answers="state.answers"
-            :getVisibleQuestion="(id) => currentVisibleQuestions.find((q) => q.id === id)"
-            :questionHasError="(q) => attemptedValidation && !!getQuestionValidationIssue(q)"
-            @update-answer="(id, val) => fosterStore.setAnswer(id, val)"
-          />
-        </fieldset>
-
-        <div
-          v-if="attemptedValidation && validationErrors.length > 0"
-          class="validation-summary"
-          tabindex="-1"
-          role="alert"
-          aria-live="assertive"
-        >
-          <p class="summary-title">Please complete the following required fields:</p>
-          <div class="tags">
-            <span v-for="err in validationErrors" :key="err" class="tag is-danger">{{ err }}</span>
-          </div>
-        </div>
-
-        <div v-if="validationError" class="validation-summary error-alert" role="alert">
-          <p class="summary-title">Submission Error</p>
-          <p>{{ validationError }}</p>
-        </div>
-
-        <footer class="actions">
-          <Button
-            type="button"
-            title="Back"
-            color="white"
-            size="large"
-            @click="onBack"
-            :disabled="state.currentStep === 1"
-            style="border: 1px solid var(--color-primary); color: var(--color-primary)"
-          />
-          <Button
-            v-if="state.currentStep < 10"
-            type="button"
-            title="Next"
-            color="green"
-            size="large"
-            @click="onNext"
-          />
-          <Button
-            v-else
-            type="button"
-            title="Submit Application"
-            color="green"
-            size="large"
-            @click="onSubmit"
-            :loading="state.isSubmitting"
-          />
-        </footer>
-      </form>
-    </div>
-    <FormSubmitted v-else formType="foster" @reset="onReset" />
-  </section>
+    <Footer borderTopColor="white" />
+  </main>
 </template>
 
 <style scoped src="./Foster.css"></style>
