@@ -2,13 +2,14 @@
 import { computed, type PropType, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { useFavorites } from '../../../composables/useFavorites'
-import { useMetrics } from '../../../composables/useMetrics'
-import { goToAdopt } from '../../../utils/navigate.ts'
-import BondedPairBadge from '../ui/BondedPairBadge.vue'
-import Button from '../ui/Button.vue'
-import Capsules from '../ui/Capsules.vue'
-import ImagePlaceholder from '../ui/ImagePlaceholder.vue'
+import BondedPairBadge from '@/components/common/ui/BondedPairBadge.vue'
+import Button from '@/components/common/ui/Button.vue'
+import Capsules from '@/components/common/ui/Capsules.vue'
+import ImagePlaceholder from '@/components/common/ui/ImagePlaceholder.vue'
+import { useFavorites } from '@/composables/useFavorites'
+import { useMetrics } from '@/composables/useMetrics'
+import { goToAdopt } from '@/utils/navigate'
+
 import PetPhotoBadges from './PetPhotoBadges.vue'
 
 const props = defineProps({
@@ -152,14 +153,22 @@ function handleAdopt() {
         :style="{ viewTransitionName: 'pet-' + props.id }"
         :fetchpriority="priority ? 'high' : 'auto'"
         :class="{ loaded: isImageLoaded }"
+        tabindex="0"
+        role="link"
+        :aria-label="`View details for ${props.name}`"
         @load="onImgLoad"
         @error="onImgError"
         @click="handleAdopt"
+        @keydown.enter.prevent="handleAdopt"
       />
       <ImagePlaceholder
         v-else
         icon="paw"
+        tabindex="0"
+        role="link"
+        :aria-label="`View details for ${props.name}`"
         @click="handleAdopt"
+        @keydown.enter.prevent="handleAdopt"
       />
 
       <button

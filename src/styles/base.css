@@ -64,8 +64,9 @@
   --color-neutral-light: oklch(from var(--color-neutral) 90% 0.01 h);
   --color-neutral-dark: oklch(from var(--color-neutral) 12% c h);
 
-  /* Hover states */
+  /* Hover & Focus states */
   --color-primary-hover: oklch(from var(--color-primary) 94% 0.03 h);
+  --color-primary-focus: var(--color-tertiary);
   --color-secondary-hover: oklch(from var(--color-secondary) 94% 0.04 h);
   --color-tertiary-hover: oklch(from var(--color-tertiary) 94% 0.03 h);
   --color-danger-hover: oklch(from var(--color-danger) 94% 0.03 h);

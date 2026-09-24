@@ -93,6 +93,12 @@
         box-shadow 0.18s ease-out;
       outline: none;
 
+      &::after {
+        content: '';
+        position: absolute;
+        inset: -6px;
+      }
+
       &:hover {
         scale: 1.15;
         background-color: var(--text-inverse);

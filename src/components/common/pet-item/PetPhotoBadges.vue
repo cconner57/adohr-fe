@@ -167,6 +167,12 @@ function toggleDockBadge(id: string) {
   expandedBadgeId.value = expandedBadgeId.value === id ? null : id
 }
 
+function handleDockBadgeClick(id: string) {
+  if (bottomDockBadges.value.length > 1) {
+    toggleDockBadge(id)
+  }
+}
+
 function collapseDockBadge() {
   expandedBadgeId.value = null
 }
@@ -233,6 +239,7 @@ function collapseDockBadge() {
       v-if="bottomDockBadges.length > 0"
       class="bottom-badge-dock"
       @mouseleave="collapseDockBadge"
+      @click.stop
     >
       <button
         v-for="badge in bottomDockBadges"
@@ -249,7 +256,7 @@ function collapseDockBadge() {
         :aria-label="badge.ariaLabel"
         :aria-expanded="bottomDockBadges.length > 1 ? expandedBadgeId === badge.id : undefined"
         :tabindex="bottomDockBadges.length === 1 ? -1 : undefined"
-        @click.stop="bottomDockBadges.length > 1 ? toggleDockBadge(badge.id) : undefined"
+        @click.stop="handleDockBadgeClick(badge.id)"
       >
         <svg
           v-if="badge.icon === 'coming-soon'"

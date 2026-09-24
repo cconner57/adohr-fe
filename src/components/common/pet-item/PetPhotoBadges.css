@@ -163,6 +163,12 @@
     user-select: none;
     -webkit-tap-highlight-color: transparent;
 
+    &:not(.is-standalone)::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+    }
+
     &:hover,
     &:focus-visible,
     &.is-expanded {
