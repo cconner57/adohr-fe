@@ -36,15 +36,20 @@ function toggle() {
     }"
     @click="toggle"
   >
-    <div
+    <button
+      type="button"
       class="toggle-switch"
       :class="{ active: props.modelValue }"
       role="switch"
       :aria-checked="props.modelValue"
-      :aria-label="props.label"
+      :aria-label="props.label || 'Toggle'"
+      :disabled="props.disabled"
+      @click.stop="toggle"
+      @keydown.space.prevent="toggle"
+      @keydown.enter.prevent="toggle"
     >
-      <div class="toggle-thumb"></div>
-    </div>
+      <span class="toggle-thumb" aria-hidden="true" />
+    </button>
     <span v-if="props.label" class="toggle-label">{{ props.label }}</span>
   </div>
 </template>
@@ -80,25 +85,40 @@ function toggle() {
 .toggle-switch {
   width: 44px;
   height: 24px;
-  background-color: var(--color-neutral-border-strong);
-  border-radius: var(--radius-full);
+  background-color: var(--color-neutral-border-strong, #ccc);
+  border: none;
+  border-radius: var(--radius-full, 9999px);
   padding: 2px;
   transition: background-color 0.2s ease;
   position: relative;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.toggle-switch:focus-visible {
+  outline: 2px solid var(--color-primary-focus, var(--color-primary, #173829));
+  outline-offset: 2px;
+}
+
+.toggle-switch:disabled {
+  cursor: not-allowed;
 }
 
 .toggle-switch.active {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary, #173829);
 }
 
 .toggle-thumb {
   width: 20px;
   height: 20px;
-  background-color: var(--color-white);
+  background-color: var(--color-white, #fff);
   border-radius: 50%;
   box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateX(0);
+  display: block;
 }
 
 .toggle-switch.active .toggle-thumb {

@@ -1,27 +1,76 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
 import Icon from './Icon.vue'
 
-defineProps<{
-  items: {
-    id: string
-    label: string
-    icon?: string
-    badge?: number | string | null
-  }[]
-  modelValue: string
+interface TabItem {
+  id: string
+  label: string
+  icon?: string
+  badge?: number | string | null
+}
+
+const props = withDefaults(
+  defineProps<{
+    items: TabItem[]
+    modelValue: string
+    ariaLabel?: string
+  }>(),
+  {
+    ariaLabel: 'Content tabs',
+  },
+)
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
 }>()
 
-const emit = defineEmits(['update:modelValue'])
+const tabListRef = ref<HTMLElement | null>(null)
+
+const handleKeydown = (event: KeyboardEvent, index: number) => {
+  let targetIndex = -1
+  if (event.key === 'ArrowRight') {
+    targetIndex = (index + 1) % props.items.length
+  } else if (event.key === 'ArrowLeft') {
+    targetIndex = (index - 1 + props.items.length) % props.items.length
+  } else if (event.key === 'Home') {
+    targetIndex = 0
+  } else if (event.key === 'End') {
+    targetIndex = props.items.length - 1
+  }
+
+  if (targetIndex !== -1) {
+    event.preventDefault()
+    const nextItem = props.items[targetIndex]
+    if (nextItem) {
+      emit('update:modelValue', nextItem.id)
+      const buttons = tabListRef.value?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+      buttons?.[targetIndex]?.focus()
+    }
+  }
+}
 </script>
 
 <template>
-  <div class="tabs">
+  <div
+    ref="tabListRef"
+    class="tabs"
+    role="tablist"
+    :aria-label="ariaLabel"
+  >
     <button
-      v-for="item in items"
+      v-for="(item, index) in items"
+      :id="`tab-${item.id}`"
       :key="item.id"
+      type="button"
+      role="tab"
+      :aria-selected="modelValue === item.id"
+      :tabindex="modelValue === item.id ? 0 : -1"
+      :aria-controls="`panel-${item.id}`"
       class="tab-btn"
       :class="{ active: modelValue === item.id }"
       @click="emit('update:modelValue', item.id)"
+      @keydown="handleKeydown($event, index)"
     >
       <span v-if="item.icon" class="tab-icon">
         <Icon :name="item.icon" size="18" />
@@ -79,6 +128,12 @@ const emit = defineEmits(['update:modelValue'])
     background-color: var(--color-neutral-weak);
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: -2px;
+    border-radius: 4px;
   }
 }
 

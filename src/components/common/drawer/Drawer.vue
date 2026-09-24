@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   header: string
@@ -22,6 +22,24 @@ function closeDrawer() {
   open.value = false
   emit('update:modelValue', false)
 }
+
+function handleKeydown(event: KeyboardEvent) {
+  if (open.value && event.key === 'Escape') {
+    closeDrawer()
+  }
+}
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('keydown', handleKeydown)
+  }
+})
+
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('keydown', handleKeydown)
+  }
+})
 </script>
 
 <template>

@@ -21,39 +21,88 @@ const emit = defineEmits<{
   close: []
 }>()
 
-// Prevent body scroll when open
+// Window resizing logic for responsive placement
+const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024)
+const drawerPanelRef = ref<HTMLElement | null>(null)
+let previousActiveElement: HTMLElement | null = null
+
+function handleKeydown(event: KeyboardEvent) {
+  if (!props.isOpen) return
+
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    emit('close')
+    return
+  }
+
+  if (event.key === 'Tab' && drawerPanelRef.value) {
+    const focusableElements = drawerPanelRef.value.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    )
+    if (focusableElements.length === 0) return
+
+    const firstElement = focusableElements[0]
+    const lastElement = focusableElements[focusableElements.length - 1]
+
+    if (event.shiftKey) {
+      if (document.activeElement === firstElement) {
+        event.preventDefault()
+        lastElement.focus()
+      }
+    } else {
+      if (document.activeElement === lastElement) {
+        event.preventDefault()
+        firstElement.focus()
+      }
+    }
+  }
+}
+
+// Prevent body scroll and manage focus when open
 watch(
   () => props.isOpen,
   (val) => {
     if (val) {
+      previousActiveElement = document.activeElement as HTMLElement | null
       document.body.style.overflow = 'hidden'
+      if (typeof window !== 'undefined') {
+        window.addEventListener('keydown', handleKeydown)
+      }
+      setTimeout(() => {
+        if (drawerPanelRef.value) {
+          const focusable = drawerPanelRef.value.querySelector<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          )
+          focusable?.focus()
+        }
+      }, 50)
     } else {
       document.body.style.overflow = ''
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('keydown', handleKeydown)
+      }
+      previousActiveElement?.focus?.()
+      previousActiveElement = null
     }
   },
 )
-
-// Ensure cleanup on unmount if component is destroyed while open
-onUnmounted(() => {
-  document.body.style.overflow = ''
-})
-
-// Window resizing logic for responsive placement
-const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024)
 
 function onResize() {
   windowWidth.value = window.innerWidth
 }
 
-onMounted(() => {
+// Ensure cleanup on unmount if component is destroyed while open
+onUnmounted(() => {
+  document.body.style.overflow = ''
   if (typeof window !== 'undefined') {
-    window.addEventListener('resize', onResize)
+    window.removeEventListener('keydown', handleKeydown)
+    window.removeEventListener('resize', onResize)
   }
 })
 
-onUnmounted(() => {
+onMounted(() => {
   if (typeof window !== 'undefined') {
-    window.removeEventListener('resize', onResize)
+    window.addEventListener('resize', onResize)
   }
 })
 
@@ -87,6 +136,7 @@ const transitionName = computed(() => {
     <Transition :name="transitionName">
       <div
         v-if="isOpen"
+        ref="drawerPanelRef"
         class="drawer-panel"
         :class="[`placement-${effectivePlacement}`]"
         :style="effectivePlacement !== 'bottom' && props.width ? { maxWidth: props.width } : undefined"

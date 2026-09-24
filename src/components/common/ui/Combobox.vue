@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, useId, watch } from 'vue'
+
+export interface IComboboxOption {
+  label: string
+  value: string
+  isCustom?: boolean
+}
 
 const props = withDefaults(
   defineProps<{
     label?: string
     modelValue: string | string[] | null
-    options: { label: string; value: string }[]
+    options: IComboboxOption[]
     multiple?: boolean
     placeholder?: string
     hasError?: boolean
@@ -24,17 +30,21 @@ const emit = defineEmits<{
   'update:modelValue': [value: string | string[] | null]
 }>()
 
+const instanceId = useId()
+const inputId = `combobox-input-${instanceId}`
+const listboxId = `combobox-list-${instanceId}`
+
 const isOpen = ref(false)
 const searchQuery = ref('')
+const highlightedIndex = ref(-1)
 const containerRef = ref<HTMLElement | null>(null)
 const inputRef = ref<HTMLInputElement | null>(null)
 
-const filteredOptions = computed(() => {
+const filteredOptions = computed<IComboboxOption[]>(() => {
   if (!searchQuery.value) return props.options
   const q = searchQuery.value.toLowerCase().trim()
 
   const exactMatch = props.options.some((o) => o.label.toLowerCase().trim() === q)
-
   const filtered = props.options.filter((o) => o.label.toLowerCase().includes(q))
 
   if (props.allowCreate && !exactMatch && q.length > 0) {
@@ -45,6 +55,13 @@ const filteredOptions = computed(() => {
   }
 
   return filtered
+})
+
+const activeDescendantId = computed(() => {
+  if (!isOpen.value || highlightedIndex.value < 0 || highlightedIndex.value >= filteredOptions.value.length) {
+    return undefined
+  }
+  return `${listboxId}-opt-${highlightedIndex.value}`
 })
 
 watch(
@@ -62,6 +79,10 @@ watch(
   { immediate: true },
 )
 
+watch(filteredOptions, () => {
+  highlightedIndex.value = -1
+})
+
 function isSelected(value: string) {
   if (props.multiple) {
     return ((props.modelValue as string[]) || []).includes(value)
@@ -69,8 +90,8 @@ function isSelected(value: string) {
   return props.modelValue === value
 }
 
-function selectOption(option: { label: string; value: string; isCustom?: boolean }) {
-  const valToEmit = option.isCustom ? option.value : option.value
+function selectOption(option: IComboboxOption) {
+  const valToEmit = option.value
 
   if (props.multiple) {
     const current = (props.modelValue as string[]) || []
@@ -82,7 +103,6 @@ function selectOption(option: { label: string; value: string; isCustom?: boolean
     inputRef.value?.focus()
   } else {
     emit('update:modelValue', valToEmit)
-
     searchQuery.value = option.isCustom ? valToEmit : option.label
     isOpen.value = false
   }
@@ -100,15 +120,49 @@ function removeTag(value: string) {
 
 function handleInput() {
   isOpen.value = true
+  highlightedIndex.value = -1
 }
 
 function handleFocus() {
   isOpen.value = true
 }
 
+function handleKeydown(event: KeyboardEvent) {
+  if (!isOpen.value) {
+    if (['ArrowDown', 'ArrowUp'].includes(event.key)) {
+      isOpen.value = true
+      highlightedIndex.value = 0
+      event.preventDefault()
+    }
+    return
+  }
+
+  if (event.key === 'ArrowDown') {
+    event.preventDefault()
+    if (filteredOptions.value.length > 0) {
+      highlightedIndex.value = (highlightedIndex.value + 1) % filteredOptions.value.length
+    }
+  } else if (event.key === 'ArrowUp') {
+    event.preventDefault()
+    if (filteredOptions.value.length > 0) {
+      highlightedIndex.value = (highlightedIndex.value - 1 + filteredOptions.value.length) % filteredOptions.value.length
+    }
+  } else if (event.key === 'Enter') {
+    event.preventDefault()
+    if (highlightedIndex.value >= 0 && highlightedIndex.value < filteredOptions.value.length) {
+      selectOption(filteredOptions.value[highlightedIndex.value])
+    }
+  } else if (event.key === 'Escape') {
+    event.preventDefault()
+    isOpen.value = false
+    highlightedIndex.value = -1
+  }
+}
+
 function handleClickOutside(e: MouseEvent) {
   if (containerRef.value && !containerRef.value.contains(e.target as Node)) {
     isOpen.value = false
+    highlightedIndex.value = -1
   }
 }
 
@@ -122,50 +176,71 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="combobox-field" :class="{ 'has-error': hasError }" ref="containerRef">
-    <label v-if="label" class="label">{{ label }}</label>
+  <div ref="containerRef" class="combobox-field" :class="{ 'has-error': hasError }">
+    <label v-if="label" :for="inputId" class="label">{{ label }}</label>
 
     <div class="combobox-wrapper">
       <div v-if="multiple && (modelValue as string[])?.length" class="selected-tags">
         <span v-for="val in modelValue as string[]" :key="val" class="tag">
           {{ options.find((o) => o.value === val)?.label || val }}
-          <button type="button" class="remove-tag" @click="removeTag(val)">×</button>
+          <button
+            type="button"
+            class="remove-tag"
+            :aria-label="`Remove ${options.find((o) => o.value === val)?.label || val}`"
+            @click="removeTag(val)"
+          >
+            ×
+          </button>
         </span>
       </div>
 
       <div class="input-container">
         <input
+          :id="inputId"
           ref="inputRef"
+          v-model="searchQuery"
           type="text"
           class="combobox-input"
+          role="combobox"
+          aria-autocomplete="list"
+          :aria-expanded="isOpen"
+          :aria-controls="listboxId"
+          :aria-activedescendant="activeDescendantId"
           :placeholder="multiple && (modelValue as string[])?.length ? '' : placeholder"
-          v-model="searchQuery"
           @focus="handleFocus"
           @input="handleInput"
-          @keydown.down.prevent
-          @keydown.enter.prevent
+          @keydown="handleKeydown"
         />
-        <span class="chevron">▼</span>
+        <span class="chevron" aria-hidden="true">▼</span>
       </div>
 
-      <div v-show="isOpen" class="dropdown-menu">
+      <div
+        v-show="isOpen"
+        :id="listboxId"
+        class="dropdown-menu"
+        role="listbox"
+      >
         <template v-if="filteredOptions.length > 0">
           <button
-            v-for="option in filteredOptions"
+            v-for="(option, index) in filteredOptions"
+            :id="`${listboxId}-opt-${index}`"
             :key="option.value"
             type="button"
+            role="option"
+            :aria-selected="isSelected(option.value)"
             class="dropdown-item"
             :class="{
               selected: isSelected(option.value),
-              'create-option': (option as any).isCustom,
+              highlighted: index === highlightedIndex,
+              'create-option': option.isCustom,
             }"
             @mousedown.prevent="selectOption(option)"
           >
             {{ option.label }}
-            <span v-if="isSelected(option.value)" class="check">✓</span>
+            <span v-if="isSelected(option.value)" class="check" aria-hidden="true">✓</span>
           </button>
         </template>
-        <div v-else class="no-results">
+        <div v-else class="no-results" role="status">
           <span v-if="allowCreate && !searchQuery">Type to create...</span>
           <span v-else>{{ noResultsText }}</span>
         </div>
@@ -300,7 +375,8 @@ onUnmounted(() => {
   color: var(--text-primary);
   font-size: 0.95rem;
 
-  &:hover {
+  &:hover,
+  &.highlighted {
     background: var(--color-neutral-weak);
   }
 
