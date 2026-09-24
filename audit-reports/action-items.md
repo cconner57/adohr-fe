@@ -24,13 +24,14 @@
 - [x] Purge commented-out dead Candid / GuideStar code in `AboutTransparency.vue`.
 - [x] Differentiate Mission bullet copy from Home's mission section.
 
-### [x] 3. Adopt Browse & Pet Discovery (`Adopt.vue` + `src/components/adopt/`) — Commit `c79ae71`
+### [x] 3. Adopt Browse & Pet Discovery (`Adopt.vue` + `src/components/adopt/`) — Commits `c79ae71`, `8bb6868`
 - [x] Convert `PetMatcherModal.vue` into `PetMatcherDrawer.vue` (using canonical `Drawer.vue` with focus trap).
 - [x] Add explicit API error alert with "Retry" button when `store.fetchPetsList()` fails (stop masking failures as "No pets found").
 - [x] Enlarge `.search-clear-btn` touch target to 44×44px.
 - [x] Add `aria-pressed` / `aria-selected` to species filter pills ("All", "Cats", "Dogs") and the Favorites toggle.
 - [x] Fix color contrast on warning banner text in `AdoptPageHeader.css` (meet 4.5:1 ratio).
 - [x] Purge dead unreferenced file `GeneralApplicationCTA.vue`.
+- [x] Hide "Pets Attending Event" button when active event location has 0 attending pets, and reset active filter if switched to empty location.
 
 ### [x] 4. Pet Card & Subcomponents (`PetItem.vue`, `PetPhotoBadges.vue`, `PetItemSkeleton.vue`) — Commit `03ff23c`
 - [x] **Critical Fix**: Define `--color-primary-focus: var(--color-tertiary);` in `src/styles/base.css` to restore visible focus rings on cards.
