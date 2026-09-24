@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import type { FormState } from '../../../models/adopt-form.ts'
+import { storeToRefs } from 'pinia'
+
+import { useAdoptionStore } from '../../../stores/adoption'
 import InputField from '../../common/ui/InputField.vue'
 import InputSelectGroup from '../../common/ui/InputSelectGroup.vue'
 
-const { modelValue } = defineProps<{
-  modelValue: FormState
+const props = defineProps<{
   touched?: Record<string, boolean>
   // eslint-disable-next-line no-unused-vars
   handleBlur: (_field: string) => void
   hasAttemptedSubmit?: boolean
 }>()
 
+const adoptionStore = useAdoptionStore()
+const { formState } = storeToRefs(adoptionStore)
+
 const addPet = () => {
-  modelValue.pastPets.push({
+  formState.value.pastPets.push({
     name: '',
     speciesBreedSize: '',
     age: '',
@@ -23,7 +27,7 @@ const addPet = () => {
 }
 
 const removePet = (index: number) => {
-  modelValue.pastPets.splice(index, 1)
+  formState.value.pastPets.splice(index, 1)
 }
 </script>
 
@@ -33,21 +37,23 @@ const removePet = (index: number) => {
     <InputSelectGroup
       label="Did you have pets in the past?"
       :options="['Yes', 'No']"
-      :modelValue="modelValue.ownPetsBefore"
-      @update:modelValue="(val) => (modelValue.ownPetsBefore = val as string)"
+      :modelValue="formState.ownPetsBefore"
+      @update:modelValue="(val) => (formState.ownPetsBefore = val as string)"
       :hasError="
-        (touched?.ownPetsBefore && !modelValue.ownPetsBefore) ||
-        (hasAttemptedSubmit && !modelValue.ownPetsBefore)
+        (props.touched?.ownPetsBefore && !formState.ownPetsBefore) ||
+        (props.hasAttemptedSubmit && !formState.ownPetsBefore)
       "
     />
     <div class="desktop-spacer"></div>
-    <div class="children" v-if="modelValue.ownPetsBefore === 'Yes'">
-      <div v-for="(pet, index) in modelValue.pastPets" :key="index" class="pet-entry">
+    <div class="children" v-if="formState.ownPetsBefore === 'Yes'">
+      <div v-for="(pet, index) in formState.pastPets" :key="index" class="pet-entry">
         <div class="pet-header">
           <h4>PAST PET {{ index + 1 }}</h4>
           <button
-            v-if="index === modelValue.pastPets.length - 1"
+            v-if="index === formState.pastPets.length - 1"
             class="add-btn"
+            type="button"
+            aria-label="Add another past pet"
             @click.prevent="addPet"
           >
             <svg
@@ -62,7 +68,13 @@ const removePet = (index: number) => {
               />
             </svg>
           </button>
-          <button v-if="index > 0" class="remove-btn" @click.prevent="removePet(index)">
+          <button
+            v-if="index > 0"
+            class="remove-btn"
+            type="button"
+            :aria-label="`Remove past pet ${index + 1}`"
+            @click.prevent="removePet(index)"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -83,7 +95,8 @@ const removePet = (index: number) => {
             placeholder="Ex: Fluffy"
             required
             :hasError="
-              (touched?.[`pet-name-${index}`] && !pet.name) || (hasAttemptedSubmit && !pet.name)
+              (props.touched?.[`pet-name-${index}`] && !pet.name) ||
+              (props.hasAttemptedSubmit && !pet.name)
             "
           />
           <InputField
@@ -93,8 +106,8 @@ const removePet = (index: number) => {
             placeholder="Ex: Dog, Boxer, 50lbs"
             required
             :hasError="
-              (touched?.[`pet-breed-${index}`] && !pet.speciesBreedSize) ||
-              (hasAttemptedSubmit && !pet.speciesBreedSize)
+              (props.touched?.[`pet-breed-${index}`] && !pet.speciesBreedSize) ||
+              (props.hasAttemptedSubmit && !pet.speciesBreedSize)
             "
           />
           <InputField
@@ -104,7 +117,8 @@ const removePet = (index: number) => {
             placeholder="Ex: I've had him 10 years - from 2010 to Current"
             required
             :hasError="
-              (touched?.[`pet-age-${index}`] && !pet.age) || (hasAttemptedSubmit && !pet.age)
+              (props.touched?.[`pet-age-${index}`] && !pet.age) ||
+              (props.hasAttemptedSubmit && !pet.age)
             "
           />
           <InputSelectGroup
@@ -113,8 +127,8 @@ const removePet = (index: number) => {
             :modelValue="pet.source"
             @update:modelValue="(val) => (pet.source = val as string)"
             :hasError="
-              (touched?.[`pet-source-${index}`] && !pet.source) ||
-              (hasAttemptedSubmit && !pet.source)
+              (props.touched?.[`pet-source-${index}`] && !pet.source) ||
+              (props.hasAttemptedSubmit && !pet.source)
             "
           />
           <InputSelectGroup
@@ -123,8 +137,8 @@ const removePet = (index: number) => {
             :modelValue="pet.spayedNeutered"
             @update:modelValue="(val) => (pet.spayedNeutered = val as string)"
             :hasError="
-              (touched?.[`pet-spayed-${index}`] && !pet.spayedNeutered) ||
-              (hasAttemptedSubmit && !pet.spayedNeutered)
+              (props.touched?.[`pet-spayed-${index}`] && !pet.spayedNeutered) ||
+              (props.hasAttemptedSubmit && !pet.spayedNeutered)
             "
           />
           <InputSelectGroup
@@ -141,16 +155,23 @@ const removePet = (index: number) => {
             :modelValue="pet.passedAwayReason"
             @update:modelValue="(val) => (pet.passedAwayReason = val as string)"
             :hasError="
-              (touched?.[`pet-outcome-${index}`] && !pet.passedAwayReason) ||
-              (hasAttemptedSubmit && !pet.passedAwayReason)
+              (props.touched?.[`pet-outcome-${index}`] && !pet.passedAwayReason) ||
+              (props.hasAttemptedSubmit && !pet.passedAwayReason)
             "
           />
-          <hr class="pet-divider" v-if="index < modelValue.pastPets.length - 1" />
+          <hr class="pet-divider" v-if="index < formState.pastPets.length - 1" />
         </div>
       </div>
 
-      <div v-if="modelValue.pastPets.length === 0" class="no-pets-placeholder">
-        <button class="add-btn-large" @click.prevent="addPet">Add a Pet</button>
+      <div v-if="formState.pastPets.length === 0" class="no-pets-placeholder">
+        <button
+          class="add-btn-large"
+          type="button"
+          aria-label="Add a pet"
+          @click.prevent="addPet"
+        >
+          Add a Pet
+        </button>
       </div>
     </div>
   </div>
@@ -244,7 +265,7 @@ const removePet = (index: number) => {
 .remove-btn:hover {
   color: var(--color-danger);
   border-color: var(--color-danger);
-  background: var(--color-white) 5f5;
+  background: #fff5f5;
 }
 
 .add-btn-large {

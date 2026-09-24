@@ -36,7 +36,6 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
 
     <!-- Desktop: numbered stepper (horizontal by default, vertical rail variant) -->
     <ol class="steps-container" :style="{ '--steps-count': String(props.steps.length) }">
-      <div class="line" aria-hidden="true" />
       <li
         v-for="(stepLabel, idx) in props.steps"
         :key="stepLabel"
@@ -136,7 +135,8 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
   list-style: none;
   padding: 0;
 
-  & .line {
+  &::before {
+    content: '';
     position: absolute;
     top: 15px;
     left: calc(100% / (var(--steps-count) * 2));
@@ -211,7 +211,7 @@ const currentLabel = computed(() => props.steps[props.currentStep] ?? '')
       gap: 0;
       margin: 0;
 
-      & .line {
+      &::before {
         inset: 16px auto 16px 15px;
         width: 1px !important;
         height: auto;

@@ -1,21 +1,29 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 
-import type { FormState } from '../../../models/adopt-form.ts'
+import { useAdoptionStore } from '../../../stores/adoption'
 import InputField from '../../common/ui/InputField.vue'
 import InputSelectGroup from '../../common/ui/InputSelectGroup.vue'
 import InputTextArea from '../../common/ui/InputTextArea.vue'
 
-const { modelValue, animalLabel = 'cat' } = defineProps<{
-  modelValue: FormState
-  touched?: Record<string, boolean>
-  // eslint-disable-next-line no-unused-vars
-  handleBlur: (_field: string) => void
-  hasAttemptedSubmit?: boolean
-  animalLabel?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    touched?: Record<string, boolean>
+    // eslint-disable-next-line no-unused-vars
+    handleBlur: (_field: string) => void
+    hasAttemptedSubmit?: boolean
+    animalLabel?: string
+  }>(),
+  { animalLabel: 'cat' },
+)
 
-const capitalLabel = computed(() => animalLabel.charAt(0).toUpperCase() + animalLabel.slice(1))
+const adoptionStore = useAdoptionStore()
+const { formState } = storeToRefs(adoptionStore)
+
+const capitalLabel = computed(
+  () => props.animalLabel.charAt(0).toUpperCase() + props.animalLabel.slice(1),
+)
 
 const surrenderOptions = computed(() => {
   const label = capitalLabel.value
@@ -23,7 +31,7 @@ const surrenderOptions = computed(() => {
     "Moved to a place that didn't allow pets",
     'Move out of state',
     'Sheds too much',
-    animalLabel === 'dog' ? 'Housetraining problem' : 'Litterbox problem',
+    props.animalLabel === 'dog' ? 'Housetraining problem' : 'Litterbox problem',
     'Kids ignored pet',
     'Required prescription food or medication',
     `${label} has seizures`,
@@ -47,16 +55,16 @@ const surrenderOptions = computed(() => {
 <template>
   <div class="other-section">
     <h2 class="section-title">Care & Household Routine</h2>
-    <template v-if="animalLabel === 'dog'">
+    <template v-if="props.animalLabel === 'dog'">
       <InputTextArea
         label="Why did you select this dog(s)?"
         placeholder="Share your reasons..."
         :spanFull="false"
-        :modelValue="modelValue.dogWhySelected"
-        @update:modelValue="(val) => (modelValue.dogWhySelected = val)"
+        :modelValue="formState.dogWhySelected"
+        @update:modelValue="(val) => (formState.dogWhySelected = val)"
         :hasError="
-          (touched?.dogWhySelected && !modelValue.dogWhySelected) ||
-          (hasAttemptedSubmit && !modelValue.dogWhySelected)
+          (props.touched?.dogWhySelected && !formState.dogWhySelected) ||
+          (props.hasAttemptedSubmit && !formState.dogWhySelected)
         "
       />
       <InputSelectGroup
@@ -70,47 +78,47 @@ const surrenderOptions = computed(() => {
           'Other',
         ]"
         multiple
-        :modelValue="modelValue.dogHeardAbout"
-        @update:modelValue="(val) => (modelValue.dogHeardAbout = val as string[])"
+        :modelValue="formState.dogHeardAbout"
+        @update:modelValue="(val) => (formState.dogHeardAbout = val as string[])"
         :hasError="
-          (touched?.dogHeardAbout && modelValue.dogHeardAbout.length === 0) ||
-          (hasAttemptedSubmit && modelValue.dogHeardAbout.length === 0)
+          (props.touched?.dogHeardAbout && formState.dogHeardAbout.length === 0) ||
+          (props.hasAttemptedSubmit && formState.dogHeardAbout.length === 0)
         "
-        @blur="handleBlur?.('dogHeardAbout')"
+        @blur="props.handleBlur?.('dogHeardAbout')"
       />
       <InputSelectGroup
         label="Do you have a fenced backyard?"
         :options="['Yes', 'No']"
-        :modelValue="modelValue.dogFencedBackyard"
-        @update:modelValue="(val) => (modelValue.dogFencedBackyard = val as string)"
+        :modelValue="formState.dogFencedBackyard"
+        @update:modelValue="(val) => (formState.dogFencedBackyard = val as string)"
         :hasError="
-          (touched?.dogFencedBackyard && !modelValue.dogFencedBackyard) ||
-          (hasAttemptedSubmit && !modelValue.dogFencedBackyard)
+          (props.touched?.dogFencedBackyard && !formState.dogFencedBackyard) ||
+          (props.hasAttemptedSubmit && !formState.dogFencedBackyard)
         "
-        @blur="handleBlur?.('dogFencedBackyard')"
+        @blur="props.handleBlur?.('dogFencedBackyard')"
       />
       <InputSelectGroup
         label="Do you have a pool?"
         :options="['Yes', 'No']"
-        :modelValue="modelValue.dogHasPool"
-        @update:modelValue="(val) => (modelValue.dogHasPool = val as string)"
+        :modelValue="formState.dogHasPool"
+        @update:modelValue="(val) => (formState.dogHasPool = val as string)"
         :hasError="
-          (touched?.dogHasPool && !modelValue.dogHasPool) ||
-          (hasAttemptedSubmit && !modelValue.dogHasPool)
+          (props.touched?.dogHasPool && !formState.dogHasPool) ||
+          (props.hasAttemptedSubmit && !formState.dogHasPool)
         "
-        @blur="handleBlur?.('dogHasPool')"
+        @blur="props.handleBlur?.('dogHasPool')"
       />
       <InputSelectGroup
-        v-if="modelValue.dogHasPool === 'Yes'"
+        v-if="formState.dogHasPool === 'Yes'"
         label="Is there a fence around the pool?"
         :options="['Yes', 'No']"
-        :modelValue="modelValue.dogPoolFence"
-        @update:modelValue="(val) => (modelValue.dogPoolFence = val as string)"
+        :modelValue="formState.dogPoolFence"
+        @update:modelValue="(val) => (formState.dogPoolFence = val as string)"
         :hasError="
-          (touched?.dogPoolFence && !modelValue.dogPoolFence) ||
-          (hasAttemptedSubmit && !modelValue.dogPoolFence)
+          (props.touched?.dogPoolFence && !formState.dogPoolFence) ||
+          (props.hasAttemptedSubmit && !formState.dogPoolFence)
         "
-        @blur="handleBlur?.('dogPoolFence')"
+        @blur="props.handleBlur?.('dogPoolFence')"
       />
       <InputSelectGroup
         label="Please check all that apply"
@@ -122,25 +130,25 @@ const surrenderOptions = computed(() => {
           'Live on a busy street',
         ]"
         multiple
-        :modelValue="modelValue.dogHouseholdDescription"
-        @update:modelValue="(val) => (modelValue.dogHouseholdDescription = val as string[])"
+        :modelValue="formState.dogHouseholdDescription"
+        @update:modelValue="(val) => (formState.dogHouseholdDescription = val as string[])"
         :hasError="
-          (touched?.dogHouseholdDescription && modelValue.dogHouseholdDescription.length === 0) ||
-          (hasAttemptedSubmit && modelValue.dogHouseholdDescription.length === 0)
+          (props.touched?.dogHouseholdDescription && formState.dogHouseholdDescription.length === 0) ||
+          (props.hasAttemptedSubmit && formState.dogHouseholdDescription.length === 0)
         "
-        @blur="handleBlur?.('dogHouseholdDescription')"
+        @blur="props.handleBlur?.('dogHouseholdDescription')"
       />
       <InputSelectGroup
         label="Where will the dog be kept most of the time?"
         :options="['Crate', 'Indoors', 'Outdoors', 'Garage', 'Patio/Porch', 'Other']"
         multiple
-        :modelValue="modelValue.dogKeptLocation"
-        @update:modelValue="(val) => (modelValue.dogKeptLocation = val as string[])"
+        :modelValue="formState.dogKeptLocation"
+        @update:modelValue="(val) => (formState.dogKeptLocation = val as string[])"
         :hasError="
-          (touched?.dogKeptLocation && modelValue.dogKeptLocation.length === 0) ||
-          (hasAttemptedSubmit && modelValue.dogKeptLocation.length === 0)
+          (props.touched?.dogKeptLocation && formState.dogKeptLocation.length === 0) ||
+          (props.hasAttemptedSubmit && formState.dogKeptLocation.length === 0)
         "
-        @blur="handleBlur?.('dogKeptLocation')"
+        @blur="props.handleBlur?.('dogKeptLocation')"
       />
       <InputSelectGroup
         label="Where will your dog be sleeping?"
@@ -154,84 +162,84 @@ const surrenderOptions = computed(() => {
           'Patio/Porch',
         ]"
         multiple
-        :modelValue="modelValue.dogSleepingLocation"
-        @update:modelValue="(val) => (modelValue.dogSleepingLocation = val as string[])"
+        :modelValue="formState.dogSleepingLocation"
+        @update:modelValue="(val) => (formState.dogSleepingLocation = val as string[])"
         :hasError="
-          (touched?.dogSleepingLocation && modelValue.dogSleepingLocation.length === 0) ||
-          (hasAttemptedSubmit && modelValue.dogSleepingLocation.length === 0)
+          (props.touched?.dogSleepingLocation && formState.dogSleepingLocation.length === 0) ||
+          (props.hasAttemptedSubmit && formState.dogSleepingLocation.length === 0)
         "
-        @blur="handleBlur?.('dogSleepingLocation')"
+        @blur="props.handleBlur?.('dogSleepingLocation')"
       />
       <InputSelectGroup
         label="Where will your pet be when you are not at home?"
         :options="['Outside', 'Inside', 'Crate', 'Other']"
         multiple
-        :modelValue="modelValue.dogAloneLocation"
-        @update:modelValue="(val) => (modelValue.dogAloneLocation = val as string[])"
+        :modelValue="formState.dogAloneLocation"
+        @update:modelValue="(val) => (formState.dogAloneLocation = val as string[])"
         :hasError="
-          (touched?.dogAloneLocation && modelValue.dogAloneLocation.length === 0) ||
-          (hasAttemptedSubmit && modelValue.dogAloneLocation.length === 0)
+          (props.touched?.dogAloneLocation && formState.dogAloneLocation.length === 0) ||
+          (props.hasAttemptedSubmit && formState.dogAloneLocation.length === 0)
         "
-        @blur="handleBlur?.('dogAloneLocation')"
+        @blur="props.handleBlur?.('dogAloneLocation')"
       />
       <InputField
-        v-model="modelValue.dogExercisePotty"
+        v-model="formState.dogExercisePotty"
         label="What will you do for exercise and potty breaks?"
         name="dogExercisePotty"
         placeholder="Describe your plans"
         required
         :hasError="
-          (touched?.dogExercisePotty && !modelValue.dogExercisePotty) ||
-          (hasAttemptedSubmit && !modelValue.dogExercisePotty)
+          (props.touched?.dogExercisePotty && !formState.dogExercisePotty) ||
+          (props.hasAttemptedSubmit && !formState.dogExercisePotty)
         "
-        @blur="handleBlur?.('dogExercisePotty')"
+        @blur="props.handleBlur?.('dogExercisePotty')"
       />
       <InputField
-        v-model="modelValue.dogCareResponsible"
+        v-model="formState.dogCareResponsible"
         label="Who will be responsible for feeding and caring for the dog?"
         name="dogCareResponsible"
         placeholder="Name(s)"
         required
         :hasError="
-          (touched?.dogCareResponsible && !modelValue.dogCareResponsible) ||
-          (hasAttemptedSubmit && !modelValue.dogCareResponsible)
+          (props.touched?.dogCareResponsible && !formState.dogCareResponsible) ||
+          (props.hasAttemptedSubmit && !formState.dogCareResponsible)
         "
-        @blur="handleBlur?.('dogCareResponsible')"
+        @blur="props.handleBlur?.('dogCareResponsible')"
       />
       <InputField
-        v-model="modelValue.dogAnnualExpense"
+        v-model="formState.dogAnnualExpense"
         label="How much money do you expect to spend on the dog in an average year?"
         name="dogAnnualExpense"
         placeholder="Estimated amount"
         required
         :hasError="
-          (touched?.dogAnnualExpense && !modelValue.dogAnnualExpense) ||
-          (hasAttemptedSubmit && !modelValue.dogAnnualExpense)
+          (props.touched?.dogAnnualExpense && !formState.dogAnnualExpense) ||
+          (props.hasAttemptedSubmit && !formState.dogAnnualExpense)
         "
-        @blur="handleBlur?.('dogAnnualExpense')"
+        @blur="props.handleBlur?.('dogAnnualExpense')"
       />
       <InputField
-        v-model="modelValue.dogTravelArrangements"
+        v-model="formState.dogTravelArrangements"
         label="What arrangements will you make for your dog while you are traveling?"
         name="dogTravelArrangements"
         placeholder="Describe your arrangements"
         required
         :hasError="
-          (touched?.dogTravelArrangements && !modelValue.dogTravelArrangements) ||
-          (hasAttemptedSubmit && !modelValue.dogTravelArrangements)
+          (props.touched?.dogTravelArrangements && !formState.dogTravelArrangements) ||
+          (props.hasAttemptedSubmit && !formState.dogTravelArrangements)
         "
-        @blur="handleBlur?.('dogTravelArrangements')"
+        @blur="props.handleBlur?.('dogTravelArrangements')"
       />
       <InputSelectGroup
         label="We don't always know if a dog is potty trained. Are you willing to potty train your pet?"
         :options="['Yes', 'No']"
-        :modelValue="modelValue.dogWillingToPottyTrain"
-        @update:modelValue="(val) => (modelValue.dogWillingToPottyTrain = val as string)"
+        :modelValue="formState.dogWillingToPottyTrain"
+        @update:modelValue="(val) => (formState.dogWillingToPottyTrain = val as string)"
         :hasError="
-          (touched?.dogWillingToPottyTrain && !modelValue.dogWillingToPottyTrain) ||
-          (hasAttemptedSubmit && !modelValue.dogWillingToPottyTrain)
+          (props.touched?.dogWillingToPottyTrain && !formState.dogWillingToPottyTrain) ||
+          (props.hasAttemptedSubmit && !formState.dogWillingToPottyTrain)
         "
-        @blur="handleBlur?.('dogWillingToPottyTrain')"
+        @blur="props.handleBlur?.('dogWillingToPottyTrain')"
       />
       <InputSelectGroup
         label="Do you have any experience with the following?"
@@ -242,181 +250,181 @@ const surrenderOptions = computed(() => {
           'Potty Training',
         ]"
         multiple
-        :modelValue="modelValue.dogTrainingExperience"
-        @update:modelValue="(val) => (modelValue.dogTrainingExperience = val as string[])"
+        :modelValue="formState.dogTrainingExperience"
+        @update:modelValue="(val) => (formState.dogTrainingExperience = val as string[])"
         :hasError="
-          (touched?.dogTrainingExperience && modelValue.dogTrainingExperience.length === 0) ||
-          (hasAttemptedSubmit && modelValue.dogTrainingExperience.length === 0)
+          (props.touched?.dogTrainingExperience && formState.dogTrainingExperience.length === 0) ||
+          (props.hasAttemptedSubmit && formState.dogTrainingExperience.length === 0)
         "
-        @blur="handleBlur?.('dogTrainingExperience')"
+        @blur="props.handleBlur?.('dogTrainingExperience')"
       />
       <InputSelectGroup
         label="Are you willing to commit to a training class/program if needed?"
         :options="['Yes', 'No']"
-        :modelValue="modelValue.dogWillingTrainingClass"
-        @update:modelValue="(val) => (modelValue.dogWillingTrainingClass = val as string)"
+        :modelValue="formState.dogWillingTrainingClass"
+        @update:modelValue="(val) => (formState.dogWillingTrainingClass = val as string)"
         :hasError="
-          (touched?.dogWillingTrainingClass && !modelValue.dogWillingTrainingClass) ||
-          (hasAttemptedSubmit && !modelValue.dogWillingTrainingClass)
+          (props.touched?.dogWillingTrainingClass && !formState.dogWillingTrainingClass) ||
+          (props.hasAttemptedSubmit && !formState.dogWillingTrainingClass)
         "
-        @blur="handleBlur?.('dogWillingTrainingClass')"
+        @blur="props.handleBlur?.('dogWillingTrainingClass')"
       />
       <InputSelectGroup
         label="Please check types of confinement you can provide."
         :options="['Crate', 'Fenced Yard', 'Kennel Run', 'Other']"
         multiple
-        :modelValue="modelValue.dogConfinementTypes"
-        @update:modelValue="(val) => (modelValue.dogConfinementTypes = val as string[])"
+        :modelValue="formState.dogConfinementTypes"
+        @update:modelValue="(val) => (formState.dogConfinementTypes = val as string[])"
         :hasError="
-          (touched?.dogConfinementTypes && modelValue.dogConfinementTypes.length === 0) ||
-          (hasAttemptedSubmit && modelValue.dogConfinementTypes.length === 0)
+          (props.touched?.dogConfinementTypes && formState.dogConfinementTypes.length === 0) ||
+          (props.hasAttemptedSubmit && formState.dogConfinementTypes.length === 0)
         "
-        @blur="handleBlur?.('dogConfinementTypes')"
+        @blur="props.handleBlur?.('dogConfinementTypes')"
       />
       <InputSelectGroup
         label="How long are you willing to allow time for bonding?"
         :options="['One Week', 'Two Weeks', 'One Month', 'Other']"
-        :modelValue="modelValue.dogBondingTime"
-        @update:modelValue="(val) => (modelValue.dogBondingTime = val as string)"
+        :modelValue="formState.dogBondingTime"
+        @update:modelValue="(val) => (formState.dogBondingTime = val as string)"
         :hasError="
-          (touched?.dogBondingTime && !modelValue.dogBondingTime) ||
-          (hasAttemptedSubmit && !modelValue.dogBondingTime)
+          (props.touched?.dogBondingTime && !formState.dogBondingTime) ||
+          (props.hasAttemptedSubmit && !formState.dogBondingTime)
         "
-        @blur="handleBlur?.('dogBondingTime')"
+        @blur="props.handleBlur?.('dogBondingTime')"
       />
       <InputSelectGroup
         label="Have you ever been denied pet ownership from a rescue organization?"
         :options="['Yes', 'No']"
-        :modelValue="modelValue.dogDeniedOwnership"
-        @update:modelValue="(val) => (modelValue.dogDeniedOwnership = val as string)"
+        :modelValue="formState.dogDeniedOwnership"
+        @update:modelValue="(val) => (formState.dogDeniedOwnership = val as string)"
         :hasError="
-          (touched?.dogDeniedOwnership && !modelValue.dogDeniedOwnership) ||
-          (hasAttemptedSubmit && !modelValue.dogDeniedOwnership)
+          (props.touched?.dogDeniedOwnership && !formState.dogDeniedOwnership) ||
+          (props.hasAttemptedSubmit && !formState.dogDeniedOwnership)
         "
-        @blur="handleBlur?.('dogDeniedOwnership')"
+        @blur="props.handleBlur?.('dogDeniedOwnership')"
       />
     </template>
     <InputField
-      v-model="modelValue.bredAnimalDescription"
+      v-model="formState.bredAnimalDescription"
       label="If you have ever bred an animal, please describe the circumstances"
       name="bredAnimalDescription"
       placeholder="Describe the circumstances"
       required
       :hasError="
-        (touched?.bredAnimalDescription && !modelValue.bredAnimalDescription) ||
-        (hasAttemptedSubmit && !modelValue.bredAnimalDescription)
+        (props.touched?.bredAnimalDescription && !formState.bredAnimalDescription) ||
+        (props.hasAttemptedSubmit && !formState.bredAnimalDescription)
       "
-      @blur="handleBlur?.('bredAnimalDescription')"
+      @blur="props.handleBlur?.('bredAnimalDescription')"
     />
     <InputField
-      v-model="modelValue.ownedDeclawedOrDebarked"
+      v-model="formState.ownedDeclawedOrDebarked"
       label="Have you ever owned a declawed cat or a debarked dog?"
       name="ownedDeclawedOrDebarked"
       placeholder="Yes/No and details"
       required
       :hasError="
-        (touched?.ownedDeclawedOrDebarked && !modelValue.ownedDeclawedOrDebarked) ||
-        (hasAttemptedSubmit && !modelValue.ownedDeclawedOrDebarked)
+        (props.touched?.ownedDeclawedOrDebarked && !formState.ownedDeclawedOrDebarked) ||
+        (props.hasAttemptedSubmit && !formState.ownedDeclawedOrDebarked)
       "
-      @blur="handleBlur?.('ownedDeclawedOrDebarked')"
+      @blur="props.handleBlur?.('ownedDeclawedOrDebarked')"
     />
     <InputField
-      v-model="modelValue.movedWithPet"
+      v-model="formState.movedWithPet"
       label="Have you ever moved with a pet?"
       name="movedWithPet"
       placeholder="Yes/No and details"
       required
       :hasError="
-        (touched?.movedWithPet && !modelValue.movedWithPet) ||
-        (hasAttemptedSubmit && !modelValue.movedWithPet)
+        (props.touched?.movedWithPet && !formState.movedWithPet) ||
+        (props.hasAttemptedSubmit && !formState.movedWithPet)
       "
-      @blur="handleBlur?.('movedWithPet')"
+      @blur="props.handleBlur?.('movedWithPet')"
     />
     <InputField
-      v-model="modelValue.ownedSpecialNeedsPet"
+      v-model="formState.ownedSpecialNeedsPet"
       label="Have you ever owned a special needs pet?"
       name="ownedSpecialNeedsPet"
       placeholder="Yes/No and details"
       required
       :hasError="
-        (touched?.ownedSpecialNeedsPet && !modelValue.ownedSpecialNeedsPet) ||
-        (hasAttemptedSubmit && !modelValue.ownedSpecialNeedsPet)
+        (props.touched?.ownedSpecialNeedsPet && !formState.ownedSpecialNeedsPet) ||
+        (props.hasAttemptedSubmit && !formState.ownedSpecialNeedsPet)
       "
-      @blur="handleBlur?.('ownedSpecialNeedsPet')"
+      @blur="props.handleBlur?.('ownedSpecialNeedsPet')"
     />
     <InputField
-      v-model="modelValue.mobilityDevice"
+      v-model="formState.mobilityDevice"
       label="Does anyone in your home use a mobility device?"
       name="mobilityDevice"
       placeholder="Yes/No and details"
       required
       :hasError="
-        (touched?.mobilityDevice && !modelValue.mobilityDevice) ||
-        (hasAttemptedSubmit && !modelValue.mobilityDevice)
+        (props.touched?.mobilityDevice && !formState.mobilityDevice) ||
+        (props.hasAttemptedSubmit && !formState.mobilityDevice)
       "
-      @blur="handleBlur?.('mobilityDevice')"
+      @blur="props.handleBlur?.('mobilityDevice')"
     />
     <InputField
-      v-model="modelValue.foodTypeBrand"
-      :label="`What type and brand of food do you plan on feeding your new ${animalLabel}?`"
+      v-model="formState.foodTypeBrand"
+      :label="`What type and brand of food do you plan on feeding your new ${props.animalLabel}?`"
       name="foodTypeBrand"
       placeholder="Type and Brand"
       required
       :hasError="
-        (touched?.foodTypeBrand && !modelValue.foodTypeBrand) ||
-        (hasAttemptedSubmit && !modelValue.foodTypeBrand)
+        (props.touched?.foodTypeBrand && !formState.foodTypeBrand) ||
+        (props.hasAttemptedSubmit && !formState.foodTypeBrand)
       "
-      @blur="handleBlur?.('foodTypeBrand')"
+      @blur="props.handleBlur?.('foodTypeBrand')"
     />
     <InputSelectGroup
       class="full-width"
       label="Check all that apply. Under what conditions would you NOT KEEP your new pet?"
       :options="surrenderOptions"
       multiple
-      :modelValue="modelValue.surrenderConditions"
-      @update:modelValue="(val) => (modelValue.surrenderConditions = val as string[])"
+      :modelValue="formState.surrenderConditions"
+      @update:modelValue="(val) => (formState.surrenderConditions = val as string[])"
       :hasError="
-        (touched?.surrenderConditions && modelValue.surrenderConditions.length === 0) ||
-        (hasAttemptedSubmit && modelValue.surrenderConditions.length === 0)
+        (props.touched?.surrenderConditions && formState.surrenderConditions.length === 0) ||
+        (props.hasAttemptedSubmit && formState.surrenderConditions.length === 0)
       "
-      @blur="handleBlur?.('surrenderConditions')"
+      @blur="props.handleBlur?.('surrenderConditions')"
     />
     <InputField
-      v-model="modelValue.surrenderPlan"
-      :label="`What would you do with your ${animalLabel} if you could not keep it for the above reason(s)?`"
+      v-model="formState.surrenderPlan"
+      :label="`What would you do with your ${props.animalLabel} if you could not keep it for the above reason(s)?`"
       name="surrenderPlan"
       placeholder="Details"
       required
       :hasError="
-        (touched?.surrenderPlan && !modelValue.surrenderPlan) ||
-        (hasAttemptedSubmit && !modelValue.surrenderPlan)
+        (props.touched?.surrenderPlan && !formState.surrenderPlan) ||
+        (props.hasAttemptedSubmit && !formState.surrenderPlan)
       "
-      @blur="handleBlur?.('surrenderPlan')"
+      @blur="props.handleBlur?.('surrenderPlan')"
     />
 
     <InputField
-      v-model="modelValue.affordVetCare"
-      :label="`Can you afford regular veterinary care for this ${animalLabel} - including yearly vaccinations, annual physical exams, dental care, etc. ($300 or more per year)?`"
+      v-model="formState.affordVetCare"
+      :label="`Can you afford regular veterinary care for this ${props.animalLabel} - including yearly vaccinations, annual physical exams, dental care, etc. ($300 or more per year)?`"
       name="affordVetCare"
       placeholder="Yes/No"
       required
       :hasError="
-        (touched?.affordVetCare && !modelValue.affordVetCare) ||
-        (hasAttemptedSubmit && !modelValue.affordVetCare)
+        (props.touched?.affordVetCare && !formState.affordVetCare) ||
+        (props.hasAttemptedSubmit && !formState.affordVetCare)
       "
-      @blur="handleBlur?.('affordVetCare')"
+      @blur="props.handleBlur?.('affordVetCare')"
     />
     <InputField
-      v-model="modelValue.affordEmergencyCost"
+      v-model="formState.affordEmergencyCost"
       label="Can you afford serious injury or illness costs ($1000 or more)?"
       name="affordEmergencyCost"
       placeholder="Yes/No"
       required
       :hasError="
-        (touched?.affordEmergencyCost && !modelValue.affordEmergencyCost) ||
-        (hasAttemptedSubmit && !modelValue.affordEmergencyCost)
+        (props.touched?.affordEmergencyCost && !formState.affordEmergencyCost) ||
+        (props.hasAttemptedSubmit && !formState.affordEmergencyCost)
       "
-      @blur="handleBlur?.('affordEmergencyCost')"
+      @blur="props.handleBlur?.('affordEmergencyCost')"
     />
   </div>
 </template>

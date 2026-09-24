@@ -177,7 +177,6 @@ function handleAgreementUpdate(val: string | number | boolean | null) {
           label="Spouse/Partner First Name"
           name="spouseFirstName"
           placeholder="First Name"
-          required
         />
         <InputField
           :modelValue="formState.spouseLastName"
@@ -185,7 +184,6 @@ function handleAgreementUpdate(val: string | number | boolean | null) {
           label="Spouse/Partner Last Name"
           name="spouseLastName"
           placeholder="Last Name"
-          required
         />
 
         <div class="roommates">
@@ -207,7 +205,13 @@ function handleAgreementUpdate(val: string | number | boolean | null) {
                 :label="`Roommate ${index + 1}`"
               />
             </div>
-            <button v-if="index === 0" class="add-btn" @click.prevent="addRoommate">
+            <button
+              v-if="index === 0"
+              class="add-btn"
+              type="button"
+              aria-label="Add another roommate"
+              @click.prevent="addRoommate"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -220,7 +224,13 @@ function handleAgreementUpdate(val: string | number | boolean | null) {
                 />
               </svg>
             </button>
-            <button v-else class="remove-btn" @click.prevent="removeRoommate(index)">
+            <button
+              v-else
+              class="remove-btn"
+              type="button"
+              :aria-label="`Remove roommate ${index + 1}`"
+              @click.prevent="removeRoommate(index)"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -265,7 +275,13 @@ function handleAgreementUpdate(val: string | number | boolean | null) {
                 :label="`Child ${index + 1}`"
               />
             </div>
-            <button v-if="index === 0" class="add-btn" @click.prevent="addChild">
+            <button
+              v-if="index === 0"
+              class="add-btn"
+              type="button"
+              aria-label="Add another child"
+              @click.prevent="addChild"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -278,7 +294,13 @@ function handleAgreementUpdate(val: string | number | boolean | null) {
                 />
               </svg>
             </button>
-            <button v-else class="remove-btn" @click.prevent="removeChild(index)">
+            <button
+              v-else
+              class="remove-btn"
+              type="button"
+              :aria-label="`Remove child ${index + 1}`"
+              @click.prevent="removeChild(index)"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

@@ -127,7 +127,10 @@ const handleSubmit = async () => {
     hasAttemptedSubmit.value = true
     setTimeout(() => {
       const errorSummary = document.querySelector('.validation-summary') as HTMLElement
-      if (errorSummary) errorSummary.focus()
+      if (errorSummary) {
+        errorSummary.focus()
+        errorSummary.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
     }, 0)
     return
   }
@@ -215,6 +218,19 @@ const secondPetName = computed(() => {
           </p>
         </div>
 
+        <div
+          v-if="hasAttemptedSubmit && validationErrors.length > 0"
+          class="validation-summary"
+          tabindex="-1"
+          role="alert"
+          aria-live="assertive"
+        >
+          <p class="summary-title">Please complete the following required fields:</p>
+          <div class="tags">
+            <span v-for="err in validationErrors" :key="err" class="tag is-danger">{{ err }}</span>
+          </div>
+        </div>
+
         <CatAdoptionInfoSection
           v-show="isIntroStep"
           :species="species"
@@ -230,14 +246,12 @@ const secondPetName = computed(() => {
 
         <GeneralSection
           v-show="step === 1"
-          v-model="formState"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"
         />
         <HomeSection
           v-show="step === 2"
-          v-model="formState"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"
@@ -245,7 +259,6 @@ const secondPetName = computed(() => {
         />
         <NewCatSection
           v-show="step === 3"
-          v-model="formState"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"
@@ -253,7 +266,6 @@ const secondPetName = computed(() => {
         />
         <CurrentPetsSection
           v-show="isCatFlow && step === 4"
-          v-model="formState"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"
@@ -261,14 +273,12 @@ const secondPetName = computed(() => {
         />
         <PastPetsSection
           v-show="(!isCatFlow && step === 4) || (isCatFlow && step === 5)"
-          v-model="formState"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"
         />
         <OtherSection
           v-show="(!isCatFlow && step === 5) || (isCatFlow && step === 6)"
-          v-model="formState"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"
@@ -276,25 +286,11 @@ const secondPetName = computed(() => {
         />
         <SummarySection
           v-show="(!isCatFlow && step === 6) || (isCatFlow && step === 7)"
-          v-model="formState"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"
           :animalLabel="animalLabel"
         />
-
-        <div
-          v-if="hasAttemptedSubmit && validationErrors.length > 0"
-          class="validation-summary"
-          tabindex="-1"
-          role="alert"
-          aria-live="assertive"
-        >
-          <p class="summary-title">Please complete the following required fields:</p>
-          <div class="tags">
-            <span v-for="err in validationErrors" :key="err" class="tag is-danger">{{ err }}</span>
-          </div>
-        </div>
 
         <div
           v-if="submissionError"

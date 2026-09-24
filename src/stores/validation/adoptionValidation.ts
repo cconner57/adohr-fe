@@ -42,8 +42,6 @@ export function getAdoptionValidationErrors(
     if (!formState.homeOwnership) errors.push('Own or Rent')
 
     // Fields required for everyone
-    if (!formState.breedRestrictionsWeightLimit) errors.push('Breed Restrictions')
-    if (!formState.monthlyFee) errors.push('Pet Deposit/Fee')
     if (!formState.allergies) errors.push('Allergies')
     if (!formState.primaryOwner) errors.push('Primary Owner')
     if (!formState.yearsAtAddress) errors.push('Years at Address')
@@ -58,6 +56,8 @@ export function getAdoptionValidationErrors(
       if (!formState.landlordName) errors.push('Landlord Name')
       if (!formState.landlordPhoneNumber) errors.push('Landlord Phone')
       if (!formState.allowPets) errors.push('Pets Allowed')
+      if (!formState.monthlyFee) errors.push('Pet Deposit/Fee')
+      if (!formState.breedRestrictionsWeightLimit) errors.push('Breed Restrictions')
     }
   }
 

@@ -1,95 +1,89 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+
+import { useAdoptionStore } from '../../../stores/adoption'
 import InputField from '../../common/ui/InputField.vue'
 import InputSelectGroup from '../../common/ui/InputSelectGroup.vue'
 import InputTextArea from '../../common/ui/InputTextArea.vue'
 
-const { modelValue, animalLabel = 'cat' } = defineProps<{
-  modelValue: {
-    catPreferenceBreed: string | null
-    catPreferencePhysical: string | null
-    catPreferencePersonality: string | null
-    catPreferenceNotWant: string | null
-    whyInterested: string | null
-    adoptionReason: string | null
-    ownCatBefore: string | null
-    ownKittenBefore: string | null
-    alreadyHaveVeterinarian: string | null
-    catAllowedHomeArea: string | null
-    catHomeAloneHours: string | null
-    catDisciplineType: string | null
-    catEscapeSteps: string | null
-  }
-  touched?: Record<string, boolean>
-  // eslint-disable-next-line no-unused-vars
-  handleBlur: (_field: string) => void
-  hasAttemptedSubmit?: boolean
-  animalLabel?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    touched?: Record<string, boolean>
+    // eslint-disable-next-line no-unused-vars
+    handleBlur: (_field: string) => void
+    hasAttemptedSubmit?: boolean
+    animalLabel?: string
+  }>(),
+  { animalLabel: 'cat' },
+)
+
+const adoptionStore = useAdoptionStore()
+const { formState } = storeToRefs(adoptionStore)
 </script>
 
 <template>
   <div class="new-cat-section">
     <h2 class="section-title">
-      {{ animalLabel === 'dog' ? 'Dog Match & Preferences' : 'Cat Match & Preferences' }}
+      {{ props.animalLabel === 'dog' ? 'Dog Match & Preferences' : 'Cat Match & Preferences' }}
     </h2>
     <InputField
-      v-model="modelValue.catPreferenceBreed"
+      v-model="formState.catPreferenceBreed"
       label="Preferred breed, age, or gender?"
       name="catPreferenceBreed"
       placeholder="e.g. Siamese, Kitten, Female"
       required
       :hasError="
-        (touched?.catPreferenceBreed && !modelValue.catPreferenceBreed) ||
-        (hasAttemptedSubmit && !modelValue.catPreferenceBreed)
+        (props.touched?.catPreferenceBreed && !formState.catPreferenceBreed) ||
+        (props.hasAttemptedSubmit && !formState.catPreferenceBreed)
       "
-      @blur="handleBlur?.('catPreferenceBreed')"
+      @blur="props.handleBlur?.('catPreferenceBreed')"
     />
     <InputField
-      v-model="modelValue.catPreferencePhysical"
+      v-model="formState.catPreferencePhysical"
       label="Preferred size, hair length, or color?"
       name="catPreferencePhysical"
       placeholder="e.g. Short hair, Orange tabby"
       required
       :hasError="
-        (touched?.catPreferencePhysical && !modelValue.catPreferencePhysical) ||
-        (hasAttemptedSubmit && !modelValue.catPreferencePhysical)
+        (props.touched?.catPreferencePhysical && !formState.catPreferencePhysical) ||
+        (props.hasAttemptedSubmit && !formState.catPreferencePhysical)
       "
-      @blur="handleBlur?.('catPreferencePhysical')"
+      @blur="props.handleBlur?.('catPreferencePhysical')"
     />
     <InputField
-      v-model="modelValue.catPreferencePersonality"
+      v-model="formState.catPreferencePersonality"
       label="Preferred personality or energy level?"
       name="catPreferencePersonality"
       placeholder="e.g. Cuddly, Playful, Chill"
       required
       :hasError="
-        (touched?.catPreferencePersonality && !modelValue.catPreferencePersonality) ||
-        (hasAttemptedSubmit && !modelValue.catPreferencePersonality)
+        (props.touched?.catPreferencePersonality && !formState.catPreferencePersonality) ||
+        (props.hasAttemptedSubmit && !formState.catPreferencePersonality)
       "
-      @blur="handleBlur?.('catPreferencePersonality')"
+      @blur="props.handleBlur?.('catPreferencePersonality')"
     />
     <InputField
-      v-model="modelValue.catPreferenceNotWant"
+      v-model="formState.catPreferenceNotWant"
       label="Any traits you specifically NOT want?"
       name="catPreferenceNotWant"
       placeholder="e.g. Aggressive, Super high energy"
       required
       :hasError="
-        (touched?.catPreferenceNotWant && !modelValue.catPreferenceNotWant) ||
-        (hasAttemptedSubmit && !modelValue.catPreferenceNotWant)
+        (props.touched?.catPreferenceNotWant && !formState.catPreferenceNotWant) ||
+        (props.hasAttemptedSubmit && !formState.catPreferenceNotWant)
       "
-      @blur="handleBlur?.('catPreferenceNotWant')"
+      @blur="props.handleBlur?.('catPreferenceNotWant')"
     />
     <InputTextArea
-      :label="`Why are you interested in adopting a new ${animalLabel}?`"
+      :label="`Why are you interested in adopting a new ${props.animalLabel}?`"
       placeholder="Share your motivation..."
-      :modelValue="modelValue.whyInterested"
-      @update:modelValue="(val) => (modelValue.whyInterested = val)"
+      :modelValue="formState.whyInterested"
+      @update:modelValue="(val) => (formState.whyInterested = val)"
       :hasError="
-        (touched?.whyInterested && !modelValue.whyInterested) ||
-        (hasAttemptedSubmit && !modelValue.whyInterested)
+        (props.touched?.whyInterested && !formState.whyInterested) ||
+        (props.hasAttemptedSubmit && !formState.whyInterested)
       "
-      @blur="handleBlur?.('whyInterested')"
+      @blur="props.handleBlur?.('whyInterested')"
       :spanFull="false"
     />
     <div class="spacer desktop-only"></div>
@@ -102,88 +96,88 @@ const { modelValue, animalLabel = 'cat' } = defineProps<{
         'For protection',
         'A gift',
       ]"
-      :modelValue="modelValue.adoptionReason"
-      @update:modelValue="(val) => (modelValue.adoptionReason = val as string)"
+      :modelValue="formState.adoptionReason"
+      @update:modelValue="(val) => (formState.adoptionReason = val as string)"
       :hasError="
-        (touched?.adoptionReason && !modelValue.adoptionReason) ||
-        (hasAttemptedSubmit && !modelValue.adoptionReason)
+        (props.touched?.adoptionReason && !formState.adoptionReason) ||
+        (props.hasAttemptedSubmit && !formState.adoptionReason)
       "
-      @blur="handleBlur?.('adoptionReason')"
+      @blur="props.handleBlur?.('adoptionReason')"
     />
     <InputSelectGroup
-      :label="`Have you owned a ${animalLabel} before?`"
+      :label="`Have you owned a ${props.animalLabel} before?`"
       :options="['Yes', 'No', 'Not as an adult']"
-      :modelValue="modelValue.ownCatBefore"
-      @update:modelValue="(val) => (modelValue.ownCatBefore = val as string)"
+      :modelValue="formState.ownCatBefore"
+      @update:modelValue="(val) => (formState.ownCatBefore = val as string)"
       :hasError="
-        (touched?.ownCatBefore && !modelValue.ownCatBefore) ||
-        (hasAttemptedSubmit && !modelValue.ownCatBefore)
+        (props.touched?.ownCatBefore && !formState.ownCatBefore) ||
+        (props.hasAttemptedSubmit && !formState.ownCatBefore)
       "
-      @blur="handleBlur?.('ownCatBefore')"
+      @blur="props.handleBlur?.('ownCatBefore')"
     />
     <InputSelectGroup
-      :label="`Have you owned a ${animalLabel === 'dog' ? 'puppy' : 'kitten'} before?`"
+      :label="`Have you owned a ${props.animalLabel === 'dog' ? 'puppy' : 'kitten'} before?`"
       :options="['Yes', 'No', 'Not as an adult']"
-      :modelValue="modelValue.ownKittenBefore"
-      @update:modelValue="(val) => (modelValue.ownKittenBefore = val as string)"
+      :modelValue="formState.ownKittenBefore"
+      @update:modelValue="(val) => (formState.ownKittenBefore = val as string)"
       :hasError="
-        (touched?.ownKittenBefore && !modelValue.ownKittenBefore) ||
-        (hasAttemptedSubmit && !modelValue.ownKittenBefore)
+        (props.touched?.ownKittenBefore && !formState.ownKittenBefore) ||
+        (props.hasAttemptedSubmit && !formState.ownKittenBefore)
       "
-      @blur="handleBlur?.('ownKittenBefore')"
+      @blur="props.handleBlur?.('ownKittenBefore')"
     />
     <InputSelectGroup
       label="Do you currently have a veterinarian?"
       :options="['Yes', 'No', 'I need a recommendation']"
-      :modelValue="modelValue.alreadyHaveVeterinarian"
-      @update:modelValue="(val) => (modelValue.alreadyHaveVeterinarian = val as string)"
+      :modelValue="formState.alreadyHaveVeterinarian"
+      @update:modelValue="(val) => (formState.alreadyHaveVeterinarian = val as string)"
       :hasError="
-        (touched?.alreadyHaveVeterinarian && !modelValue.alreadyHaveVeterinarian) ||
-        (hasAttemptedSubmit && !modelValue.alreadyHaveVeterinarian)
+        (props.touched?.alreadyHaveVeterinarian && !formState.alreadyHaveVeterinarian) ||
+        (props.hasAttemptedSubmit && !formState.alreadyHaveVeterinarian)
       "
-      @blur="handleBlur?.('alreadyHaveVeterinarian')"
+      @blur="props.handleBlur?.('alreadyHaveVeterinarian')"
     />
     <InputTextArea
-      :label="`Where in the house will the ${animalLabel} be allowed?`"
+      :label="`Where in the house will the ${props.animalLabel} be allowed?`"
       placeholder="e.g. Everywhere, Bedrooms only..."
-      :modelValue="modelValue.catAllowedHomeArea"
-      @update:modelValue="(val) => (modelValue.catAllowedHomeArea = val)"
+      :modelValue="formState.catAllowedHomeArea"
+      @update:modelValue="(val) => (formState.catAllowedHomeArea = val)"
       :hasError="
-        (touched?.catAllowedHomeArea && !modelValue.catAllowedHomeArea) ||
-        (hasAttemptedSubmit && !modelValue.catAllowedHomeArea)
+        (props.touched?.catAllowedHomeArea && !formState.catAllowedHomeArea) ||
+        (props.hasAttemptedSubmit && !formState.catAllowedHomeArea)
       "
       :spanFull="false"
     />
     <InputTextArea
-      :label="`How many hours a day will the ${animalLabel} be alone?`"
+      :label="`How many hours a day will the ${props.animalLabel} be alone?`"
       placeholder="Please include typical work schedule..."
-      :modelValue="modelValue.catHomeAloneHours"
-      @update:modelValue="(val) => (modelValue.catHomeAloneHours = val)"
+      :modelValue="formState.catHomeAloneHours"
+      @update:modelValue="(val) => (formState.catHomeAloneHours = val)"
       :hasError="
-        (touched?.catHomeAloneHours && !modelValue.catHomeAloneHours) ||
-        (hasAttemptedSubmit && !modelValue.catHomeAloneHours)
+        (props.touched?.catHomeAloneHours && !formState.catHomeAloneHours) ||
+        (props.hasAttemptedSubmit && !formState.catHomeAloneHours)
       "
       :spanFull="false"
     />
     <InputTextArea
       label="How will you correct undesirable behavior?"
       placeholder="e.g. Redirecting, Spray bottle, Positive reinforcement..."
-      :modelValue="modelValue.catDisciplineType"
-      @update:modelValue="(val) => (modelValue.catDisciplineType = val)"
+      :modelValue="formState.catDisciplineType"
+      @update:modelValue="(val) => (formState.catDisciplineType = val)"
       :hasError="
-        (touched?.catDisciplineType && !modelValue.catDisciplineType) ||
-        (hasAttemptedSubmit && !modelValue.catDisciplineType)
+        (props.touched?.catDisciplineType && !formState.catDisciplineType) ||
+        (props.hasAttemptedSubmit && !formState.catDisciplineType)
       "
       :spanFull="false"
     />
     <InputTextArea
-      :label="`If the ${animalLabel} escapes, what will you do?`"
+      :label="`If the ${props.animalLabel} escapes, what will you do?`"
       placeholder="Search plan..."
-      :modelValue="modelValue.catEscapeSteps"
-      @update:modelValue="(val) => (modelValue.catEscapeSteps = val)"
+      :modelValue="formState.catEscapeSteps"
+      @update:modelValue="(val) => (formState.catEscapeSteps = val)"
       :hasError="
-        (touched?.catEscapeSteps && !modelValue.catEscapeSteps) ||
-        (hasAttemptedSubmit && !modelValue.catEscapeSteps)
+        (props.touched?.catEscapeSteps && !formState.catEscapeSteps) ||
+        (props.hasAttemptedSubmit && !formState.catEscapeSteps)
       "
       :spanFull="false"
     />

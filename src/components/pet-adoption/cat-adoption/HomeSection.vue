@@ -7,13 +7,16 @@ import ButtonToggle from '../../common/ui/ButtonToggle.vue'
 import InputField from '../../common/ui/InputField.vue'
 import InputSelectGroup from '../../common/ui/InputSelectGroup.vue'
 
-const { animalLabel = 'cat' } = defineProps<{
-  touched: Record<string, boolean>
-  // eslint-disable-next-line no-unused-vars
-  handleBlur: (_field: string) => void
-  hasAttemptedSubmit?: boolean
-  animalLabel?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    touched: Record<string, boolean>
+    // eslint-disable-next-line no-unused-vars
+    handleBlur: (_field: string) => void
+    hasAttemptedSubmit?: boolean
+    animalLabel?: string
+  }>(),
+  { animalLabel: 'cat' },
+)
 
 const adoptionStore = useAdoptionStore()
 const { formState } = storeToRefs(adoptionStore)
@@ -30,10 +33,10 @@ const { formState } = storeToRefs(adoptionStore)
         :modelValue="formState.homeOwnership"
         @update:modelValue="(val) => (formState.homeOwnership = val as string)"
         :hasError="
-          (touched.homeOwnership && !formState.homeOwnership) ||
-          (hasAttemptedSubmit && !formState.homeOwnership)
+          (props.touched.homeOwnership && !formState.homeOwnership) ||
+          (props.hasAttemptedSubmit && !formState.homeOwnership)
         "
-        @blur="handleBlur('homeOwnership')"
+        @blur="props.handleBlur('homeOwnership')"
       />
       <InputSelectGroup
         label="Home Type"
@@ -41,9 +44,9 @@ const { formState } = storeToRefs(adoptionStore)
         :modelValue="formState.homeType"
         @update:modelValue="(val) => (formState.homeType = val as string)"
         :hasError="
-          (touched.homeType && !formState.homeType) || (hasAttemptedSubmit && !formState.homeType)
+          (props.touched.homeType && !formState.homeType) || (props.hasAttemptedSubmit && !formState.homeType)
         "
-        @blur="handleBlur('homeType')"
+        @blur="props.handleBlur('homeType')"
       />
 
       <div
@@ -58,10 +61,10 @@ const { formState } = storeToRefs(adoptionStore)
           placeholder="Enter landlord's name"
           required
           :hasError="
-            (touched.landlordName && !formState.landlordName) ||
-            (hasAttemptedSubmit && !formState.landlordName)
+            (props.touched.landlordName && !formState.landlordName) ||
+            (props.hasAttemptedSubmit && !formState.landlordName)
           "
-          @blur="handleBlur('landlordName')"
+          @blur="props.handleBlur('landlordName')"
         />
         <InputField
           :modelValue="formState.landlordPhoneNumber"
@@ -73,10 +76,10 @@ const { formState } = storeToRefs(adoptionStore)
           maxlength="12"
           required
           :hasError="
-            (touched.landlordPhoneNumber && !formState.landlordPhoneNumber) ||
-            (hasAttemptedSubmit && !formState.landlordPhoneNumber)
+            (props.touched.landlordPhoneNumber && !formState.landlordPhoneNumber) ||
+            (props.hasAttemptedSubmit && !formState.landlordPhoneNumber)
           "
-          @blur="handleBlur('landlordPhoneNumber')"
+          @blur="props.handleBlur('landlordPhoneNumber')"
         />
         <InputField
           v-model="formState.allowPets"
@@ -85,37 +88,36 @@ const { formState } = storeToRefs(adoptionStore)
           placeholder="Yes/No, explain if needed"
           required
           :hasError="
-            (touched.allowPets && !formState.allowPets) ||
-            (hasAttemptedSubmit && !formState.allowPets)
+            (props.touched.allowPets && !formState.allowPets) ||
+            (props.hasAttemptedSubmit && !formState.allowPets)
           "
-          @blur="handleBlur('allowPets')"
+          @blur="props.handleBlur('allowPets')"
+        />
+        <InputField
+          v-model="formState.monthlyFee"
+          label="Is there a pet deposit or monthly fee?"
+          name="monthlyFee"
+          placeholder="Yes/No (Amount)"
+          required
+          :hasError="
+            (props.touched.monthlyFee && !formState.monthlyFee) ||
+            (props.hasAttemptedSubmit && !formState.monthlyFee)
+          "
+          @blur="props.handleBlur('monthlyFee')"
+        />
+        <InputField
+          v-model="formState.breedRestrictionsWeightLimit"
+          label="Are there any breed restrictions or weight limits?"
+          name="breedRestrictions"
+          placeholder="List any restrictions"
+          required
+          :hasError="
+            (props.touched.breedRestrictionsWeightLimit && !formState.breedRestrictionsWeightLimit) ||
+            (props.hasAttemptedSubmit && !formState.breedRestrictionsWeightLimit)
+          "
+          @blur="props.handleBlur('breedRestrictionsWeightLimit')"
         />
       </div>
-
-      <InputField
-        v-model="formState.monthlyFee"
-        label="Is there a pet deposit or monthly fee?"
-        name="monthlyFee"
-        placeholder="Yes/No (Amount)"
-        required
-        :hasError="
-          (touched.monthlyFee && !formState.monthlyFee) ||
-          (hasAttemptedSubmit && !formState.monthlyFee)
-        "
-        @blur="handleBlur('monthlyFee')"
-      />
-      <InputField
-        v-model="formState.breedRestrictionsWeightLimit"
-        label="Are there any breed restrictions or weight limits?"
-        name="breedRestrictions"
-        placeholder="List any restrictions"
-        required
-        :hasError="
-          (touched.breedRestrictionsWeightLimit && !formState.breedRestrictionsWeightLimit) ||
-          (hasAttemptedSubmit && !formState.breedRestrictionsWeightLimit)
-        "
-        @blur="handleBlur('breedRestrictionsWeightLimit')"
-      />
 
       <ButtonToggle
         label="Is the person filling out this application the primary owner/leaseholder/renter?"
@@ -124,20 +126,20 @@ const { formState } = storeToRefs(adoptionStore)
         true-value="Yes"
         false-value="No"
         :hasError="
-          (hasAttemptedSubmit && !formState.primaryOwner) ||
-          (touched.primaryOwner && !formState.primaryOwner)
+          (props.hasAttemptedSubmit && !formState.primaryOwner) ||
+          (props.touched.primaryOwner && !formState.primaryOwner)
         "
       />
       <InputField
         v-model="formState.allergies"
-        :label="`Does anyone in the household have ${animalLabel} allergies?`"
+        :label="`Does anyone in the household have ${props.animalLabel} allergies?`"
         name="allergies"
         placeholder="Yes/No"
         required
         :hasError="
-          (touched.allergies && !formState.allergies) || (hasAttemptedSubmit && !formState.allergies)
+          (props.touched.allergies && !formState.allergies) || (props.hasAttemptedSubmit && !formState.allergies)
         "
-        @blur="handleBlur('allergies')"
+        @blur="props.handleBlur('allergies')"
       />
 
       <InputField
@@ -147,10 +149,10 @@ const { formState } = storeToRefs(adoptionStore)
         placeholder="Previous Address"
         required
         :hasError="
-          (touched.previousAddress && !formState.previousAddress) ||
-          (hasAttemptedSubmit && !formState.previousAddress)
+          (props.touched.previousAddress && !formState.previousAddress) ||
+          (props.hasAttemptedSubmit && !formState.previousAddress)
         "
-        @blur="handleBlur('previousAddress')"
+        @blur="props.handleBlur('previousAddress')"
       />
       <InputField
         v-model="formState.yearsAtAddress"
@@ -159,23 +161,23 @@ const { formState } = storeToRefs(adoptionStore)
         placeholder="Years at Address"
         required
         :hasError="
-          (touched.yearsAtAddress && !formState.yearsAtAddress) ||
-          (hasAttemptedSubmit && !formState.yearsAtAddress)
+          (props.touched.yearsAtAddress && !formState.yearsAtAddress) ||
+          (props.hasAttemptedSubmit && !formState.yearsAtAddress)
         "
-        @blur="handleBlur('yearsAtAddress')"
+        @blur="props.handleBlur('yearsAtAddress')"
       />
 
       <InputField
         v-model="formState.travelPlan"
-        :label="`Do you travel a great deal? What do you plan to do with your ${animalLabel} when you do travel?`"
+        :label="`Do you travel a great deal? What do you plan to do with your ${props.animalLabel} when you do travel?`"
         name="travelPlan"
         placeholder="Travel Plan"
         required
         :hasError="
-          (touched.travelPlan && !formState.travelPlan) ||
-          (hasAttemptedSubmit && !formState.travelPlan)
+          (props.touched.travelPlan && !formState.travelPlan) ||
+          (props.hasAttemptedSubmit && !formState.travelPlan)
         "
-        @blur="handleBlur('travelPlan')"
+        @blur="props.handleBlur('travelPlan')"
       />
       <InputField
         v-model="formState.expectToMove"
@@ -184,34 +186,34 @@ const { formState } = storeToRefs(adoptionStore)
         placeholder="Expect to Move"
         required
         :hasError="
-          (touched.expectToMove && !formState.expectToMove) ||
-          (hasAttemptedSubmit && !formState.expectToMove)
+          (props.touched.expectToMove && !formState.expectToMove) ||
+          (props.hasAttemptedSubmit && !formState.expectToMove)
         "
-        @blur="handleBlur('expectToMove')"
+        @blur="props.handleBlur('expectToMove')"
       />
 
       <InputSelectGroup
-        :label="`This ${animalLabel} will be:`"
+        :label="`This ${props.animalLabel} will be:`"
         :options="['Indoor Only', 'Mostly Indoor', 'Mostly Outdoor', 'Outdoor Only']"
         :modelValue="formState.catIndoorOutdoor"
         @update:modelValue="(val) => (formState.catIndoorOutdoor = val as string)"
         :hasError="
-          (touched.catIndoorOutdoor && !formState.catIndoorOutdoor) ||
-          (hasAttemptedSubmit && !formState.catIndoorOutdoor)
+          (props.touched.catIndoorOutdoor && !formState.catIndoorOutdoor) ||
+          (props.hasAttemptedSubmit && !formState.catIndoorOutdoor)
         "
-        @blur="handleBlur('catIndoorOutdoor')"
+        @blur="props.handleBlur('catIndoorOutdoor')"
       />
       <InputSelectGroup
-        :label="`Check all that apply. Will the ${animalLabel} have access to:`"
+        :label="`Check all that apply. Will the ${props.animalLabel} have access to:`"
         :options="['Balcony', 'Patio', 'Garage', 'Yard', 'Doggie Door', 'None of these']"
         :modelValue="formState.catAccess"
         @update:modelValue="(val) => (formState.catAccess = val as string[])"
         multiple
         :hasError="
-          (touched.catAccess && formState.catAccess.length === 0) ||
-          (hasAttemptedSubmit && formState.catAccess.length === 0)
+          (props.touched.catAccess && formState.catAccess.length === 0) ||
+          (props.hasAttemptedSubmit && formState.catAccess.length === 0)
         "
-        @blur="handleBlur('catAccess')"
+        @blur="props.handleBlur('catAccess')"
       />
     </div>
   </div>

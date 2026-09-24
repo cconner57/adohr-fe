@@ -1,4 +1,4 @@
-export interface CurrentPet {
+export interface ICurrentPet {
   name: string
   speciesBreedSize: string
   age: string
@@ -6,8 +6,9 @@ export interface CurrentPet {
   spayedNeutered: string
   likesDogs: string
 }
+export type CurrentPet = ICurrentPet
 
-export interface PastPet {
+export interface IPastPet {
   name: string
   speciesBreedSize: string
   age: string
@@ -15,8 +16,9 @@ export interface PastPet {
   spayedNeutered: string
   passedAwayReason: string
 }
+export type PastPet = IPastPet
 
-export interface FormState {
+export interface IAdoptFormState {
   fax_number: string | null
   secondPetId: string | null
   generalPetName: string | null
@@ -110,3 +112,4 @@ export interface FormState {
   dogBondingTime: string | null
   dogDeniedOwnership: string | null
 }
+export type FormState = IAdoptFormState
