@@ -1,146 +1,23 @@
-.prequal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: oklch(0% 0 0deg / 65%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: var(--z-modal, 2000);
-  padding: 1rem;
-  backdrop-filter: blur(4px);
-  animation: fadeIn 0.2s ease-out;
-  transition: opacity 0.2s ease, backdrop-filter 0.2s ease;
-  transition-behavior: allow-discrete;
-
-  @starting-style {
-    opacity: 0;
-    backdrop-filter: blur(0px);
-  }
-
-  @media (width <= 640px) {
-    align-items: flex-end;
-    padding: 0;
-  }
-}
-
-.prequal-modal {
-  background-color: var(--text-inverse);
-  color: var(--text-primary);
-  border-radius: var(--radius-conditional-lg, max(0px, min(var(--radius-lg, 16px), (100vw - 100%) * 9999)));
-  width: 100%;
-  max-width: 580px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--shadow-xl);
-  border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-  overflow: hidden;
-  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-behavior: allow-discrete;
-
-  @starting-style {
-    opacity: 0;
-    transform: translateY(16px) scale(0.98);
-  }
-
-  @media (width <= 640px) {
-    max-width: 100%;
-    max-height: 88vh;
-    border-radius: 22px 22px 0 0;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-    box-shadow: 0 -8px 30px oklch(0% 0 0deg / 30%);
-    animation: sheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-
-    @starting-style {
-      opacity: 1;
-      transform: translateY(100%);
-    }
-  }
-}
-
-.drawer-handle-bar {
-  display: none;
-  width: 42px;
-  height: 5px;
-  border-radius: 9999px;
-  background-color: var(--line-ink, oklch(from var(--text-primary) l c h / 20%));
-  margin: 10px auto 0;
-  flex-shrink: 0;
-
-  @media (width <= 640px) {
-    display: block;
-  }
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-  position: relative;
-
-  @media (width <= 640px) {
-    padding: 0.85rem 1.25rem 1rem;
-  }
-
-  .header-icon {
-    font-size: 1.8rem;
-  }
-
-  .eyebrow {
-    font-family: var(--font-mono, monospace);
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-secondary);
-    display: block;
-  }
-
-  h2 {
-    font-size: 1.25rem;
-    font-weight: 800;
-    margin: 0;
-    line-height: 1.2;
-
-    @media (width <= 640px) {
-      font-size: 1.15rem;
-    }
-  }
-
-  .close-btn {
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-    background: transparent;
-    border: none;
-    font-size: 1.75rem;
-    color: var(--text-secondary);
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-
-    &:hover {
-      color: var(--text-primary);
-    }
-  }
-}
-
-.modal-body {
-  padding: 1.5rem;
-  overflow-y: auto;
+.prequal-drawer-body {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  -webkit-overflow-scrolling: touch;
+  padding: 0.25rem 0;
+}
 
-  @media (width <= 640px) {
-    padding: 1rem 1.25rem 1.25rem;
-    gap: 1rem;
+.prequal-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  .intro-eyebrow {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-secondary);
+    margin: 0;
   }
 
   .intro-text {
@@ -311,32 +188,9 @@
   }
 }
 
-.modal-footer {
+.prequal-footer-actions {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 1.25rem 1.5rem;
-  border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 12%));
-  background-color: oklch(from var(--text-inverse) 98% c h);
-
-  @media (width <= 640px) {
-    padding: 1rem 1.25rem;
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
-  }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes sheetSlideUp {
-  from {
-    transform: translateY(100%);
-    opacity: 0.6;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  width: 100%;
 }

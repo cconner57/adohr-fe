@@ -1,11 +1,11 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import PreQualModal from '../PreQualModal.vue'
+import PreQualDrawer from '../PreQualDrawer.vue'
 
-describe('PreQualModal.vue', () => {
+describe('PreQualDrawer.vue', () => {
   it('renders readiness check items when open', () => {
-    const wrapper = mount(PreQualModal, {
+    const wrapper = mount(PreQualDrawer, {
       props: {
         isOpen: true,
         petName: 'Luna',
@@ -26,7 +26,7 @@ describe('PreQualModal.vue', () => {
   })
 
   it('renders dog-specific care criteria (fenced yard)', () => {
-    const wrapper = mount(PreQualModal, {
+    const wrapper = mount(PreQualDrawer, {
       props: {
         isOpen: true,
         species: 'dog',
@@ -40,7 +40,7 @@ describe('PreQualModal.vue', () => {
   })
 
   it('renders cat-specific care criteria (lifetime indoor shelter) and in-store center info', () => {
-    const wrapper = mount(PreQualModal, {
+    const wrapper = mount(PreQualDrawer, {
       props: {
         isOpen: true,
         species: 'cat',
@@ -55,7 +55,7 @@ describe('PreQualModal.vue', () => {
   })
 
   it('disables proceed button until all criteria are checked', async () => {
-    const wrapper = mount(PreQualModal, {
+    const wrapper = mount(PreQualDrawer, {
       props: {
         isOpen: true,
       },
@@ -82,7 +82,7 @@ describe('PreQualModal.vue', () => {
   })
 
   it('emits proceed with fastTrack status when clicked', async () => {
-    const wrapper = mount(PreQualModal, {
+    const wrapper = mount(PreQualDrawer, {
       props: {
         isOpen: true,
         isWeekendFastTrack: true,

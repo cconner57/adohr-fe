@@ -1,4 +1,4 @@
-import { reactive, ref } from 'vue'
+import { isRef, reactive, type Ref,ref } from 'vue'
 
 import { API_ENDPOINTS } from '@/constants/api'
 import type { IPet } from '@/models/common'
@@ -13,7 +13,10 @@ interface IInquiryFormData {
   phone: string
 }
 
-export function usePetInquiry(pet: IPet, source: TInquirySource) {
+export function usePetInquiry(
+  pet: IPet | (() => IPet) | Ref<IPet>,
+  source: TInquirySource,
+) {
   const formData = reactive<IInquiryFormData>({
     firstName: '',
     lastName: '',
@@ -25,9 +28,17 @@ export function usePetInquiry(pet: IPet, source: TInquirySource) {
   const isSubmitted = ref(false)
   const apiError = ref<string | null>(null)
 
+  const resolvePet = (): IPet => {
+    if (typeof pet === 'function') return pet()
+    if (isRef(pet)) return pet.value
+    return pet
+  }
+
   async function submitInquiry(extraFields: Record<string, unknown> = {}) {
     apiError.value = null
     isSubmitting.value = true
+
+    const currentPet = resolvePet()
 
     try {
       const response = await fetch(withPublicOrgId(API_ENDPOINTS.PET_INQUIRY), {
@@ -43,8 +54,8 @@ export function usePetInquiry(pet: IPet, source: TInquirySource) {
           lastName: formData.lastName,
           email: formData.email,
           phone: formData.phone,
-          petId: pet.id,
-          petName: pet.name,
+          petId: currentPet.id,
+          petName: currentPet.name,
           ...extraFields,
         }),
       })

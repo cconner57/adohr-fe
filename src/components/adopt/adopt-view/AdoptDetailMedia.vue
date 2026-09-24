@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
-import { useAdoptionEvents } from '../../../composables/useAdoptionEvents'
-import { useFavorites } from '../../../composables/useFavorites'
-import type { IPet } from '../../../models/common.ts'
-import { getPetSpecialNeeds } from '../../../utils/petNormalizer'
-import PetPhotoBadges from '../../common/pet-item/PetPhotoBadges.vue'
-import Button from '../../common/ui/Button.vue'
-import ImagePlaceholder from '../../common/ui/ImagePlaceholder.vue'
+import PetPhotoBadges from '@/components/common/pet-item/PetPhotoBadges.vue'
+import Button from '@/components/common/ui/Button.vue'
+import ImagePlaceholder from '@/components/common/ui/ImagePlaceholder.vue'
+import { useAdoptionEvents } from '@/composables/useAdoptionEvents'
+import { useFavorites } from '@/composables/useFavorites'
+import type { IPet } from '@/models/common'
+import { getPetSpecialNeeds } from '@/utils/petNormalizer'
 
 const props = defineProps<{
   petPhotoUrl: string
@@ -230,18 +230,26 @@ watch(
           :disabled="isStartAdoptionDisabled"
           :fullWidth="true"
         />
-        <Button title="Share" color="green" @click="emit('share')" :fullWidth="true" />
+        <Button
+          title="Schedule a Meet"
+          variant="secondary"
+          color="purple"
+          @click="emit('schedule-meet')"
+          :disabled="isComingSoon"
+          :fullWidth="true"
+        />
         <Button
           title="Request Information"
+          variant="secondary"
           color="orange"
           @click="emit('request-info')"
           :fullWidth="true"
         />
         <Button
-          title="Schedule a Meet"
-          color="purple"
-          @click="emit('schedule-meet')"
-          :disabled="isComingSoon"
+          title="Share"
+          variant="secondary"
+          color="green"
+          @click="emit('share')"
           :fullWidth="true"
         />
       </div>

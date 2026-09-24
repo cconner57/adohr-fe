@@ -9,7 +9,7 @@ import Drawer from '../../common/drawer/Drawer.vue'
 import Button from '../../common/ui/Button.vue'
 import InputField from '../../common/ui/InputField.vue'
 
-const { pet, isDrawerOpen } = defineProps<{
+const props = defineProps<{
   pet: IPet
   isDrawerOpen: boolean
 }>()
@@ -17,7 +17,7 @@ const { pet, isDrawerOpen } = defineProps<{
 const emit = defineEmits(['update:isDrawerOpen'])
 
 const { formData, isSubmitting, isSubmitted, apiError, submitInquiry } = usePetInquiry(
-  pet,
+  () => props.pet,
   'request_info',
 )
 

@@ -3,12 +3,13 @@ import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import type { IPet } from '../../../models/common.ts'
-import { useAdoptionStore } from '../../../stores/adoption'
-import { usePetStore } from '../../../stores/pets'
-import { useUIStore } from '../../../stores/ui'
-import { vibrate } from '../../../utils/haptics.ts'
-import PreQualModal from '../../common/ui/PreQualModal.vue'
+import PreQualDrawer from '@/components/common/ui/PreQualDrawer.vue'
+import type { IPet } from '@/models/common'
+import { useAdoptionStore } from '@/stores/adoption'
+import { usePetStore } from '@/stores/pets'
+import { useUIStore } from '@/stores/ui'
+import { vibrate } from '@/utils/haptics'
+
 import AdoptDetailAbout from './AdoptDetailAbout.vue'
 import AdoptDetailInfo from './AdoptDetailInfo.vue'
 import AdoptDetailLittermates from './AdoptDetailLittermates.vue'
@@ -188,7 +189,7 @@ watch(
     @update:isDrawerOpen="isInfoDrawerOpen = $event"
   />
 
-  <PreQualModal
+  <PreQualDrawer
     :isOpen="isPreQualOpen"
     :petName="pet.name"
     :species="pet.species"
