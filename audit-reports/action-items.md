@@ -16,6 +16,7 @@
 - [x] Replace raw `<Spinner />` in Spotlight and Impact with `PetItemSkeleton` to prevent layout shift.
 - [x] Fix pure computed derivation in `usePets.ts` (move `sessionStorage` updates to an explicit watcher).
 - [x] Convert `EventPrepModal.vue` to `EventPrepDrawer.vue`.
+- [x] **Event Prep Accessibility & Contrast**: Re-styled animal type selector track with grounded warm neutral inset and deep pine green active pill (`#1F4038` on `#ffffff`, 8.9:1 contrast), added WAI-ARIA arrow key navigation.
 
 ### [x] 2. About Page (`About.vue` + `src/components/about/`) — Commit `d2347ff`
 - [x] **Critical Fix**: Register `v-scroll-reveal` globally in `src/main.ts` to stop console errors and restore scroll reveals across all 7 sections.

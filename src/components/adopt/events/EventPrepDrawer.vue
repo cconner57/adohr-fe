@@ -26,6 +26,21 @@ const emit = defineEmits<{
 }>()
 
 const selectedSpecies = ref<'cat' | 'dog'>(props.initialSpecies)
+const catBtnRef = ref<HTMLButtonElement | null>(null)
+const dogBtnRef = ref<HTMLButtonElement | null>(null)
+
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    e.preventDefault()
+    if (selectedSpecies.value === 'cat') {
+      selectedSpecies.value = 'dog'
+      dogBtnRef.value?.focus()
+    } else {
+      selectedSpecies.value = 'cat'
+      catBtnRef.value?.focus()
+    }
+  }
+}
 
 watch(
   () => props.initialSpecies,
@@ -107,26 +122,32 @@ const currentItems = computed(() => {
       <!-- Species Switcher -->
       <div class="species-switch" role="tablist" aria-label="Checklist animal type">
         <button
+          ref="catBtnRef"
           type="button"
           role="tab"
           class="switch-btn"
           :class="{ active: selectedSpecies === 'cat' }"
           :aria-selected="selectedSpecies === 'cat'"
+          :tabindex="selectedSpecies === 'cat' ? 0 : -1"
           @click="selectedSpecies = 'cat'"
+          @keydown="handleKeydown"
         >
-          <span aria-hidden="true">🐱</span>
-          <span>Cat or Kitten</span>
+          <span class="btn-emoji" aria-hidden="true">🐱</span>
+          <span class="btn-label">Cat or Kitten</span>
         </button>
         <button
+          ref="dogBtnRef"
           type="button"
           role="tab"
           class="switch-btn"
           :class="{ active: selectedSpecies === 'dog' }"
           :aria-selected="selectedSpecies === 'dog'"
+          :tabindex="selectedSpecies === 'dog' ? 0 : -1"
           @click="selectedSpecies = 'dog'"
+          @keydown="handleKeydown"
         >
-          <span aria-hidden="true">🐶</span>
-          <span>Dog or Puppy</span>
+          <span class="btn-emoji" aria-hidden="true">🐶</span>
+          <span class="btn-label">Dog or Puppy</span>
         </button>
       </div>
 
@@ -198,11 +219,11 @@ const currentItems = computed(() => {
 
 .species-switch {
   display: flex;
-  background-color: var(--color-neutral-surface);
-  border: 1px solid var(--line-ink);
+  background-color: oklch(from var(--text-primary) l c h / 8%);
+  border: 1.5px solid oklch(from var(--text-primary) l c h / 18%);
   border-radius: var(--radius-full);
-  padding: 4px;
-  gap: 4px;
+  padding: 5px;
+  gap: 6px;
 }
 
 .switch-btn {
@@ -211,25 +232,42 @@ const currentItems = computed(() => {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.6rem 1rem;
+  padding: 0.65rem 1.1rem;
   border-radius: var(--radius-full);
-  border: none;
+  border: 1.5px solid transparent;
   background: transparent;
   color: var(--text-secondary);
   font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.92rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
 
-  &:hover {
+  .btn-emoji {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .btn-label {
+    letter-spacing: -0.01em;
+  }
+
+  &:hover:not(.active) {
     color: var(--text-primary);
+    background-color: oklch(from var(--text-primary) l c h / 6%);
   }
 
   &.active {
-    background-color: var(--text-inverse);
-    color: var(--color-primary);
-    box-shadow: var(--shadow-sm);
+    background-color: var(--color-primary);
+    color: var(--text-inverse);
+    border-color: var(--color-primary);
+    font-weight: 800;
+    box-shadow: 0 2px 8px oklch(from var(--color-primary) l c h / 30%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-focus, var(--color-primary));
+    outline-offset: 2px;
   }
 }
 
