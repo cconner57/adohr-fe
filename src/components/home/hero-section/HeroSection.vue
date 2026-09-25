@@ -221,6 +221,16 @@ h1 {
   }
 }
 
+@media (width <= 768px) {
+  .hero-section {
+    padding-top: calc(72px + var(--safe-top));
+  }
+
+  .hero-inner {
+    padding-top: 0.5rem;
+  }
+}
+
 @media (width <= 640px) {
   .hero-eyebrow {
     display: flex;
