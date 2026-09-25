@@ -18,12 +18,17 @@
       </ul>
     </div>
     <div class="image-container">
-      <img
-        src="/images/mission-care.jpg"
-        alt="A dedicated rescue caregiver smiling warmly while holding a small rescue dog"
-        width="764"
-        height="1024"
-      />
+      <picture>
+        <source type="image/webp" srcset="/images/mission-care.webp" />
+        <img
+          src="/images/mission-care.jpg"
+          alt="A dedicated rescue caregiver smiling warmly while holding a small rescue dog"
+          width="640"
+          height="858"
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
     </div>
   </section>
 </template>
@@ -94,6 +99,12 @@
     border: 1.5px solid oklch(from var(--text-inverse) l c h / 35%);
     box-shadow: var(--shadow-xl);
     background: var(--text-inverse);
+
+    picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
 
     img {
       width: 100%;

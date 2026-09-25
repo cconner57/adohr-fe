@@ -37,23 +37,31 @@ function handleAdopt() {
         <div class="hero-duo-cards">
           <!-- Primary: Rescued puppy in lush greenery -->
           <div class="duo-card card-dog">
-            <img
-              src="/images/hero-dog.jpg"
-              alt="Rescued puppy with Adopt Me collar resting in green grass, ready for adoption"
-              width="1024"
-              height="1024"
-              fetchpriority="high"
-            />
+            <picture>
+              <source type="image/webp" srcset="/images/hero-dog.webp" />
+              <img
+                src="/images/hero-dog.jpg"
+                alt="Rescued puppy with Adopt Me collar resting in green grass, ready for adoption"
+                width="800"
+                height="800"
+                fetchpriority="high"
+              />
+            </picture>
           </div>
 
           <!-- Secondary: Rescued tuxedo cat on purple blanket -->
           <div class="duo-card card-cat">
-            <img
-              src="/images/hero-cat.jpg"
-              alt="Rescued tuxedo cat with bright yellow eyes on a soft purple mat, ready for adoption"
-              width="768"
-              height="1024"
-            />
+            <picture>
+              <source type="image/webp" srcset="/images/hero-cat.webp" />
+              <img
+                src="/images/hero-cat.jpg"
+                alt="Rescued tuxedo cat with bright yellow eyes on a soft purple mat, ready for adoption"
+                width="600"
+                height="800"
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
           </div>
         </div>
       </div>
@@ -126,6 +134,12 @@ h1 {
   overflow: hidden;
   background: var(--text-inverse);
   aspect-ratio: 1 / 1;
+
+  picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 
   img {
     width: 100%;
