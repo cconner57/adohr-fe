@@ -18,7 +18,7 @@ function getObserver(className: string, threshold: number): IntersectionObserver
       },
       {
         threshold,
-        rootMargin: '0px 0px -50px 0px',
+        rootMargin: '0px 0px -20px 0px',
       },
     )
     observers.set(key, obs)
@@ -26,16 +26,25 @@ function getObserver(className: string, threshold: number): IntersectionObserver
   return obs
 }
 
-export function useScrollReveal(className = 'reveal', threshold = 0.1) {
+export function useScrollReveal(className = 'reveal', threshold = 0.05) {
   const vScrollReveal = {
     mounted: (el: HTMLElement) => {
       el.classList.add(className)
       const observer = getObserver(className, threshold)
-      if (!observer) return
-      // Delay observe to next frame so View Transitions API completes first
-      if (typeof requestAnimationFrame !== 'undefined') {
+      if (!observer) {
+        el.classList.add('active')
+        return
+      }
+
+      if (typeof window !== 'undefined' && typeof requestAnimationFrame !== 'undefined') {
         requestAnimationFrame(() => {
-          observer.observe(el)
+          const rect = el.getBoundingClientRect()
+          // If already in viewport on mount (e.g. Hero section), activate smoothly on initial render
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            el.classList.add('active')
+          } else {
+            observer.observe(el)
+          }
         })
       } else {
         observer.observe(el)

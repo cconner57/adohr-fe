@@ -24,6 +24,7 @@
 - [x] Refactor 3-column desktop FAQ grid in `AboutFAQ.vue` into a clean tabbed or single-column accordion to eliminate vertical whitespace gaps.
 - [x] Purge commented-out dead Candid / GuideStar code in `AboutTransparency.vue`.
 - [x] Differentiate Mission bullet copy from Home's mission section.
+- [x] **Scroll Animations & Surrender Contrast**: Removed `animation-timeline: view()` override in `base.css` that froze CSS transitions and left bottom sections partially transparent. Restored smooth autonomous entrance transitions, staggered left/right slides, and updated Surrender Pet CTA to high-contrast Marmalade Orange with crisp text.
 
 ### [x] 3. Adopt Browse & Pet Discovery (`Adopt.vue` + `src/components/adopt/`) — Commits `c79ae71`, `8bb6868`
 - [x] Convert `PetMatcherModal.vue` into `PetMatcherDrawer.vue` (using canonical `Drawer.vue` with focus trap).

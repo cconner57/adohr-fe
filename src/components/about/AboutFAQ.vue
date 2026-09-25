@@ -95,7 +95,7 @@ const faqGroups = [
 
 <template>
   <section class="about-faq" aria-labelledby="about-faq-title">
-    <div class="content-wrapper">
+    <div class="content-wrapper" v-scroll-reveal>
       <p class="eyebrow">Before you ask</p>
       <h2 id="about-faq-title">Adoption FAQs</h2>
       <div class="groups">

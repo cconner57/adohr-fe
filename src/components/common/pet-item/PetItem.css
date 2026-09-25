@@ -209,12 +209,3 @@
   }
 }
 
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .pet-item {
-      animation: scroll-reveal-up linear both;
-      animation-timeline: view();
-      animation-range: entry 5% cover 25%;
-    }
-  }
-}

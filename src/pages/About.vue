@@ -45,7 +45,10 @@ import Footer from '@/components/common/footer/Footer.vue'
 :deep(.reveal) {
   opacity: 0;
   transform: translateY(30px);
-  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
 }
 
 :deep(.reveal.active) {
@@ -54,19 +57,40 @@ import Footer from '@/components/common/footer/Footer.vue'
 }
 
 :deep(.reveal-left) {
-  transform: translateX(-30px);
+  opacity: 0;
+  transform: translateX(-36px);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
 }
 
 :deep(.reveal-right) {
-  transform: translateX(30px);
+  opacity: 0;
+  transform: translateX(36px);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
 }
 
 :deep(.reveal-left.active),
 :deep(.reveal-right.active) {
+  opacity: 1;
   transform: translateX(0);
 }
 
 :deep(.reveal-delay-200.active) {
   transition-delay: 0.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :deep(.reveal),
+  :deep(.reveal-left),
+  :deep(.reveal-right) {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 </style>
