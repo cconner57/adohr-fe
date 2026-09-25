@@ -182,7 +182,7 @@ const currentItems = computed(() => {
           <strong>Adoption Fee Payment</strong>
           <p>
             Adoption donations cover full spay/neuter, microchipping, deworming, and core vaccines.
-            Cash, credit/debit card, Zelle, and Apple Pay are accepted at the venue.
+            Cash, credit/debit card, Zelle, PayPal, and Venmo are accepted at the venue.
           </p>
         </div>
       </div>
