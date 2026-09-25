@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import PetItem from '@/components/common/pet-item/PetItem.vue'
@@ -7,6 +7,7 @@ import PetItemSkeleton from '@/components/common/pet-item/PetItemSkeleton.vue'
 import Button from '@/components/common/ui/Button.vue'
 import type { IPet } from '@/models/common'
 import { formatDate } from '@/utils/common'
+import { useIsMobile } from '@/utils/useIsMobile'
 
 const props = defineProps<{
   pets: IPet[]
@@ -14,9 +15,41 @@ const props = defineProps<{
   error: string | null
 }>()
 
+const isMobile = useIsMobile()
 const router = useRouter()
 
+const randomPet = ref<IPet | null>(null)
+
+watch(
+  [() => props.pets, isMobile],
+  ([newPets, newIsMobile], [, oldIsMobile]) => {
+    if (!newIsMobile) return
+
+    if (!newPets || newPets.length === 0) {
+      randomPet.value = null
+      return
+    }
+
+    const justSwitchedToMobile = !oldIsMobile
+    if (
+      justSwitchedToMobile ||
+      !randomPet.value ||
+      !newPets.some((p) => p.id === randomPet.value?.id)
+    ) {
+      randomPet.value = newPets[Math.floor(Math.random() * newPets.length)]
+    }
+  },
+  { immediate: true },
+)
+
 const displayedPets = computed((): IPet[] => {
+  if (isMobile.value) {
+    if (randomPet.value) return [randomPet.value]
+    if (props.pets && props.pets.length > 0) {
+      return [props.pets[0]]
+    }
+    return []
+  }
   return (props.pets ?? []).slice(0, 4)
 })
 </script>
@@ -29,7 +62,7 @@ const displayedPets = computed((): IPet[] => {
     </header>
 
     <div v-if="loading" class="pet-list" aria-busy="true" aria-label="Loading featured pets">
-      <PetItemSkeleton v-for="i in 4" :key="i" />
+      <PetItemSkeleton v-for="i in (isMobile ? 1 : 4)" :key="i" />
     </div>
     <div v-else-if="error" class="error-container">
       <div class="error-content">
@@ -60,7 +93,7 @@ const displayedPets = computed((): IPet[] => {
           pet?.sex ?? '',
           pet?.physical?.dateOfBirth ? formatDate(pet?.physical?.dateOfBirth ?? '', true) : '',
         ]"
-        size="medium"
+        :size="isMobile ? 'large' : 'medium'"
         :isSponsored="pet.sponsored?.isSponsored ?? false"
         :status="pet.details?.status ?? ''"
       />
@@ -113,6 +146,21 @@ const displayedPets = computed((): IPet[] => {
 @media (width <= 1140px) {
   .pet-list {
     justify-content: flex-start;
+  }
+}
+
+@media (width <= 640px) {
+  .pet-list {
+    justify-content: center;
+    overflow-x: visible;
+
+    :deep(.pet-item),
+    :deep(.pet-skeleton) {
+      flex: 0 1 340px;
+      width: 100%;
+      max-width: 360px;
+      min-width: unset;
+    }
   }
 }
 

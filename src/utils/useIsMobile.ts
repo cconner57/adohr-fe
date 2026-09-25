@@ -1,7 +1,7 @@
 import { useMediaQuery } from './useMediaQuery'
 
 export const useIsMobile = () => {
-  return useMediaQuery('(max-width: 440px)')
+  return useMediaQuery('(max-width: 640px)')
 }
 
 export const useIsTablet = () => {

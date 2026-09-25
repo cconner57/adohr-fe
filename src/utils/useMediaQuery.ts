@@ -1,7 +1,11 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 
 export function useMediaQuery(query: string) {
-  const matches = ref(false)
+  const matches = ref(
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia(query).matches
+      : false,
+  )
   let mediaQuery: MediaQueryList | undefined
 
   const updateMatch = (mediaQueryEvent: MediaQueryListEvent | MediaQueryList) => {
