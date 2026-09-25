@@ -21,8 +21,8 @@ const handleGoAdopt = () => {
         src="/images/404.jpeg"
         alt="A pet looking for directions - 404 Not Found"
         class="not-found-image"
-        width="280"
-        height="280"
+        width="380"
+        height="380"
       />
       <h1 id="not-found-heading">Oops! Page Not Found</h1>
       <p>The page you are looking for might have been moved, renamed, or is temporarily unavailable.</p>
@@ -80,19 +80,19 @@ const handleGoAdopt = () => {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  max-width: 600px;
+  max-width: 640px;
   position: relative;
   z-index: 1;
 }
 
 .not-found-image {
-  width: min(75vw, 280px);
-  height: min(75vw, 280px);
+  width: min(85vw, 380px);
+  height: min(85vw, 380px);
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: var(--radius-full, 50%);
-  border: 4px solid oklch(from var(--text-inverse) l c h / 18%);
-  box-shadow: 0 16px 36px -8px oklch(0% 0 0 / 30%);
+  border: 5px solid oklch(from var(--text-inverse) l c h / 20%);
+  box-shadow: 0 20px 48px -10px oklch(0% 0 0 / 35%);
   margin-bottom: 0.5rem;
   margin-top: 1rem;
 }
