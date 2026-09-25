@@ -110,9 +110,11 @@
 ### [~] 14. Pet Medical Profile & Lookup (`MedicalRecordsLookup.vue`, `PetMedicalProfile.vue`)
 - *Deferred per user instruction to focus on core conversion flows.*
 
-### [x] 15. Not Found (404 Page) (`NotFound.vue`) — Commit `5243ca9`
+### [x] 15. Not Found (404 Page) (`NotFound.vue`) — Commits `5243ca9`, `fix(not-found)`
 - [x] **Critical SPA Fix**: Replaced `window.location.href = '/'` with `useRouter().push('/')` to preserve Pinia cache and instant routing.
 - [x] Wrapped in semantic `<main class="not-found-container" id="main-content">` landmark.
+- [x] **Visual & Contrast Polish**: Converted 404 pet illustration into a responsive circular portrait frame (`border-radius: 50%`) with subtle border ring and elevation shadow.
+- [x] **Button Contrast & Theming**: Fixed "Return Home" CTA with vibrant Marmalade orange (`#e0571f`) and styled "Meet Adoptable Pets" as a crisp high-contrast outline button with white border and white text for WCAG AAA visibility against the dark pine evergreen ground.
 - [x] Added secondary recovery navigation ("Meet Adoptable Pets →", "About & Contact", "Volunteer", "Foster Program").
 - [x] Added accessible action buttons and high-contrast recovery links.
 

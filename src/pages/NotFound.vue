@@ -21,14 +21,26 @@ const handleGoAdopt = () => {
         src="/images/404.jpeg"
         alt="A pet looking for directions - 404 Not Found"
         class="not-found-image"
-        width="360"
-        height="360"
+        width="280"
+        height="280"
       />
       <h1 id="not-found-heading">Oops! Page Not Found</h1>
       <p>The page you are looking for might have been moved, renamed, or is temporarily unavailable.</p>
       <div class="action-buttons">
-        <Button @click="handleGoHome" title="Return Home" color="orange" size="large" />
-        <Button @click="handleGoAdopt" title="Meet Adoptable Pets" variant="secondary" color="white" size="large" />
+        <Button
+          class="btn-return-home"
+          @click="handleGoHome"
+          title="Return Home"
+          theme="secondary"
+          size="large"
+        />
+        <Button
+          class="btn-adopt-pets"
+          @click="handleGoAdopt"
+          title="Meet Adoptable Pets"
+          variant="secondary"
+          size="large"
+        />
       </div>
 
       <nav class="recovery-links" aria-label="Helpful navigation links">
@@ -74,12 +86,13 @@ const handleGoAdopt = () => {
 }
 
 .not-found-image {
-  max-width: min(100%, 320px);
-  height: auto;
+  width: min(75vw, 280px);
+  height: min(75vw, 280px);
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: var(--radius-arch, 999px 999px var(--radius-lg) var(--radius-lg));
-  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-full, 50%);
+  border: 4px solid oklch(from var(--text-inverse) l c h / 18%);
+  box-shadow: 0 16px 36px -8px oklch(0% 0 0 / 30%);
   margin-bottom: 0.5rem;
   margin-top: 1rem;
 }
@@ -105,6 +118,51 @@ p {
   gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+/* Return Home: high-contrast brand Marmalade CTA on dark green ground */
+:deep(.btn-return-home) {
+  background-color: var(--color-secondary, #e0571f) !important;
+  color: var(--text-inverse, #ffffff) !important;
+  border: 1.5px solid transparent !important;
+  box-shadow: 0 4px 14px oklch(0% 0 0 / 25%) !important;
+  font-weight: 700 !important;
+}
+
+:deep(.btn-return-home:hover:not(:disabled)) {
+  background-color: #c94a15 !important;
+  box-shadow: 0 6px 18px oklch(0% 0 0 / 35%) !important;
+  translate: 0 -2px !important;
+}
+
+:deep(.btn-return-home:active:not(:disabled)) {
+  translate: 0 0 !important;
+  box-shadow: 0 2px 6px oklch(0% 0 0 / 25%) !important;
+}
+
+/* Meet Adoptable Pets: crisp high-contrast outline on dark pine ground */
+:deep(.btn-adopt-pets) {
+  background-color: transparent !important;
+  color: var(--text-inverse, #ffffff) !important;
+  border: 1.5px solid oklch(from var(--text-inverse) l c h / 75%) !important;
+  font-weight: 700 !important;
+}
+
+:deep(.btn-adopt-pets:hover:not(:disabled)) {
+  background-color: oklch(from var(--text-inverse) l c h / 14%) !important;
+  border-color: var(--text-inverse, #ffffff) !important;
+  color: #ffffff !important;
+  translate: 0 -2px !important;
+}
+
+:deep(.btn-adopt-pets:active:not(:disabled)) {
+  translate: 0 0 !important;
+}
+
+:deep(.btn-return-home:focus-visible),
+:deep(.btn-adopt-pets:focus-visible) {
+  outline: 2px solid var(--text-inverse, #ffffff) !important;
+  outline-offset: 3px !important;
 }
 
 .recovery-links {
