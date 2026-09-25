@@ -34,8 +34,14 @@ const currentYear = computed(() => new Date().getFullYear())
         <div class="footer-social">
           <span class="footer-label">Follow along</span>
           <div class="footer-social-links">
-            <a href="https://www.facebook.com/IDOHR.ORG" target="_blank" rel="noopener noreferrer" aria-label="Facebook">Facebook ↗</a>
-            <a href="https://www.instagram.com/idohrcats/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Instagram ↗</a>
+            <span class="social-link disabled" aria-disabled="true">
+              Facebook
+              <span class="coming-soon-tag">Coming soon</span>
+            </span>
+            <span class="social-link disabled" aria-disabled="true">
+              Instagram
+              <span class="coming-soon-tag">Coming soon</span>
+            </span>
           </div>
         </div>
       </div>
@@ -132,17 +138,31 @@ const currentYear = computed(() => new Date().getFullYear())
     display: flex;
     align-items: center;
     gap: 1.25rem;
+    flex-wrap: wrap;
   }
 
-  a {
-    color: var(--text-inverse);
-    text-decoration: none;
+  .social-link.disabled {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: oklch(from var(--text-inverse) l c h / 80%);
+    font-size: 0.95rem;
     font-weight: 500;
-    white-space: nowrap;
+    cursor: default;
+    user-select: none;
+  }
 
-    &:hover {
-      color: var(--color-warning);
-    }
+  .coming-soon-tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background-color: oklch(from var(--text-inverse) l c h / 14%);
+    color: var(--color-warning, #f2b33d);
+    border: 1px solid oklch(from var(--color-warning) l c h / 35%);
+    padding: 2px 7px;
+    border-radius: var(--radius-full);
   }
 }
 
