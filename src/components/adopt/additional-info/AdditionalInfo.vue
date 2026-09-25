@@ -9,38 +9,24 @@ const props = defineProps<{
 }>()
 
 const isSpayedOrNeutered = (pet: IPet) => {
-  return pet?.sex?.toLowerCase() === 'male' ? 'Neutered' : 'Spayed'
+  const sex = pet?.sex?.trim().toLowerCase()
+  if (sex === 'male') return 'Neutered'
+  if (sex === 'female') return 'Spayed'
+  return 'Spayed/Neutered'
 }
 
 const specialNeedsInfo = computed(() => getPetSpecialNeeds(props.pet))
 
 const healthSummaryText = computed(() => {
-  const parts: string[] = []
-
-  if (props.pet.medical?.vaccinationsUpToDate !== undefined && props.pet.medical?.vaccinationsUpToDate !== null) {
-    parts.push(props.pet.medical.vaccinationsUpToDate ? 'Vaccinated' : 'Not Vaccinated')
+  if (
+    props.pet.medical?.spayedOrNeutered !== undefined &&
+    props.pet.medical?.spayedOrNeutered !== null
+  ) {
+    const term = isSpayedOrNeutered(props.pet)
+    return props.pet.medical.spayedOrNeutered ? term : `Not ${term}`
   }
 
-  if (props.pet.medical?.spayedOrNeutered !== undefined && props.pet.medical?.spayedOrNeutered !== null) {
-    parts.push(
-      props.pet.medical.spayedOrNeutered
-        ? isSpayedOrNeutered(props.pet)
-        : `Not ${isSpayedOrNeutered(props.pet)}`,
-    )
-  }
-
-  if (props.pet.medical?.microchip?.microchipped !== undefined && props.pet.medical?.microchip?.microchipped !== null) {
-    parts.push(props.pet.medical.microchip.microchipped ? 'Microchipped' : 'Not Microchipped')
-  }
-
-  if (props.pet.medical?.felvPositive) {
-    parts.push('FeLV Positive')
-  }
-  if (props.pet.medical?.fivPositive) {
-    parts.push('FIV Positive')
-  }
-
-  return parts.length > 0 ? parts.join(', ') : 'N/A'
+  return 'N/A'
 })
 
 const normalizedBreed = computed(() => {
