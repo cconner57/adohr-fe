@@ -3,12 +3,17 @@
     <div class="content-wrapper">
       <div v-scroll-reveal class="reveal-left image-container">
         <div class="story-image-card">
-          <img
-            src="/images/about-story.jpg"
-            alt="Two bonded rescue cats cuddling closely together"
-            width="720"
-            height="960"
-          />
+          <picture>
+            <source type="image/webp" srcset="/images/about-story.webp" />
+            <img
+              src="/images/about-story.jpg"
+              alt="Two bonded rescue cats cuddling closely together"
+              width="720"
+              height="960"
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
         </div>
       </div>
       <div class="story-text reveal-right" v-scroll-reveal>
@@ -65,6 +70,12 @@
     background: var(--text-inverse);
     width: 100%;
     max-width: 380px;
+  }
+
+  picture {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   img {

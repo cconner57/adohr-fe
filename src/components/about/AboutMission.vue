@@ -17,13 +17,18 @@
       </div>
       <div class="image-wrapper reveal-delay-200" v-scroll-reveal>
         <div class="mission-image-card">
-          <img
-            src="/images/about-mission.jpg"
-            alt="Rescued black cat sitting comfortably and looking at the camera"
-            class="mission-image"
-            width="546"
-            height="1024"
-          />
+          <picture>
+            <source type="image/webp" srcset="/images/about-mission.webp" />
+            <img
+              src="/images/about-mission.jpg"
+              alt="Rescued black cat sitting comfortably and looking at the camera"
+              class="mission-image"
+              width="546"
+              height="1024"
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
         </div>
       </div>
     </div>
@@ -97,6 +102,12 @@
     font-weight: 400;
     line-height: 1.65;
     color: oklch(from var(--text-inverse) l c h / 88%);
+  }
+
+  picture {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   img {
