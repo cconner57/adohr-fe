@@ -42,7 +42,6 @@ const { submitMetric } = useMetrics()
 
 const species = computed(() => selectedPet.value?.species ?? 'cat')
 const animalLabel = computed(() => (species.value === 'dog' ? 'dog' : 'cat'))
-const isCatFlow = computed(() => species.value === 'cat')
 const isIntroStep = computed(() => step.value === 0)
 const visibleStep = computed(() => Math.max(step.value - 1, 0))
 const stepPrefix = computed(() => {
@@ -59,14 +58,16 @@ const isKitten = computed(() => {
   return new Date(dob) > sixMonthsAgo
 })
 
-const adoptionSteps = computed(() => {
-  if (species.value === 'dog') {
-    return ['General', 'Home', 'New Dog', 'Past Pets', 'Other', 'Summary']
-  }
-
-  return ['General', 'Home', 'New Cat', 'Current Pets', 'Past Pets', 'Other', 'Summary']
-})
-const finalStep = computed(() => (isCatFlow.value ? 7 : 6))
+const adoptionSteps = computed(() => [
+  'General',
+  'Home',
+  species.value === 'dog' ? 'New Dog' : 'New Cat',
+  'Current Pets',
+  'Past Pets',
+  'Other',
+  'Summary',
+])
+const finalStep = computed(() => 7)
 
 const availablePetsOptions = computed(() => {
   if (!selectedPet.value) return []
@@ -265,27 +266,27 @@ const secondPetName = computed(() => {
           :animalLabel="animalLabel"
         />
         <CurrentPetsSection
-          v-show="isCatFlow && step === 4"
+          v-show="step === 4"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"
           :animalLabel="animalLabel"
         />
         <PastPetsSection
-          v-show="(!isCatFlow && step === 4) || (isCatFlow && step === 5)"
+          v-show="step === 5"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"
         />
         <OtherSection
-          v-show="(!isCatFlow && step === 5) || (isCatFlow && step === 6)"
+          v-show="step === 6"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"
           :animalLabel="animalLabel"
         />
         <SummarySection
-          v-show="(!isCatFlow && step === 6) || (isCatFlow && step === 7)"
+          v-show="step === 7"
           :touched="touched"
           :handleBlur="handleBlur"
           :hasAttemptedSubmit="hasAttemptedSubmit"

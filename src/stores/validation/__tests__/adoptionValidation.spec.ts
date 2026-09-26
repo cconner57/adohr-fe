@@ -121,4 +121,114 @@ describe('getAdoptionValidationErrors', () => {
     const errors = getAdoptionValidationErrors(0, formState, 'dog', true)
     expect(errors).not.toContain('Interested Pet Name')
   })
+
+  describe('Step 3: Current Pets validation', () => {
+    it('requires currentlyHavePets to be answered', () => {
+      const formState = createMockFormState({ currentlyHavePets: null })
+      const errors = getAdoptionValidationErrors(3, formState, 'dog')
+      expect(errors).toContain('Do you have pets?')
+    })
+
+    it('passes when currentlyHavePets is No', () => {
+      const formState = createMockFormState({ currentlyHavePets: 'No', currentPets: [] })
+      const errors = getAdoptionValidationErrors(3, formState, 'dog')
+      expect(errors).toHaveLength(0)
+    })
+
+    it('requires pet fields when currentlyHavePets is Yes', () => {
+      const formState = createMockFormState({
+        currentlyHavePets: 'Yes',
+        currentPets: [
+          {
+            name: '',
+            speciesBreedSize: '',
+            age: '',
+            likesDogs: '',
+            source: '',
+            spayedNeutered: '',
+          },
+        ],
+      })
+      const errors = getAdoptionValidationErrors(3, formState, 'dog')
+      expect(errors).toContain('Pet 1 Name')
+      expect(errors).toContain('Pet 1 Breed/Size')
+      expect(errors).toContain('Pet 1 Age')
+      expect(errors).toContain('Pet 1 Likes Dogs')
+      expect(errors).toContain('Pet 1 Source')
+      expect(errors).toContain('Pet 1 Spayed/Neutered')
+    })
+  })
+
+  describe('Step 4: Past Pets validation', () => {
+    it('requires ownPetsBefore to be answered', () => {
+      const formState = createMockFormState({ ownPetsBefore: null })
+      const errors = getAdoptionValidationErrors(4, formState, 'dog')
+      expect(errors).toContain('Have you owned pets?')
+    })
+
+    it('passes when ownPetsBefore is No', () => {
+      const formState = createMockFormState({ ownPetsBefore: 'No', pastPets: [] })
+      const errors = getAdoptionValidationErrors(4, formState, 'dog')
+      expect(errors).toHaveLength(0)
+    })
+
+    it('requires past pet fields when ownPetsBefore is Yes', () => {
+      const formState = createMockFormState({
+        ownPetsBefore: 'Yes',
+        pastPets: [
+          {
+            name: '',
+            speciesBreedSize: '',
+            age: '',
+            source: '',
+            spayedNeutered: '',
+            passedAwayReason: '',
+          },
+        ],
+      })
+      const errors = getAdoptionValidationErrors(4, formState, 'dog')
+      expect(errors).toContain('Past Pet 1 Name')
+      expect(errors).toContain('Past Pet 1 Breed/Size')
+      expect(errors).toContain('Past Pet 1 Age')
+      expect(errors).toContain('Past Pet 1 Source')
+      expect(errors).toContain('Past Pet 1 Spayed/Neutered')
+      expect(errors).toContain('Past Pet 1 Outcome')
+    })
+  })
+
+  describe('Step 5: Other validation', () => {
+    it('requires dog-specific fields when species is dog', () => {
+      const formState = createMockFormState({
+        bredAnimalDescription: 'No',
+        ownedDeclawedOrDebarked: 'No',
+        movedWithPet: 'No',
+        ownedSpecialNeedsPet: 'No',
+        mobilityDevice: 'No',
+        foodTypeBrand: 'Kibble',
+        surrenderConditions: ['None of the above'],
+        surrenderPlan: 'Keep pet',
+        affordVetCare: 'Yes',
+        affordEmergencyCost: 'Yes',
+      })
+      const errors = getAdoptionValidationErrors(5, formState, 'dog')
+      expect(errors).toContain('Why Selected')
+      expect(errors).toContain('Where Heard About')
+      expect(errors).toContain('Fenced Backyard')
+      expect(errors).toContain('Has Pool')
+      expect(errors).toContain('Household Description')
+    })
+  })
+
+  describe('Step 6: Summary validation', () => {
+    it('validates matching typed names and signature', () => {
+      const formState = createMockFormState({
+        agreementSignature1: 'John Doe',
+        agreementSignature2: 'Jane Doe',
+        signatureData: null,
+      })
+      const errors = getAdoptionValidationErrors(6, formState, 'dog')
+      expect(errors).toContain('Typed names must match')
+      expect(errors).toContain('Final Signature')
+    })
+  })
 })
