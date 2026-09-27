@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import Select from '../Select.vue'
 
@@ -111,5 +111,19 @@ describe('Select.vue', () => {
     await wrapper.find('.select-trigger').trigger('keydown', { key: 'Enter' })
 
     expect(wrapper.emitted('update:modelValue')![0]).toEqual(['opt2'])
+  })
+
+  it('opens without calling scrollIntoView on window/elements to prevent page shifts', async () => {
+    const scrollIntoViewSpy = vi.fn()
+    window.HTMLElement.prototype.scrollIntoView = scrollIntoViewSpy
+
+    const wrapper = mount(Select, {
+      props: { modelValue: null, options },
+      global: { stubs: { Teleport: true } },
+    })
+
+    await wrapper.find('.select-trigger').trigger('click')
+    expect(wrapper.find('.options-menu').isVisible()).toBe(true)
+    expect(scrollIntoViewSpy).not.toHaveBeenCalled()
   })
 })

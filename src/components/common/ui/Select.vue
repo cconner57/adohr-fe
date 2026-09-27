@@ -38,6 +38,16 @@ const dropdownStyles = ref({
   zIndex: 9999,
 })
 
+const normalizedOptions = computed(() => {
+  if (!props.options) return []
+  return props.options.map((opt) => {
+    if (typeof opt === 'object' && opt !== null && 'label' in opt && 'value' in opt) {
+      return opt
+    }
+    return { label: String(opt), value: opt }
+  })
+})
+
 const updateDropdownPosition = () => {
   if (!containerRef.value) return
   const rect = containerRef.value.getBoundingClientRect()
@@ -58,12 +68,17 @@ const updateDropdownPosition = () => {
     left = window.innerWidth - menuWidth - 10
   }
 
+  // Calculate actual or estimated menu height
+  const menuHeight = menuRef.value?.offsetHeight
+    ? Math.min(menuRef.value.offsetHeight, menuMaxHeight)
+    : Math.min(normalizedOptions.value.length * 42 + 10, menuMaxHeight)
+
   // Check if there is enough space below
   const spaceBelow = window.innerHeight - rect.bottom
-  const shouldOpenUp = spaceBelow < menuMaxHeight + 20 && rect.top > menuMaxHeight + 20
+  const shouldOpenUp = spaceBelow < menuHeight + 16 && rect.top > menuHeight + 16
 
   const top = shouldOpenUp
-    ? rect.top + window.scrollY - menuMaxHeight - 8
+    ? rect.top + window.scrollY - menuHeight - 4
     : rect.bottom + window.scrollY + 4
 
   dropdownStyles.value = {
@@ -77,6 +92,7 @@ const updateDropdownPosition = () => {
 
 watch(isOpen, async (val) => {
   if (val) {
+    updateDropdownPosition()
     await nextTick()
     updateDropdownPosition()
     window.addEventListener('scroll', updateDropdownPosition, true)
@@ -85,16 +101,6 @@ watch(isOpen, async (val) => {
     window.removeEventListener('scroll', updateDropdownPosition, true)
     window.removeEventListener('resize', updateDropdownPosition)
   }
-})
-
-const normalizedOptions = computed(() => {
-  if (!props.options) return []
-  return props.options.map((opt) => {
-    if (typeof opt === 'object' && opt !== null && 'label' in opt && 'value' in opt) {
-      return opt
-    }
-    return { label: String(opt), value: opt }
-  })
 })
 
 const selectedLabel = computed(() => {
@@ -120,8 +126,18 @@ const scrollToHighlighted = () => {
   nextTick(() => {
     if (!menuRef.value) return
     const highlightedEl = menuRef.value.querySelector('.option-item.is-highlighted') as HTMLElement | null
-    if (highlightedEl && typeof highlightedEl.scrollIntoView === 'function') {
-      highlightedEl.scrollIntoView({ block: 'nearest' })
+    if (!highlightedEl) return
+
+    const menu = menuRef.value
+    const elTop = highlightedEl.offsetTop
+    const elBottom = elTop + highlightedEl.offsetHeight
+    const menuTop = menu.scrollTop
+    const menuBottom = menuTop + menu.clientHeight
+
+    if (elTop < menuTop) {
+      menu.scrollTop = elTop
+    } else if (elBottom > menuBottom) {
+      menu.scrollTop = elBottom - menu.clientHeight
     }
   })
 }
@@ -133,10 +149,17 @@ const highlightCurrentOrFirst = () => {
   scrollToHighlighted()
 }
 
+const openDropdown = () => {
+  updateDropdownPosition()
+  isOpen.value = true
+  highlightCurrentOrFirst()
+}
+
 const toggleDropdown = () => {
-  isOpen.value = !isOpen.value
   if (isOpen.value) {
-    highlightCurrentOrFirst()
+    isOpen.value = false
+  } else {
+    openDropdown()
   }
 }
 
@@ -163,8 +186,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
   if (event.key === ' ' || event.key === 'Enter') {
     event.preventDefault()
     if (!isOpen.value) {
-      isOpen.value = true
-      highlightCurrentOrFirst()
+      openDropdown()
     } else {
       if (highlightedIndex.value >= 0 && highlightedIndex.value < options.length) {
         selectOption(options[highlightedIndex.value].value)
@@ -194,8 +216,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
   if (event.key === 'ArrowDown') {
     event.preventDefault()
     if (!isOpen.value) {
-      isOpen.value = true
-      highlightCurrentOrFirst()
+      openDropdown()
     } else {
       highlightedIndex.value = (highlightedIndex.value + 1) % options.length
       scrollToHighlighted()
@@ -206,8 +227,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
   if (event.key === 'ArrowUp') {
     event.preventDefault()
     if (!isOpen.value) {
-      isOpen.value = true
-      highlightCurrentOrFirst()
+      openDropdown()
     } else {
       highlightedIndex.value = (highlightedIndex.value - 1 + options.length) % options.length
       scrollToHighlighted()
