@@ -47,6 +47,8 @@ const {
   selectEvent,
   displayTitle,
   displayDates,
+  displayAddress,
+  directionsUrl,
   recurrenceText,
   fetchUpcomingEvents,
 } = useAdoptionEvents()
@@ -117,6 +119,39 @@ onMounted(() => {
           <h3 class="banner-title">{{ displayTitle }}</h3>
           <p class="banner-subtitle">
             <strong>{{ displayDates }}</strong>
+          </p>
+          <p v-if="displayAddress" class="banner-address">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              class="address-pin-icon"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <a
+              v-if="directionsUrl"
+              :href="directionsUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="address-link"
+              :aria-label="`Get directions to ${displayAddress}`"
+            >
+              <span>{{ displayAddress }}</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+            </a>
+            <span v-else>{{ displayAddress }}</span>
           </p>
         </div>
       </div>

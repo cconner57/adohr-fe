@@ -227,4 +227,87 @@ describe('EventBanner.vue', () => {
 
     expect(wrapper.find('.filter-toggle-btn').exists()).toBe(false)
   })
+
+  it('renders event address under weekend dates when address is available', async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => mockLiveEvent,
+    } as Response)
+
+    const wrapper = mount(EventBanner)
+    await new Promise((resolve) => setTimeout(resolve, 30))
+
+    const addressEl = wrapper.find('.banner-address')
+    expect(addressEl.exists()).toBe(true)
+    expect(addressEl.text()).toContain('3347 E Foothill Blvd')
+    const link = addressEl.find('a.address-link')
+    expect(link.exists()).toBe(true)
+    expect(link.attributes('href')).toContain('maps.google.com')
+  })
+
+  it('updates address reactively when switching between location tabs', async () => {
+    const mockMultiApiResponse = {
+      events: [
+        {
+          id: 'evt-1',
+          title: 'PetSmart Pasadena Adoption Event',
+          type: 'adoption-event',
+          startDate: '2026-09-05',
+          startTime: '12:00',
+          location: 'PetSmart Pasadena',
+          address: '3347 E Foothill Blvd, Pasadena',
+        },
+        {
+          id: 'evt-2',
+          title: 'Petco Burbank Adoption Fair',
+          type: 'adoption-event',
+          startDate: '2026-09-05',
+          startTime: '11:00',
+          location: 'Petco Burbank',
+          address: '3525 W Victory Blvd, Burbank',
+        },
+      ],
+    }
+
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => mockMultiApiResponse,
+    } as Response)
+
+    const wrapper = mount(EventBanner)
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    // Pasadena initially active
+    expect(wrapper.find('.banner-address').text()).toContain('3347 E Foothill Blvd')
+
+    // Click on Burbank tab
+    const tabs = wrapper.findAll('.location-tab-btn')
+    await tabs[1].trigger('click')
+
+    expect(wrapper.find('.banner-address').text()).toContain('3525 W Victory Blvd')
+  })
+
+  it('does not render banner-address when no address is available', async () => {
+    const eventWithoutAddress = {
+      events: [
+        {
+          id: 'evt-virtual',
+          title: 'Virtual Meet & Greet',
+          type: 'adoption-event',
+          startDate: '2026-09-05',
+          location: 'Online Webinar',
+        },
+      ],
+    }
+
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => eventWithoutAddress,
+    } as Response)
+
+    const wrapper = mount(EventBanner)
+    await new Promise((resolve) => setTimeout(resolve, 30))
+
+    expect(wrapper.find('.banner-address').exists()).toBe(false)
+  })
 })

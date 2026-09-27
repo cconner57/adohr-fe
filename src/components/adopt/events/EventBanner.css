@@ -185,6 +185,23 @@
             color: var(--color-warning);
           }
         }
+
+        .banner-address {
+          color: oklch(100% 0 0deg / 82%);
+
+          .address-pin-icon {
+            color: var(--color-warning);
+          }
+
+          .address-link {
+            text-decoration-color: oklch(100% 0 0deg / 35%);
+
+            &:hover {
+              color: var(--color-warning);
+              text-decoration-color: var(--color-warning);
+            }
+          }
+        }
       }
 
       .banner-actions {
@@ -280,6 +297,37 @@
 
           strong {
             color: var(--color-secondary);
+          }
+        }
+
+        .banner-address {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          font-size: 0.82rem;
+          color: var(--text-secondary);
+          margin: 3px 0 0;
+          line-height: 1.35;
+
+          .address-pin-icon {
+            flex-shrink: 0;
+            color: var(--color-primary);
+          }
+
+          .address-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: inherit;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            text-decoration-color: oklch(from var(--text-secondary) l c h / 35%);
+            transition: color 0.15s ease, text-decoration-color 0.15s ease;
+
+            &:hover {
+              color: var(--color-primary);
+              text-decoration-color: var(--color-primary);
+            }
           }
         }
       }

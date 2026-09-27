@@ -144,11 +144,44 @@ export function resolveLocationName(ev: IPublicAdoptionEvent): string {
   return title && !title.toLowerCase().startsWith('meet') ? title : DEFAULT_LOCATION_NAME
 }
 
+export const KNOWN_VENUE_ADDRESSES: Record<string, string> = {
+  pasadena: '3347 E Foothill Blvd, Pasadena, CA 91107',
+  upland: '1935 N Campus Ave, Upland, CA 91784',
+  monrovia: '645 W Huntington Dr, Monrovia, CA 91016',
+  burbank: '3525 W Victory Blvd, Burbank, CA 91505',
+}
+
 export function resolveLocationAddress(ev: IPublicAdoptionEvent, locName: string): string {
-  if (ev.address && ev.address.trim()) return ev.address.trim()
-  if (ev.location && ev.location.trim()) return ev.location.trim()
-  if (locName && locName !== DEFAULT_LOCATION_NAME) return locName
-  return DEFAULT_ADDRESS
+  if (ev.address && ev.address.trim()) {
+    const raw = ev.address.trim()
+    const parts = [raw]
+    if (ev.city && !raw.toLowerCase().includes(ev.city.toLowerCase())) parts.push(ev.city.trim())
+    if (ev.state && !raw.toLowerCase().includes(ev.state.toLowerCase())) parts.push(ev.state.trim())
+    if (ev.zip && !raw.includes(ev.zip)) parts.push(ev.zip.trim())
+    return parts.join(', ')
+  }
+
+  const loc = (ev.location || '').trim()
+  if (loc && /\d+\s+[A-Za-z]/.test(loc)) {
+    const commaIndex = loc.indexOf(',')
+    if (commaIndex !== -1 && /\d+/.test(loc.slice(commaIndex + 1))) {
+      return loc.slice(commaIndex + 1).trim()
+    }
+    return loc
+  }
+
+  const normalizedLoc = `${locName} ${loc}`.toLowerCase()
+  for (const [key, knownAddr] of Object.entries(KNOWN_VENUE_ADDRESSES)) {
+    if (normalizedLoc.includes(key)) {
+      return knownAddr
+    }
+  }
+
+  if (locName === DEFAULT_LOCATION_NAME || locName.toLowerCase().includes('pasadena')) {
+    return DEFAULT_ADDRESS
+  }
+
+  return ''
 }
 
 export function parseSortTime(dateStr?: string): number {
@@ -227,7 +260,8 @@ export function combineConsecutiveEvents(rawEvents: IPublicAdoptionEvent[]): IFo
   const results: IFormattedAdoptionEvent[] = []
   venueGroups.forEach((groupEvents) => {
     groupEvents.sort((a, b) => parseSortTime(a.startDate) - parseSortTime(b.startDate))
-    const sample = groupEvents.find((e) => (e.location && e.location.trim()) || (e.locationName && e.locationName.trim())) || groupEvents[0]
+    const eventWithAddress = groupEvents.find((e) => (e.address && e.address.trim()) || (e.location && /\d+\s+[A-Za-z]/.test(e.location)))
+    const sample = eventWithAddress || groupEvents.find((e) => (e.location && e.location.trim()) || (e.locationName && e.locationName.trim())) || groupEvents[0]
     const locName = resolveLocationName(sample)
     const venueAddress = resolveLocationAddress(sample, locName)
 
