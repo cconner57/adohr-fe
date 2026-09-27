@@ -126,4 +126,58 @@ describe('Select.vue', () => {
     expect(wrapper.find('.options-menu').isVisible()).toBe(true)
     expect(scrollIntoViewSpy).not.toHaveBeenCalled()
   })
+
+  it('renders rich option metadata including thumbnail, species, sex, and age', async () => {
+    const richOptions = [
+      {
+        label: 'Luna',
+        value: 'luna-1',
+        image: 'https://cdn.example.com/luna.jpg',
+        species: 'Cat',
+        sex: 'Female',
+        age: '2 yr',
+      },
+    ]
+
+    const wrapper = mount(Select, {
+      props: { modelValue: null, options: richOptions },
+      global: { stubs: { Teleport: true } },
+    })
+
+    await wrapper.find('.select-trigger').trigger('click')
+    const img = wrapper.find('.option-pet-thumb')
+    expect(img.exists()).toBe(true)
+    expect(img.attributes('src')).toBe('https://cdn.example.com/luna.jpg')
+
+    const metaTags = wrapper.find('.option-meta-tags')
+    expect(metaTags.text()).toContain('Cat')
+    expect(metaTags.text()).toContain('Female')
+    expect(metaTags.text()).toContain('2 yr')
+  })
+
+  it('paginates options with pageSize and shows scroll load more indicator', async () => {
+    const manyOptions = Array.from({ length: 60 }, (_, i) => ({
+      label: `Pet ${i + 1}`,
+      value: `pet-${i + 1}`,
+    }))
+
+    const wrapper = mount(Select, {
+      props: {
+        modelValue: null,
+        options: manyOptions,
+        pageSize: 25,
+        loadMoreText: 'Loading more pets...',
+      },
+      global: { stubs: { Teleport: true } },
+    })
+
+    await wrapper.find('.select-trigger').trigger('click')
+    // pageSize is 25, initially visible is pageSize + 1 = 26 items (or up to 26)
+    const renderedItems = wrapper.findAll('.option-item')
+    expect(renderedItems.length).toBe(26)
+
+    const scrollTrigger = wrapper.find('.scroll-more-trigger')
+    expect(scrollTrigger.exists()).toBe(true)
+    expect(scrollTrigger.text()).toContain('Scroll to load more')
+  })
 })

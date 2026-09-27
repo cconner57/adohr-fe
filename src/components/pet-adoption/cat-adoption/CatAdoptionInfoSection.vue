@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import Select from '@/components/common/ui/Select.vue'
+import Select, { type ISelectOption } from '@/components/common/ui/Select.vue'
 
 interface IPolicyItem {
   title: string
@@ -13,7 +13,7 @@ const props = withDefaults(
     isKitten?: boolean
     species?: 'cat' | 'dog'
     secondPetId?: string | null
-    availablePetsOptions?: { label: string; value: string }[]
+    availablePetsOptions?: ISelectOption[]
     animalLabel?: string
     isGeneral?: boolean
     generalPetName?: string
@@ -191,6 +191,8 @@ const goodToKnowItems = computed<IPolicyItem[]>(() => {
           :options="[{ label: 'None', value: '' }, ...availablePetsOptions]"
           placeholder="Select a second pet (optional)"
           fullWidth
+          :pageSize="25"
+          loadMoreText="Loading more pets..."
           @update:modelValue="(val: unknown) => emit('update:secondPetId', val ? String(val) : null)"
         />
         <input
@@ -406,7 +408,7 @@ const goodToKnowItems = computed<IPolicyItem[]>(() => {
 
   .selection-input-wrap {
     width: 100%;
-    max-width: 440px;
+    max-width: 500px;
   }
 
   .general-second-input {

@@ -48,11 +48,38 @@
   opacity: 0.8;
 }
 
+.selected-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.selected-pet-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+}
+
 .selected-text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-right: 8px;
+  margin-right: 4px;
+}
+
+.selected-meta {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-left: auto;
+  padding-right: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .chevron {

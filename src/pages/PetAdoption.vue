@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 
 import FormSubmitted from '@/components/common/form-submitted/FormSubmitted.vue'
 import Button from '@/components/common/ui/Button.vue'
+import type { ISelectOption } from '@/components/common/ui/Select.vue'
 import AdoptionSteps from '@/components/pet-adoption/adoption-steps/AdoptionSteps.vue'
 import CatAdoptionInfoSection from '@/components/pet-adoption/cat-adoption/CatAdoptionInfoSection.vue'
 import CurrentPetsSection from '@/components/pet-adoption/cat-adoption/CurrentPetsSection.vue'
@@ -18,6 +19,7 @@ import ApplicationHeader from '@/components/volunteer/application-header/Applica
 import { useMetrics } from '@/composables/useMetrics'
 import { useAdoptionStore } from '@/stores/adoption'
 import { usePetStore } from '@/stores/pets'
+import { calculateAge } from '@/utils/date'
 import { vibrate } from '@/utils/haptics'
 
 const router = useRouter()
@@ -69,15 +71,66 @@ const adoptionSteps = computed(() => [
 ])
 const finalStep = computed(() => 7)
 
-const availablePetsOptions = computed(() => {
-  if (!selectedPet.value) return []
+const r2BaseUrl = computed(() => (import.meta.env.VITE_R2_PUBLIC_URL as string) ?? '')
+
+const availablePetsOptions = computed<ISelectOption[]>(() => {
+  const currentSelectedId = selectedPet.value?.id?.toLowerCase()
+  const currentSelectedName = (selectedPet.value?.petName || selectedPet.value?.name)?.toLowerCase()
+
   return petStore.currentPets
-    .filter(
-      (p) =>
-        p.species.toLowerCase() === selectedPet.value?.species.toLowerCase() &&
-        p.id !== selectedPet.value?.id,
-    )
-    .map((p) => ({ label: p.name, value: p.id }))
+    .filter((p) => {
+      if (currentSelectedId && (p.id.toLowerCase() === currentSelectedId || p.slug?.toLowerCase() === currentSelectedId)) {
+        return false
+      }
+      if (currentSelectedName && p.name.trim().toLowerCase() === currentSelectedName.trim()) {
+        return false
+      }
+      const status = p.details?.status?.trim().toLowerCase()
+      if (status && status !== 'available') {
+        return false
+      }
+      return true
+    })
+    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+    .map((p) => {
+      const primaryPhoto = p.photos?.find((photo) => photo.isPrimary) ?? p.photos?.[0]
+      let image: string | null = null
+      if (primaryPhoto?.url) {
+        image = primaryPhoto.url.startsWith('http')
+          ? primaryPhoto.url
+          : `${r2BaseUrl.value}/${primaryPhoto.url.replace(/^pets\//, '')}`
+      }
+
+      const speciesLabel = p.species
+        ? p.species.charAt(0).toUpperCase() + p.species.slice(1).toLowerCase()
+        : null
+
+      const sexLabel =
+        p.sex && p.sex !== 'unknown'
+          ? p.sex.charAt(0).toUpperCase() + p.sex.slice(1).toLowerCase()
+          : null
+
+      let ageLabel: string | null = null
+      if (p.physical?.dateOfBirth) {
+        const computedAge = calculateAge(p.physical.dateOfBirth)
+        if (computedAge && computedAge !== '-') {
+          ageLabel = computedAge
+        }
+      }
+      if (!ageLabel && p.physical?.ageGroup) {
+        ageLabel =
+          p.physical.ageGroup.charAt(0).toUpperCase() + p.physical.ageGroup.slice(1).toLowerCase()
+      }
+
+      return {
+        label: p.name,
+        value: p.id,
+        image,
+        species: speciesLabel,
+        sex: sexLabel,
+        age: ageLabel,
+      }
+    })
 })
 
 const headerText = computed(() => {
@@ -103,8 +156,10 @@ onMounted(async () => {
   }
 
   // Ensure currentPets is populated for second pet selection
-  if (petStore.currentPets.length === 0) {
-    await petStore.fetchPetsList()
+  if (petStore.currentPets.length <= 1) {
+    await petStore.fetchPetsList(true)
+  } else {
+    petStore.fetchPetsList()
   }
 })
 

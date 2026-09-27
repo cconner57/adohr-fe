@@ -1,16 +1,28 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
+export interface ISelectOption {
+  label: string
+  value: string | number
+  image?: string | null
+  species?: string | null
+  sex?: string | null
+  age?: string | null
+  [key: string]: unknown
+}
+
 const props = withDefaults(
   defineProps<{
     modelValue: string | number | null | (string | number)[]
-    options: (string | { label: string; value: string | number })[]
+    options: (string | ISelectOption)[]
     placeholder?: string
     label?: string
     hasError?: boolean
     fullWidth?: boolean
     multiple?: boolean
     variant?: 'default' | 'borderless'
+    pageSize?: number
+    loadMoreText?: string
   }>(),
   {
     placeholder: 'Select an option',
@@ -18,6 +30,8 @@ const props = withDefaults(
     hasError: false,
     multiple: false,
     variant: 'default',
+    pageSize: undefined,
+    loadMoreText: 'Loading more pets...',
   },
 )
 
@@ -38,56 +52,84 @@ const dropdownStyles = ref({
   zIndex: 9999,
 })
 
-const normalizedOptions = computed(() => {
+const normalizedOptions = computed<ISelectOption[]>(() => {
   if (!props.options) return []
   return props.options.map((opt) => {
     if (typeof opt === 'object' && opt !== null && 'label' in opt && 'value' in opt) {
-      return opt
+      return opt as ISelectOption
     }
     return { label: String(opt), value: opt }
   })
 })
 
+const visibleCount = ref(props.pageSize ? props.pageSize + 1 : 999999)
+
+const ensureSelectedIsVisible = () => {
+  if (!props.pageSize || !props.modelValue) return
+  const selectedIdx = normalizedOptions.value.findIndex((opt) => opt.value === props.modelValue)
+  if (selectedIdx >= visibleCount.value) {
+    visibleCount.value = Math.min(
+      Math.ceil((selectedIdx + 1) / props.pageSize) * props.pageSize + 1,
+      normalizedOptions.value.length,
+    )
+  }
+}
+
+watch(
+  () => [props.options, props.pageSize],
+  () => {
+    visibleCount.value = props.pageSize ? props.pageSize + 1 : normalizedOptions.value.length
+    ensureSelectedIsVisible()
+  },
+  { deep: true },
+)
+
+const isSelected = (val: string | number) =>
+  props.multiple
+    ? Array.isArray(props.modelValue) && props.modelValue.includes(val)
+    : props.modelValue === val
+
+const displayedOptions = computed(() =>
+  props.pageSize ? normalizedOptions.value.slice(0, visibleCount.value) : normalizedOptions.value,
+)
+
+const isLoadingMore = ref(false)
+
+const loadMore = () => {
+  if (!props.pageSize || isLoadingMore.value || visibleCount.value >= normalizedOptions.value.length) return
+  isLoadingMore.value = true
+  setTimeout(() => {
+    visibleCount.value = Math.min(visibleCount.value + (props.pageSize || 25), normalizedOptions.value.length)
+    isLoadingMore.value = false
+  }, 250)
+}
+
+const handleMenuScroll = (event: Event) => {
+  if (!props.pageSize || isLoadingMore.value || visibleCount.value >= normalizedOptions.value.length) return
+  const target = event.target as HTMLElement
+  if (target.scrollTop + target.clientHeight >= target.scrollHeight - 35) {
+    loadMore()
+  }
+}
+
 const updateDropdownPosition = () => {
   if (!containerRef.value) return
   const rect = containerRef.value.getBoundingClientRect()
-
-  const leftStart = rect.left + window.scrollX
-  const width = rect.width
-  const menuWidth = props.variant === 'borderless' ? 200 : Math.max(width, 160)
-  const menuMaxHeight = 250 // Matches CSS max-height
-
-  let left = leftStart
-  if (props.variant === 'borderless') {
-    left = rect.right + window.scrollX - menuWidth
-  }
-
-  // Ensure it doesn't go off screen horizontally
+  const menuWidth = props.variant === 'borderless' ? 200 : Math.max(rect.width, 160)
+  const menuMaxHeight = 320
+  let left = props.variant === 'borderless' ? rect.right + window.scrollX - menuWidth : rect.left + window.scrollX
   if (left < 10) left = 10
-  if (left + menuWidth > window.innerWidth - 10) {
-    left = window.innerWidth - menuWidth - 10
-  }
+  if (left + menuWidth > window.innerWidth - 10) left = window.innerWidth - menuWidth - 10
 
-  // Calculate actual or estimated menu height
   const menuHeight = menuRef.value?.offsetHeight
     ? Math.min(menuRef.value.offsetHeight, menuMaxHeight)
-    : Math.min(normalizedOptions.value.length * 42 + 10, menuMaxHeight)
-
-  // Check if there is enough space below
-  const spaceBelow = window.innerHeight - rect.bottom
-  const shouldOpenUp = spaceBelow < menuHeight + 16 && rect.top > menuHeight + 16
-
+    : Math.min(displayedOptions.value.length * 48 + 10, menuMaxHeight)
+  const shouldOpenUp = window.innerHeight - rect.bottom < menuHeight + 16 && rect.top > menuHeight + 16
   const top = shouldOpenUp
     ? rect.top + window.scrollY - menuHeight - 4
     : rect.bottom + window.scrollY + 4
 
-  dropdownStyles.value = {
-    top: `${top}px`,
-    left: `${left}px`,
-    width: `${menuWidth}px`,
-    position: 'absolute',
-    zIndex: 9999,
-  }
+  dropdownStyles.value = { top: `${top}px`, left: `${left}px`, width: `${menuWidth}px`, position: 'absolute', zIndex: 9999 }
 }
 
 watch(isOpen, async (val) => {
@@ -103,6 +145,11 @@ watch(isOpen, async (val) => {
   }
 })
 
+const selectedOption = computed<ISelectOption | undefined>(() => {
+  if (props.multiple) return undefined
+  return normalizedOptions.value.find((opt) => opt.value === props.modelValue)
+})
+
 const selectedLabel = computed(() => {
   if (props.multiple) {
     if (!Array.isArray(props.modelValue) || props.modelValue.length === 0) {
@@ -114,8 +161,7 @@ const selectedLabel = computed(() => {
     return selected.map((s) => s.label).join(', ')
   }
 
-  const selected = normalizedOptions.value.find((opt) => opt.value === props.modelValue)
-  return selected ? selected.label : props.placeholder
+  return selectedOption.value ? selectedOption.value.label : props.placeholder
 })
 
 const highlightedIndex = ref(-1)
@@ -143,13 +189,14 @@ const scrollToHighlighted = () => {
 }
 
 const highlightCurrentOrFirst = () => {
-  const options = normalizedOptions.value
+  const options = displayedOptions.value
   const currentIndex = options.findIndex((opt) => opt.value === props.modelValue)
   highlightedIndex.value = currentIndex >= 0 ? currentIndex : 0
   scrollToHighlighted()
 }
 
 const openDropdown = () => {
+  ensureSelectedIsVisible()
   updateDropdownPosition()
   isOpen.value = true
   highlightCurrentOrFirst()
@@ -180,7 +227,7 @@ const selectOption = (value: string | number) => {
 }
 
 const handleKeyDown = (event: KeyboardEvent) => {
-  const options = normalizedOptions.value
+  const options = displayedOptions.value
   if (options.length === 0) return
 
   if (event.key === ' ' || event.key === 'Enter') {
@@ -218,6 +265,9 @@ const handleKeyDown = (event: KeyboardEvent) => {
     if (!isOpen.value) {
       openDropdown()
     } else {
+      if (highlightedIndex.value >= options.length - 2 && visibleCount.value < normalizedOptions.value.length) {
+        loadMore()
+      }
       highlightedIndex.value = (highlightedIndex.value + 1) % options.length
       scrollToHighlighted()
     }
@@ -263,25 +313,23 @@ const handleKeyDown = (event: KeyboardEvent) => {
       typeaheadBuffer = ''
     }, 700)
 
-    const matchIndex = options.findIndex((opt) => {
+    const matchIndex = normalizedOptions.value.findIndex((opt) => {
       const label = opt.label.toLowerCase()
       const val = String(opt.value).toLowerCase()
       return label.startsWith(typeaheadBuffer) || val.startsWith(typeaheadBuffer)
     })
 
-    const fallbackIndex =
-      matchIndex === -1
-        ? options.findIndex((opt) => {
-            const label = opt.label.toLowerCase()
-            return label.includes(typeaheadBuffer)
-          })
-        : matchIndex
-
-    if (fallbackIndex !== -1) {
+    if (matchIndex !== -1) {
+      if (matchIndex >= visibleCount.value) {
+        visibleCount.value = Math.min(
+          Math.ceil((matchIndex + 1) / (props.pageSize || 25)) * (props.pageSize || 25) + 1,
+          normalizedOptions.value.length,
+        )
+      }
       if (!isOpen.value) {
-        selectOption(options[fallbackIndex].value)
+        selectOption(normalizedOptions.value[matchIndex].value)
       } else {
-        highlightedIndex.value = fallbackIndex
+        highlightedIndex.value = matchIndex
         scrollToHighlighted()
       }
     }
@@ -321,12 +369,15 @@ onUnmounted(() => {
   >
     <label v-if="label" :id="`${uid}-label`" class="label" :for="uid">{{ label }}</label>
 
-    <!-- sonar-disable-next-line 939a3f5b-dad4-413c-bfc6-997efcad07e8 -->
     <button
       type="button"
       class="select-trigger"
       :id="uid"
-      :class="{ 'is-open': isOpen, 'is-placeholder': !modelValue }"
+      :class="{
+        'is-open': isOpen,
+        'is-placeholder': !modelValue,
+        'has-rich-content': Boolean(selectedOption?.image || selectedOption?.species),
+      }"
       @click="toggleDropdown"
       :aria-labelledby="label ? `${uid}-label` : undefined"
       :aria-controls="`${uid}-menu`"
@@ -334,13 +385,26 @@ onUnmounted(() => {
       aria-haspopup="listbox"
       @keydown="handleKeyDown"
     >
-      <span class="selected-text">{{ selectedLabel }}</span>
+      <div class="selected-content">
+        <img
+          v-if="selectedOption?.image"
+          :src="selectedOption.image"
+          :alt="selectedOption.label"
+          class="selected-pet-thumb"
+        />
+        <span class="selected-text">{{ selectedLabel }}</span>
+        <span
+          v-if="selectedOption && (selectedOption.species || selectedOption.sex || selectedOption.age)"
+          class="selected-meta"
+        >
+          {{ [selectedOption.species, selectedOption.sex, selectedOption.age].filter(Boolean).join(' · ') }}
+        </span>
+      </div>
       <span class="chevron" aria-hidden="true">▼</span>
     </button>
 
     <Teleport to="body">
       <transition name="fade">
-        <!-- sonar-disable-next-line e1cf8e70-fbff-4344-91c9-8d44b86c356c, 5d17b73a-bbb9-4e7f-9912-273a60b3242a -->
         <div
           v-show="isOpen"
           :id="`${uid}-menu`"
@@ -350,43 +414,67 @@ onUnmounted(() => {
           role="listbox"
           :style="dropdownStyles"
           tabindex="-1"
+          @scroll.passive="handleMenuScroll"
         >
-          <!-- sonar-disable-next-line ea87a864-3f73-4b99-a6da-5ad247605d70, dcbf4805-e189-4bc1-9b22-cfe80661405d, cc4490e1-b4ec-4652-9726-2e19cb607e89, 9aa55b62-e606-457d-877d-9b965ad0fe18, 79e22e78-99e2-48d8-ae6e-7608033939b6 -->
           <div
-            v-for="(option, idx) in normalizedOptions"
+            v-for="(option, idx) in displayedOptions"
             :key="option.value"
             class="option-item"
             :class="{
-              'is-selected': multiple
-                ? Array.isArray(modelValue) && modelValue.includes(option.value)
-                : option.value === modelValue,
+              'is-selected': isSelected(option.value),
               'is-highlighted': idx === highlightedIndex,
+              'is-rich-option': Boolean(option.image || option.species || option.sex || option.age),
             }"
             role="option"
-            :aria-selected="
-              multiple
-                ? Array.isArray(modelValue) && modelValue.includes(option.value)
-                  ? 'true'
-                  : 'false'
-                : option.value === modelValue
-                  ? 'true'
-                  : 'false'
-            "
+            :aria-selected="isSelected(option.value) ? 'true' : 'false'"
             tabindex="-1"
             @mouseenter="highlightedIndex = idx"
             @click="selectOption(option.value)"
           >
-            {{ option.label }}
-            <span
-              v-if="
-                multiple
-                  ? Array.isArray(modelValue) && modelValue.includes(option.value)
-                  : option.value === modelValue
-              "
-              class="check"
-              aria-hidden="true"
-              >✓</span
-            >
+            <div class="option-left">
+              <img
+                v-if="option.image"
+                :src="option.image"
+                :alt="option.label"
+                class="option-pet-thumb"
+                loading="lazy"
+              />
+              <span
+                v-else-if="option.value !== '' && (option.species || option.sex)"
+                class="option-pet-thumb-placeholder"
+                aria-hidden="true"
+              >
+                🐾
+              </span>
+              <span class="option-label">{{ option.label }}</span>
+            </div>
+
+            <div class="option-right">
+              <div
+                v-if="option.species || option.sex || option.age"
+                class="option-meta-tags"
+              >
+                <span v-if="option.species" class="meta-pill meta-species">{{ option.species }}</span>
+                <span v-if="option.sex" class="meta-pill meta-sex">{{ option.sex }}</span>
+                <span v-if="option.age" class="meta-pill meta-age">{{ option.age }}</span>
+              </div>
+              <span v-if="isSelected(option.value)" class="check" aria-hidden="true">✓</span>
+            </div>
+          </div>
+
+          <div
+            v-if="pageSize && (isLoadingMore || visibleCount < normalizedOptions.length)"
+            class="loading-more-container"
+          >
+            <div v-if="isLoadingMore" class="loading-more-spinner">
+              <span class="loading-dot-pulse" aria-hidden="true"></span>
+              <span class="loading-text">{{ loadMoreText }}</span>
+            </div>
+            <div v-else class="scroll-more-trigger" @click.stop="loadMore">
+              <span class="scroll-more-text">
+                Scroll to load more ({{ normalizedOptions.length - visibleCount }} remaining)
+              </span>
+            </div>
           </div>
         </div>
       </transition>
@@ -395,62 +483,4 @@ onUnmounted(() => {
 </template>
 
 <style scoped src="./Select.css"></style>
-
-<style>
-/* Global styles for teleported menu */
-.options-menu.teleported-menu {
-  position: absolute;
-  background: var(--color-white);
-  border: 1px solid var(--border-color, var(--color-gray-200));
-  border-radius: var(--radius-md);
-  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
-  max-height: 250px;
-  overflow-y: auto;
-  z-index: var(--z-overlay);
-  padding: 4px;
-  list-style: none;
-  margin: 0;
-}
-
-.options-menu.teleported-menu.variant-borderless {
-  border: 1px solid var(--color-gray-200);
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%);
-}
-
-.options-menu.teleported-menu .option-item {
-  padding: 10px 12px;
-  font-size: 0.95rem;
-  color: var(--text-primary, #1f2937);
-  cursor: pointer;
-  border-radius: 4px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: background 0.1s;
-}
-
-.options-menu.teleported-menu .option-item:hover,
-.options-menu.teleported-menu .option-item.is-highlighted {
-  background-color: var(--color-neutral-weak, var(--color-gray-100));
-}
-
-.options-menu.teleported-menu .option-item.is-selected {
-  background-color: var(--color-primary-weak, #e0f2f1);
-  color: var(--color-primary, #00a5ad);
-  font-weight: 500;
-}
-
-.options-menu.teleported-menu .check {
-  font-size: 0.8rem;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.1s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>
+<style src="./Select.teleported.css"></style>
