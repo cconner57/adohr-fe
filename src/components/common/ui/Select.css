@@ -74,12 +74,31 @@
 }
 
 .selected-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 0.78rem;
   color: var(--text-secondary);
   margin-left: auto;
   padding-right: 6px;
   flex-shrink: 0;
   white-space: nowrap;
+
+  span + span::before {
+    content: '·';
+    margin-right: 4px;
+  }
+}
+
+@media (width <= 640px) {
+  .selected-meta .selected-species,
+  .selected-meta .selected-sex {
+    display: none;
+  }
+
+  .selected-meta .selected-age::before {
+    display: none;
+  }
 }
 
 .chevron {

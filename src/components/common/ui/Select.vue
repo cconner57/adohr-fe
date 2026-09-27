@@ -397,7 +397,9 @@ onUnmounted(() => {
           v-if="selectedOption && (selectedOption.species || selectedOption.sex || selectedOption.age)"
           class="selected-meta"
         >
-          {{ [selectedOption.species, selectedOption.sex, selectedOption.age].filter(Boolean).join(' · ') }}
+          <span v-if="selectedOption.species" class="selected-species">{{ selectedOption.species }}</span>
+          <span v-if="selectedOption.sex" class="selected-sex">{{ selectedOption.sex }}</span>
+          <span v-if="selectedOption.age" class="selected-age">{{ selectedOption.age }}</span>
         </span>
       </div>
       <span class="chevron" aria-hidden="true">▼</span>

@@ -109,18 +109,30 @@
 }
 
 .options-menu.teleported-menu .meta-species {
-  background-color: oklch(93% 0.06 200);
-  color: oklch(35% 0.14 200);
+  background-color: oklch(93% 0.06 200deg);
+  color: oklch(35% 0.14 200deg);
 }
 
 .options-menu.teleported-menu .meta-sex {
-  background-color: oklch(93% 0.05 320);
-  color: oklch(35% 0.14 320);
+  background-color: oklch(93% 0.05 320deg);
+  color: oklch(35% 0.14 320deg);
 }
 
 .options-menu.teleported-menu .meta-age {
   background-color: var(--color-gray-100, #f3f4f6);
   color: var(--text-secondary, #4b5563);
+}
+
+@media (width <= 640px) {
+  .options-menu.teleported-menu .option-item {
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .options-menu.teleported-menu .meta-species,
+  .options-menu.teleported-menu .meta-sex {
+    display: none;
+  }
 }
 
 .options-menu.teleported-menu .check {
