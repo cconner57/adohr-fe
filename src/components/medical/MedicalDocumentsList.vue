@@ -164,6 +164,7 @@ const getCategoryLabel = (category?: string) => {
   margin-top: 2rem;
   padding-top: 1.75rem;
   border-top: 1px solid var(--line-ink);
+  margin-bottom: 2rem;
 }
 
 .section-header {

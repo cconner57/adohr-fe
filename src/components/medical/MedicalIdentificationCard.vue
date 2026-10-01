@@ -60,10 +60,6 @@ defineProps<{
       </div>
     </div>
 
-    <p class="ident-tip">
-      💡 <strong>Adopter Tip:</strong> Remember to register your current phone number and address with
-      {{ ident.microchipBrand || 'your pet\'s microchip registry' }} to keep contact records up to date.
-    </p>
   </article>
 </template>
 
@@ -73,6 +69,7 @@ defineProps<{
   border: 1px solid var(--line-ink);
   border-radius: var(--radius-md);
   padding: 24px;
+  margin-top: 32px;
   margin-bottom: 24px;
 }
 
@@ -116,7 +113,6 @@ defineProps<{
   border: 1px solid var(--line-ink);
   border-radius: var(--radius-sm);
   padding: 16px;
-  margin-bottom: 14px;
 }
 
 .ident-item {
@@ -147,12 +143,5 @@ defineProps<{
     font-size: 0.8rem;
     color: var(--text-secondary);
   }
-}
-
-.ident-tip {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  margin: 0;
-  line-height: 1.5;
 }
 </style>
