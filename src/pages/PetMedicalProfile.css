@@ -327,46 +327,6 @@
   }
 }
 
-.status-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-
-  .status-pill {
-    padding: 4px 12px;
-    border-radius: var(--radius-full);
-    font-size: 0.85rem;
-    font-weight: 700;
-    background-color: oklch(from var(--color-secondary) 96% 0.04 h);
-    color: var(--color-secondary);
-
-    &.yes {
-      background-color: oklch(from var(--color-primary) 96% 0.05 h);
-      color: var(--color-primary);
-    }
-  }
-}
-
-.medical-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  dt {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-  }
-
-  dd {
-    margin: 0 0 8px 0;
-    padding-left: 12px;
-    border-left: 2px solid var(--color-secondary);
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-  }
-}
 
 /* Skeletons */
 .skeleton-line {

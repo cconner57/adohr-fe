@@ -26,9 +26,6 @@ import {
   buildPhysicalTraitCapsules,
   buildProceduresList,
   buildVaccineRecords,
-  getSpayNeuterInfo,
-  getSpayNeuterLabels,
-  toDateLabel,
 } from '@/utils/medicalParser'
 
 const route = useRoute()
@@ -111,10 +108,6 @@ const documents = computed<IMedicalDocument[]>(() => {
 })
 
 const vaccineRecords = computed(() => buildVaccineRecords(portalData.value))
-const spayNeuterInfo = computed(() => getSpayNeuterInfo(portalData.value))
-const spayNeuterLabels = computed(() =>
-  getSpayNeuterLabels(petSex.value, spayNeuterInfo.value.isSpayedNeutered),
-)
 const careTimeline = computed(() => buildCareTimeline(portalData.value, vaccineRecords.value))
 const physicalTraits = computed(() => buildPhysicalTraitCapsules(portalData.value))
 const identInfo = computed(() => buildIdentificationInfo(portalData.value))
@@ -387,48 +380,6 @@ onMounted(async () => {
 
         <!-- Diagnostic Testing Panel -->
         <MedicalDiagnosticsCard :diagnostics="diagnosticTests" :petName="petName" />
-
-        <!-- Spay/Neuter Status -->
-        <article class="block">
-          <h2>{{ spayNeuterLabels.sectionTitle }}</h2>
-          <div class="status-row">
-            <span class="status-pill" :class="{ yes: spayNeuterInfo.isSpayedNeutered }">
-              {{ spayNeuterLabels.statusPill }}
-            </span>
-            <span v-if="spayNeuterInfo.spayNeuterDate" class="muted">
-              Procedure Date: {{ toDateLabel(spayNeuterInfo.spayNeuterDate) }}
-            </span>
-          </div>
-        </article>
-
-        <!-- Vaccinations Detail -->
-        <article class="block">
-          <h2>Vaccination Records</h2>
-          <dl v-if="vaccineRecords.length > 0" class="medical-list">
-            <template v-for="(record, index) in vaccineRecords" :key="index">
-              <dt>{{ record.name }}</dt>
-              <dd>
-                <div v-if="record.administered && record.administered !== 'Not provided'">
-                  Administered: {{ record.administered }}
-                </div>
-                <div v-if="record.expires">Expires: {{ record.expires }}</div>
-                <div v-if="record.veterinarian">Veterinarian: {{ record.veterinarian }}</div>
-                <div v-if="record.status" class="record-status">{{ record.status }}</div>
-                <div
-                  v-if="
-                    (!record.administered || record.administered === 'Not provided') &&
-                    !record.expires &&
-                    !record.veterinarian &&
-                    !record.status
-                  "
-                >
-                  Not provided
-                </div>
-              </dd>
-            </template>
-          </dl>
-          <p v-else class="muted">No specific vaccination line items listed.</p>
-        </article>
 
         <!-- Diet, Nutrition & Daily Guidelines -->
         <MedicalDietCard :diet="dietInfo" :petName="petName" />
