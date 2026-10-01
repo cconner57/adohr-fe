@@ -1,5 +1,5 @@
 Contact: mailto:security@adohr.org
-Contact: mailto:help@adohr.org
+Contact: mailto:help.adohr@gmail.com
 Expires: 2027-12-31T23:59:59.000Z
 Preferred-Languages: en
 Canonical: https://adohr.org/.well-known/security.txt
