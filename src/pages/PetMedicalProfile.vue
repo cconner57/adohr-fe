@@ -239,7 +239,6 @@ onMounted(async () => {
           <div class="hero-top">
             <div class="eyebrow-group">
               <span class="eyebrow">Veterinary &amp; Health Record</span>
-              <span class="verified-pill">✓ Verified Adopter Access</span>
             </div>
             <div class="top-actions">
               <button

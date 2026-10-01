@@ -259,7 +259,7 @@ describe('buildDietInfo', () => {
 })
 
 describe('buildPhysicalTraitCapsules', () => {
-  it('extracts breed, color/pattern, coat length, and weight pills', () => {
+  it('extracts weight and distinguishing marks, omitting breed, color/pattern, and coat length', () => {
     const data = {
       physical: {
         primaryBreed: 'DSH',
@@ -273,9 +273,9 @@ describe('buildPhysicalTraitCapsules', () => {
     } as unknown as IPetMedicalPortalData
 
     const capsules = buildPhysicalTraitCapsules(data)
-    expect(capsules).toContain('DSH')
-    expect(capsules).toContain('GREY TABBY')
-    expect(capsules).toContain('SHORT COAT')
+    expect(capsules).not.toContain('DSH')
+    expect(capsules).not.toContain('GREY TABBY')
+    expect(capsules).not.toContain('SHORT COAT')
     expect(capsules).toContain('WHITE SPOT ON CHEST')
     expect(capsules).toContain('2.4 LBS')
   })

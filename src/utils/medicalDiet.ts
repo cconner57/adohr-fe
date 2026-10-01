@@ -141,35 +141,8 @@ export const buildPhysicalTraitCapsules = (
   const phys = (portalData.physical || {}) as Record<string, unknown>
   const dataRoot = portalData as unknown as Record<string, unknown>
 
-  // 1. Primary Breed
-  const primaryBreed = getFieldIgnoreCase(phys, 'primaryBreed', 'breed', 'primary_breed') ??
-    getFieldIgnoreCase(dataRoot, 'primaryBreed', 'breed', 'primary_breed')
-  if (typeof primaryBreed === 'string' && primaryBreed.trim() && primaryBreed.trim() !== '-') {
-    capsules.push(primaryBreed.trim().toUpperCase())
-  }
 
-  // 2. Color & Pattern
-  const color = getFieldIgnoreCase(phys, 'color') ?? getFieldIgnoreCase(dataRoot, 'color')
-  const pattern = getFieldIgnoreCase(phys, 'pattern') ?? getFieldIgnoreCase(dataRoot, 'pattern')
-  const colorStr = typeof color === 'string' && color.trim() && color.trim() !== '-' ? color.trim() : ''
-  const patternStr = typeof pattern === 'string' && pattern.trim() && pattern.trim() !== '-' ? pattern.trim() : ''
-
-  if (colorStr && patternStr && !colorStr.toLowerCase().includes(patternStr.toLowerCase())) {
-    capsules.push(`${colorStr} ${patternStr}`.toUpperCase())
-  } else if (colorStr) {
-    capsules.push(colorStr.toUpperCase())
-  } else if (patternStr) {
-    capsules.push(patternStr.toUpperCase())
-  }
-
-  // 3. Coat Length
-  const coatLength = getFieldIgnoreCase(phys, 'coatLength', 'coat_length', 'coat') ??
-    getFieldIgnoreCase(dataRoot, 'coatLength', 'coat_length')
-  if (typeof coatLength === 'string' && coatLength.trim() && coatLength.trim() !== '-') {
-    capsules.push(`${coatLength.trim()} Coat`.toUpperCase())
-  }
-
-  // 4. Weight
+  // 1. Weight
   const weight = getFieldIgnoreCase(phys, 'weight') ?? getFieldIgnoreCase(dataRoot, 'weight')
   const weightUnit = (getFieldIgnoreCase(phys, 'weightUnit', 'weight_unit') ??
     getFieldIgnoreCase(dataRoot, 'weightUnit', 'weight_unit') ??
@@ -178,7 +151,7 @@ export const buildPhysicalTraitCapsules = (
     capsules.push(`${weight} ${weightUnit}`.toUpperCase())
   }
 
-  // 5. Distinguishing Marks
+  // 2. Distinguishing Marks
   const marks = getFieldIgnoreCase(phys, 'distinguishingMarks', 'distinguishing_marks', 'marks') ??
     getFieldIgnoreCase(dataRoot, 'distinguishingMarks', 'distinguishing_marks')
   if (typeof marks === 'string' && marks.trim() && marks.trim() !== '-') {
