@@ -125,7 +125,7 @@ const scrollToFaq = () => {
             <p>
               Records for all pets adopted through ADOHR are archived. If you encounter any
               difficulties finding your pet, our adoption team can assist you at
-              <a href="mailto:help@adohr.org">help@adohr.org</a>.
+              <a href="mailto:help.adohr@gmail.com">help.adohr@gmail.com</a>.
             </p>
           </div>
         </div>

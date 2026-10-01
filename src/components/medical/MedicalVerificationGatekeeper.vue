@@ -235,7 +235,7 @@ const handleSubmit = () => {
         </p>
         <p class="help-link">
           <span>Having trouble accessing records?</span>
-          <a href="mailto:help@adohr.org">Contact Support</a>
+          <a href="mailto:help.adohr@gmail.com">Contact Support</a>
           <span class="sep" aria-hidden="true">·</span>
           <button type="button" class="faq-link-btn" @click="emit('scroll-faq')">
             View FAQ
