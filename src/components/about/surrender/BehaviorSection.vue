@@ -250,12 +250,16 @@ onMounted(() => {
       <ButtonToggle
         :label="`Is the ${animalLabel.toLowerCase()} scared of anything?`"
         :modelValue="formState.animalScaredOfAnything"
-        @update:modelValue="(val) => (formState.animalScaredOfAnything = val as string)"
+        @update:modelValue="(val) => {
+          formState.animalScaredOfAnything = val as string
+          if (val !== 'Yes') formState.animalScaredOfAnythingExplanation = ''
+        }"
       />
       <InputTextArea
         :label="`If yes, please explain`"
         placeholder="Explanation"
         :spanFull="false"
+        :disabled="formState.animalScaredOfAnything !== 'Yes'"
         :modelValue="formState.animalScaredOfAnythingExplanation"
         @update:modelValue="(val) => (formState.animalScaredOfAnythingExplanation = val || '')"
       />
@@ -303,7 +307,10 @@ onMounted(() => {
         :label="`Does the ${animalLabel.toLowerCase()} have problems riding in cars?`"
         :options="['Yes', 'No', 'Don\'t know']"
         :modelValue="formState.animalProblemsRidingInCar"
-        @update:modelValue="(val) => (formState.animalProblemsRidingInCar = val as string)"
+        @update:modelValue="(val) => {
+          formState.animalProblemsRidingInCar = val as string
+          if (val !== 'Yes') formState.animalProblemsRidingInCarExplanation = ''
+        }"
         :hasError="
           (touched.animalProblemsRidingInCar && !formState.animalProblemsRidingInCar) ||
           (hasAttemptedSubmit && !formState.animalProblemsRidingInCar)
@@ -314,18 +321,23 @@ onMounted(() => {
         label="If yes, please explain"
         placeholder="Explanation"
         :spanFull="false"
+        :disabled="formState.animalProblemsRidingInCar !== 'Yes'"
         :modelValue="formState.animalProblemsRidingInCarExplanation"
         @update:modelValue="(val) => (formState.animalProblemsRidingInCarExplanation = val || '')"
       />
       <ButtonToggle
         label="Has the pet escaped your property 2 or more times in the last 6 months?"
         :modelValue="formState.animalEscapedBefore"
-        @update:modelValue="(val) => (formState.animalEscapedBefore = val as string)"
+        @update:modelValue="(val) => {
+          formState.animalEscapedBefore = val as string
+          if (val !== 'Yes') formState.animalEscapedBeforeExplanation = ''
+        }"
       />
       <InputTextArea
         label="If yes, please explain"
         placeholder="Explanation"
         :spanFull="false"
+        :disabled="formState.animalEscapedBefore !== 'Yes'"
         :modelValue="formState.animalEscapedBeforeExplanation"
         @update:modelValue="(val) => (formState.animalEscapedBeforeExplanation = val || '')"
       />

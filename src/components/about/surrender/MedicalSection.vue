@@ -151,13 +151,17 @@ watch(
       <ButtonToggle
         :label="`Has the ${animalLabel.toLowerCase()} been tested for heartworm?`"
         :modelValue="formState.animalTestedHeartworm"
-        @update:modelValue="(val) => (formState.animalTestedHeartworm = val as string)"
+        @update:modelValue="(val) => {
+          formState.animalTestedHeartworm = val as string
+          if (val !== 'Yes') formState.animalTestedHeartwormExplanation = ''
+        }"
       />
 
       <InputTextArea
         label="If yes, what were the test results"
         placeholder="Describe test results"
         :spanFull="false"
+        :disabled="formState.animalTestedHeartworm !== 'Yes'"
         :modelValue="formState.animalTestedHeartwormExplanation"
         @update:modelValue="(val) => (formState.animalTestedHeartwormExplanation = val || '')"
       />
@@ -165,13 +169,17 @@ watch(
       <ButtonToggle
         label="Is the pet taking heartworm preventative?"
         :modelValue="formState.animalHeartwormPrevention"
-        @update:modelValue="(val) => (formState.animalHeartwormPrevention = val as string)"
+        @update:modelValue="(val) => {
+          formState.animalHeartwormPrevention = val as string
+          if (val !== 'Yes') formState.animalHeartwormPreventionExplanation = ''
+        }"
       />
 
       <InputTextArea
         label="If yes, when is the next dosage due?"
         placeholder="Date or timeframe"
         :spanFull="false"
+        :disabled="formState.animalHeartwormPrevention !== 'Yes'"
         :modelValue="formState.animalHeartwormPreventionExplanation"
         @update:modelValue="(val) => (formState.animalHeartwormPreventionExplanation = val || '')"
       />
@@ -179,13 +187,17 @@ watch(
       <ButtonToggle
         label="Is the pet microchipped?"
         :modelValue="formState.animalMicrochipped"
-        @update:modelValue="(val) => (formState.animalMicrochipped = val as string)"
+        @update:modelValue="(val) => {
+          formState.animalMicrochipped = val as string
+          if (val !== 'Yes') formState.animalMicrochippedExplanation = ''
+        }"
       />
 
       <InputTextArea
         label="If yes, please provide microchip number"
         placeholder="Microchip number"
         :spanFull="false"
+        :disabled="formState.animalMicrochipped !== 'Yes'"
         :modelValue="formState.animalMicrochippedExplanation"
         @update:modelValue="(val) => (formState.animalMicrochippedExplanation = val || '')"
       />
@@ -202,13 +214,17 @@ watch(
       <ButtonToggle
         label="Does the pet have any past or present health problems"
         :modelValue="formState.animalPastOrPresentHealthProblems"
-        @update:modelValue="(val) => (formState.animalPastOrPresentHealthProblems = val as string)"
+        @update:modelValue="(val) => {
+          formState.animalPastOrPresentHealthProblems = val as string
+          if (val !== 'Yes') formState.animalPastOrPresentHealthProblemsExplanation = ''
+        }"
       />
 
       <InputTextArea
         label="If yes, please describe"
         placeholder="Describe health problems"
         :spanFull="false"
+        :disabled="formState.animalPastOrPresentHealthProblems !== 'Yes'"
         :modelValue="formState.animalPastOrPresentHealthProblemsExplanation"
         @update:modelValue="
           (val) => (formState.animalPastOrPresentHealthProblemsExplanation = val || '')
@@ -218,13 +234,17 @@ watch(
       <ButtonToggle
         :label="`Is the ${animalLabel.toLowerCase()} currently taking any medications?`"
         :modelValue="formState.animalCurrentMedications"
-        @update:modelValue="(val) => (formState.animalCurrentMedications = val as string)"
+        @update:modelValue="(val) => {
+          formState.animalCurrentMedications = val as string
+          if (val !== 'Yes') formState.animalCurrentMedicationsExplanation = ''
+        }"
       />
 
       <InputTextArea
         label="If yes, please list medications"
         placeholder="List medications"
         :spanFull="false"
+        :disabled="formState.animalCurrentMedications !== 'Yes'"
         :modelValue="formState.animalCurrentMedicationsExplanation"
         @update:modelValue="(val) => (formState.animalCurrentMedicationsExplanation = val || '')"
       />

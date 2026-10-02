@@ -37,24 +37,32 @@ onMounted(() => {
       <ButtonToggle
         :label="`Has the ${animalLabel.toLowerCase()} ever attacked or bit a person?`"
         :modelValue="formState.animalEverAttackedPeople"
-        @update:modelValue="(val) => (formState.animalEverAttackedPeople = val as string)"
+        @update:modelValue="(val) => {
+          formState.animalEverAttackedPeople = val as string
+          if (val !== 'Yes') formState.animalEverAttackedPeopleExplanation = ''
+        }"
       />
       <InputTextArea
         label="If yes, please explain"
         placeholder="Explanation"
         :spanFull="false"
+        :disabled="formState.animalEverAttackedPeople !== 'Yes'"
         :modelValue="formState.animalEverAttackedPeopleExplanation"
         @update:modelValue="(val) => (formState.animalEverAttackedPeopleExplanation = val || '')"
       />
       <ButtonToggle
         :label="`Has the ${animalLabel.toLowerCase()} ever attacked or bit another animal?`"
         :modelValue="formState.animalEverAttackedOtherCats"
-        @update:modelValue="(val) => (formState.animalEverAttackedOtherCats = val as string)"
+        @update:modelValue="(val) => {
+          formState.animalEverAttackedOtherCats = val as string
+          if (val !== 'Yes') formState.animalEverAttackedOtherCatsExplanation = ''
+        }"
       />
       <InputTextArea
         label="If yes, please explain"
         placeholder="Explanation"
         :spanFull="false"
+        :disabled="formState.animalEverAttackedOtherCats !== 'Yes'"
         :modelValue="formState.animalEverAttackedOtherCatsExplanation"
         @update:modelValue="(val) => (formState.animalEverAttackedOtherCatsExplanation = val || '')"
       />

@@ -6,11 +6,12 @@ const props = withDefaults(
     modelValue: string | null
     hasError?: boolean
     spanFull?: boolean
-
+    disabled?: boolean
     maxChars?: number
   }>(),
   {
     spanFull: true,
+    disabled: false,
   },
 )
 
@@ -21,12 +22,20 @@ const inputId = `textarea-${Math.random().toString(36).slice(2, 9)}`
 </script>
 
 <template>
-  <div class="field" :class="{ 'col-span-2': props.spanFull, 'has-error': props.hasError }">
+  <div
+    class="field"
+    :class="{
+      'col-span-2': props.spanFull,
+      'has-error': props.hasError,
+      'is-disabled': props.disabled,
+    }"
+  >
     <label :for="inputId" class="label">{{ props.label }}</label>
     <div class="control">
       <textarea
         :id="inputId"
         :aria-invalid="props.hasError"
+        :disabled="props.disabled"
         class="textarea"
         rows="3"
         :placeholder="props.placeholder"
@@ -91,6 +100,19 @@ const inputId = `textarea-${Math.random().toString(36).slice(2, 9)}`
 .has-error .textarea {
   border-color: var(--color-danger) !important;
   outline: 1px solid var(--color-danger) !important;
+}
+
+.is-disabled .label {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.textarea:disabled {
+  opacity: 0.6;
+  background-color: var(--color-surface-subtle, #f9fafb);
+  cursor: not-allowed;
+  box-shadow: none;
+  border-color: var(--line-ink, var(--border-color));
 }
 
 .char-count {

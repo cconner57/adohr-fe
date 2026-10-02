@@ -39,11 +39,15 @@ onMounted(() => {
       <ButtonToggle
         :label="`Does the ${animalLabel.toLowerCase()} get treats?`"
         :modelValue="formState.animalFoodTreats"
-        @update:modelValue="(val) => (formState.animalFoodTreats = String(val ?? ''))"
+        @update:modelValue="(val) => {
+          formState.animalFoodTreats = String(val ?? '')
+          if (val !== 'Yes') formState.animalFoodTreatsExplanation = ''
+        }"
       />
       <InputField
         :label="`If yes, what treats does the ${animalLabel.toLowerCase()} like?`"
         placeholder="Answer"
+        :disabled="formState.animalFoodTreats !== 'Yes'"
         :modelValue="formState.animalFoodTreatsExplanation"
         @update:modelValue="(val) => (formState.animalFoodTreatsExplanation = String(val ?? ''))"
       />
