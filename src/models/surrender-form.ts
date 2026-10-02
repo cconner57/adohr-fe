@@ -17,6 +17,7 @@ export interface ISurrenderFormState {
   whenToSurrenderAnimal: string
   animalName: string
   animalSpecies: string
+  animalBreed?: string
   animalSex: string
   animalAge: string
   animalOwnershipDuration: string

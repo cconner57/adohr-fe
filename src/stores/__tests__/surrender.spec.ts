@@ -34,4 +34,17 @@ describe('useSurrenderStore - animalSpecies sync', () => {
     expect(store.selectedAnimal).toBeNull()
     expect(store.formState.animalSpecies).toBe('')
   })
+
+  it('initializes animalBreed as empty string and includes it in hasSavedDraft', () => {
+    const store = useSurrenderStore()
+    expect(store.formState.animalBreed).toBe('')
+    expect(store.hasSavedDraft).toBe(false)
+
+    store.formState.animalBreed = 'Golden Retriever'
+    expect(store.hasSavedDraft).toBe(true)
+
+    store.resetForm()
+    expect(store.formState.animalBreed).toBe('')
+    expect(store.hasSavedDraft).toBe(false)
+  })
 })

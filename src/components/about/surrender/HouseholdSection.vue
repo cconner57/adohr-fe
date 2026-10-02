@@ -135,10 +135,11 @@ const animalLabel = computed(() => {
         @blur="handleBlur('whenToSurrenderAnimal')"
       />
       <InputField
-        :label="`${selectedAnimal}'s Name`"
-        :placeholder="`${selectedAnimal}'s Name`"
+        :label="`${animalLabel}'s Name`"
+        :placeholder="`${animalLabel}'s Name`"
         :modelValue="formState.animalName"
         @update:modelValue="(val) => (formState.animalName = val as string)"
+        maxlength="100"
         :hasError="
           (touched.animalName && !formState.animalName) ||
           (hasAttemptedSubmit && !formState.animalName)
@@ -146,10 +147,19 @@ const animalLabel = computed(() => {
         @blur="handleBlur('animalName')"
       />
       <InputField
+        :label="`${animalLabel}'s Breed (optional)`"
+        :placeholder="`${animalLabel}'s Breed (optional)`"
+        :modelValue="formState.animalBreed || ''"
+        @update:modelValue="(val) => (formState.animalBreed = val as string)"
+        maxlength="50"
+        @blur="handleBlur('animalBreed')"
+      />
+      <InputField
         label="Age"
         placeholder="Age"
         :modelValue="formState.animalAge"
         @update:modelValue="(val) => (formState.animalAge = val as string)"
+        maxlength="50"
         :hasError="
           (touched.animalAge && !formState.animalAge) ||
           (hasAttemptedSubmit && !formState.animalAge)

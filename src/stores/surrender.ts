@@ -21,6 +21,7 @@ const getInitialSurrenderFormState = (): SurrenderFormState => ({
   whenToSurrenderAnimal: '',
   animalName: '',
   animalSpecies: '',
+  animalBreed: '',
   animalSex: '',
   animalAge: '',
   animalOwnershipDuration: '',
@@ -113,6 +114,7 @@ export const useSurrenderStore = defineStore('surrender', () => {
       formState.firstName ||
       formState.email ||
       formState.animalName ||
+      formState.animalBreed ||
       formState.phoneNumber,
     )
   })
@@ -241,6 +243,7 @@ export const useSurrenderStore = defineStore('surrender', () => {
     if (isFile(raw.fullBodyPhotoOfAnimal)) return true
     if (isFile(raw.closeUpPhotoOfAnimalFace)) return true
     if (Array.isArray(raw.copiesOfRecords) && raw.copiesOfRecords.some(isFile)) return true
+    if (isFile(raw.copiesOfRecords)) return true
     return false
   }
 
@@ -261,6 +264,8 @@ export const useSurrenderStore = defineStore('surrender', () => {
         const rawFile = toRaw(file)
         if (isFile(rawFile)) fd.append('records', rawFile)
       }
+    } else if (isFile(records)) {
+      fd.append('records', records)
     }
     return fd
   }
@@ -285,11 +290,16 @@ export const useSurrenderStore = defineStore('surrender', () => {
 
       isSubmitted.value = false
       const useMultipart = hasFiles()
+      const idempotencyKey =
+        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : undefined
       const response = await fetch(withPublicOrgId(API_ENDPOINTS.SURRENDER_APPLICATION), {
         method: 'POST',
         headers: {
           ...(useMultipart ? {} : { 'Content-Type': 'application/json' }),
           'X-Org-Id': PUBLIC_ORG_ID,
+          ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}),
         },
         body: useMultipart
           ? buildFormData()
