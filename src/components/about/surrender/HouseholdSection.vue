@@ -317,7 +317,9 @@ const animalLabel = computed(() => {
         :label="`What other animals did the ${animalLabel.toLowerCase()} live with?`"
         :options="['Dogs', 'Cats', 'Other', 'No other animals']"
         :modelValue="formState.otherPetsInHousehold"
-        @update:modelValue="(val) => (formState.otherPetsInHousehold = val as string)"
+        @update:modelValue="
+          (val) => (formState.otherPetsInHousehold = Array.isArray(val) ? val.join(', ') : String(val ?? ''))
+        "
         :hasError="
           (touched.otherPetsInHousehold && !formState.otherPetsInHousehold) ||
           (hasAttemptedSubmit && !formState.otherPetsInHousehold)

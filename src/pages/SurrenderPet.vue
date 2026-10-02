@@ -56,6 +56,8 @@ const handleBlur = (field: string) => {
 const formError = computed(() => hasAttemptedSubmit.value && !isStepValid.value)
 
 const handleSubmit = async () => {
+  if (isSubmitting.value) return
+
   if (step.value === 6) {
     hasAttemptedSubmit.value = true
     if (!isStepValid.value) {
@@ -258,6 +260,7 @@ const stepPrefix = computed(() => String(step.value + 1).padStart(2, '0'))
               size="large"
               @click="handleSubmit"
               :loading="isSubmitting"
+              :disabled="isSubmitting"
             />
           </div>
         </section>

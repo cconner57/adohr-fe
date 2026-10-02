@@ -65,7 +65,12 @@ onMounted(() => {
     | 'animalAllowedOnFurniture'
     | 'animalEscapedBefore'
     | 'animalProblemsRidingInCar'
-  )[] = ['animalScaredOfAnything', 'animalAllowedOnFurniture', 'animalEscapedBefore']
+  )[] = [
+    'animalScaredOfAnything',
+    'animalAllowedOnFurniture',
+    'animalEscapedBefore',
+    'animalProblemsRidingInCar',
+  ]
 
   toggleFields.forEach((field) => {
     if (!formState[field]) {
@@ -140,7 +145,9 @@ onMounted(() => {
         :label="`How does the ${animalLabel.toLowerCase()} usually react when an unfamiliar person approaches or enters the yard or house?`"
         :options="['Friendly', 'Afraid', 'Barks', 'Shows Teeth/Hisses', 'Will Bite/Scratch']"
         :modelValue="formState.animalsReactionToNewPeople"
-        @update:modelValue="(val) => (formState.animalsReactionToNewPeople = val as string)"
+        @update:modelValue="
+          (val) => (formState.animalsReactionToNewPeople = Array.isArray(val) ? val.join(', ') : String(val ?? ''))
+        "
         :hasError="
           (touched.animalsReactionToNewPeople && !formState.animalsReactionToNewPeople) ||
           (hasAttemptedSubmit && !formState.animalsReactionToNewPeople)
@@ -203,7 +210,9 @@ onMounted(() => {
         :label="`When left alone, does the ${animalLabel.toLowerCase()} usually show any of the following behaviors?`"
         :options="['Destroy household items', 'Urinate/Deficate', 'Cry', 'None of these', 'Other']"
         :modelValue="formState.animalLeftAloneBehaviors"
-        @update:modelValue="(val) => (formState.animalLeftAloneBehaviors = val as string)"
+        @update:modelValue="
+          (val) => (formState.animalLeftAloneBehaviors = Array.isArray(val) ? val.join(', ') : String(val ?? ''))
+        "
         :hasError="
           (touched.animalLeftAloneBehaviors && !formState.animalLeftAloneBehaviors) ||
           (hasAttemptedSubmit && !formState.animalLeftAloneBehaviors)
@@ -215,7 +224,9 @@ onMounted(() => {
         :label="`When the ${animalLabel.toLowerCase()} plays, do they typically...`"
         :options="['Jumps', 'Hiss', 'Bites lightly', 'Bites hard', 'None of these', 'Other']"
         :modelValue="formState.animalHowItPlays"
-        @update:modelValue="(val) => (formState.animalHowItPlays = val as string)"
+        @update:modelValue="
+          (val) => (formState.animalHowItPlays = Array.isArray(val) ? val.join(', ') : String(val ?? ''))
+        "
         :hasError="
           (touched.animalHowItPlays && !formState.animalHowItPlays) ||
           (hasAttemptedSubmit && !formState.animalHowItPlays)
@@ -227,7 +238,9 @@ onMounted(() => {
         :label="`What toys does the ${animalLabel.toLowerCase()} like?`"
         :options="['Balls', 'Plush', 'Squeaky', 'Tug toy', 'None', 'Other']"
         :modelValue="formState.animalToysItLikes"
-        @update:modelValue="(val) => (formState.animalToysItLikes = val as string)"
+        @update:modelValue="
+          (val) => (formState.animalToysItLikes = Array.isArray(val) ? val.join(', ') : String(val ?? ''))
+        "
         :hasError="
           (touched.animalToysItLikes && !formState.animalToysItLikes) ||
           (hasAttemptedSubmit && !formState.animalToysItLikes)
@@ -239,7 +252,9 @@ onMounted(() => {
         :label="`What games does the ${animalLabel.toLowerCase()} like?`"
         :options="['Tug', 'Chase', 'Wrestling', 'None', 'Other']"
         :modelValue="formState.animalGamesItLikes"
-        @update:modelValue="(val) => (formState.animalGamesItLikes = val as string)"
+        @update:modelValue="
+          (val) => (formState.animalGamesItLikes = Array.isArray(val) ? val.join(', ') : String(val ?? ''))
+        "
         :hasError="
           (touched.animalGamesItLikes && !formState.animalGamesItLikes) ||
           (hasAttemptedSubmit && !formState.animalGamesItLikes)
@@ -288,7 +303,9 @@ onMounted(() => {
           'Other',
         ]"
         :modelValue="formState.animalSleepAtNight"
-        @update:modelValue="(val) => (formState.animalSleepAtNight = val as string)"
+        @update:modelValue="
+          (val) => (formState.animalSleepAtNight = Array.isArray(val) ? val.join(', ') : String(val ?? ''))
+        "
         :hasError="
           (touched.animalSleepAtNight && !formState.animalSleepAtNight) ||
           (hasAttemptedSubmit && !formState.animalSleepAtNight)

@@ -6,6 +6,13 @@ interface SurrenderValidationContext {
   formState: ISurrenderFormState
 }
 
+function hasValue(val: unknown): boolean {
+  if (val === null || val === undefined) return false
+  if (typeof val === 'string') return val.trim().length > 0
+  if (Array.isArray(val)) return val.length > 0
+  return Boolean(val)
+}
+
 function getStep0Errors(selectedAnimal: 'dog' | 'cat' | null): string[] {
   if (!selectedAnimal) return ['Animal Type (Dog or Cat)']
   return []
@@ -14,23 +21,33 @@ function getStep0Errors(selectedAnimal: 'dog' | 'cat' | null): string[] {
 function getStep1Errors(formState: ISurrenderFormState): string[] {
   const errors: string[] = []
 
-  if (!formState.firstName?.trim()) errors.push('First Name')
-  if (!formState.lastName?.trim()) errors.push('Last Name')
-  if (!formState.phoneNumber?.trim() || formState.phoneNumber.length < 10) errors.push('Phone Number')
-  if (!formState.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email.trim()))
+  if (!hasValue(formState.firstName)) errors.push('First Name')
+  if (!hasValue(formState.lastName)) errors.push('Last Name')
+  if (!formState.phoneNumber || String(formState.phoneNumber).trim().length < 10)
+    errors.push('Phone Number')
+  if (
+    !formState.email ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(formState.email).trim())
+  )
     errors.push('Valid Email')
-  if (!formState.streetAddress?.trim()) errors.push('Street Address')
-  if (!formState.city?.trim()) errors.push('City')
-  if (!formState.state?.trim()) errors.push('State')
-  if (!formState.zipCode?.trim() || formState.zipCode.length < 5) errors.push('Valid Zip Code')
-  if (!formState.whenToSurrenderAnimal?.trim()) errors.push('When do you need to surrender your animal')
-  if (!formState.animalName?.trim()) errors.push("Animal's Name")
-  if (!formState.animalAge?.trim()) errors.push('Age')
-  if (!formState.animalSex?.trim()) errors.push('Sex')
-  if (!formState.animalOwnershipDuration?.trim()) errors.push('How long have you had your animal?')
-  if (!formState.animalLocationFound?.trim()) errors.push('Where did you get your animal?')
-  if (!formState.animalWhySurrendered?.trim()) errors.push('Why are you surrendering your animal?')
-  if (!formState.otherPetsInHousehold?.trim()) errors.push('Other pets in household')
+  if (!hasValue(formState.streetAddress)) errors.push('Street Address')
+  if (!hasValue(formState.city)) errors.push('City')
+  if (!hasValue(formState.state)) errors.push('State')
+  if (!formState.zipCode || String(formState.zipCode).trim().length < 5)
+    errors.push('Valid Zip Code')
+  if (!hasValue(formState.whenToSurrenderAnimal))
+    errors.push('When do you need to surrender your animal')
+  if (!hasValue(formState.animalName)) errors.push("Animal's Name")
+  if (!hasValue(formState.animalAge)) errors.push('Age')
+  if (!hasValue(formState.animalSex)) errors.push('Sex')
+  if (!hasValue(formState.animalOwnershipDuration))
+    errors.push('How long have you had your animal?')
+  if (!hasValue(formState.animalLocationFound))
+    errors.push('Where did you get your animal?')
+  if (!hasValue(formState.animalWhySurrendered))
+    errors.push('Why are you surrendering your animal?')
+  if (!hasValue(formState.otherPetsInHousehold))
+    errors.push('Other pets in household')
 
   let hasAgeError = false
   let hasQtyError = false
@@ -47,33 +64,40 @@ function getStep1Errors(formState: ISurrenderFormState): string[] {
 function getStep2Errors(formState: ISurrenderFormState): string[] {
   const errors: string[] = []
 
-  if (!formState.animalsReactionToNewPeople?.trim()) errors.push('Reaction to unfamiliar people')
-  if (!formState.animalHouseTrained?.trim()) errors.push('Housetrained status')
-  if (!formState.animalSpendMajorityOfTime?.trim()) errors.push('Majority of time location')
-  if (!formState.animalLeftAloneDuration?.trim()) errors.push('Hours left alone without human')
-  if (!formState.animalWhenLeftAlone?.trim()) errors.push('Confinement when left alone')
-  if (!formState.animalLeftAloneBehaviors?.trim()) errors.push('Behaviors when left alone')
-  if (!formState.animalHowItPlays?.trim()) errors.push('Play behavior')
-  if (!formState.animalToysItLikes?.trim()) errors.push('Favorite toys')
-  if (!formState.animalGamesItLikes?.trim()) errors.push('Favorite games')
-  if (!formState.animalSleepAtNight?.trim()) errors.push('Sleeping location overnight')
-  if (!formState.animalProblemsRidingInCar?.trim()) errors.push('Riding in cars status')
+  if (!hasValue(formState.animalsReactionToNewPeople))
+    errors.push('Reaction to unfamiliar people')
+  if (!hasValue(formState.animalHouseTrained)) errors.push('Housetrained status')
+  if (!hasValue(formState.animalSpendMajorityOfTime))
+    errors.push('Majority of time location')
+  if (!hasValue(formState.animalLeftAloneDuration))
+    errors.push('Hours left alone without human')
+  if (!hasValue(formState.animalWhenLeftAlone))
+    errors.push('Confinement when left alone')
+  if (!hasValue(formState.animalLeftAloneBehaviors))
+    errors.push('Behaviors when left alone')
+  if (!hasValue(formState.animalHowItPlays)) errors.push('Play behavior')
+  if (!hasValue(formState.animalToysItLikes)) errors.push('Favorite toys')
+  if (!hasValue(formState.animalGamesItLikes)) errors.push('Favorite games')
+  if (!hasValue(formState.animalSleepAtNight))
+    errors.push('Sleeping location overnight')
+  if (!hasValue(formState.animalProblemsRidingInCar))
+    errors.push('Riding in cars status')
 
   if (
     formState.animalScaredOfAnything === 'Yes' &&
-    !formState.animalScaredOfAnythingExplanation?.trim()
+    !hasValue(formState.animalScaredOfAnythingExplanation)
   ) {
     errors.push('Fear explanation')
   }
   if (
     formState.animalProblemsRidingInCar === 'Yes' &&
-    !formState.animalProblemsRidingInCarExplanation?.trim()
+    !hasValue(formState.animalProblemsRidingInCarExplanation)
   ) {
     errors.push('Car ride problems explanation')
   }
   if (
     formState.animalEscapedBefore === 'Yes' &&
-    !formState.animalEscapedBeforeExplanation?.trim()
+    !hasValue(formState.animalEscapedBeforeExplanation)
   ) {
     errors.push('Escape history explanation')
   }
@@ -86,13 +110,13 @@ function getStep3Errors(formState: ISurrenderFormState): string[] {
 
   if (
     formState.animalEverAttackedPeople === 'Yes' &&
-    !formState.animalEverAttackedPeopleExplanation?.trim()
+    !hasValue(formState.animalEverAttackedPeopleExplanation)
   ) {
     errors.push('Person attack explanation')
   }
   if (
     formState.animalEverAttackedOtherCats === 'Yes' &&
-    !formState.animalEverAttackedOtherCatsExplanation?.trim()
+    !hasValue(formState.animalEverAttackedOtherCatsExplanation)
   ) {
     errors.push('Animal attack explanation')
   }
@@ -109,19 +133,19 @@ function getStep4Errors(
 
   if (
     formState.animalMicrochipped === 'Yes' &&
-    !formState.animalMicrochippedExplanation?.trim()
+    !hasValue(formState.animalMicrochippedExplanation)
   ) {
     errors.push('Microchip details')
   }
   if (
     formState.animalPastOrPresentHealthProblems === 'Yes' &&
-    !formState.animalPastOrPresentHealthProblemsExplanation?.trim()
+    !hasValue(formState.animalPastOrPresentHealthProblemsExplanation)
   ) {
     errors.push('Health problems explanation')
   }
   if (
     formState.animalCurrentMedications === 'Yes' &&
-    !formState.animalCurrentMedicationsExplanation?.trim()
+    !hasValue(formState.animalCurrentMedicationsExplanation)
   ) {
     errors.push('Medication details')
   }
@@ -132,12 +156,13 @@ function getStep4Errors(
 function getStep5Errors(formState: ISurrenderFormState): string[] {
   const errors: string[] = []
 
-  if (!formState.animalTypeOfFood?.trim()) errors.push('Type of food')
-  if (!formState.animalEatingFrequency?.trim()) errors.push('Feeding frequency')
-  if (!formState.animalAmountOfFood?.trim()) errors.push('Amount of food per feeding')
+  if (!hasValue(formState.animalTypeOfFood)) errors.push('Type of food')
+  if (!hasValue(formState.animalEatingFrequency)) errors.push('Feeding frequency')
+  if (!hasValue(formState.animalAmountOfFood))
+    errors.push('Amount of food per feeding')
   if (
     formState.animalFoodTreats === 'Yes' &&
-    !formState.animalFoodTreatsExplanation?.trim()
+    !hasValue(formState.animalFoodTreatsExplanation)
   ) {
     errors.push('Treat details')
   }

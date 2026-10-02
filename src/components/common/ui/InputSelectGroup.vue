@@ -29,16 +29,30 @@ const normalizedOptions = computed(() => {
   })
 })
 
+const selectedList = computed<string[]>(() => {
+  if (!props.modelValue) return []
+  if (Array.isArray(props.modelValue)) {
+    return props.modelValue.map(String)
+  }
+  if (typeof props.modelValue === 'string') {
+    return props.modelValue
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+  }
+  return [String(props.modelValue)]
+})
+
 const isSelected = (value: string) => {
   if (props.multiple) {
-    return Array.isArray(props.modelValue) ? props.modelValue.includes(value) : false
+    return selectedList.value.includes(value)
   }
   return props.modelValue === value
 }
 
 const toggleOption = (value: string) => {
   if (props.multiple) {
-    const current = Array.isArray(props.modelValue) ? [...props.modelValue] : []
+    const current = [...selectedList.value]
     const index = current.indexOf(value)
 
     if (index === -1) {
