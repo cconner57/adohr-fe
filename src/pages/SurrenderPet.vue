@@ -253,7 +253,7 @@ const stepPrefix = computed(() => String(step.value + 1).padStart(2, '0'))
             <Button
               v-else
               type="submit"
-              title="Submit Surrender Request"
+              title="Submit Request"
               color="green"
               size="large"
               @click="handleSubmit"
