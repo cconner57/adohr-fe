@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, reactive, ref, toRaw } from 'vue'
+import { computed, reactive, ref, toRaw, watch } from 'vue'
 
 import { useDemoMode } from '../composables/useDemoMode'
 import { useMetrics } from '../composables/useMetrics'
@@ -20,6 +20,7 @@ const getInitialSurrenderFormState = (): SurrenderFormState => ({
   zipCode: '',
   whenToSurrenderAnimal: '',
   animalName: '',
+  animalSpecies: '',
   animalSex: '',
   animalAge: '',
   animalOwnershipDuration: '',
@@ -96,6 +97,14 @@ export const useSurrenderStore = defineStore('surrender', () => {
 
   const formState = reactive<SurrenderFormState>(getInitialSurrenderFormState())
 
+  watch(
+    selectedAnimal,
+    (val) => {
+      formState.animalSpecies = val ?? ''
+    },
+    { immediate: true, flush: 'sync' },
+  )
+
   const STORAGE_KEY = 'adohr_surrender_form_draft_v1'
 
   const hasSavedDraft = computed(() => {
@@ -156,6 +165,9 @@ export const useSurrenderStore = defineStore('surrender', () => {
         step.value = parsed.step || 0
         selectedAnimal.value = parsed.selectedAnimal || null
         Object.assign(formState, parsed.formState)
+        if (selectedAnimal.value && !formState.animalSpecies) {
+          formState.animalSpecies = selectedAnimal.value
+        }
       }
     } catch (e) {
       console.error('Failed to restore surrender form state', e)
@@ -257,6 +269,10 @@ export const useSurrenderStore = defineStore('surrender', () => {
     if (isSubmitting.value) return
     isSubmitting.value = true
     submissionError.value = null
+
+    if (selectedAnimal.value) {
+      formState.animalSpecies = selectedAnimal.value
+    }
 
     try {
       if (isDemoMode.value) {
