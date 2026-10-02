@@ -12,6 +12,7 @@ const { vScrollReveal } = useScrollReveal()
 
 const wishlistStore = useWishlistStore()
 const { items, isLoading, error, urgentItems } = storeToRefs(wishlistStore)
+const CHEWY_WISHLIST_URL = 'https://www.chewy.com/g/a-dream-of-home-rescue_b159766704'
 
 const activeCategory = ref<WishlistCategory | 'all'>('all')
 
@@ -57,15 +58,16 @@ onMounted(() => {
           >
             Amazon Wishlist (Coming Soon)
           </button>
-          <button
-            type="button"
+          <a
+            :href="CHEWY_WISHLIST_URL"
+            target="_blank"
+            rel="noopener noreferrer"
             class="shop-btn chewy-btn"
-            disabled
-            aria-disabled="true"
-            title="Chewy Wishlist coming soon"
+            title="Shop our Chewy Wishlist"
+            aria-label="Shop our Chewy Wishlist (opens in a new tab)"
           >
-            Chewy Wishlist (Coming Soon)
-          </button>
+            Chewy Wishlist
+          </a>
         </div>
       </div>
     </section>
@@ -169,7 +171,7 @@ onMounted(() => {
           <li class="step-card">
             <span class="step-num">1</span>
             <h3>Browse or Shop Online</h3>
-            <p>Browse our list of needs above, or use our upcoming 1-click Amazon and Chewy wishlists once available to send items directly to us.</p>
+            <p>Browse our list of needs above, or use our 1-click Chewy wishlist (and upcoming Amazon wishlist) to send items directly to us.</p>
           </li>
           <li class="step-card">
             <span class="step-num">2</span>

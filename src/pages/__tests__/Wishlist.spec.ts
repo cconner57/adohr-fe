@@ -23,7 +23,7 @@ describe('Wishlist.vue', () => {
     vi.unstubAllGlobals()
   })
 
-  it('renders the page and has disabled Amazon and Chewy wishlist buttons', () => {
+  it('renders the page and has disabled Amazon button and enabled Chewy wishlist link', () => {
     const wrapper = mount(Wishlist, {
       global: {
         directives: {
@@ -43,13 +43,16 @@ describe('Wishlist.vue', () => {
     expect(chewyBtn.exists()).toBe(true)
 
     expect(amazonBtn.element.tagName).toBe('BUTTON')
-    expect(chewyBtn.element.tagName).toBe('BUTTON')
+    expect(chewyBtn.element.tagName).toBe('A')
 
     expect(amazonBtn.attributes('disabled')).toBeDefined()
-    expect(chewyBtn.attributes('disabled')).toBeDefined()
+    expect(chewyBtn.attributes('disabled')).toBeUndefined()
+    expect(chewyBtn.attributes('href')).toBe('https://www.chewy.com/g/a-dream-of-home-rescue_b159766704')
+    expect(chewyBtn.attributes('target')).toBe('_blank')
 
     expect(amazonBtn.text()).toContain('Coming Soon')
-    expect(chewyBtn.text()).toContain('Coming Soon')
+    expect(chewyBtn.text()).toContain('Chewy Wishlist')
+    expect(chewyBtn.text()).not.toContain('Coming Soon')
   })
 
   it('renders exactly 2 help steps and excludes Ship Directly', () => {
