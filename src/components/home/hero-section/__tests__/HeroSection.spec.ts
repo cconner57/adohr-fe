@@ -46,4 +46,35 @@ describe('HeroSection.vue', () => {
 
     expect(wrapper.find('.sticker').exists()).toBe(false)
   })
+
+  it('renders placeholders and transitions to loaded when images fire load events', async () => {
+    const wrapper = mount(HeroSection, {
+      global: {
+        stubs: {
+          Button: true,
+        },
+      },
+    })
+
+    const dogCard = wrapper.find('.card-dog')
+    const catCard = wrapper.find('.card-cat')
+    const dogImg = wrapper.find('.card-dog img')
+    const catImg = wrapper.find('.card-cat img')
+
+    // Initial state: placeholders present and loaded class not yet on img
+    expect(dogCard.find('.duo-placeholder').exists()).toBe(true)
+    expect(catCard.find('.duo-placeholder').exists()).toBe(true)
+    expect(dogCard.classes()).not.toContain('is-loaded')
+    expect(dogImg.classes()).not.toContain('loaded')
+
+    // Trigger dog load
+    await dogImg.trigger('load')
+    expect(dogCard.classes()).toContain('is-loaded')
+    expect(dogImg.classes()).toContain('loaded')
+
+    // Trigger cat load
+    await catImg.trigger('load')
+    expect(catCard.classes()).toContain('is-loaded')
+    expect(catImg.classes()).toContain('loaded')
+  })
 })

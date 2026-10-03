@@ -1,10 +1,33 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { goToAdopt } from '../../../utils/navigate.ts'
 import Button from '../../common/ui/Button.vue'
 
 const router = useRouter()
+
+const isDogLoaded = ref(false)
+const isCatLoaded = ref(false)
+const dogImgRef = ref<HTMLImageElement | null>(null)
+const catImgRef = ref<HTMLImageElement | null>(null)
+
+function handleDogLoad() {
+  isDogLoaded.value = true
+}
+
+function handleCatLoad() {
+  isCatLoaded.value = true
+}
+
+onMounted(() => {
+  if (dogImgRef.value?.complete) {
+    isDogLoaded.value = true
+  }
+  if (catImgRef.value?.complete) {
+    isCatLoaded.value = true
+  }
+})
 
 function handleAdopt() {
   goToAdopt(router)
@@ -36,30 +59,39 @@ function handleAdopt() {
       <div class="hero-portrait">
         <div class="hero-duo-cards">
           <!-- Primary: Rescued puppy in lush greenery -->
-          <div class="duo-card card-dog">
+          <div class="duo-card card-dog" :class="{ 'is-loaded': isDogLoaded }">
+            <div class="duo-placeholder" aria-hidden="true" />
             <picture>
               <source type="image/webp" srcset="/images/hero-dog.webp" />
               <img
+                ref="dogImgRef"
                 src="/images/hero-dog.jpg"
                 alt="Rescued puppy with Adopt Me collar resting in green grass, ready for adoption"
-                width="800"
-                height="800"
+                width="640"
+                height="640"
                 fetchpriority="high"
+                :class="{ loaded: isDogLoaded }"
+                @load="handleDogLoad"
+                @error="handleDogLoad"
               />
             </picture>
           </div>
 
           <!-- Secondary: Rescued tuxedo cat on purple blanket -->
-          <div class="duo-card card-cat">
+          <div class="duo-card card-cat" :class="{ 'is-loaded': isCatLoaded }">
+            <div class="duo-placeholder" aria-hidden="true" />
             <picture>
               <source type="image/webp" srcset="/images/hero-cat.webp" />
               <img
+                ref="catImgRef"
                 src="/images/hero-cat.jpg"
                 alt="Rescued tuxedo cat with bright yellow eyes on a soft purple mat, ready for adoption"
-                width="600"
-                height="800"
-                loading="lazy"
+                width="576"
+                height="768"
                 decoding="async"
+                :class="{ loaded: isCatLoaded }"
+                @load="handleCatLoad"
+                @error="handleCatLoad"
               />
             </picture>
           </div>
@@ -132,8 +164,31 @@ h1 {
   position: absolute;
   border-radius: var(--radius-xl, 26px);
   overflow: hidden;
-  background: var(--text-inverse);
+  background: var(--color-gray-50, #f8fafc);
   aspect-ratio: 1 / 1;
+
+  .duo-placeholder {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(
+      110deg,
+      hsl(from var(--color-gray-50) h s 96%) 8%,
+      hsl(from var(--color-gray-50) h s 90%) 18%,
+      hsl(from var(--color-gray-50) h s 96%) 33%
+    );
+    background-size: 200% 100%;
+    animation: duoShimmer 1.4s linear infinite;
+    opacity: 1;
+    transition: opacity 0.35s ease-out, visibility 0.35s;
+  }
+
+  &.is-loaded .duo-placeholder {
+    opacity: 0;
+    visibility: hidden;
+  }
 
   picture {
     display: block;
@@ -146,7 +201,14 @@ h1 {
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    opacity: 0;
+    transition:
+      opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    &.loaded {
+      opacity: 1;
+    }
   }
 }
 
@@ -197,6 +259,16 @@ h1 {
   }
 }
 
+@keyframes duoShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .card-dog,
   .card-cat,
@@ -207,6 +279,14 @@ h1 {
   .hero-portrait:hover .card-dog img,
   .hero-portrait:hover .card-cat img {
     transform: none;
+    transition: none;
+  }
+
+  .duo-placeholder {
+    animation: none;
+  }
+
+  .duo-card img {
     transition: none;
   }
 }

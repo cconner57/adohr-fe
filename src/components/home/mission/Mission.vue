@@ -1,4 +1,19 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+
+const isLoaded = ref(false)
+const imgRef = ref<HTMLImageElement | null>(null)
+
+function handleLoad() {
+  isLoaded.value = true
+}
+
+onMounted(() => {
+  if (imgRef.value?.complete) {
+    isLoaded.value = true
+  }
+})
+</script>
 
 <template>
   <section class="mission">
@@ -17,16 +32,21 @@
         <li>Adopter education &amp; lifetime support</li>
       </ul>
     </div>
-    <div class="image-container">
+    <div class="image-container" :class="{ 'is-loaded': isLoaded }">
+      <div class="mission-placeholder" aria-hidden="true" />
       <picture>
         <source type="image/webp" srcset="/images/mission-care.webp" />
         <img
+          ref="imgRef"
           src="/images/mission-care.jpg"
           alt="A dedicated rescue caregiver smiling warmly while holding a small rescue dog"
           width="640"
           height="858"
           loading="lazy"
           decoding="async"
+          :class="{ loaded: isLoaded }"
+          @load="handleLoad"
+          @error="handleLoad"
         />
       </picture>
     </div>
@@ -92,13 +112,37 @@
   }
 
   .image-container {
+    position: relative;
     justify-self: end;
     width: min(100%, 360px);
     border-radius: var(--radius-xl, 24px);
     overflow: hidden;
     border: 1.5px solid oklch(from var(--text-inverse) l c h / 35%);
     box-shadow: var(--shadow-xl);
-    background: var(--text-inverse);
+    background: var(--color-gray-50, #f8fafc);
+
+    .mission-placeholder {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      border-radius: inherit;
+      background: linear-gradient(
+        110deg,
+        hsl(from var(--color-gray-50) h s 96%) 8%,
+        hsl(from var(--color-gray-50) h s 90%) 18%,
+        hsl(from var(--color-gray-50) h s 96%) 33%
+      );
+      background-size: 200% 100%;
+      animation: missionShimmer 1.4s linear infinite;
+      opacity: 1;
+      transition: opacity 0.35s ease-out, visibility 0.35s;
+    }
+
+    &.is-loaded .mission-placeholder {
+      opacity: 0;
+      visibility: hidden;
+    }
 
     picture {
       display: block;
@@ -112,11 +156,38 @@
       aspect-ratio: 3 / 4;
       object-fit: cover;
       display: block;
-      transition: transform 0.4s ease;
+      opacity: 0;
+      transition:
+        opacity 0.4s ease-out,
+        transform 0.4s ease;
+
+      &.loaded {
+        opacity: 1;
+      }
     }
 
     &:hover img {
       transform: scale(1.03);
+    }
+  }
+
+  @keyframes missionShimmer {
+    0% {
+      background-position: 100% 0;
+    }
+
+    100% {
+      background-position: -100% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mission-placeholder {
+      animation: none;
+    }
+
+    .image-container img {
+      transition: none;
     }
   }
 
