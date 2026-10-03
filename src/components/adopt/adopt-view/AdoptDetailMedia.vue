@@ -125,6 +125,7 @@ watch(
         :alt="petName"
         loading="lazy"
         :style="{ viewTransitionName: 'pet-' + petId }"
+        class="adopt-detail__main-img"
         :class="{ loaded: isImageLoaded }"
         @load="onImgLoad"
         @error="onImgError"
@@ -192,32 +193,32 @@ watch(
         :isBonded="Boolean(pet.behavior?.bonded?.isBonded)"
         :bondedWithNames="pet.behavior?.bonded?.bondedWith ?? null"
       />
-    </div>
 
-    <!-- Multi-photo thumbnails strip if more than 1 photo -->
-    <div v-if="resolvedPhotos.length > 1" class="thumbnail-strip" role="tablist" aria-label="Pet photos">
-      <button
-        v-for="(photo, idx) in resolvedPhotos"
-        :key="photo.url"
-        type="button"
-        class="thumb-btn"
-        :class="{ active: activeIndex === idx }"
-        :aria-selected="activeIndex === idx"
-        @click="activeIndex = idx"
-      >
-        <img
-          v-if="!failedThumbs.has(idx)"
-          :src="photo.url"
-          :alt="`${petName} photo ${idx + 1}`"
-          loading="lazy"
-          @error="failedThumbs.add(idx)"
-        />
-        <ImagePlaceholder
-          v-else
-          icon="paw"
-          size="small"
-        />
-      </button>
+      <!-- Multi-photo thumbnails strip positioned inside the larger image on the bottom left -->
+      <div v-if="resolvedPhotos.length > 1" class="thumbnail-strip" role="tablist" aria-label="Pet photos">
+        <button
+          v-for="(photo, idx) in resolvedPhotos"
+          :key="photo.url"
+          type="button"
+          class="thumb-btn"
+          :class="{ active: activeIndex === idx }"
+          :aria-selected="activeIndex === idx"
+          @click.stop="activeIndex = idx"
+        >
+          <img
+            v-if="!failedThumbs.has(idx)"
+            :src="photo.url"
+            :alt="`${petName} photo ${idx + 1}`"
+            loading="lazy"
+            @error="failedThumbs.add(idx)"
+          />
+          <ImagePlaceholder
+            v-else
+            icon="paw"
+            size="small"
+          />
+        </button>
+      </div>
     </div>
 
     <!-- Primary Action Buttons Container Card -->
