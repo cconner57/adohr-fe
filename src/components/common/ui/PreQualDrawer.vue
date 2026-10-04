@@ -4,12 +4,21 @@ import { computed, ref } from 'vue'
 import Button from './Button.vue'
 import Drawer from './Drawer.vue'
 
-const props = defineProps<{
-  isOpen: boolean
-  petName?: string
-  species?: string
-  isWeekendFastTrack?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    isOpen: boolean
+    petName?: string
+    species?: string
+    isWeekendFastTrack?: boolean
+    showFastTrack?: boolean
+  }>(),
+  {
+    petName: '',
+    species: '',
+    isWeekendFastTrack: false,
+    showFastTrack: false,
+  },
+)
 
 const emit = defineEmits<{
   close: []
@@ -80,7 +89,7 @@ const handleProceed = () => {
       <div class="prequal-intro">
         <p class="intro-eyebrow">Quick Readiness Check</p>
         <p class="intro-text">
-          To ensure the best match for {{ petName ? petName : 'our rescues' }}, please confirm you meet our core adoption criteria. <strong>The 5 criteria below are required</strong> to proceed with your application, while the Fast-Track event review is optional:
+          To ensure the best match for {{ petName ? petName : 'our rescues' }}, please confirm you meet our core adoption criteria. <strong>The 5 criteria below are required</strong> to proceed with your application<template v-if="props.showFastTrack">, while the Fast-Track event review is optional</template>:
         </p>
       </div>
 
@@ -151,8 +160,8 @@ const handleProceed = () => {
         </label>
       </div>
 
-      <!-- Fast-Track Toggle (Optional) -->
-      <div class="fast-track-box">
+      <!-- Fast-Track Toggle (Optional) - Preserved but hidden from UI by default -->
+      <div v-if="props.showFastTrack" class="fast-track-box">
         <label class="fast-track-label">
           <input type="checkbox" v-model="isFastTrack" class="sr-only" />
           <div class="custom-cb ft-cb" :class="{ checked: isFastTrack }" aria-hidden="true">

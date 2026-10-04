@@ -39,7 +39,7 @@ describe('PreQualDrawer.vue', () => {
     expect(wrapper.text()).toContain('securely fenced yard')
   })
 
-  it('renders cat-specific care criteria (lifetime indoor shelter) and in-store center info', () => {
+  it('renders cat-specific care criteria (lifetime indoor shelter)', () => {
     const wrapper = mount(PreQualDrawer, {
       props: {
         isOpen: true,
@@ -51,7 +51,39 @@ describe('PreQualDrawer.vue', () => {
     })
 
     expect(wrapper.text()).toContain('lifetime indoor shelter')
+  })
+
+  it('does not render fast-track option in the UI by default', () => {
+    const wrapper = mount(PreQualDrawer, {
+      props: {
+        isOpen: true,
+        species: 'cat',
+      },
+      global: {
+        stubs: { Teleport: true },
+      },
+    })
+
+    expect(wrapper.find('.fast-track-box').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('Fast-Track event review is optional')
+    expect(wrapper.text()).not.toContain('Cat Adoption Center')
+  })
+
+  it('renders fast-track option when showFastTrack is true', () => {
+    const wrapper = mount(PreQualDrawer, {
+      props: {
+        isOpen: true,
+        species: 'cat',
+        showFastTrack: true,
+      },
+      global: {
+        stubs: { Teleport: true },
+      },
+    })
+
+    expect(wrapper.find('.fast-track-box').exists()).toBe(true)
     expect(wrapper.text()).toContain('Cat Adoption Center')
+    expect(wrapper.text()).toContain('Fast-Track event review is optional')
   })
 
   it('disables proceed button until all criteria are checked', async () => {
@@ -86,6 +118,7 @@ describe('PreQualDrawer.vue', () => {
       props: {
         isOpen: true,
         isWeekendFastTrack: true,
+        showFastTrack: true,
       },
       global: {
         stubs: {
