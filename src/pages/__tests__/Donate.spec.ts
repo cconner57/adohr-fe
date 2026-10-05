@@ -75,7 +75,7 @@ describe('Donate.vue', () => {
     expect(copyZelleBtn.attributes('disabled')).toBeUndefined()
   })
 
-  it('renders the coming soon notice banner for online checkout', () => {
+  it('does not render the coming soon notice banner', () => {
     const wrapper = mount(Donate, {
       global: {
         directives: {
@@ -89,9 +89,7 @@ describe('Donate.vue', () => {
     })
 
     const notice = wrapper.find('.online-giving-notice')
-    expect(notice.exists()).toBe(true)
-    expect(notice.text()).toContain('Online checkout is launching in October!')
-    expect(notice.text()).toContain('Zelle')
+    expect(notice.exists()).toBe(false)
   })
 
   it('copies Zelle email to clipboard when Copy Zelle button is clicked', async () => {

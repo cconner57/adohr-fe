@@ -54,14 +54,6 @@ const impactLedger = [
           ADOHR is volunteer-powered, so your donation goes directly to the animals: medical care,
           food, foster supplies, and the path to a forever family.
         </p>
-
-        <div class="online-giving-notice" role="status">
-          <span class="notice-badge">Coming Soon</span>
-          <div class="notice-text">
-            <strong>Online checkout is launching in October!</strong>
-            <span> In the meantime, you can donate instantly with zero processing fees via Zelle below or by mailing a check.</span>
-          </div>
-        </div>
       </div>
     </section>
 

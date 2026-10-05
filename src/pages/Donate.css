@@ -51,51 +51,6 @@
     }
   }
 
-  .online-giving-notice {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 1.5rem auto 0;
-    max-width: 760px;
-    background: oklch(100% 0 0deg / 15%);
-    border: 1px solid oklch(100% 0 0deg / 25%);
-    border-radius: var(--radius-md);
-    padding: 0.85rem 1.25rem;
-    text-align: left;
-    backdrop-filter: blur(4px);
-
-    @media (max-width: 640px) {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-
-    .notice-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 10px;
-      border-radius: var(--radius-full);
-      background: var(--color-warning);
-      color: var(--text-primary);
-      font-size: 0.75rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .notice-text {
-      font-size: 0.88rem;
-      line-height: 1.45;
-      color: var(--text-inverse);
-
-      strong {
-        font-weight: 700;
-      }
-    }
-  }
-
   .trust-banner {
     padding: 16px 0;
     background-color: oklch(from var(--color-secondary) 96% 0.04 h);
