@@ -30,7 +30,7 @@ describe('Donate.vue', () => {
     expect(wrapper.findComponent({ name: 'Footer' }).exists()).toBe(true)
   })
 
-  it('disables donation checkout and sponsor buttons pending Stripe integration', () => {
+  it('links donation checkout and care item sponsorship to Adoption-OS donation portal', () => {
     const wrapper = mount(Donate, {
       global: {
         directives: {
@@ -43,26 +43,47 @@ describe('Donate.vue', () => {
       },
     })
 
-    // Sponsor care ledger buttons (5 buttons)
-    const sponsorBtns = wrapper.findAll('.sponsor-btn')
-    expect(sponsorBtns.length).toBe(5)
-    sponsorBtns.forEach((btn) => {
-      expect(btn.attributes('disabled')).toBeDefined()
-      expect(btn.attributes('aria-disabled')).toBe('true')
+    // Sponsor care ledger links (5 items)
+    const sponsorLinks = wrapper.findAll('.sponsor-btn')
+    expect(sponsorLinks.length).toBe(5)
+    expect(sponsorLinks[0].attributes('href')).toBe(
+      'https://adoption-os.com/donate/adohr?item=vaccines&amount=25&mode=one_time',
+    )
+    expect(sponsorLinks[1].attributes('href')).toBe(
+      'https://adoption-os.com/donate/adohr?item=microchip&amount=60&mode=one_time',
+    )
+    expect(sponsorLinks[2].attributes('href')).toBe(
+      'https://adoption-os.com/donate/adohr?item=spay_neuter&amount=150&mode=one_time',
+    )
+    expect(sponsorLinks[3].attributes('href')).toBe(
+      'https://adoption-os.com/donate/adohr?item=foster_care&amount=300&mode=one_time',
+    )
+    expect(sponsorLinks[4].attributes('href')).toBe(
+      'https://adoption-os.com/donate/adohr?item=emergency_vet&amount=500&mode=one_time',
+    )
+    sponsorLinks.forEach((link) => {
+      expect(link.attributes('target')).toBe('_blank')
+      expect(link.attributes('rel')).toBe('noopener noreferrer')
     })
 
-    // Monthly recurring VIP button
-    const vipBtn = wrapper.find('.vip-cta')
-    expect(vipBtn.exists()).toBe(true)
-    expect(vipBtn.text()).toContain('Join the Pack')
-    expect(vipBtn.attributes('disabled')).toBeDefined()
-    expect(vipBtn.attributes('aria-disabled')).toBe('true')
+    // Monthly recurring VIP button / link
+    const vipLink = wrapper.find('.vip-cta')
+    expect(vipLink.exists()).toBe(true)
+    expect(vipLink.text()).toContain('Join the Pack')
+    expect(vipLink.attributes('href')).toBe(
+      'https://adoption-os.com/donate/adohr?mode=monthly&amount=25',
+    )
+    expect(vipLink.attributes('target')).toBe('_blank')
+    expect(vipLink.attributes('rel')).toBe('noopener noreferrer')
 
-    // One-time online donation button
-    const onlineBtn = wrapper.findAll('.way-card button.way-cta').find(b => b.text().includes('Donate Online'))
-    expect(onlineBtn).toBeDefined()
-    expect(onlineBtn!.attributes('disabled')).toBeDefined()
-    expect(onlineBtn!.attributes('aria-disabled')).toBe('true')
+    // One-time online donation link
+    const onlineLink = wrapper.findAll('.way-card a.way-cta').find(b => b.text().includes('Donate Online'))
+    expect(onlineLink).toBeDefined()
+    expect(onlineLink!.attributes('href')).toBe(
+      'https://adoption-os.com/donate/adohr?mode=one_time',
+    )
+    expect(onlineLink!.attributes('target')).toBe('_blank')
+    expect(onlineLink!.attributes('rel')).toBe('noopener noreferrer')
 
     // Copy EIN tool button should remain enabled
     const copyBtn = wrapper.find('.copy-btn')

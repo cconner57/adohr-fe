@@ -6,7 +6,7 @@ import { useScrollReveal } from '@/composables/useScrollReveal'
 
 const { vScrollReveal } = useScrollReveal()
 
-// Donation URLs (Online donation checkout temporarily disabled until Stripe integration)
+const DONATION_PORTAL_URL = 'https://adoption-os.com/donate/adohr'
 const ZELLE_EMAIL = 'donate@adohr.org'
 
 const isCopied = ref(false)
@@ -35,13 +35,57 @@ const copyZelle = async () => {
   }
 }
 
-const impactLedger = [
-  { amount: 25, title: 'Intake Vaccines & Deworming', covers: 'Essential initial vaccines and preventative deworming for one rescue' },
-  { amount: 60, title: 'Microchip & Registration', covers: 'A lifetime-registered microchip ensuring the pet can always find their way home' },
-  { amount: 150, title: 'Spay or Neuter Surgery', covers: 'Full spay or neuter surgery plus post-operative medication' },
-  { amount: 300, title: 'Month of Foster Food & Care', covers: 'A full month of premium food, litter, and supplies for a volunteer foster home' },
-  { amount: 500, title: 'Emergency & Specialty Vet Care', covers: 'Urgent medical care, diagnostics, or specialized treatment for an animal in crisis' },
+interface IImpactLedgerItem {
+  id: string
+  amount: number
+  title: string
+  covers: string
+}
+
+const impactLedger: IImpactLedgerItem[] = [
+  {
+    id: 'vaccines',
+    amount: 25,
+    title: 'Intake Vaccines & Deworming',
+    covers: 'Essential initial vaccines and preventative deworming for one rescue',
+  },
+  {
+    id: 'microchip',
+    amount: 60,
+    title: 'Microchip & Registration',
+    covers: 'A lifetime-registered microchip ensuring the pet can always find their way home',
+  },
+  {
+    id: 'spay_neuter',
+    amount: 150,
+    title: 'Spay or Neuter Surgery',
+    covers: 'Full spay or neuter surgery plus post-operative medication',
+  },
+  {
+    id: 'foster_care',
+    amount: 300,
+    title: 'Month of Foster Food & Care',
+    covers: 'A full month of premium food, litter, and supplies for a volunteer foster home',
+  },
+  {
+    id: 'emergency_vet',
+    amount: 500,
+    title: 'Emergency & Specialty Vet Care',
+    covers: 'Urgent medical care, diagnostics, or specialized treatment for an animal in crisis',
+  },
 ]
+
+const getCareItemDonationUrl = (item: IImpactLedgerItem): string => {
+  return `${DONATION_PORTAL_URL}?item=${encodeURIComponent(item.id)}&amount=${item.amount}&mode=one_time`
+}
+
+const getMonthlyDonationUrl = (amount = 25): string => {
+  return `${DONATION_PORTAL_URL}?mode=monthly&amount=${amount}`
+}
+
+const getOneTimeDonationUrl = (): string => {
+  return `${DONATION_PORTAL_URL}?mode=one_time`
+}
 </script>
 
 <template>
@@ -72,7 +116,7 @@ const impactLedger = [
         <h2 id="impact-title">Sponsor a Care Item</h2>
         <p class="section-lead">Choose a direct medical or foster care milestone to sponsor today:</p>
         <ul class="ledger">
-          <li v-for="row in impactLedger" :key="row.amount" class="ledger-row">
+          <li v-for="row in impactLedger" :key="row.id" class="ledger-row">
             <div class="ledger-left">
               <span class="ledger-amount">${{ row.amount }}</span>
               <div class="ledger-info">
@@ -80,15 +124,15 @@ const impactLedger = [
                 <span class="ledger-covers">{{ row.covers }}</span>
               </div>
             </div>
-            <button
-              type="button"
+            <a
+              :href="getCareItemDonationUrl(row)"
+              target="_blank"
+              rel="noopener noreferrer"
               class="sponsor-btn"
-              disabled
-              aria-disabled="true"
-              title="Online checkout launching soon! Please donate via Zelle below."
+              :aria-label="`Sponsor ${row.title} for $${row.amount}`"
             >
               Sponsor ${{ row.amount }} →
-            </button>
+            </a>
           </li>
         </ul>
       </div>
@@ -109,15 +153,14 @@ const impactLedger = [
             <p>Join a dedicated group of recurring donors who keep our foster homes stocked year-round. Monthly gifts provide predictable, life-saving funds for animals needing emergency care.</p>
           </div>
           <div class="vip-action">
-            <button
-              type="button"
+            <a
+              :href="getMonthlyDonationUrl(25)"
+              target="_blank"
+              rel="noopener noreferrer"
               class="way-cta vip-cta"
-              disabled
-              aria-disabled="true"
-              title="Online checkout launching soon! Please donate via Zelle below."
             >
               Join the Pack
-            </button>
+            </a>
           </div>
         </div>
 
@@ -125,16 +168,15 @@ const impactLedger = [
           <li class="way-item">
             <article class="way-card">
               <h3>One-Time Gift</h3>
-              <p>Make a direct, one-time contribution through PayPal to support an animal's immediate needs.</p>
-              <button
-                type="button"
+              <p>Make a direct, secure online donation to support an animal's immediate medical and foster needs.</p>
+              <a
+                :href="getOneTimeDonationUrl()"
+                target="_blank"
+                rel="noopener noreferrer"
                 class="way-cta"
-                disabled
-                aria-disabled="true"
-                title="Online checkout launching soon! Please donate via Zelle below."
               >
                 Donate Online
-              </button>
+              </a>
             </article>
           </li>
           <li class="way-item">
@@ -178,7 +220,7 @@ const impactLedger = [
           <div class="match-info">
             <h3>How to Request a Match:</h3>
             <ol class="match-steps">
-              <li>Donate to ADOHR via PayPal or Zelle.</li>
+              <li>Donate to ADOHR online or via Zelle.</li>
               <li>Log into your company giving portal (e.g. <em>Benevity, CyberGrants, YourCause, Bright Funds</em>).</li>
               <li>Search for <strong>A Dream of Home Rescue</strong> using our Tax ID below.</li>
               <li>Submit your receipt to double your gift!</li>
