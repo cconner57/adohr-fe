@@ -170,7 +170,7 @@ const getOneTimeDonationUrl = (): string => {
           <li class="way-item">
             <article class="way-card">
               <h3>Foster Supply Wishlist</h3>
-              <p>Ship food, litter, and essential care supplies directly to our foster homes.</p>
+              <p>Send needed food, kitten formula, litter, and supplies directly to our foster homes.</p>
               <RouterLink to="/wishlist" class="way-cta">View Wishlist</RouterLink>
             </article>
           </li>
