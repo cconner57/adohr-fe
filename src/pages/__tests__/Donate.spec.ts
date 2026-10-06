@@ -138,7 +138,7 @@ describe('Donate.vue', () => {
 
     await copyZelleBtn.trigger('click')
 
-    expect(writeText).toHaveBeenCalledWith('donate@adohr.org')
+    expect(writeText).toHaveBeenCalledWith('help.adohr@gmail.com')
     expect(copyZelleBtn.text()).toBe('✓ Copied!')
   })
 

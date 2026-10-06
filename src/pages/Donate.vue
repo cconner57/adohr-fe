@@ -7,7 +7,7 @@ import { useScrollReveal } from '@/composables/useScrollReveal'
 const { vScrollReveal } = useScrollReveal()
 
 const DONATION_PORTAL_URL = 'https://adoption-os.com/donate/adohr'
-const ZELLE_EMAIL = 'donate@adohr.org'
+const ZELLE_EMAIL = 'help.adohr@gmail.com'
 
 const isCopied = ref(false)
 const copyEIN = async () => {
