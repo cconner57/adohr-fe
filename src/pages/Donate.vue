@@ -46,32 +46,32 @@ const impactLedger: IImpactLedgerItem[] = [
   {
     id: 'vaccines',
     amount: 25,
-    title: 'Intake Vaccines & Deworming',
-    covers: 'Essential initial vaccines and preventative deworming for one rescue',
+    title: 'Vaccines & Deworming',
+    covers: 'Initial vaccines and preventive care for a new rescue',
   },
   {
     id: 'microchip',
     amount: 60,
     title: 'Microchip & Registration',
-    covers: 'A lifetime-registered microchip ensuring the pet can always find their way home',
+    covers: 'Lifetime microchip to keep a pet safe and identifiable',
   },
   {
     id: 'spay_neuter',
     amount: 150,
     title: 'Spay or Neuter Surgery',
-    covers: 'Full spay or neuter surgery plus post-operative medication',
+    covers: 'Complete surgery and recovery care for one cat or dog',
   },
   {
     id: 'foster_care',
     amount: 300,
-    title: 'Month of Foster Food & Care',
-    covers: 'A full month of premium food, litter, and supplies for a volunteer foster home',
+    title: 'Month of Foster Care',
+    covers: 'A full month of food, litter, and supplies for a foster home',
   },
   {
     id: 'emergency_vet',
     amount: 500,
-    title: 'Emergency & Specialty Vet Care',
-    covers: 'Urgent medical care, diagnostics, or specialized treatment for an animal in crisis',
+    title: 'Emergency Vet Care',
+    covers: 'Urgent medical care and treatment for an animal in crisis',
   },
 ]
 
@@ -109,12 +109,81 @@ const getOneTimeDonationUrl = (): string => {
       </div>
     </section>
 
+    <!-- Ways to Give -->
+    <section class="ways" aria-labelledby="ways-title">
+      <div class="content-wrapper" v-scroll-reveal>
+        <p class="eyebrow">Ways to give</p>
+        <h2 id="ways-title">Choose what works for you</h2>
+        <div class="vip-card">
+          <div class="vip-content">
+            <span class="vip-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Monthly Rescue Pack
+            </span>
+            <h3>Become a Monthly Supporter</h3>
+            <p>Monthly gifts provide steady, life-saving support for foster supplies, medical care, and rescue emergencies.</p>
+          </div>
+          <div class="vip-action">
+            <a
+              :href="getMonthlyDonationUrl(25)"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="way-cta vip-cta"
+            >
+              Join the Pack
+            </a>
+          </div>
+        </div>
+
+        <ul class="ways-grid" role="list">
+          <li class="way-item">
+            <article class="way-card">
+              <h3>One-Time Gift</h3>
+              <p>Make a direct, secure donation to help cover food, shelter, and medical care for an animal in need.</p>
+              <a
+                :href="getOneTimeDonationUrl()"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="way-cta"
+              >
+                Donate Online
+              </a>
+            </article>
+          </li>
+          <li class="way-item">
+            <article class="way-card">
+              <h3>Send via Zelle</h3>
+              <p>Donate with zero processing fees so 100% of your gift goes straight to animal care.</p>
+              <div class="zelle-box">
+                <span class="way-detail">{{ ZELLE_EMAIL }}</span>
+                <button
+                  type="button"
+                  class="copy-zelle-btn"
+                  @click="copyZelle"
+                  aria-label="Copy Zelle email to clipboard"
+                >
+                  {{ isZelleCopied ? '✓ Copied!' : 'Copy Zelle Email' }}
+                </button>
+              </div>
+            </article>
+          </li>
+          <li class="way-item">
+            <article class="way-card">
+              <h3>Foster Supply Wishlist</h3>
+              <p>Ship food, litter, and essential care supplies directly to our foster homes.</p>
+              <RouterLink to="/wishlist" class="way-cta">View Wishlist</RouterLink>
+            </article>
+          </li>
+        </ul>
+      </div>
+    </section>
+
     <!-- Sponsor Line-Item Vet Care -->
     <section class="impact" aria-labelledby="impact-title">
       <div class="content-wrapper" v-scroll-reveal>
         <p class="eyebrow">Targeted impact</p>
         <h2 id="impact-title">Sponsor a Care Item</h2>
-        <p class="section-lead">Choose a direct medical or foster care milestone to sponsor today:</p>
+        <p class="section-lead">Directly fund a rescue animal's medical care or foster essentials:</p>
         <ul class="ledger">
           <li v-for="row in impactLedger" :key="row.id" class="ledger-row">
             <div class="ledger-left">
@@ -133,75 +202,6 @@ const getOneTimeDonationUrl = (): string => {
             >
               Sponsor ${{ row.amount }} →
             </a>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Ways to Give -->
-    <section class="ways" aria-labelledby="ways-title">
-      <div class="content-wrapper" v-scroll-reveal>
-        <p class="eyebrow">Ways to give</p>
-        <h2 id="ways-title">Choose what works for you</h2>
-        <div class="vip-card">
-          <div class="vip-content">
-            <span class="vip-badge">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-              Monthly Rescue Pack
-            </span>
-            <h3>Become a Monthly Supporter</h3>
-            <p>Join a dedicated group of recurring donors who keep our foster homes stocked year-round. Monthly gifts provide predictable, life-saving funds for animals needing emergency care.</p>
-          </div>
-          <div class="vip-action">
-            <a
-              :href="getMonthlyDonationUrl(25)"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="way-cta vip-cta"
-            >
-              Join the Pack
-            </a>
-          </div>
-        </div>
-
-        <ul class="ways-grid" role="list">
-          <li class="way-item">
-            <article class="way-card">
-              <h3>One-Time Gift</h3>
-              <p>Make a direct, secure online donation to support an animal's immediate medical and foster needs.</p>
-              <a
-                :href="getOneTimeDonationUrl()"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="way-cta"
-              >
-                Donate Online
-              </a>
-            </article>
-          </li>
-          <li class="way-item">
-            <article class="way-card">
-              <h3>Send via Zelle</h3>
-              <p>Zelle transfers reach us with zero processing fees, so 100% of your gift goes directly to the animals.</p>
-              <div class="zelle-box">
-                <span class="way-detail">{{ ZELLE_EMAIL }}</span>
-                <button
-                  type="button"
-                  class="copy-zelle-btn"
-                  @click="copyZelle"
-                  aria-label="Copy Zelle email to clipboard"
-                >
-                  {{ isZelleCopied ? '✓ Copied!' : 'Copy Zelle Email' }}
-                </button>
-              </div>
-            </article>
-          </li>
-          <li class="way-item">
-            <article class="way-card">
-              <h3>Foster Supply Wishlist</h3>
-              <p>Send needed food, kitten formula, litter, and supplies directly to our foster homes (online wishlists coming soon!).</p>
-              <RouterLink to="/wishlist" class="way-cta">View Wishlist</RouterLink>
-            </article>
           </li>
         </ul>
       </div>

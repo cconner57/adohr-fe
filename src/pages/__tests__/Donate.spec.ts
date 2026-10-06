@@ -141,4 +141,26 @@ describe('Donate.vue', () => {
     expect(writeText).toHaveBeenCalledWith('donate@adohr.org')
     expect(copyZelleBtn.text()).toBe('✓ Copied!')
   })
+
+  it('renders the ways to give section above the targeted impact section', () => {
+    const wrapper = mount(Donate, {
+      global: {
+        directives: {
+          'scroll-reveal': {},
+        },
+        stubs: {
+          RouterLink: true,
+          Footer: true,
+        },
+      },
+    })
+
+    const html = wrapper.html()
+    const waysIndex = html.indexOf('class="ways"')
+    const impactIndex = html.indexOf('class="impact"')
+
+    expect(waysIndex).toBeGreaterThan(-1)
+    expect(impactIndex).toBeGreaterThan(-1)
+    expect(waysIndex).toBeLessThan(impactIndex)
+  })
 })
