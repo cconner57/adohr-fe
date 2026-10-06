@@ -163,4 +163,26 @@ describe('Donate.vue', () => {
     expect(impactIndex).toBeGreaterThan(-1)
     expect(waysIndex).toBeLessThan(impactIndex)
   })
+
+  it('renders one-time, zelle, and wishlist items above become a monthly supporter', () => {
+    const wrapper = mount(Donate, {
+      global: {
+        directives: {
+          'scroll-reveal': {},
+        },
+        stubs: {
+          RouterLink: true,
+          Footer: true,
+        },
+      },
+    })
+
+    const html = wrapper.html()
+    const waysGridIndex = html.indexOf('class="ways-grid"')
+    const vipCardIndex = html.indexOf('class="vip-card"')
+
+    expect(waysGridIndex).toBeGreaterThan(-1)
+    expect(vipCardIndex).toBeGreaterThan(-1)
+    expect(waysGridIndex).toBeLessThan(vipCardIndex)
+  })
 })

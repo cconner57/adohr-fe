@@ -114,27 +114,6 @@ const getOneTimeDonationUrl = (): string => {
       <div class="content-wrapper" v-scroll-reveal>
         <p class="eyebrow">Ways to give</p>
         <h2 id="ways-title">Choose what works for you</h2>
-        <div class="vip-card">
-          <div class="vip-content">
-            <span class="vip-badge">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-              Monthly Rescue Pack
-            </span>
-            <h3>Become a Monthly Supporter</h3>
-            <p>Monthly gifts provide steady, life-saving support for foster supplies, medical care, and rescue emergencies.</p>
-          </div>
-          <div class="vip-action">
-            <a
-              :href="getMonthlyDonationUrl(25)"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="way-cta vip-cta"
-            >
-              Join the Pack
-            </a>
-          </div>
-        </div>
-
         <ul class="ways-grid" role="list">
           <li class="way-item">
             <article class="way-card">
@@ -175,6 +154,27 @@ const getOneTimeDonationUrl = (): string => {
             </article>
           </li>
         </ul>
+
+        <div class="vip-card">
+          <div class="vip-content">
+            <span class="vip-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              Monthly Rescue Pack
+            </span>
+            <h3>Become a Monthly Supporter</h3>
+            <p>Monthly gifts provide steady, life-saving support for foster supplies, medical care, and rescue emergencies.</p>
+          </div>
+          <div class="vip-action">
+            <a
+              :href="getMonthlyDonationUrl(25)"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="way-cta vip-cta"
+            >
+              Join the Pack
+            </a>
+          </div>
+        </div>
       </div>
     </section>
 
