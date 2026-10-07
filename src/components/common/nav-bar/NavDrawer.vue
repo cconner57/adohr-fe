@@ -354,8 +354,10 @@ svg[data-open='true'] .hx-bot { transform: translateY(-6px) rotate(-45deg); }
 
 .drawer-logo {
   height: 40px;
-  width: auto;
-  border-radius: var(--radius-md);
+  width: 40px;
+  object-fit: cover;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
 }
 
 .drawer-title {
