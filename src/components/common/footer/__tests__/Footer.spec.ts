@@ -46,4 +46,20 @@ describe('Footer.vue', () => {
     expect(legalLink.attributes('href')).toBe('/legal.html')
     expect(legalLink.text()).toContain('501(c)(3) Legal Notice')
   })
+
+  it('renders official Facebook link with secure target and rel attributes', () => {
+    const wrapper = mount(Footer, {
+      global: {
+        stubs: {
+          RouterLink: true,
+        },
+      },
+    })
+
+    const fbLink = wrapper.findAll('a.social-link').find(a => a.text().includes('Facebook'))
+    expect(fbLink).toBeDefined()
+    expect(fbLink!.attributes('href')).toBe('https://www.facebook.com/adohrpets')
+    expect(fbLink!.attributes('target')).toBe('_blank')
+    expect(fbLink!.attributes('rel')).toBe('noopener noreferrer')
+  })
 })

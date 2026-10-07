@@ -34,10 +34,15 @@ const currentYear = computed(() => new Date().getFullYear())
         <div class="footer-social">
           <span class="footer-label">Follow along</span>
           <div class="footer-social-links">
-            <span class="social-link disabled" aria-disabled="true">
+            <a
+              href="https://www.facebook.com/adohrpets"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-link"
+              aria-label="Follow ADOHR on Facebook (opens in a new tab)"
+            >
               Facebook
-              <span class="coming-soon-tag">Coming soon</span>
-            </span>
+            </a>
             <span class="social-link disabled" aria-disabled="true">
               Instagram
               <span class="coming-soon-tag">Coming soon</span>
@@ -144,15 +149,33 @@ const currentYear = computed(() => new Date().getFullYear())
     flex-wrap: wrap;
   }
 
-  .social-link.disabled {
+  .social-link {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    color: oklch(from var(--text-inverse) l c h / 80%);
+    color: var(--text-inverse);
     font-size: 0.95rem;
-    font-weight: 500;
-    cursor: default;
-    user-select: none;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: var(--color-warning);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    &.disabled {
+      color: oklch(from var(--text-inverse) l c h / 80%);
+      font-weight: 500;
+      cursor: default;
+      user-select: none;
+
+      &:hover {
+        color: oklch(from var(--text-inverse) l c h / 80%);
+        text-decoration: none;
+      }
+    }
   }
 
   .coming-soon-tag {
