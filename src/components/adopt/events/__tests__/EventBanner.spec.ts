@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { resetAdoptionEventsState } from '@/composables/useAdoptionEvents'
@@ -183,7 +183,8 @@ describe('EventBanner.vue', () => {
     } as Response)
 
     const wrapper = mount(EventBanner)
-    await new Promise((resolve) => setTimeout(resolve, 50))
+    await flushPromises()
+    await new Promise((resolve) => setTimeout(resolve, 80))
 
     const tabs = wrapper.findAll('.location-tab-btn')
     expect(tabs.length).toBeGreaterThanOrEqual(2)
