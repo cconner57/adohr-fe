@@ -19,7 +19,12 @@ import { useHappyTailsStore } from '@/stores/happyTails'
 const router = useRouter()
 
 const { spotlightPets, loading, error, fetchSpotlight } = usePets()
-const { hasUpcomingEvents, fetchUpcomingEvents } = useAdoptionEvents()
+const {
+  hasUpcomingEvents,
+  isLoading: isEventsLoading,
+  isFetched: isEventsFetched,
+  fetchUpcomingEvents,
+} = useAdoptionEvents()
 const { vScrollReveal } = useScrollReveal()
 
 const happyTailsStore = useHappyTailsStore()
@@ -40,7 +45,11 @@ onMounted(() => {
 
     <main id="main-content">
       <!-- 2. Weekend Events Band -->
-      <section v-if="hasUpcomingEvents" class="events-band" aria-label="Weekend Adoption Events">
+      <section
+        v-if="!isEventsFetched || isEventsLoading || hasUpcomingEvents"
+        class="events-band"
+        aria-label="Weekend Adoption Events"
+      >
         <div class="content-wrapper" v-scroll-reveal>
           <EventBanner
             :showFilterButton="true"

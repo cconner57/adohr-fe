@@ -34,6 +34,17 @@ describe('EventBanner.vue', () => {
     resetAdoptionEventsState()
   })
 
+  it('renders skeleton loader when loading is true', () => {
+    const wrapper = mount(EventBanner, {
+      props: {
+        loading: true,
+      },
+    })
+
+    expect(wrapper.find('.event-banner-skeleton').exists()).toBe(true)
+    expect(wrapper.find('.event-banner').exists()).toBe(false)
+  })
+
   it('does not render when no upcoming events exist', async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
@@ -44,6 +55,7 @@ describe('EventBanner.vue', () => {
     await new Promise((resolve) => setTimeout(resolve, 30))
 
     expect(wrapper.find('.event-banner').exists()).toBe(false)
+    expect(wrapper.find('.event-banner-skeleton').exists()).toBe(false)
   })
 
   it('renders live event information when events are returned from API', async () => {

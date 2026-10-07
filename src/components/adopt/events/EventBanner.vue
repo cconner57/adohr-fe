@@ -4,6 +4,7 @@ import { computed, onMounted, ref } from 'vue'
 import Button from '@/components/common/ui/Button.vue'
 import { useAdoptionEvents } from '@/composables/useAdoptionEvents'
 
+import EventBannerSkeleton from './EventBannerSkeleton.vue'
 import EventPrepDrawer from './EventPrepDrawer.vue'
 
 const props = withDefaults(
@@ -12,6 +13,7 @@ const props = withDefaults(
     showFilterButton?: boolean
     showWhatToBringButton?: boolean
     showActions?: boolean
+    loading?: boolean | null
     variant?: 'light' | 'dark' | 'forest' | 'cream'
     colorScheme?: 'light' | 'dark' | 'forest' | 'cream'
     hasAttendingPets?: boolean | null
@@ -21,6 +23,7 @@ const props = withDefaults(
     showFilterButton: true,
     showWhatToBringButton: true,
     showActions: true,
+    loading: null,
     variant: 'light',
     hasAttendingPets: null,
   },
@@ -50,8 +53,17 @@ const {
   displayAddress,
   directionsUrl,
   recurrenceText,
+  isLoading,
+  isFetched,
   fetchUpcomingEvents,
 } = useAdoptionEvents()
+
+const showSkeleton = computed(() => {
+  if (typeof props.loading === 'boolean') {
+    return props.loading
+  }
+  return !isFetched.value || (isLoading.value && !hasUpcomingEvents.value)
+})
 
 const hasAttendingPetsForActiveEvent = computed(() => {
   if (typeof props.hasAttendingPets === 'boolean') {
@@ -66,8 +78,15 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- Skeleton placeholder displayed while loading to eliminate Cumulative Layout Shift (CLS) -->
+  <EventBannerSkeleton
+    v-if="showSkeleton"
+    :variant="resolvedScheme"
+    :showActions="showActions"
+  />
+
   <aside
-    v-if="hasUpcomingEvents"
+    v-else-if="hasUpcomingEvents"
     class="event-banner petsmart-banner"
     :class="[`variant-${resolvedScheme}`]"
     aria-label="Weekend Adoption Event Info"
