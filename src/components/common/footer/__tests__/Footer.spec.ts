@@ -31,4 +31,19 @@ describe('Footer.vue', () => {
 
     expect(wrapper.find('.footer').classes()).toContain('border-top-white')
   })
+
+  it('renders link to official legal and 501(c)(3) verification page', () => {
+    const wrapper = mount(Footer, {
+      global: {
+        stubs: {
+          RouterLink: true,
+        },
+      },
+    })
+
+    const legalLink = wrapper.find('.footer-legal-link')
+    expect(legalLink.exists()).toBe(true)
+    expect(legalLink.attributes('href')).toBe('/legal.html')
+    expect(legalLink.text()).toContain('501(c)(3) Legal Notice')
+  })
 })

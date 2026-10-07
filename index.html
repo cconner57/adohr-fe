@@ -22,6 +22,35 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
     <!--app-head-->
+
+    <!-- Schema.org JSON-LD for Nonprofit Verification and Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NGO",
+      "name": "A DREAM OF HOME RESCUE INC",
+      "legalName": "A DREAM OF HOME RESCUE INC",
+      "alternateName": ["A Dream of Home Rescue", "ADOHR"],
+      "url": "https://www.adohr.org",
+      "logo": "https://www.adohr.org/images/adohr-logo.png",
+      "description": "A 501(c)(3) nonprofit animal rescue organization dedicated to rescuing and rehoming pets in Southern California.",
+      "taxID": "81-0780050",
+      "nonprofitStatus": "Nonprofit501c3",
+      "email": "help.adohr@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "postOfficeBoxNumber": "PO Box 5543",
+        "addressLocality": "Pasadena",
+        "addressRegion": "CA",
+        "postalCode": "91107",
+        "addressCountry": "US"
+      },
+      "sameAs": [
+        "https://www.adohr.org",
+        "https://adohr.org"
+      ]
+    }
+    </script>
   </head>
   <body>
     <script>
@@ -35,7 +64,32 @@
         });
       }
     </script>
-    <div id="app"></div>
+    <div id="app">
+      <!-- Crawlable legal entity notice for search engines and verification crawlers before JavaScript mounts -->
+      <div style="padding: 2rem; max-width: 800px; margin: 0 auto; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>A Dream of Home Rescue</h1>
+        <p>
+          This website (<strong>www.adohr.org</strong> / <strong>adohr.org</strong>) is the official online portal owned and operated by
+          <strong>A DREAM OF HOME RESCUE INC</strong>, a registered California 501(c)(3) nonprofit organization.
+        </p>
+        <p><strong>EIN / Federal Tax ID:</strong> 81-0780050</p>
+        <p><strong>Official Address:</strong> PO Box 5543, Pasadena, CA 91107</p>
+        <p><strong>Contact Email:</strong> help.adohr@gmail.com</p>
+        <p><a href="/legal.html">View Official Nonprofit Verification &amp; Legal Notice</a></p>
+      </div>
+    </div>
+    <noscript>
+      <div style="padding: 2rem; max-width: 800px; margin: 0 auto; font-family: system-ui, sans-serif; line-height: 1.6;">
+        <h1>A Dream of Home Rescue (ADOHR)</h1>
+        <p>
+          This website (<strong>www.adohr.org</strong> / <strong>adohr.org</strong>) is the official website owned and operated by
+          <strong>A DREAM OF HOME RESCUE INC</strong>, an IRS-recognized 501(c)(3) nonprofit animal rescue organization (EIN: 81-0780050).
+        </p>
+        <p>Official Address: PO Box 5543, Pasadena, California 91107</p>
+        <p>Contact Email: help.adohr@gmail.com</p>
+        <p><a href="/legal.html">View Official Nonprofit Verification &amp; Legal Notice</a></p>
+      </div>
+    </noscript>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

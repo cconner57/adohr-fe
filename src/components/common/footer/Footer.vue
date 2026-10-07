@@ -51,7 +51,10 @@ const currentYear = computed(() => new Date().getFullYear())
           A Dream of Home Rescue, Inc. is a 501(c)(3) non-profit organization · Tax ID 81-0780050
         </p>
         <p>PO Box 5543, Pasadena, California 91107</p>
-        <p>&copy; {{ currentYear }} A Dream of Home Rescue. All rights reserved.</p>
+        <p>
+          &copy; {{ currentYear }} A Dream of Home Rescue. All rights reserved. ·
+          <a href="/legal.html" class="footer-legal-link">501(c)(3) Legal Notice</a>
+        </p>
       </div>
     </div>
   </footer>
@@ -177,6 +180,17 @@ const currentYear = computed(() => new Date().getFullYear())
     letter-spacing: 0.04em;
     color: oklch(from var(--text-inverse) l c h / 80%);
     line-height: 1.6;
+
+    .footer-legal-link {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.15s ease;
+
+      &:hover {
+        color: var(--color-warning);
+      }
+    }
   }
 }
 
