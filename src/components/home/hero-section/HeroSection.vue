@@ -216,8 +216,8 @@ h1 {
   top: 0;
   right: 0;
   width: 76%;
-  border: 2px solid var(--line-ink-strong, oklch(from var(--text-primary) l c h / 20%));
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
+  border: 4px solid var(--text-inverse);
+  box-shadow: 0 16px 36px rgb(0 0 0 / 16%);
   transform: rotate(2deg);
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 
@@ -231,7 +231,7 @@ h1 {
   left: 0;
   width: 68%;
   border: 4px solid var(--text-inverse);
-  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 22px 48px rgb(0 0 0 / 22%);
   transform: rotate(-2.5deg);
   z-index: 2;
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
