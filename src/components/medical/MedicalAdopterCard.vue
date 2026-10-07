@@ -71,18 +71,8 @@ const emit = defineEmits<{
           </div>
 
           <div class="data-item">
-            <span class="label">Email Address</span>
+            <span class="label">Contact Email Address</span>
             <span class="value">{{ adopter.email }}</span>
-          </div>
-
-          <div class="data-item">
-            <span class="label">Phone Number</span>
-            <span class="value">{{ adopter.phone }}</span>
-          </div>
-
-          <div v-if="adopter.address" class="data-item">
-            <span class="label">Primary Residence</span>
-            <span class="value">{{ adopter.address }}</span>
           </div>
 
           <div class="data-item">

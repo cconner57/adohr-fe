@@ -36,9 +36,10 @@ describe('MedicalAdopterCard.vue', () => {
 
     expect(wrapper.text()).toContain('Adopter & Payment Record')
     expect(wrapper.text()).toContain('Sarah Jenkins')
+    expect(wrapper.text()).toContain('Contact Email Address')
     expect(wrapper.text()).toContain('sarah.jenkins@example.com')
-    expect(wrapper.text()).toContain('(626) 555-1234')
-    expect(wrapper.text()).toContain('123 Pine St, Pasadena, CA')
+    expect(wrapper.text()).not.toContain('(626) 555-1234')
+    expect(wrapper.text()).not.toContain('123 Pine St, Pasadena, CA')
     expect(wrapper.text()).toContain('$150.00')
     expect(wrapper.text()).toContain('Paid in Full')
     expect(wrapper.text()).toContain('REC-2025-JAYL-01')

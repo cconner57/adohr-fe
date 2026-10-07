@@ -131,9 +131,7 @@ onUnmounted(() => {
             <div class="meta-box">
               <span class="box-heading">Adopter Details</span>
               <p class="meta-line"><strong>Name:</strong> {{ adopter.adopterName }}</p>
-              <p class="meta-line"><strong>Email:</strong> {{ adopter.email }}</p>
-              <p class="meta-line"><strong>Phone:</strong> {{ adopter.phone }}</p>
-              <p v-if="adopter.address" class="meta-line"><strong>Address:</strong> {{ adopter.address }}</p>
+              <p class="meta-line"><strong>Contact Email Address:</strong> {{ adopter.email }}</p>
             </div>
 
             <div class="meta-box">
