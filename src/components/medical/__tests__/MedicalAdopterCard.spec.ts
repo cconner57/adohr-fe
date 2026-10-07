@@ -46,7 +46,7 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.text()).toContain('Spay / Neuter Surgical Sterilization')
   })
 
-  it('emits print-receipt when header or footer print buttons are clicked', async () => {
+  it('emits print-receipt when the footer print payment receipt button is clicked', async () => {
     const wrapper = mount(MedicalAdopterCard, {
       props: {
         adopter: mockAdopter,
@@ -54,14 +54,16 @@ describe('MedicalAdopterCard.vue', () => {
       },
     })
 
-    const printButtons = wrapper.findAll('button')
-    expect(printButtons.length).toBeGreaterThanOrEqual(2)
+    const printButton = wrapper.find('button.print-receipt-action-btn')
+    expect(printButton.exists()).toBe(true)
+    expect(printButton.text()).toContain('Print Payment Receipt')
 
-    await printButtons[0].trigger('click')
+    // Confirm only one print button exists on the card
+    const allButtons = wrapper.findAll('button')
+    expect(allButtons.length).toBe(1)
+
+    await printButton.trigger('click')
     expect(wrapper.emitted('print-receipt')).toBeTruthy()
     expect(wrapper.emitted('print-receipt')?.length).toBe(1)
-
-    await printButtons[1].trigger('click')
-    expect(wrapper.emitted('print-receipt')?.length).toBe(2)
   })
 })

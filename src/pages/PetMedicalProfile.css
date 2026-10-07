@@ -125,26 +125,6 @@
     gap: 8px;
   }
 
-  .print-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background-color: var(--color-surface, #fff);
-    border: 1px solid var(--line-ink);
-    border-radius: var(--radius-full);
-    padding: 3px 10px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-
-    &:hover {
-      background-color: var(--color-neutral-weak);
-      border-color: var(--color-secondary);
-      color: var(--color-secondary);
-    }
-  }
 
   .status-badge {
     text-transform: capitalize;

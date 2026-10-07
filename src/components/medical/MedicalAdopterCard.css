@@ -47,28 +47,6 @@
     color: var(--text-secondary);
     margin: 0;
   }
-
-  .receipt-header-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background-color: var(--color-surface, #fff);
-    border: 1.5px solid var(--line-ink);
-    border-radius: var(--radius-full);
-    padding: 6px 14px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--color-primary);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-
-    &:hover {
-      background-color: var(--color-primary);
-      border-color: var(--color-primary);
-      color: var(--text-inverse, #fff);
-      box-shadow: var(--shadow-sm);
-    }
-  }
 }
 
 .adopter-grid {
