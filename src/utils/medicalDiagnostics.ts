@@ -32,16 +32,16 @@ export const buildDiagnosticTests = (
     med.diseaseTesting ??
     med.testing ??
     med.diagnostics ??
-    dataRoot.diseaseTesting ??
-    med
-  ) as Record<string, unknown>
+    med.labResults ??
+    dataRoot.diseaseTesting
+  ) as Record<string, unknown> | undefined
 
   if (!diagContainer || typeof diagContainer !== 'object') return []
 
   const results: IDiagnosticTestResult[] = []
 
   // 1. FIV
-  const fivVal = getFieldIgnoreCase(diagContainer, 'fivResult', 'fiv_result', 'fivPositive', 'fiv_positive', 'fiv')
+  const fivVal = getFieldIgnoreCase(diagContainer, 'fivResult', 'fiv_result', 'fivTestResult', 'fiv')
   const fivDate = extractDateValue(getFieldIgnoreCase(diagContainer, 'fivTestDate', 'fiv_test_date', 'fivDate'))
   if (fivVal !== undefined && fivVal !== null && fivVal !== '' && fivVal !== '-') {
     const parsed = normalizeResultText(fivVal)
@@ -55,7 +55,7 @@ export const buildDiagnosticTests = (
   }
 
   // 2. FeLV
-  const felvVal = getFieldIgnoreCase(diagContainer, 'felvResult', 'felv_result', 'felvPositive', 'felv_positive', 'felv')
+  const felvVal = getFieldIgnoreCase(diagContainer, 'felvResult', 'felv_result', 'felvTestResult', 'felv')
   const felvDate = extractDateValue(getFieldIgnoreCase(diagContainer, 'felvTestDate', 'felv_test_date', 'felvDate'))
   if (felvVal !== undefined && felvVal !== null && felvVal !== '' && felvVal !== '-') {
     const parsed = normalizeResultText(felvVal)

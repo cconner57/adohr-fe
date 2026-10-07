@@ -30,10 +30,72 @@ export const formatCurrency = (val: number | string | null | undefined): string 
   return clean
 }
 
+export const hasAdopterPaymentData = (
+  portalData: IPetMedicalPortalData | null,
+): boolean => {
+  if (!portalData) return false
+  const root = portalData as unknown as Record<string, unknown>
+  const adoptionObj = portalData.adoption as Record<string, unknown> | undefined
+  const adopterObj = portalData.adopter as Record<string, unknown> | undefined
+  const paymentObj = portalData.payment as Record<string, unknown> | undefined
+
+  if (adoptionObj && typeof adoptionObj === 'object') {
+    const hasField =
+      adoptionObj.adoptedBy ||
+      adoptionObj.adopterEmail ||
+      adoptionObj.date ||
+      adoptionObj.fee !== undefined ||
+      adoptionObj.adoptionFee !== undefined ||
+      adoptionObj.paymentStatus ||
+      adoptionObj.paymentMethod ||
+      adoptionObj.receiptNumber ||
+      adoptionObj.transactionId ||
+      adoptionObj.adopterContactInfo
+    if (hasField) return true
+  }
+
+  if (adopterObj && typeof adopterObj === 'object') {
+    const hasField =
+      adopterObj.adopterName ||
+      adopterObj.name ||
+      adopterObj.email ||
+      adopterObj.adoptionFee !== undefined ||
+      adopterObj.receiptNumber ||
+      adopterObj.transactionId
+    if (hasField) return true
+  }
+
+  if (paymentObj && typeof paymentObj === 'object') {
+    const hasField =
+      paymentObj.amount !== undefined ||
+      paymentObj.fee !== undefined ||
+      paymentObj.status ||
+      paymentObj.method ||
+      paymentObj.transactionId ||
+      paymentObj.receiptNumber
+    if (hasField) return true
+  }
+
+  if (
+    root.adoptionFee !== undefined ||
+    root.paymentStatus ||
+    root.receiptNumber ||
+    root.transactionId
+  ) {
+    return true
+  }
+
+  return false
+}
+
 export const buildAdopterPaymentInfo = (
   portalData: IPetMedicalPortalData | null,
   session?: IVerifiedAdopterSession | null,
-): IAdopterPaymentInfo => {
+): IAdopterPaymentInfo | null => {
+  if (!hasAdopterPaymentData(portalData)) {
+    return null
+  }
+
   const root = (portalData || {}) as unknown as Record<string, unknown>
   const adoptionObj = (portalData?.adoption || {}) as Record<string, unknown>
   const adopterObj = (portalData?.adopter || {}) as Record<string, unknown>

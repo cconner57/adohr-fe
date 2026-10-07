@@ -380,15 +380,20 @@ onMounted(async () => {
           </div>
         </article>
 
-        <!-- Adopter & Payment Information -->
+        <!-- Adopter & Payment Information (only displayed when API returns adoption data) -->
         <MedicalAdopterCard
+          v-if="adopterInfo"
           :adopter="adopterInfo"
           :petName="petName"
           @print-receipt="handlePrintReceipt"
         />
 
-        <!-- Diagnostic Testing Panel -->
-        <MedicalDiagnosticsCard :diagnostics="diagnosticTests" :petName="petName" />
+        <!-- Diagnostic Testing Panel (only displayed when lab screening tests are recorded) -->
+        <MedicalDiagnosticsCard
+          v-if="diagnosticTests && diagnosticTests.length > 0"
+          :diagnostics="diagnosticTests"
+          :petName="petName"
+        />
 
         <!-- Diet, Nutrition & Daily Guidelines -->
         <MedicalDietCard :diet="dietInfo" :petName="petName" />
@@ -404,6 +409,7 @@ onMounted(async () => {
 
     <!-- Printable Official Payment Receipt Modal -->
     <MedicalPaymentReceiptModal
+      v-if="adopterInfo"
       :isOpen="isReceiptModalOpen"
       :adopter="adopterInfo"
       :petName="petName"
