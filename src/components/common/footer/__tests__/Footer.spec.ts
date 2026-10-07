@@ -62,4 +62,20 @@ describe('Footer.vue', () => {
     expect(fbLink!.attributes('target')).toBe('_blank')
     expect(fbLink!.attributes('rel')).toBe('noopener noreferrer')
   })
+
+  it('renders official Instagram link with secure target and rel attributes', () => {
+    const wrapper = mount(Footer, {
+      global: {
+        stubs: {
+          RouterLink: true,
+        },
+      },
+    })
+
+    const igLink = wrapper.findAll('a.social-link').find(a => a.text().includes('Instagram'))
+    expect(igLink).toBeDefined()
+    expect(igLink!.attributes('href')).toBe('https://www.instagram.com/adohrpets')
+    expect(igLink!.attributes('target')).toBe('_blank')
+    expect(igLink!.attributes('rel')).toBe('noopener noreferrer')
+  })
 })

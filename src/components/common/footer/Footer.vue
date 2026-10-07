@@ -43,10 +43,15 @@ const currentYear = computed(() => new Date().getFullYear())
             >
               Facebook
             </a>
-            <span class="social-link disabled" aria-disabled="true">
+            <a
+              href="https://www.instagram.com/adohrpets"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-link"
+              aria-label="Follow ADOHR on Instagram (opens in a new tab)"
+            >
               Instagram
-              <span class="coming-soon-tag">Coming soon</span>
-            </span>
+            </a>
           </div>
         </div>
       </div>
