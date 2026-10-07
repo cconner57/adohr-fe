@@ -290,6 +290,30 @@ export interface IMedicalProcedureRecord {
   cost?: string | number | null
 }
 
+export interface IAdopterFeeItem {
+  label: string
+  amount: number | string
+  included?: boolean
+}
+
+export interface IAdopterPaymentInfo {
+  adopterName: string
+  email: string
+  phone: string
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  adoptionFee: number | string
+  paymentStatus: string
+  paymentDate: string
+  paymentMethod: string
+  transactionId: string
+  receiptNumber: string
+  itemizedFees?: IAdopterFeeItem[]
+  notes?: string | null
+}
+
 export interface IPetMedicalPortalData {
   petId: string
   name: string
@@ -305,6 +329,32 @@ export interface IPetMedicalPortalData {
   diet?: IPetDietData | null
   feeding?: IPetDietData | null
   documents?: IMedicalDocument[] | null
+  adopter?: Partial<IAdopterPaymentInfo> | null
+  adoption?: {
+    adoptedBy?: string | null
+    date?: string | null
+    newAdoptedName?: string | null
+    photo?: IPhoto | null
+    fee?: number | string | null
+    surveyCompleted?: boolean | null
+    adopterContactInfo?: IContactInfo | null
+    paymentMethod?: string | null
+    transactionId?: string | null
+    receiptNumber?: string | null
+    paymentStatus?: string | null
+  } | null
+  payment?: {
+    amount?: number | string | null
+    fee?: number | string | null
+    status?: string | null
+    date?: string | null
+    method?: string | null
+    transactionId?: string | null
+    receiptNumber?: string | null
+  } | null
+  adoptionFee?: number | string | null
+  paymentStatus?: string | null
+  receiptNumber?: string | null
   medical: {
     intakeCondition?: string | null
     spayedOrNeutered: boolean | null

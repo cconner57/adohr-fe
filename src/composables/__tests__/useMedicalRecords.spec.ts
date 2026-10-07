@@ -198,4 +198,31 @@ describe('useMedicalRecords', () => {
     expect(data?.name).toBe('Luna')
     expect(data?.medical.spayedOrNeutered).toBe(true)
   })
+
+  it('manages adopter session persistence and cleanup', () => {
+    const {
+      getVerifiedAdopterSession,
+      setVerifiedAdopterSession,
+      clearVerification,
+    } = useMedicalRecords()
+
+    expect(getVerifiedAdopterSession('luna')).toBeNull()
+
+    setVerifiedAdopterSession('luna', {
+      lastName: 'Jenkins',
+      email: 'sarah@example.com',
+      phone: '6265551234',
+      adoptionMonth: '05',
+      adoptionYear: '2025',
+      adoptionDate: '2025-05-01',
+    })
+
+    const saved = getVerifiedAdopterSession('luna')
+    expect(saved).not.toBeNull()
+    expect(saved?.lastName).toBe('Jenkins')
+    expect(saved?.email).toBe('sarah@example.com')
+
+    clearVerification('luna')
+    expect(getVerifiedAdopterSession('luna')).toBeNull()
+  })
 })

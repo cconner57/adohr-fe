@@ -8,10 +8,12 @@ import type {
   IVerifyMedicalPayload,
 } from '@/models/common'
 import { parseApiErrorMessage, PUBLIC_ORG_ID, withPublicOrgId } from '@/utils/api'
+import type { IVerifiedAdopterSession } from '@/utils/medicalAdopter'
 import { formatPhoneNumber } from '@/utils/validators'
 
 const VERIFIED_STORAGE_PREFIX = 'adohr_medical_verified_'
 const TOKEN_STORAGE_PREFIX = 'adohr_medical_token_'
+const ADOPTER_STORAGE_PREFIX = 'adohr_medical_adopter_'
 
 async function extractVerificationError(response: Response | null): Promise<string> {
   const defaultMsg = 'No adoption file matches the provided credentials.'
@@ -97,11 +99,29 @@ export function useMedicalRecords() {
     sessionStorage.setItem(`${TOKEN_STORAGE_PREFIX}${normalized}`, token)
   }
 
+  const getVerifiedAdopterSession = (petIdOrSlug?: string | null): IVerifiedAdopterSession | null => {
+    if (!petIdOrSlug) return null
+    const key = `${ADOPTER_STORAGE_PREFIX}${petIdOrSlug.trim().toLowerCase()}`
+    const raw = sessionStorage.getItem(key)
+    if (!raw) return null
+    try {
+      return JSON.parse(raw) as IVerifiedAdopterSession
+    } catch {
+      return null
+    }
+  }
+
+  const setVerifiedAdopterSession = (petIdOrSlug: string, session: IVerifiedAdopterSession) => {
+    const normalized = petIdOrSlug.trim().toLowerCase()
+    sessionStorage.setItem(`${ADOPTER_STORAGE_PREFIX}${normalized}`, JSON.stringify(session))
+  }
+
   const clearVerification = (petIdOrSlug?: string | null) => {
     if (!petIdOrSlug) return
     const normalized = petIdOrSlug.trim().toLowerCase()
     sessionStorage.removeItem(`${VERIFIED_STORAGE_PREFIX}${normalized}`)
     sessionStorage.removeItem(`${TOKEN_STORAGE_PREFIX}${normalized}`)
+    sessionStorage.removeItem(`${ADOPTER_STORAGE_PREFIX}${normalized}`)
   }
 
   const validateVerificationForm = (
@@ -213,6 +233,14 @@ export function useMedicalRecords() {
       const token = resData.verifiedToken || 'verified'
 
       setVerifiedToken(verifiedPetSlug, token)
+      setVerifiedAdopterSession(verifiedPetSlug, {
+        lastName: form.adopterLastName.trim(),
+        email: form.email.trim(),
+        phone: form.phoneNumber.trim(),
+        adoptionMonth: form.adoptionMonth.trim(),
+        adoptionYear: form.adoptionYear.trim(),
+        adoptionDate: `${form.adoptionYear.trim()}-${form.adoptionMonth.trim().padStart(2, '0')}-01`,
+      })
 
       return { success: true, petSlug: verifiedPetSlug, verifiedToken: token }
     } catch {
@@ -316,6 +344,8 @@ export function useMedicalRecords() {
     isVerifiedForPet,
     getVerifiedToken,
     setVerifiedToken,
+    getVerifiedAdopterSession,
+    setVerifiedAdopterSession,
     clearVerification,
     validateVerificationForm,
     verifyAccess,

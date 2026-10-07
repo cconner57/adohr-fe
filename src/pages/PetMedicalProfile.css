@@ -432,6 +432,33 @@
     color: #000 !important;
   }
 
+  body.printing-receipt .medical-shell,
+  body.printing-receipt nav,
+  body.printing-receipt footer {
+    display: none !important;
+  }
+
+  body.printing-receipt .receipt-modal-backdrop {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  body.printing-receipt .receipt-dialog {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  body.printing-receipt .receipt-sheet {
+    padding: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
   .medical-shell {
     padding: 0 !important;
     margin: 0 !important;

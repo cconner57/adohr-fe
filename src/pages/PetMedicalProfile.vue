@@ -4,11 +4,13 @@ import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 
 import Capsules from '@/components/common/ui/Capsules.vue'
 import Spinner from '@/components/common/ui/Spinner.vue'
+import MedicalAdopterCard from '@/components/medical/MedicalAdopterCard.vue'
 import MedicalDiagnosticsCard from '@/components/medical/MedicalDiagnosticsCard.vue'
 import MedicalDietCard from '@/components/medical/MedicalDietCard.vue'
 import MedicalDocumentsList from '@/components/medical/MedicalDocumentsList.vue'
 import MedicalIdentificationCard from '@/components/medical/MedicalIdentificationCard.vue'
 import MedicalMedicationsCard from '@/components/medical/MedicalMedicationsCard.vue'
+import MedicalPaymentReceiptModal from '@/components/medical/MedicalPaymentReceiptModal.vue'
 import MedicalVerificationGatekeeper from '@/components/medical/MedicalVerificationGatekeeper.vue'
 import { useMedicalRecords } from '@/composables/useMedicalRecords'
 import type {
@@ -17,6 +19,10 @@ import type {
   IPetMedicalPortalData,
 } from '@/models/common'
 import { calculateAge } from '@/utils/date'
+import {
+  buildAdopterPaymentInfo,
+  type IVerifiedAdopterSession,
+} from '@/utils/medicalAdopter'
 import {
   buildCareTimeline,
   buildDiagnosticTests,
@@ -35,6 +41,7 @@ const {
   verificationError,
   isVerifiedForPet,
   getVerifiedToken,
+  getVerifiedAdopterSession,
   verifyAccess,
   fetchMedicalRecords,
   clearVerification,
@@ -43,6 +50,8 @@ const {
 const isLoading = ref(true)
 const isVerified = ref(false)
 const portalData = ref<IPetMedicalPortalData | null>(null)
+const isReceiptModalOpen = ref(false)
+const verifiedSession = ref<IVerifiedAdopterSession | null>(null)
 
 const slug = computed(() => String(route.params.slug ?? '').trim())
 
@@ -116,9 +125,23 @@ const dietInfo = computed(() => buildDietInfo(portalData.value))
 const medicationsList = computed(() => buildMedicationsList(portalData.value))
 const proceduresList = computed(() => buildProceduresList(portalData.value))
 const healthSummary = computed(() => portalData.value?.medical?.healthSummary || null)
+const adopterInfo = computed(() =>
+  buildAdopterPaymentInfo(portalData.value, verifiedSession.value),
+)
 
-const handlePrint = () => {
-  window.print()
+watch(isReceiptModalOpen, (isOpen) => {
+  if (isOpen) {
+    document.body.classList.add('printing-receipt')
+  } else {
+    document.body.classList.remove('printing-receipt')
+  }
+})
+
+const handlePrintReceipt = () => {
+  isReceiptModalOpen.value = true
+  setTimeout(() => {
+    window.print()
+  }, 150)
 }
 
 const loadPet = async () => {
@@ -138,6 +161,7 @@ const loadPet = async () => {
     const data = await fetchMedicalRecords(currentSlug)
     if (data) {
       portalData.value = data
+      verifiedSession.value = getVerifiedAdopterSession(currentSlug)
       isVerified.value = true
     } else {
       portalData.value = null
@@ -158,12 +182,14 @@ const handleVerify = async (form: IMedicalVerificationForm) => {
 }
 
 onBeforeRouteLeave(() => {
+  document.body.classList.remove('printing-receipt')
   clearVerification(slug.value)
   portalData.value = null
   isVerified.value = false
 })
 
 onUnmounted(() => {
+  document.body.classList.remove('printing-receipt')
   clearVerification(slug.value)
   portalData.value = null
   isVerified.value = false
@@ -237,9 +263,9 @@ onMounted(async () => {
               <button
                 class="print-btn no-print"
                 type="button"
-                title="Print Official Medical Summary"
-                aria-label="Print Medical Summary"
-                @click="handlePrint"
+                title="Print Official Payment Receipt"
+                aria-label="Print Payment Receipt"
+                @click="handlePrintReceipt"
               >
                 <svg
                   width="13"
@@ -256,7 +282,7 @@ onMounted(async () => {
                   <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
                   <rect x="6" y="14" width="12" height="8" />
                 </svg>
-                <span>Print Record</span>
+                <span>Print Payment Receipt</span>
               </button>
               <span class="status-badge" :class="petStatus">{{ petStatus }}</span>
             </div>
@@ -378,6 +404,13 @@ onMounted(async () => {
           </div>
         </article>
 
+        <!-- Adopter & Payment Information -->
+        <MedicalAdopterCard
+          :adopter="adopterInfo"
+          :petName="petName"
+          @print-receipt="handlePrintReceipt"
+        />
+
         <!-- Diagnostic Testing Panel -->
         <MedicalDiagnosticsCard :diagnostics="diagnosticTests" :petName="petName" />
 
@@ -392,6 +425,16 @@ onMounted(async () => {
         />
       </div>
     </Transition>
+
+    <!-- Printable Official Payment Receipt Modal -->
+    <MedicalPaymentReceiptModal
+      :isOpen="isReceiptModalOpen"
+      :adopter="adopterInfo"
+      :petName="petName"
+      :species="petSpecies"
+      :microchipId="identInfo.microchipId"
+      @close="isReceiptModalOpen = false"
+    />
   </section>
 </template>
 
