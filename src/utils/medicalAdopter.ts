@@ -221,34 +221,39 @@ export const buildAdopterPaymentInfo = (
       : `REC-${yearSuffix}-${slugOrId.slice(0, 4)}-${Math.abs(slugOrId.split('').reduce((acc, c) => acc + c.charCodeAt(0), 500) % 9000 + 1000)}`
 
   // 10. Itemized Fees
-  const petDisplayName = portalData?.name ? portalData.name.trim() : 'Pet'
-  const itemizedFees: IAdopterFeeItem[] = [
-    {
-      label: `Adoption Placement Fee (${petDisplayName})`,
-      amount: adoptionFee,
-      included: false,
-    },
-    {
-      label: 'Spay / Neuter Surgical Sterilization',
-      amount: 'Included',
-      included: true,
-    },
-    {
-      label: 'Core Immunizations & Rabies Vaccine',
-      amount: 'Included',
-      included: true,
-    },
-    {
-      label: 'Microchip Implantation & Lifetime Registration',
-      amount: 'Included',
-      included: true,
-    },
-    {
-      label: 'Veterinary Intake Examination & Health Clearance',
-      amount: 'Included',
-      included: true,
-    },
-  ]
+  let itemizedFees: IAdopterFeeItem[] = []
+  if (Array.isArray(adoptionObj.itemizedFees) && adoptionObj.itemizedFees.length > 0) {
+    itemizedFees = adoptionObj.itemizedFees as IAdopterFeeItem[]
+  } else {
+    const petDisplayName = portalData?.name ? portalData.name.trim() : 'Pet'
+    itemizedFees = [
+      {
+        label: `Adoption Placement Fee (${petDisplayName})`,
+        amount: adoptionFee,
+        included: false,
+      },
+      {
+        label: 'Spay / Neuter Surgical Sterilization',
+        amount: 'Included',
+        included: true,
+      },
+      {
+        label: 'Core Immunizations & Rabies Vaccine',
+        amount: 'Included',
+        included: true,
+      },
+      {
+        label: 'Microchip Implantation & Lifetime Registration',
+        amount: 'Included',
+        included: true,
+      },
+      {
+        label: 'Veterinary Intake Examination & Health Clearance',
+        amount: 'Included',
+        included: true,
+      },
+    ]
+  }
 
   return {
     adopterName,

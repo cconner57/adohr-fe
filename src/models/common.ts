@@ -332,16 +332,19 @@ export interface IPetMedicalPortalData {
   adopter?: Partial<IAdopterPaymentInfo> | null
   adoption?: {
     adoptedBy?: string | null
+    adopterEmail?: string | null
     date?: string | null
     newAdoptedName?: string | null
     photo?: IPhoto | null
     fee?: number | string | null
+    adoptionFee?: number | string | null
     surveyCompleted?: boolean | null
     adopterContactInfo?: IContactInfo | null
     paymentMethod?: string | null
     transactionId?: string | null
     receiptNumber?: string | null
     paymentStatus?: string | null
+    itemizedFees?: IAdopterFeeItem[] | null
   } | null
   payment?: {
     amount?: number | string | null

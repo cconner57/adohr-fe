@@ -184,6 +184,8 @@ export function useMedicalRecords() {
       const slugOrId = targetPetIdOrSlug || petSlug
 
       const candidateEndpoints = [
+        withPublicOrgId(`${API_BASE_URL}/api/pets/verify-medical`),
+        withPublicOrgId(`${API_BASE_URL}/pets/verify-medical`),
         withPublicOrgId(`${API_BASE_URL}/api/pets/${slugOrId}/medical/verify`),
         withPublicOrgId(`${API_BASE_URL}/v1/pets/${slugOrId}/medical/verify`),
         withPublicOrgId(`${API_BASE_URL}/pets/${slugOrId}/medical/verify`),

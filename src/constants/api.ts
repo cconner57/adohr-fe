@@ -45,6 +45,7 @@ export const API_ENDPOINTS = {
   PET_MEDICAL_RECORDS: (idOrSlug: string) => `${API_BASE_URL}/api/pets/${idOrSlug}/medical`,
   VERIFY_MEDICAL_ACCESS: (idOrSlug: string) => `${API_BASE_URL}/api/pets/${idOrSlug}/medical/verify`,
   VERIFY_MEDICAL_ACCESS_GLOBAL: `${API_BASE_URL}/api/pets/medical/verify`,
+  VERIFY_MEDICAL_ACCESS_ENDPOINT: `${API_BASE_URL}/api/pets/verify-medical`,
 
   // Notifications
   NOTIFICATIONS_PUBLIC_KEY: `${API_BASE_URL}/v1/notifications/public-key`,
