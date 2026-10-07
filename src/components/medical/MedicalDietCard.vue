@@ -85,6 +85,7 @@ defineProps<{
   border: 1px solid var(--line-ink);
   border-radius: var(--radius-md);
   padding: 24px;
+  margin-top: 32px;
   margin-bottom: 24px;
 }
 
