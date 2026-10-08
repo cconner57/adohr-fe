@@ -233,6 +233,36 @@ describe('buildDiagnosticTests', () => {
     expect(tests[0].result).toBe('Negative')
     expect(tests[0].date).toBe('Aug 20, 2026')
   })
+
+  it('omits diagnostic tests when no dates are provided', () => {
+    const data = {
+      medical: {
+        diseaseTesting: {
+          fivResult: 'Negative',
+          felvResult: 'Negative',
+        },
+      },
+    } as unknown as IPetMedicalPortalData
+
+    expect(buildDiagnosticTests(data)).toHaveLength(0)
+  })
+
+  it('only includes tests that have a date provided', () => {
+    const data = {
+      medical: {
+        diseaseTesting: {
+          fivResult: 'Negative',
+          fivTestDate: '2026-09-13',
+          felvResult: 'Negative',
+        },
+      },
+    } as unknown as IPetMedicalPortalData
+
+    const tests = buildDiagnosticTests(data)
+    expect(tests).toHaveLength(1)
+    expect(tests[0].name).toContain('FIV')
+    expect(tests[0].date).toBe('Sep 13, 2026')
+  })
 })
 
 describe('buildDietInfo', () => {
@@ -366,7 +396,7 @@ describe('getSpayNeuterInfo and buildCareTimeline', () => {
     expect(maleLabels.statusPill).toBe('Pending Neuter')
   })
 
-  it('sorts undated items (microchip, FIV/FeLV tests) to top and orders dated items in reverse chronological order', () => {
+  it('sorts dated items in reverse chronological order and omits undated diagnostic tests', () => {
     const data = {
       name: 'Jaylene',
       sex: 'female',
@@ -380,7 +410,9 @@ describe('getSpayNeuterInfo and buildCareTimeline', () => {
         },
         diseaseTesting: {
           fivResult: 'Negative',
+          fivTestDate: '2026-09-13',
           felvResult: 'Negative',
+          felvTestDate: '2026-09-13',
         },
       },
     } as unknown as IPetMedicalPortalData
@@ -396,10 +428,10 @@ describe('getSpayNeuterInfo and buildCareTimeline', () => {
 
     // Expected order:
     // 1. Microchip (Active - undated at top)
-    // 2. FIV Test (Completed - undated at top)
-    // 3. FeLV Test (Completed - undated at top)
-    // 4. Spay Surgery (Oct 6, 2026)
-    // 5. Vaccination: Rabies (Oct 6, 2026)
+    // 2. Spay Surgery (Oct 6, 2026)
+    // 3. Vaccination: Rabies (Oct 6, 2026)
+    // 4. FIV Test (Sep 13, 2026)
+    // 5. FeLV Test (Sep 13, 2026)
     // 6. Vaccination: FVRCP Round 3 (Sep 6, 2026)
     // 7. Vaccination: FVRCP Round 2 (Jun 13, 2026)
     // 8. Vaccination: FVRCP Round 1 (May 23, 2026)
@@ -407,17 +439,17 @@ describe('getSpayNeuterInfo and buildCareTimeline', () => {
     expect(timeline[0].title).toBe('Microchip Implantation & Registration')
     expect(timeline[0].date).toBe('Active')
 
-    expect(timeline[1].title).toContain('FIV Test')
-    expect(timeline[1].date).toBe('Completed')
+    expect(timeline[1].title).toBe('Spay Surgery')
+    expect(timeline[1].date).toBe('Oct 6, 2026')
 
-    expect(timeline[2].title).toContain('FeLV Test')
-    expect(timeline[2].date).toBe('Completed')
+    expect(timeline[2].title).toBe('Vaccination: Rabies')
+    expect(timeline[2].date).toBe('Oct 6, 2026')
 
-    expect(timeline[3].title).toBe('Spay Surgery')
-    expect(timeline[3].date).toBe('Oct 6, 2026')
+    expect(timeline[3].title).toContain('FIV Test')
+    expect(timeline[3].date).toBe('Sep 13, 2026')
 
-    expect(timeline[4].title).toBe('Vaccination: Rabies')
-    expect(timeline[4].date).toBe('Oct 6, 2026')
+    expect(timeline[4].title).toContain('FeLV Test')
+    expect(timeline[4].date).toBe('Sep 13, 2026')
 
     expect(timeline[5].title).toBe('Vaccination: FVRCP Round 3')
     expect(timeline[5].date).toBe('Sep 6, 2026')

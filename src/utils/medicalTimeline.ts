@@ -187,10 +187,10 @@ export const buildCareTimeline = (
     events.push({
       type: 'diagnostic',
       title: d.name,
-      date: d.date || 'Completed',
+      date: d.date,
       note: `Result: ${d.result}`,
       status: 'completed',
-      rawDate: d.date || null,
+      rawDate: d.rawDate || d.date,
     })
   })
 

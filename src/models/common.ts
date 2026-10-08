@@ -338,6 +338,8 @@ export interface IPetMedicalPortalData {
   nutrition?: IPetDietData | null
   diet?: IPetDietData | null
   feeding?: IPetDietData | null
+  diseaseTesting?: IPetDiseaseTestingData | null
+  testing?: IPetDiseaseTestingData | null
   documents?: IMedicalDocument[] | null
   adopter?: Partial<IAdopterPaymentInfo> | null
   adoption?: {

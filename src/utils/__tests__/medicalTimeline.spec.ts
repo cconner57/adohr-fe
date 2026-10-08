@@ -72,7 +72,9 @@ describe('medicalTimeline utility', () => {
         },
         diseaseTesting: {
           fivResult: 'Negative',
+          fivTestDate: '2026-09-13',
           felvResult: 'Negative',
+          felvTestDate: '2026-09-13',
         },
       },
     } as unknown as IPetMedicalPortalData
@@ -88,23 +90,39 @@ describe('medicalTimeline utility', () => {
     expect(timeline[0].title).toBe('Microchip Implantation & Registration')
     expect(timeline[0].date).toBe('Active')
 
-    expect(timeline[1].title).toContain('FIV Test')
-    expect(timeline[1].date).toBe('Completed')
+    expect(timeline[1].title).toBe('Spay Surgery')
+    expect(timeline[1].date).toBe('Oct 6, 2026')
 
-    expect(timeline[2].title).toContain('FeLV Test')
-    expect(timeline[2].date).toBe('Completed')
+    expect(timeline[2].title).toBe('Vaccination: Rabies')
+    expect(timeline[2].date).toBe('Oct 6, 2026')
 
-    expect(timeline[3].title).toBe('Spay Surgery')
-    expect(timeline[3].date).toBe('Oct 6, 2026')
+    expect(timeline[3].title).toContain('FIV Test')
+    expect(timeline[3].date).toBe('Sep 13, 2026')
 
-    expect(timeline[4].title).toBe('Vaccination: Rabies')
-    expect(timeline[4].date).toBe('Oct 6, 2026')
+    expect(timeline[4].title).toContain('FeLV Test')
+    expect(timeline[4].date).toBe('Sep 13, 2026')
 
     expect(timeline[5].title).toBe('Vaccination: FVRCP Round 3')
     expect(timeline[5].date).toBe('Sep 6, 2026')
 
     expect(timeline[6].title).toBe('Vaccination: FVRCP Round 1')
     expect(timeline[6].date).toBe('May 23, 2026')
+  })
+
+  it('omits FIV/FeLV tests from timeline when dates are not provided', () => {
+    const data = {
+      name: 'Jaylene',
+      sex: 'female',
+      medical: {
+        diseaseTesting: {
+          fivResult: 'Negative',
+          felvResult: 'Negative',
+        },
+      },
+    } as unknown as IPetMedicalPortalData
+
+    const timeline = buildCareTimeline(data, [])
+    expect(timeline).toHaveLength(0)
   })
 
   it('includes rescue intake event when intakeDate is recorded', () => {
