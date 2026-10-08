@@ -12,14 +12,29 @@ import {
   type IDietGuidelines,
   type IProcedureItem,
 } from '@/utils/medicalDiet'
+import {
+  buildCareTimeline,
+  getSpayNeuterInfo,
+  getSpayNeuterLabels,
+  isFemale,
+  isMale,
+  type ITimelineEvent,
+  parseTimelineTimestamp,
+} from '@/utils/medicalTimeline'
 
-export type { IDiagnosticTestResult, IDietGuidelines, IProcedureItem }
+export type { IDiagnosticTestResult, IDietGuidelines, IProcedureItem, ITimelineEvent }
 export {
+  buildCareTimeline,
   buildDiagnosticTests,
   buildDietInfo,
   buildMedicationsList,
   buildPhysicalTraitCapsules,
   buildProceduresList,
+  getSpayNeuterInfo,
+  getSpayNeuterLabels,
+  isFemale,
+  isMale,
+  parseTimelineTimestamp,
 }
 
 export interface IParsedVaccineRecord {
@@ -28,14 +43,6 @@ export interface IParsedVaccineRecord {
   expires?: string | null
   veterinarian?: string | null
   status?: string | null
-}
-
-export interface ITimelineEvent {
-  type: 'intake' | 'surgery' | 'microchip' | 'vaccine' | 'diagnostic'
-  title: string
-  date: string
-  note: string
-  status: 'completed' | 'current'
 }
 
 export interface IIdentificationInfo {
@@ -314,71 +321,6 @@ export const buildVaccineRecords = (
   return lines
 }
 
-export const isFemale = (sex?: string | null): boolean => {
-  if (!sex || typeof sex !== 'string') return false
-  const s = sex.trim().toLowerCase()
-  return s === 'female' || s === 'f'
-}
-
-export const isMale = (sex?: string | null): boolean => {
-  if (!sex || typeof sex !== 'string') return false
-  const s = sex.trim().toLowerCase()
-  return s === 'male' || s === 'm'
-}
-
-export const getSpayNeuterLabels = (
-  sex?: string | null,
-  isCompleted = false,
-): {
-  sectionTitle: string
-  surgeryTitle: string
-  statusPill: string
-  timelineNote: string
-} => {
-  if (isFemale(sex)) {
-    return {
-      sectionTitle: 'Spay Status',
-      surgeryTitle: 'Spay Surgery',
-      statusPill: isCompleted ? '✓ Spayed' : 'Pending Spay',
-      timelineNote: 'Spay sterilization procedure completed with full post-op recovery.',
-    }
-  }
-  if (isMale(sex)) {
-    return {
-      sectionTitle: 'Neuter Status',
-      surgeryTitle: 'Neuter Surgery',
-      statusPill: isCompleted ? '✓ Neutered' : 'Pending Neuter',
-      timelineNote: 'Neuter sterilization procedure completed with full post-op recovery.',
-    }
-  }
-  return {
-    sectionTitle: 'Spay / Neuter Status',
-    surgeryTitle: 'Spay / Neuter Surgery',
-    statusPill: isCompleted ? '✓ Spayed/Neutered' : 'Pending Sterilization',
-    timelineNote: 'Sterilization procedure completed with full post-op recovery.',
-  }
-}
-
-export const getSpayNeuterInfo = (
-  portalData: IPetMedicalPortalData | null,
-): { isSpayedNeutered: boolean; spayNeuterDate: string | null } => {
-  if (!portalData) return { isSpayedNeutered: false, spayNeuterDate: null }
-  const med = (portalData.medical || {}) as Record<string, unknown>
-  const raw = getFieldIgnoreCase(
-    med,
-    'spayedOrNeuteredDate', 'spayed_or_neutered_date', 'spayNeuterDate',
-    'spay_neuter_date', 'dateSpayedNeutered', 'date_spayed_neutered', 'spayDate',
-  )
-
-  const spayNeuterDate = extractDateValue(raw)
-  const isSpayedNeutered = Boolean(
-    getFieldIgnoreCase(med, 'spayedOrNeutered', 'spayed_or_neutered', 'isSpayed', 'isNeutered') ||
-    spayNeuterDate,
-  )
-
-  return { isSpayedNeutered, spayNeuterDate }
-}
-
 export const buildIdentificationInfo = (
   portalData: IPetMedicalPortalData | null,
 ): IIdentificationInfo => {
@@ -422,74 +364,3 @@ export const buildIdentificationInfo = (
   }
 }
 
-export const buildCareTimeline = (
-  portalData: IPetMedicalPortalData | null,
-  vaccines: IParsedVaccineRecord[],
-): ITimelineEvent[] => {
-  if (!portalData) return []
-  const events: ITimelineEvent[] = []
-  const { isSpayedNeutered, spayNeuterDate } = getSpayNeuterInfo(portalData)
-  const labels = getSpayNeuterLabels(portalData.sex, isSpayedNeutered)
-
-  // 1. Spay / Neuter Surgery
-  if (isSpayedNeutered) {
-    events.push({
-      type: 'surgery',
-      title: labels.surgeryTitle,
-      date: spayNeuterDate ? toDateLabel(spayNeuterDate) : 'Completed',
-      note: labels.timelineNote,
-      status: 'completed',
-    })
-  }
-
-  // 2. Microchip
-  const ident = buildIdentificationInfo(portalData)
-  if (ident.isChipped) {
-    events.push({
-      type: 'microchip',
-      title: 'Microchip Implantation & Registration',
-      date: 'Active',
-      note: ident.microchipId
-        ? `Microchip #${ident.microchipId} registered with ${ident.microchipBrand || 'national registry'}.`
-        : 'Microchip implanted and registered.',
-      status: 'completed',
-    })
-  }
-
-  // 3. Additional Surgeries / Procedures
-  const procedures = buildProceduresList(portalData)
-  procedures.forEach((p) => {
-    events.push({
-      type: 'surgery',
-      title: p.name,
-      date: p.date ? toDateLabel(p.date) : 'Completed',
-      note: p.notes || (p.veterinarian ? `Performed by ${p.veterinarian}` : 'Clinical procedure recorded.'),
-      status: 'completed',
-    })
-  })
-
-  // 4. Diagnostic tests
-  const diagnostics = buildDiagnosticTests(portalData)
-  diagnostics.forEach((d) => {
-    events.push({
-      type: 'diagnostic',
-      title: d.name,
-      date: d.date || 'Completed',
-      note: `Result: ${d.result}`,
-      status: 'completed',
-    })
-  })
-
-  // 5. Vaccines
-  vaccines.forEach((v) => {
-    events.push({
-      type: 'vaccine',
-      title: `Vaccination: ${v.name}`,
-      date: v.administered && v.administered !== 'Not provided' ? v.administered : 'Administered',
-      note: v.expires ? `Expires: ${v.expires}` : 'Up to date',
-      status: 'completed',
-    })
-  })
-
-  return events
-}

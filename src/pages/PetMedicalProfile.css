@@ -34,18 +34,8 @@
   padding: 64px 24px;
   gap: 16px;
 
-  .spinner-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .loading-text {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    margin: 0;
-  }
+  .spinner-wrap { display: flex; align-items: center; justify-content: center; }
+  .loading-text { font-size: 0.95rem; font-weight: 500; color: var(--text-secondary); margin: 0; }
 }
 
 .not-found-card,
@@ -118,13 +108,11 @@
     letter-spacing: 0.1em;
   }
 
-
   .top-actions {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-
 
   .status-badge {
     text-transform: capitalize;
@@ -236,11 +224,68 @@
   &::before {
     content: '';
     position: absolute;
-    top: 12px;
-    bottom: 12px;
+    top: 16px;
+    bottom: 16px;
     left: 23px;
     width: 2px;
     background: var(--line-ink);
+  }
+}
+
+.timeline-start-point {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+  margin-top: 2px;
+
+  .timeline-start-marker {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .timeline-start-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    border: 3px solid var(--text-inverse);
+    box-shadow: 0 0 0 2px var(--color-primary);
+    position: relative;
+    z-index: 1;
+  }
+
+  .timeline-start-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .timeline-start-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--color-primary-weak, #fdf4ed);
+    color: var(--color-primary, #b2410f);
+    border-radius: var(--radius-full, 9999px);
+    border: 1px solid oklch(from var(--color-primary) l c h / 20%);
+  }
+
+  .timeline-start-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
   }
 }
 
@@ -308,7 +353,6 @@
   }
 }
 
-
 /* Skeletons */
 .skeleton-line {
   background: var(--color-neutral-weak);
@@ -336,20 +380,17 @@
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
-
 .skeleton-doc-card {
   height: 120px;
   background: var(--color-neutral-weak);
   border-radius: var(--radius-md);
 }
-
 .skeleton-timeline-item {
   height: 60px;
   background: var(--color-neutral-weak);
   border-radius: var(--radius-md);
   margin-bottom: 12px;
 }
-
 .muted {
   color: var(--text-secondary);
   font-size: 0.9rem;
@@ -357,19 +398,15 @@
 
 /* Card Expansion Transitions */
 .portal-expand-enter-active {
-  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 .portal-expand-leave-active {
   transition: opacity 0.18s ease-out, transform 0.18s ease-out;
 }
-
 .portal-expand-enter-from {
   opacity: 0;
   transform: translateY(16px) scale(0.97);
 }
-
 .portal-expand-leave-to {
   opacity: 0;
   transform: scale(0.98);
@@ -390,15 +427,8 @@
 }
 
 @keyframes dashboardItemExpand {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @media print {
@@ -413,31 +443,33 @@
     color: #000 !important;
   }
 
-  body.printing-receipt .medical-shell,
-  body.printing-receipt nav,
-  body.printing-receipt footer {
-    display: none !important;
-  }
+  body.printing-receipt {
+    .medical-shell,
+    nav,
+    footer {
+      display: none !important;
+    }
 
-  body.printing-receipt .receipt-modal-backdrop {
-    position: static !important;
-    background: transparent !important;
-    padding: 0 !important;
-    display: block !important;
-  }
+    .receipt-modal-backdrop {
+      position: static !important;
+      background: transparent !important;
+      padding: 0 !important;
+      display: block !important;
+    }
 
-  body.printing-receipt .receipt-dialog {
-    box-shadow: none !important;
-    border: none !important;
-    max-width: 100% !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
+    .receipt-dialog {
+      box-shadow: none !important;
+      border: none !important;
+      max-width: 100% !important;
+      max-height: none !important;
+      overflow: visible !important;
+    }
 
-  body.printing-receipt .receipt-sheet {
-    padding: 0 !important;
-    width: 100% !important;
-    overflow: visible !important;
+    .receipt-sheet {
+      padding: 0 !important;
+      width: 100% !important;
+      overflow: visible !important;
+    }
   }
 
   .medical-shell {

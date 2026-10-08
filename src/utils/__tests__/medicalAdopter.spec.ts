@@ -131,4 +131,33 @@ describe('medicalAdopter utility', () => {
     expect(result?.zelleConfirmationId).toBeUndefined()
     expect(result?.transactionId).toContain('TXN-2025-JAYL')
   })
+
+  it('extracts familyPhotoUrl when present on adoption or root', () => {
+    const mockDataWithPhoto: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      familyPhotoUrl: 'https://media.adoption-os.com/family.jpg',
+      adoption: {
+        adoptedBy: 'Conner Family',
+        paymentMethod: 'Credit Card',
+      },
+    }
+
+    const result = buildAdopterPaymentInfo(mockDataWithPhoto as IPetMedicalPortalData)
+    expect(result).not.toBeNull()
+    expect(result?.familyPhotoUrl).toBe('https://media.adoption-os.com/family.jpg')
+
+    const mockDataNoPhoto: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      adoption: {
+        adoptedBy: 'Conner Family',
+        paymentMethod: 'Credit Card',
+      },
+    }
+
+    const resultNoPhoto = buildAdopterPaymentInfo(mockDataNoPhoto as IPetMedicalPortalData)
+    expect(resultNoPhoto).not.toBeNull()
+    expect(resultNoPhoto?.familyPhotoUrl).toBeNull()
+  })
 })

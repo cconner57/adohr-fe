@@ -51,6 +51,7 @@ export const hasAdopterPaymentData = (
       adoptionObj.receiptNumber ||
       adoptionObj.transactionId ||
       adoptionObj.zelleConfirmationId ||
+      adoptionObj.familyPhotoUrl ||
       adoptionObj.adopterContactInfo
     if (hasField) return true
   }
@@ -62,7 +63,8 @@ export const hasAdopterPaymentData = (
       adopterObj.email ||
       adopterObj.adoptionFee !== undefined ||
       adopterObj.receiptNumber ||
-      adopterObj.transactionId
+      adopterObj.transactionId ||
+      adopterObj.familyPhotoUrl
     if (hasField) return true
   }
 
@@ -81,7 +83,8 @@ export const hasAdopterPaymentData = (
     root.adoptionFee !== undefined ||
     root.paymentStatus ||
     root.receiptNumber ||
-    root.transactionId
+    root.transactionId ||
+    root.familyPhotoUrl
   ) {
     return true
   }
@@ -266,6 +269,15 @@ export const buildAdopterPaymentInfo = (
     ]
   }
 
+  // 11. Family Photo URL
+  const rawFamilyPhoto =
+    getFieldIgnoreCase(adoptionObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl') ??
+    getFieldIgnoreCase(adopterObj, 'familyPhotoUrl', 'familyPhotoURL') ??
+    getFieldIgnoreCase(root, 'familyPhotoUrl', 'familyPhotoURL')
+
+  const familyPhotoUrl =
+    typeof rawFamilyPhoto === 'string' && rawFamilyPhoto.trim() ? rawFamilyPhoto.trim() : null
+
   return {
     adopterName,
     email,
@@ -278,6 +290,7 @@ export const buildAdopterPaymentInfo = (
     transactionId,
     zelleConfirmationId,
     receiptNumber,
+    familyPhotoUrl,
     itemizedFees,
   }
 }

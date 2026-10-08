@@ -306,7 +306,21 @@ onMounted(async () => {
             <div v-for="(event, idx) in careTimeline" :key="idx" class="timeline-item">
               <div class="timeline-icon" aria-hidden="true">
                 <svg
-                  v-if="event.type === 'surgery'"
+                  v-if="event.type === 'intake'"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <svg
+                  v-else-if="event.type === 'surgery'"
                   width="16"
                   height="16"
                   viewBox="0 0 24 24"
@@ -377,8 +391,26 @@ onMounted(async () => {
                 <p class="timeline-note">{{ event.note }}</p>
               </div>
             </div>
+
+            <!-- Timeline Starting Point (at the bottom where older records began) -->
+            <div class="timeline-start-point" aria-hidden="true">
+              <div class="timeline-start-marker">
+                <span class="timeline-start-dot"></span>
+              </div>
+              <div class="timeline-start-content">
+                <span class="timeline-start-badge">Rescue Intake</span>
+                <span class="timeline-start-label">Care Journey Began</span>
+              </div>
+            </div>
           </div>
         </article>
+
+        <!-- Diagnostic Testing Panel (only displayed when lab screening tests are recorded) -->
+        <MedicalDiagnosticsCard
+          v-if="diagnosticTests && diagnosticTests.length > 0"
+          :diagnostics="diagnosticTests"
+          :petName="petName"
+        />
 
         <!-- Adopter & Payment Information (only displayed when API returns adoption data) -->
         <MedicalAdopterCard
@@ -386,13 +418,6 @@ onMounted(async () => {
           :adopter="adopterInfo"
           :petName="petName"
           @print-receipt="handlePrintReceipt"
-        />
-
-        <!-- Diagnostic Testing Panel (only displayed when lab screening tests are recorded) -->
-        <MedicalDiagnosticsCard
-          v-if="diagnosticTests && diagnosticTests.length > 0"
-          :diagnostics="diagnosticTests"
-          :petName="petName"
         />
 
         <!-- Diet, Nutrition & Daily Guidelines -->
