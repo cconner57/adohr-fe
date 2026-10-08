@@ -193,7 +193,7 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.text()).not.toContain('Adoption Contract')
   })
 
-  it('renders contract link in both family section and adopter profile panel when contractUrl is provided', () => {
+  it('renders contract link in family section when contractUrl is provided and does not duplicate it in adopter panel', () => {
     const adopterWithContract: IAdopterPaymentInfo = {
       ...mockAdopter,
       familyPhotoUrl: 'https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg',
@@ -213,9 +213,7 @@ describe('MedicalAdopterCard.vue', () => {
     expect(link.attributes('target')).toBe('_blank')
     expect(link.text()).toContain('View Signed Adoption Contract')
 
-    const panelLink = wrapper.find('a.panel-contract-link')
-    expect(panelLink.exists()).toBe(true)
-    expect(panelLink.attributes('href')).toBe('https://adoption-os.com/contract/signed-token-123?view=true')
-    expect(panelLink.text()).toContain('View Signed Contract')
+    expect(wrapper.find('a.panel-contract-link').exists()).toBe(false)
+    expect(wrapper.find('.adopter-panel').text()).not.toContain('Adoption Contract')
   })
 })

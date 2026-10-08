@@ -196,32 +196,6 @@
   }
 }
 
-.panel-contract-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: color var(--transition-fast, 0.15s ease);
-
-  &:hover {
-    color: hsl(from var(--color-primary) h s 35%);
-    text-decoration: underline;
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-    border-radius: var(--radius-xs, 0.25rem);
-  }
-
-  svg {
-    flex-shrink: 0;
-  }
-}
-
 .adopter-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
