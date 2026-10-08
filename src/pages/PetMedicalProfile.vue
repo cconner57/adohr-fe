@@ -291,7 +291,6 @@ onMounted(async () => {
                 <Capsules v-if="petAge" :label="petAge" />
                 <Capsules v-for="(trait, idx) in physicalTraits" :key="idx" :label="trait" />
               </div>
-              <p class="hero-sub">Official veterinary health history and preventative care timeline managed by ADOHR.</p>
             </div>
           </div>
         </header>
