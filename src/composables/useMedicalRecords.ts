@@ -255,6 +255,27 @@ export function useMedicalRecords() {
     }
   }
 
+  const normalizeMediaUrl = (url?: string | null): string => {
+    if (!url || typeof url !== 'string') return ''
+    const trimmed = url.trim()
+    if (!trimmed) return ''
+    const r2Base = 'https://pub-768b3a497dc648f2895152092bf57934.r2.dev'
+    if (trimmed.includes('.r2.dev/')) {
+      const parts = trimmed.split(/\.r2\.dev\//)
+      if (parts[1]) {
+        const cleanKey = parts[1].replace(/^\/?pets\//, '').replace(/^\//, '')
+        return `${r2Base}/${cleanKey}`
+      }
+    }
+    if (trimmed.includes('api.adoption-os.com/pets/')) {
+      const parts = trimmed.split(/api\.adoption-os\.com\/pets\//)
+      if (parts[1]) {
+        return `${r2Base}/${parts[1].replace(/^\//, '')}`
+      }
+    }
+    return trimmed
+  }
+
   const fetchMedicalRecords = async (
     petIdOrSlug: string,
   ): Promise<IPetMedicalPortalData | null> => {
@@ -299,6 +320,12 @@ export function useMedicalRecords() {
 
       const json = await response.json()
       const portalData = (json.data ?? json) as IPetMedicalPortalData
+      if (portalData.medical?.documents && Array.isArray(portalData.medical.documents)) {
+        portalData.medical.documents = portalData.medical.documents.map((d) => ({
+          ...d,
+          fileUrl: normalizeMediaUrl(d.fileUrl) || d.fileUrl,
+        }))
+      }
       return portalData
     } catch (err) {
       console.error('Failed to fetch pet medical records:', err)
@@ -321,8 +348,9 @@ export function useMedicalRecords() {
       return
     }
 
+    const targetUrl = normalizeMediaUrl(doc.fileUrl) || doc.fileUrl
     const link = document.createElement('a')
-    link.href = doc.fileUrl
+    link.href = targetUrl
     link.download = doc.fileName || `${doc.title.toLowerCase().replace(/\s+/g, '_')}.pdf`
     link.target = '_blank'
     link.rel = 'noopener noreferrer'

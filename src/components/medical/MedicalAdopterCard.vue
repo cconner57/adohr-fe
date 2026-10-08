@@ -22,14 +22,59 @@ const r2BaseUrl = computed(() =>
 
 const candidateUrls = computed(() => {
   const urls: string[] = []
-  const fam = props.adopter.familyPhotoUrl?.trim()
-  if (fam) {
-    urls.push(fam)
-    if (fam.includes('api.adoption-os.com') && r2BaseUrl.value) {
-      urls.push(fam.replace(/^https?:\/\/api\.adoption-os\.com/, r2BaseUrl.value))
-      urls.push(fam.replace(/^https?:\/\/api\.adoption-os\.com\/pets\//, `${r2BaseUrl.value}/`))
-    }
+  const seen = new Set<string>()
+  const add = (u?: string | null) => {
+    if (!u) return
+    const clean = u.trim()
+    if (!clean || seen.has(clean)) return
+    seen.add(clean)
+    urls.push(clean)
   }
+
+  const r2Base = r2BaseUrl.value
+  const fam = props.adopter.familyPhotoUrl?.trim()
+
+  if (fam) {
+    if (fam.includes('.r2.dev')) {
+      const parts = fam.split(/\.r2\.dev\//)
+      if (parts[1]) {
+        const afterR2 = parts[1]
+        const strippedKey = afterR2.replace(/^\/?pets\//, '').replace(/^\//, '')
+        add(`${r2Base}/${strippedKey}`)
+        add(`${r2Base}/${afterR2}`)
+      }
+    }
+
+    if (fam.includes('api.adoption-os.com')) {
+      const path = fam.replace(/^https?:\/\/api\.adoption-os\.com\/?/, '')
+      const strippedKey = path.replace(/^\/?pets\//, '')
+      add(`${r2Base}/${strippedKey}`)
+      add(`${r2Base}/${path}`)
+    }
+
+    if (!fam.startsWith('http://') && !fam.startsWith('https://')) {
+      const strippedKey = fam.replace(/^\/?pets\//, '').replace(/^\//, '')
+      add(`${r2Base}/${strippedKey}`)
+      add(`${r2Base}/${fam.replace(/^\//, '')}`)
+    }
+
+    add(fam)
+  }
+
+  const petPhoto = props.petPhotoUrl?.trim()
+  if (petPhoto) {
+    if (petPhoto.includes('.r2.dev')) {
+      const parts = petPhoto.split(/\.r2\.dev\//)
+      if (parts[1]) {
+        const afterR2 = parts[1]
+        const strippedKey = afterR2.replace(/^\/?pets\//, '').replace(/^\//, '')
+        add(`${r2Base}/${strippedKey}`)
+        add(`${r2Base}/${afterR2}`)
+      }
+    }
+    add(petPhoto)
+  }
+
   return urls
 })
 
@@ -70,7 +115,7 @@ const contractButtonLabel = computed(() => {
 })
 
 const hasFamilyPhoto = computed(() => {
-  return Boolean(props.adopter.familyPhotoUrl?.trim()) && !isPhotoError.value && Boolean(currentPhotoUrl.value)
+  return !isPhotoError.value && Boolean(currentPhotoUrl.value)
 })
 
 const handleImageError = () => {
@@ -82,7 +127,7 @@ const handleImageError = () => {
 }
 
 watch(
-  () => props.adopter.familyPhotoUrl,
+  [() => props.adopter.familyPhotoUrl, () => props.petPhotoUrl],
   () => {
     currentUrlIndex.value = 0
   },

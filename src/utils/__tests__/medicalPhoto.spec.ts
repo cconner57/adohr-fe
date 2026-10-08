@@ -58,4 +58,24 @@ describe('resolvePetPhotoCandidates', () => {
     const candidates = resolvePetPhotoCandidates(data, r2Base)
     expect(candidates).toContain(`${r2Base}/marshal/adoption/family.jpg`)
   })
+
+  it('normalizes any .r2.dev URLs to the target r2Base', () => {
+    const data = {
+      photoUrl: 'https://pub-e8f0b088b2914b5d80cfe6df8be24904.r2.dev/marshal-id/photos/marshal_large.jpg',
+    }
+    const candidates = resolvePetPhotoCandidates(data, r2Base)
+    expect(candidates[0]).toBe(`${r2Base}/marshal-id/photos/marshal_large.jpg`)
+  })
+
+  it('extracts family photo when photo is an object with url', () => {
+    const data = {
+      adoption: {
+        photo: {
+          url: 'pets/marshal-id/adoption/family.jpg',
+        },
+      },
+    }
+    const candidates = resolvePetPhotoCandidates(data, r2Base)
+    expect(candidates).toContain(`${r2Base}/marshal-id/adoption/family.jpg`)
+  })
 })

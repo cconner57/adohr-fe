@@ -108,7 +108,7 @@ describe('MedicalAdopterCard.vue', () => {
 
     const img = wrapper.find('img.family-photo-img')
     expect(img.exists()).toBe(true)
-    expect(img.attributes('src')).toBe('https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg')
+    expect(img.attributes('src')).toContain('jaylene/adoption/family_photo.jpg')
     expect(img.attributes('alt')).toContain('Sarah Jenkins')
     expect(img.attributes('alt')).toContain('Jaylene')
 

@@ -401,13 +401,18 @@ export const resolvePetPhotoCandidates = (
   const paymentObj = data.payment as Record<string, unknown> | undefined
   const adopterObj = data.adopter as Record<string, unknown> | undefined
   const famPhoto =
-    getFieldIgnoreCase(adoptionObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
-    getFieldIgnoreCase(paymentObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
-    getFieldIgnoreCase(adopterObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
+    getFieldIgnoreCase(adoptionObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto', 'photo') ??
+    getFieldIgnoreCase(paymentObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto', 'photo') ??
+    getFieldIgnoreCase(adopterObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto', 'photo') ??
     getFieldIgnoreCase(data, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto')
 
   if (typeof famPhoto === 'string' && famPhoto.trim()) {
     rawList.push(famPhoto.trim())
+  } else if (famPhoto && typeof famPhoto === 'object') {
+    const u = getFieldIgnoreCase(famPhoto, 'url', 'photoUrl', 'src', 'fileUrl')
+    if (typeof u === 'string' && u.trim()) {
+      rawList.push(u.trim())
+    }
   }
 
   const r2Base = (
@@ -437,17 +442,23 @@ export const resolvePetPhotoCandidates = (
       continue
     }
 
+    if (raw.includes('.r2.dev')) {
+      const parts = raw.split(/\.r2\.dev\//)
+      if (parts[1]) {
+        const afterR2 = parts[1]
+        const strippedKey = afterR2.replace(/^\/?pets\//, '').replace(/^\//, '')
+        addCandidate(`${r2Base}/${strippedKey}`)
+        addCandidate(`${r2Base}/${afterR2}`)
+      }
+      addCandidate(raw)
+      continue
+    }
+
     if (raw.includes('api.adoption-os.com')) {
       const withoutDomain = raw.replace(/^https?:\/\/api\.adoption-os\.com\/?/, '')
       const strippedKey = withoutDomain.replace(/^pets\//, '')
       addCandidate(`${r2Base}/${strippedKey}`)
       addCandidate(`${r2Base}/${withoutDomain}`)
-      addCandidate(raw)
-      continue
-    }
-
-    if (raw.includes('.r2.dev/pets/')) {
-      addCandidate(raw.replace('.r2.dev/pets/', '.r2.dev/'))
       addCandidate(raw)
       continue
     }

@@ -346,13 +346,20 @@ export const buildAdopterPaymentInfo = (
 
   // 11. Family Photo URL
   const rawFamilyPhoto =
-    getFieldIgnoreCase(adoptionObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
-    getFieldIgnoreCase(paymentObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
-    getFieldIgnoreCase(adopterObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
-    getFieldIgnoreCase(root, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto')
+    getFieldIgnoreCase(adoptionObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto', 'photo') ??
+    getFieldIgnoreCase(paymentObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto', 'photo') ??
+    getFieldIgnoreCase(adopterObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto', 'photo') ??
+    getFieldIgnoreCase(root, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto', 'photo')
 
-  const familyPhotoUrl =
-    typeof rawFamilyPhoto === 'string' && rawFamilyPhoto.trim() ? rawFamilyPhoto.trim() : null
+  let familyPhotoUrl: string | null = null
+  if (typeof rawFamilyPhoto === 'string' && rawFamilyPhoto.trim()) {
+    familyPhotoUrl = rawFamilyPhoto.trim()
+  } else if (rawFamilyPhoto && typeof rawFamilyPhoto === 'object') {
+    const u = getFieldIgnoreCase(rawFamilyPhoto, 'url', 'photoUrl', 'src', 'fileUrl')
+    if (typeof u === 'string' && u.trim()) {
+      familyPhotoUrl = u.trim()
+    }
+  }
 
   const rawContractUrl =
     getFieldIgnoreCase(adoptionObj, 'contractUrl', 'contractURL', 'contract_url') ??
