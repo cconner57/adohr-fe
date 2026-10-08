@@ -87,15 +87,16 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.text()).not.toContain('Transaction ID')
   })
 
-  it('renders family photo card when familyPhotoUrl is provided', () => {
-    const adopterWithPhoto: IAdopterPaymentInfo = {
+  it('renders adoption family card and photo when both contractUrl and familyPhotoUrl are provided', () => {
+    const adopterWithPhotoAndContract: IAdopterPaymentInfo = {
       ...mockAdopter,
       familyPhotoUrl: 'https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg',
+      contractUrl: 'https://adoption-os.com/contract/signed-token-123?view=true',
     }
 
     const wrapper = mount(MedicalAdopterCard, {
       props: {
-        adopter: adopterWithPhoto,
+        adopter: adopterWithPhotoAndContract,
         petName: 'Jaylene',
       },
     })
@@ -113,20 +114,45 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.text()).not.toContain('Forever Family Photo')
     expect(wrapper.text()).toContain('Welcome Home, Jaylene!')
     expect(wrapper.text()).toContain('May 15, 2025')
+    expect(wrapper.text()).toContain('View Signed Adoption Contract')
 
+    expect(wrapper.find('.family-photo-fallback').exists()).toBe(false)
     expect(wrapper.find('a.family-photo-zoom').exists()).toBe(false)
     expect(wrapper.text()).not.toContain('Full Size')
   })
 
-  it('does not render family photo section if image encounters loading error', async () => {
-    const adopterWithPhoto: IAdopterPaymentInfo = {
+  it('renders "No image available" fallback box if contract is available but no family photo is provided', () => {
+    const adopterNoPhoto: IAdopterPaymentInfo = {
       ...mockAdopter,
-      familyPhotoUrl: 'https://example.com/broken-photo.jpg',
+      familyPhotoUrl: null,
+      contractUrl: 'https://adoption-os.com/contract/signed-token-123?view=true',
     }
 
     const wrapper = mount(MedicalAdopterCard, {
       props: {
-        adopter: adopterWithPhoto,
+        adopter: adopterNoPhoto,
+        petName: 'Jaylene',
+      },
+    })
+
+    expect(wrapper.find('.family-photo-card').exists()).toBe(true)
+    expect(wrapper.find('img.family-photo-img').exists()).toBe(false)
+    expect(wrapper.find('.family-photo-fallback').exists()).toBe(true)
+    expect(wrapper.text()).toContain('No image available')
+    expect(wrapper.text()).toContain('Welcome Home, Jaylene!')
+    expect(wrapper.text()).toContain('View Signed Adoption Contract')
+  })
+
+  it('renders "No image available" fallback box if contract is available and family photo encounters loading error', async () => {
+    const adopterWithBrokenPhoto: IAdopterPaymentInfo = {
+      ...mockAdopter,
+      familyPhotoUrl: 'https://example.com/broken-photo.jpg',
+      contractUrl: 'https://adoption-os.com/contract/signed-token-123?view=true',
+    }
+
+    const wrapper = mount(MedicalAdopterCard, {
+      props: {
+        adopter: adopterWithBrokenPhoto,
         petName: 'Jaylene',
       },
     })
@@ -134,25 +160,40 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.find('.family-photo-card').exists()).toBe(true)
 
     const img = wrapper.find('img.family-photo-img')
+    expect(img.exists()).toBe(true)
     await img.trigger('error')
 
-    expect(wrapper.find('.family-photo-card').exists()).toBe(false)
-    expect(wrapper.text()).not.toContain('Welcome Home, Jaylene!')
-    expect(wrapper.text()).not.toContain('Adoption Day Photo')
+    expect(wrapper.find('.family-photo-card').exists()).toBe(true)
+    expect(wrapper.find('img.family-photo-img').exists()).toBe(false)
+    expect(wrapper.find('.family-photo-fallback').exists()).toBe(true)
+    expect(wrapper.text()).toContain('No image available')
+    expect(wrapper.text()).toContain('Welcome Home, Jaylene!')
   })
 
-  it('does not render family photo card when familyPhotoUrl is null or undefined', () => {
+  it('does not render adoption family section if contractUrl is not provided, even if familyPhotoUrl exists', () => {
+    const adopterWithoutContract: IAdopterPaymentInfo = {
+      ...mockAdopter,
+      familyPhotoUrl: 'https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg',
+      contractUrl: null,
+    }
+
     const wrapper = mount(MedicalAdopterCard, {
       props: {
-        adopter: { ...mockAdopter, familyPhotoUrl: null },
+        adopter: adopterWithoutContract,
         petName: 'Jaylene',
       },
     })
 
     expect(wrapper.find('.family-photo-card').exists()).toBe(false)
+    expect(wrapper.find('a.contract-link').exists()).toBe(false)
+    expect(wrapper.find('a.panel-contract-link').exists()).toBe(false)
+    expect(wrapper.find('.family-contract').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('View Signed Adoption Contract')
+    expect(wrapper.text()).not.toContain('View Signed Contract')
+    expect(wrapper.text()).not.toContain('Adoption Contract')
   })
 
-  it('renders contract link when contractUrl is provided', () => {
+  it('renders contract link in both family section and adopter profile panel when contractUrl is provided', () => {
     const adopterWithContract: IAdopterPaymentInfo = {
       ...mockAdopter,
       familyPhotoUrl: 'https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg',
@@ -176,27 +217,5 @@ describe('MedicalAdopterCard.vue', () => {
     expect(panelLink.exists()).toBe(true)
     expect(panelLink.attributes('href')).toBe('https://adoption-os.com/contract/signed-token-123?view=true')
     expect(panelLink.text()).toContain('View Signed Contract')
-  })
-
-  it('does not render any contract text or link when contractUrl is not provided', () => {
-    const adopterWithoutContract: IAdopterPaymentInfo = {
-      ...mockAdopter,
-      familyPhotoUrl: 'https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg',
-      contractUrl: null,
-    }
-
-    const wrapper = mount(MedicalAdopterCard, {
-      props: {
-        adopter: adopterWithoutContract,
-        petName: 'Jaylene',
-      },
-    })
-
-    expect(wrapper.find('a.contract-link').exists()).toBe(false)
-    expect(wrapper.find('a.panel-contract-link').exists()).toBe(false)
-    expect(wrapper.find('.family-contract').exists()).toBe(false)
-    expect(wrapper.text()).not.toContain('View Signed Adoption Contract')
-    expect(wrapper.text()).not.toContain('View Signed Contract')
-    expect(wrapper.text()).not.toContain('Adoption Contract')
   })
 })

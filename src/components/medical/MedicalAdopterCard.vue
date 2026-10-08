@@ -46,7 +46,11 @@ const isPhotoError = computed(() => {
   return candidateUrls.value.length === 0 || currentUrlIndex.value >= candidateUrls.value.length
 })
 
-const shouldShowPhotoSection = computed(() => {
+const shouldShowAdoptionSection = computed(() => {
+  return Boolean(props.adopter.contractUrl?.trim())
+})
+
+const hasFamilyPhoto = computed(() => {
   return Boolean(props.adopter.familyPhotoUrl?.trim()) && !isPhotoError.value && Boolean(currentPhotoUrl.value)
 })
 
@@ -97,13 +101,14 @@ watch(
       </div>
     </div>
 
-    <!-- Adoption Family Photo -->
+    <!-- Adoption Family Photo & Signed Contract (only displayed when adoption contract link is available) -->
     <div
-      v-if="shouldShowPhotoSection"
+      v-if="shouldShowAdoptionSection"
       class="family-photo-card"
     >
-      <div class="family-photo-media">
+      <div class="family-photo-media" :class="{ 'has-fallback': !hasFamilyPhoto }">
         <img
+          v-if="hasFamilyPhoto"
           :key="currentPhotoUrl"
           :src="currentPhotoUrl"
           :alt="`${adopter.adopterName || 'Adopter'} forever family photo with ${petName || 'pet'}`"
@@ -111,6 +116,23 @@ watch(
           loading="lazy"
           @error="handleImageError"
         />
+        <div v-else class="family-photo-fallback" aria-label="No image available">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+            <circle cx="12" cy="13" r="4" />
+          </svg>
+          <span class="fallback-label">No image available</span>
+        </div>
       </div>
 
       <div class="family-photo-content">
