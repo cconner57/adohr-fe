@@ -27,6 +27,7 @@ const candidateUrls = computed(() => {
     urls.push(fam)
     if (fam.includes('api.adoption-os.com') && r2BaseUrl.value) {
       urls.push(fam.replace(/^https?:\/\/api\.adoption-os\.com/, r2BaseUrl.value))
+      urls.push(fam.replace(/^https?:\/\/api\.adoption-os\.com\/pets\//, `${r2BaseUrl.value}/`))
     }
   }
   return urls
