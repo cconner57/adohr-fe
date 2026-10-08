@@ -75,40 +75,10 @@
   background-color: var(--color-surface-subtle);
   border: 1px solid var(--line-ink);
 
-  &.has-fallback {
-    background: linear-gradient(135deg, oklch(from var(--color-secondary) 95% 0.03 h), oklch(from var(--color-surface) 98% 0.01 h));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   @media (width <= 680px) {
     flex: none;
     width: 100%;
     height: 220px;
-  }
-}
-
-.family-photo-fallback {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  height: 100%;
-  color: var(--color-secondary);
-
-  svg {
-    opacity: 0.85;
-  }
-
-  .fallback-label {
-    font-size: 0.74rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    color: var(--text-secondary);
   }
 }
 

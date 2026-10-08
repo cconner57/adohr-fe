@@ -29,10 +29,6 @@ const candidateUrls = computed(() => {
       urls.push(fam.replace(/^https?:\/\/api\.adoption-os\.com/, r2BaseUrl.value))
     }
   }
-  const pet = props.petPhotoUrl?.trim()
-  if (pet && !urls.includes(pet)) {
-    urls.push(pet)
-  }
   return urls
 })
 
@@ -49,6 +45,10 @@ const isPhotoError = computed(() => {
   return candidateUrls.value.length === 0 || currentUrlIndex.value >= candidateUrls.value.length
 })
 
+const shouldShowPhotoSection = computed(() => {
+  return Boolean(props.adopter.familyPhotoUrl?.trim()) && !isPhotoError.value && Boolean(currentPhotoUrl.value)
+})
+
 const handleImageError = () => {
   if (currentUrlIndex.value < candidateUrls.value.length - 1) {
     currentUrlIndex.value += 1
@@ -58,7 +58,7 @@ const handleImageError = () => {
 }
 
 watch(
-  () => [props.adopter.familyPhotoUrl, props.petPhotoUrl],
+  () => props.adopter.familyPhotoUrl,
   () => {
     currentUrlIndex.value = 0
   },
@@ -98,12 +98,11 @@ watch(
 
     <!-- Adoption Family Photo -->
     <div
-      v-if="adopter.familyPhotoUrl"
+      v-if="shouldShowPhotoSection"
       class="family-photo-card"
     >
-      <div class="family-photo-media" :class="{ 'has-fallback': isPhotoError }">
+      <div class="family-photo-media">
         <img
-          v-if="!isPhotoError && currentPhotoUrl"
           :key="currentPhotoUrl"
           :src="currentPhotoUrl"
           :alt="`${adopter.adopterName || 'Adopter'} forever family photo with ${petName || 'pet'}`"
@@ -111,22 +110,6 @@ watch(
           loading="lazy"
           @error="handleImageError"
         />
-        <div v-else class="family-photo-fallback" aria-hidden="true">
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-            <circle cx="12" cy="13" r="4" />
-          </svg>
-          <span class="fallback-label">Adoption Day Photo</span>
-        </div>
       </div>
 
       <div class="family-photo-content">
