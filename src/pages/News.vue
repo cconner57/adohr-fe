@@ -91,6 +91,8 @@ onMounted(() => {
 <style scoped lang="css">
 .news-page {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: var(--text-inverse);
 
   .content-wrapper {
@@ -132,7 +134,17 @@ onMounted(() => {
   }
 
   .news-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     padding: 50px 0 80px;
+
+    .content-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
   }
 
   .status {

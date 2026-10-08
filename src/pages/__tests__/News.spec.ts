@@ -33,6 +33,7 @@ describe('News.vue', () => {
     expect(wrapper.text()).toContain('Our rescue crew is currently busy')
     expect(wrapper.text()).toContain('Meet Adoptable Pets')
     expect(wrapper.text()).toContain('Follow on Instagram')
+    expect(wrapper.findComponent({ name: 'Footer' }).exists()).toBe(true)
   })
 
   it('renders news articles when news items exist', () => {
@@ -69,5 +70,6 @@ describe('News.vue', () => {
     expect(wrapper.find('.empty-state').exists()).toBe(false)
     expect(wrapper.text()).toContain('Adoption Fair Announcement')
     expect(wrapper.text()).toContain('Join us this weekend!')
+    expect(wrapper.findComponent({ name: 'Footer' }).exists()).toBe(true)
   })
 })
