@@ -115,10 +115,31 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.text()).toContain('Welcome Home, Jaylene!')
     expect(wrapper.text()).toContain('May 15, 2025')
     expect(wrapper.text()).toContain('View Signed Adoption Contract')
+    expect(wrapper.find('.family-meta').text()).toBe('Adoption')
+    expect(wrapper.find('.family-meta').text()).not.toContain('Adoption Finalized')
 
     expect(wrapper.find('.family-photo-fallback').exists()).toBe(false)
     expect(wrapper.find('a.family-photo-zoom').exists()).toBe(false)
     expect(wrapper.text()).not.toContain('Full Size')
+  })
+
+  it('renders "Foster-to-Adopt" in family meta when record is foster-to-adopt', () => {
+    const fosterAdopter: IAdopterPaymentInfo = {
+      ...mockAdopter,
+      adoptionType: 'Foster-to-Adopt',
+      isFosterToAdopt: true,
+      contractUrl: 'https://adoption-os.com/contract/signed-fta-123?view=true',
+    }
+
+    const wrapper = mount(MedicalAdopterCard, {
+      props: {
+        adopter: fosterAdopter,
+        petName: 'Jaylene',
+      },
+    })
+
+    expect(wrapper.find('.family-meta').text()).toBe('Foster-to-Adopt')
+    expect(wrapper.find('.family-meta').text()).not.toContain('Adoption Finalized')
   })
 
   it('renders "No image available" fallback box if contract is available but no family photo is provided', () => {

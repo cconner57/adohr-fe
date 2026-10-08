@@ -363,6 +363,41 @@ export const buildAdopterPaymentInfo = (
   const contractUrl =
     typeof rawContractUrl === 'string' && rawContractUrl.trim() ? rawContractUrl.trim() : null
 
+  // 12. Adoption Type (Adoption vs Foster-to-Adopt)
+  const rawType =
+    getFieldIgnoreCase(adoptionObj, 'adoptionType', 'placementType', 'contractType', 'type') ??
+    getFieldIgnoreCase(adopterObj, 'adoptionType', 'placementType', 'type') ??
+    getFieldIgnoreCase(paymentObj, 'adoptionType', 'placementType', 'type') ??
+    getFieldIgnoreCase(root, 'adoptionType', 'placementType', 'contractType', 'type')
+
+  const rawPetStatus =
+    getFieldIgnoreCase(root, 'status') ??
+    getFieldIgnoreCase(adoptionObj, 'status')
+
+  const rawIsFTA =
+    getFieldIgnoreCase(adoptionObj, 'isFosterToAdopt', 'is_foster_to_adopt', 'fosterToAdopt') ??
+    getFieldIgnoreCase(root, 'isFosterToAdopt', 'is_foster_to_adopt', 'fosterToAdopt')
+
+  const isFoster = (val: unknown): boolean => {
+    if (typeof val === 'boolean') return val
+    if (typeof val === 'string') {
+      const s = val.toLowerCase().trim()
+      return s.includes('foster') || s === 'fta' || s === 'fta_trial'
+    }
+    return false
+  }
+
+  const isFosterToAdopt =
+    isFoster(rawIsFTA) ||
+    isFoster(rawType) ||
+    isFoster(rawPetStatus) ||
+    (typeof contractUrl === 'string' &&
+      (contractUrl.toLowerCase().includes('foster') || contractUrl.toLowerCase().includes('fta')))
+
+  const adoptionType: 'Adoption' | 'Foster-to-Adopt' = isFosterToAdopt
+    ? 'Foster-to-Adopt'
+    : 'Adoption'
+
   return {
     adopterName,
     email,
@@ -378,5 +413,7 @@ export const buildAdopterPaymentInfo = (
     familyPhotoUrl,
     contractUrl,
     itemizedFees,
+    adoptionType,
+    isFosterToAdopt,
   }
 }

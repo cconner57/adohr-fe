@@ -50,6 +50,22 @@ const shouldShowAdoptionSection = computed(() => {
   return Boolean(props.adopter.contractUrl?.trim())
 })
 
+const isFosterToAdopt = computed(() => {
+  return Boolean(
+    props.adopter.isFosterToAdopt ||
+      props.adopter.adoptionType === 'Foster-to-Adopt' ||
+      props.adopter.contractUrl?.toLowerCase().includes('foster') ||
+      props.adopter.contractUrl?.toLowerCase().includes('fta'),
+  )
+})
+
+const adoptionTypeLabel = computed(() => {
+  if (props.adopter.adoptionType) {
+    return props.adopter.adoptionType
+  }
+  return isFosterToAdopt.value ? 'Foster-to-Adopt' : 'Adoption'
+})
+
 const hasFamilyPhoto = computed(() => {
   return Boolean(props.adopter.familyPhotoUrl?.trim()) && !isPhotoError.value && Boolean(currentPhotoUrl.value)
 })
@@ -141,7 +157,7 @@ watch(
           <span>Official adoption day portrait with {{ adopter.adopterName }}.</span>
           <span class="family-desc-second">Celebrating a new chapter of love and lifelong companionship.</span>
         </p>
-        <div v-if="adopter.paymentDate" class="family-meta">
+        <div class="family-meta">
           <svg
             width="13"
             height="13"
@@ -153,12 +169,9 @@ watch(
             stroke-linejoin="round"
             aria-hidden="true"
           >
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
-          <span>Adoption Finalized &bull; {{ adopter.paymentDate }}</span>
+          <span>{{ adoptionTypeLabel }}</span>
         </div>
 
         <div v-if="adopter.contractUrl" class="family-contract">

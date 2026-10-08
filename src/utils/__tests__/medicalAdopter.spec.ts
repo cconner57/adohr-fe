@@ -229,4 +229,44 @@ describe('medicalAdopter utility', () => {
     expect(resultNoContract).not.toBeNull()
     expect(resultNoContract?.contractUrl).toBeNull()
   })
+
+  it('determines whether record is an Adoption or Foster-to-Adopt', () => {
+    const adoptionData: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      status: 'adopted',
+      adoption: {
+        adoptedBy: 'Linda Tagle',
+      },
+    }
+    const adoptionResult = buildAdopterPaymentInfo(adoptionData as IPetMedicalPortalData)
+    expect(adoptionResult?.adoptionType).toBe('Adoption')
+    expect(adoptionResult?.isFosterToAdopt).toBe(false)
+
+    const fosterData: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      status: 'foster',
+      adoption: {
+        adoptedBy: 'Linda Tagle',
+        isFosterToAdopt: true,
+      },
+    }
+    const fosterResult = buildAdopterPaymentInfo(fosterData as IPetMedicalPortalData)
+    expect(fosterResult?.adoptionType).toBe('Foster-to-Adopt')
+    expect(fosterResult?.isFosterToAdopt).toBe(true)
+
+    const ftaContractData: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      status: 'adopted',
+      contractUrl: 'https://adoption-os.com/contract/foster-to-adopt-token',
+      adoption: {
+        adoptedBy: 'Linda Tagle',
+      },
+    }
+    const ftaContractResult = buildAdopterPaymentInfo(ftaContractData as IPetMedicalPortalData)
+    expect(ftaContractResult?.adoptionType).toBe('Foster-to-Adopt')
+    expect(ftaContractResult?.isFosterToAdopt).toBe(true)
+  })
 })
