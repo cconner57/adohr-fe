@@ -409,3 +409,31 @@ label,
     transition: none !important;
   }
 }
+
+/* ==========================================================================
+   Receipt Modal & Global Print Overrides
+   ========================================================================== */
+body.printing-receipt .nav-bar {
+  display: none !important;
+}
+
+@media print {
+  .no-print,
+  .print-btn,
+  .download-btn {
+    display: none !important;
+  }
+
+  body.printing-receipt {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  body.printing-receipt #app,
+  body.printing-receipt .nav-bar,
+  body.printing-receipt nav,
+  body.printing-receipt footer {
+    display: none !important;
+  }
+}
+

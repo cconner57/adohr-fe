@@ -24,12 +24,14 @@ const error = ref<string | null>(null)
 const isFetched = ref(false)
 const selectedEventIndex = ref(0)
 let activeFetchPromise: Promise<void> | null = null
+let currentFetchId = 0
 
 export function useAdoptionEvents() {
   const fetchUpcomingEvents = async (force = false): Promise<void> => {
     if (isFetched.value && !force) return
     if (activeFetchPromise && !force) return activeFetchPromise
 
+    const fetchId = ++currentFetchId
     activeFetchPromise = (async () => {
       isLoading.value = true
       error.value = null
@@ -48,6 +50,8 @@ export function useAdoptionEvents() {
           // Fallback silently
         }
 
+        if (fetchId !== currentFetchId) return
+
         if (rawPayload) {
           events.value = extractEventList(rawPayload)
             .filter((e) => e && e.status !== 'cancelled')
@@ -56,11 +60,15 @@ export function useAdoptionEvents() {
           error.value = 'Could not load live calendar events'
         }
       } catch {
-        error.value = 'Could not load live calendar events'
+        if (fetchId === currentFetchId) {
+          error.value = 'Could not load live calendar events'
+        }
       } finally {
-        isLoading.value = false
-        isFetched.value = true
-        activeFetchPromise = null
+        if (fetchId === currentFetchId) {
+          isLoading.value = false
+          isFetched.value = true
+          activeFetchPromise = null
+        }
       }
     })()
 
@@ -173,6 +181,7 @@ export function useAdoptionEvents() {
 }
 
 export function resetAdoptionEventsState() {
+  currentFetchId++
   events.value = []
   isLoading.value = false
   error.value = null

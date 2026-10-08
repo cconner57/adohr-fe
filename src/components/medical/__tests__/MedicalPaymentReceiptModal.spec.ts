@@ -48,6 +48,46 @@ describe('MedicalPaymentReceiptModal.vue', () => {
     expect(wrapper.text()).toContain('985141002345678')
     expect(wrapper.text()).toContain('$150.00')
     expect(wrapper.text()).toContain('PAID IN FULL')
+    expect(wrapper.text()).not.toContain('Authorized Representative')
+    expect(wrapper.text()).not.toContain('ADOHR Adoptions & Finance Team')
+  })
+
+  it('capitalizes lowercase species correctly', () => {
+    const wrapper = mount(MedicalPaymentReceiptModal, {
+      props: {
+        isOpen: true,
+        adopter: mockAdopter,
+        petName: 'Jaylene',
+        species: 'cat',
+      },
+      global: {
+        stubs: {
+          Teleport: true,
+        },
+      },
+    })
+
+    const speciesEl = wrapper.find('.species-val')
+    expect(speciesEl.exists()).toBe(true)
+    expect(speciesEl.text()).toBe('Cat')
+  })
+
+  it('does not render a top print receipt button in the toolbar', () => {
+    const wrapper = mount(MedicalPaymentReceiptModal, {
+      props: {
+        isOpen: true,
+        adopter: mockAdopter,
+        petName: 'Jaylene',
+      },
+      global: {
+        stubs: {
+          Teleport: true,
+        },
+      },
+    })
+
+    expect(wrapper.find('.toolbar-btn.primary').exists()).toBe(false)
+    expect(wrapper.find('.modal-toolbar button').classes()).toContain('close-btn')
   })
 
   it('emits close event when close button is clicked', async () => {
@@ -70,7 +110,7 @@ describe('MedicalPaymentReceiptModal.vue', () => {
     expect(wrapper.emitted('close')).toBeTruthy()
   })
 
-  it('triggers window.print and emits print event when print button is clicked', async () => {
+  it('triggers window.print and emits print event when footer print button is clicked', async () => {
     const printSpy = vi.spyOn(window, 'print').mockImplementation(() => {})
 
     const wrapper = mount(MedicalPaymentReceiptModal, {
@@ -86,7 +126,7 @@ describe('MedicalPaymentReceiptModal.vue', () => {
       },
     })
 
-    const printBtn = wrapper.find('.toolbar-btn.primary')
+    const printBtn = wrapper.find('.modal-footer .action-btn.primary')
     await printBtn.trigger('click')
 
     expect(printSpy).toHaveBeenCalled()

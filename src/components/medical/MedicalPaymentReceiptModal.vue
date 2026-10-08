@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
 
 import type { IAdopterPaymentInfo } from '@/models/common'
 
@@ -16,6 +16,16 @@ const emit = defineEmits<{
   print: []
 }>()
 
+const capitalizedSpecies = computed(() => {
+  if (!props.species) return 'Pet'
+  const trimmed = props.species.trim()
+  if (!trimmed) return 'Pet'
+  return trimmed
+    .split(/\s+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+})
+
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape' && props.isOpen) {
     emit('close')
@@ -23,9 +33,22 @@ const handleKeydown = (e: KeyboardEvent) => {
 }
 
 const handlePrint = () => {
+  document.body.classList.add('printing-receipt')
   window.print()
   emit('print')
 }
+
+watch(
+  () => props.isOpen,
+  (open) => {
+    if (open) {
+      document.body.classList.add('printing-receipt')
+    } else {
+      document.body.classList.remove('printing-receipt')
+    }
+  },
+  { immediate: true },
+)
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
@@ -33,6 +56,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
+  document.body.classList.remove('printing-receipt')
 })
 </script>
 
@@ -51,29 +75,6 @@ onUnmounted(() => {
         <div class="modal-toolbar no-print">
           <span class="toolbar-title">Adoption Payment Receipt</span>
           <div class="toolbar-actions">
-            <button
-              class="toolbar-btn primary"
-              type="button"
-              title="Print Receipt"
-              @click="handlePrint"
-            >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="6 9 6 2 18 2 18 9" />
-                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                <rect x="6" y="14" width="12" height="8" />
-              </svg>
-              <span>Print Receipt</span>
-            </button>
             <button
               class="toolbar-btn close-btn"
               type="button"
@@ -137,7 +138,7 @@ onUnmounted(() => {
             <div class="meta-box">
               <span class="box-heading">Adopted Pet Profile</span>
               <p class="meta-line"><strong>Pet Name:</strong> {{ petName || 'Adopted Pet' }}</p>
-              <p class="meta-line"><strong>Species:</strong> {{ species || 'Pet' }}</p>
+              <p class="meta-line"><strong>Species:</strong> <span class="species-val">{{ capitalizedSpecies }}</span></p>
               <p v-if="microchipId" class="meta-line"><strong>Microchip ID:</strong> #{{ microchipId }}</p>
               <p class="meta-line"><strong>Placement Date:</strong> {{ adopter.paymentDate }}</p>
             </div>
@@ -201,10 +202,6 @@ onUnmounted(() => {
               veterinary medical care, spay/neuter sterilization, and vital preventative immunizations.
             </p>
             <div class="sign-off">
-              <div class="signature-line">
-                <span class="sig-title">Authorized Representative</span>
-                <span class="sig-name">ADOHR Adoptions &amp; Finance Team</span>
-              </div>
               <div class="tax-info">
                 <span>Tax ID / 501(c)(3) Nonprofit</span>
                 <span>Thank you for choosing adoption!</span>

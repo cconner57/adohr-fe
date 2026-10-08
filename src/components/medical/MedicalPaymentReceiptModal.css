@@ -1,7 +1,7 @@
 .receipt-modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 3000;
   background-color: oklch(0% 0 0deg / 60%);
   backdrop-filter: blur(4px);
   display: flex;
@@ -209,6 +209,10 @@
         color: #111;
         font-weight: 700;
       }
+
+      .species-val {
+        text-transform: capitalize;
+      }
     }
   }
 }
@@ -357,30 +361,10 @@
 
   .sign-off {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: flex-end;
     flex-wrap: wrap;
     gap: 16px;
-
-    .signature-line {
-      display: flex;
-      flex-direction: column;
-      border-top: 1px solid #999;
-      padding-top: 4px;
-      min-width: 220px;
-
-      .sig-title {
-        font-size: 0.68rem;
-        color: #888;
-        text-transform: uppercase;
-      }
-
-      .sig-name {
-        font-size: 0.82rem;
-        font-weight: 700;
-        color: #222;
-      }
-    }
 
     .tax-info {
       display: flex;
@@ -435,5 +419,51 @@
         background: oklch(from var(--color-primary) calc(l - 0.08) c h);
       }
     }
+  }
+}
+
+@media print {
+  .no-print,
+  .modal-toolbar,
+  .modal-footer {
+    display: none !important;
+  }
+
+  .receipt-modal-backdrop {
+    position: static !important;
+    inset: auto !important;
+    z-index: auto !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    overflow: visible !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  .receipt-dialog {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .receipt-sheet {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    background: #fff !important;
+    color: #000 !important;
   }
 }
