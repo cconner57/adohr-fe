@@ -285,7 +285,6 @@ onMounted(async () => {
                 :alt="petName"
                 class="pet-avatar"
                 loading="lazy"
-                referrerpolicy="no-referrer"
                 @error="isImgError = true"
               />
               <div v-else class="pet-avatar-fallback" aria-hidden="true">
@@ -429,6 +428,7 @@ onMounted(async () => {
           v-if="adopterInfo"
           :adopter="adopterInfo"
           :petName="petName"
+          :petPhotoUrl="petPhotoUrl"
           @print-receipt="handlePrintReceipt"
         />
 

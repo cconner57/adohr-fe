@@ -1,18 +1,68 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import type { IAdopterPaymentInfo } from '@/models/common'
 
-defineProps<{
+const props = defineProps<{
   adopter: IAdopterPaymentInfo
   petName?: string
+  petPhotoUrl?: string
 }>()
 
 const emit = defineEmits<{
   'print-receipt': []
 }>()
 
-const isFamilyPhotoError = ref(false)
+const r2BaseUrl = computed(() =>
+  ((import.meta.env.VITE_R2_PUBLIC_URL as string) || 'https://pub-768b3a497dc648f2895152092bf57934.r2.dev').replace(
+    /\/+$/,
+    '',
+  ),
+)
+
+const candidateUrls = computed(() => {
+  const urls: string[] = []
+  const fam = props.adopter.familyPhotoUrl?.trim()
+  if (fam) {
+    urls.push(fam)
+    if (fam.includes('api.adoption-os.com') && r2BaseUrl.value) {
+      urls.push(fam.replace(/^https?:\/\/api\.adoption-os\.com/, r2BaseUrl.value))
+    }
+  }
+  const pet = props.petPhotoUrl?.trim()
+  if (pet && !urls.includes(pet)) {
+    urls.push(pet)
+  }
+  return urls
+})
+
+const currentUrlIndex = ref(0)
+
+const currentPhotoUrl = computed(() => {
+  if (currentUrlIndex.value < candidateUrls.value.length) {
+    return candidateUrls.value[currentUrlIndex.value]
+  }
+  return ''
+})
+
+const isPhotoError = computed(() => {
+  return candidateUrls.value.length === 0 || currentUrlIndex.value >= candidateUrls.value.length
+})
+
+const handleImageError = () => {
+  if (currentUrlIndex.value < candidateUrls.value.length - 1) {
+    currentUrlIndex.value += 1
+  } else {
+    currentUrlIndex.value = candidateUrls.value.length
+  }
+}
+
+watch(
+  () => [props.adopter.familyPhotoUrl, props.petPhotoUrl],
+  () => {
+    currentUrlIndex.value = 0
+  },
+)
 </script>
 
 <template>
@@ -51,15 +101,15 @@ const isFamilyPhotoError = ref(false)
       v-if="adopter.familyPhotoUrl"
       class="family-photo-card"
     >
-      <div class="family-photo-media" :class="{ 'has-fallback': isFamilyPhotoError }">
+      <div class="family-photo-media" :class="{ 'has-fallback': isPhotoError }">
         <img
-          v-if="!isFamilyPhotoError"
-          :src="adopter.familyPhotoUrl"
+          v-if="!isPhotoError && currentPhotoUrl"
+          :key="currentPhotoUrl"
+          :src="currentPhotoUrl"
           :alt="`${adopter.adopterName || 'Adopter'} forever family photo with ${petName || 'pet'}`"
           class="family-photo-img"
           loading="lazy"
-          referrerpolicy="no-referrer"
-          @error="isFamilyPhotoError = true"
+          @error="handleImageError"
         />
         <div v-else class="family-photo-fallback" aria-hidden="true">
           <svg
@@ -77,31 +127,6 @@ const isFamilyPhotoError = ref(false)
           </svg>
           <span class="fallback-label">Adoption Day Photo</span>
         </div>
-        <a
-          :href="adopter.familyPhotoUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="family-photo-zoom"
-          title="Open full-size family photo"
-          aria-label="Open full-size family photo in a new tab"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M15 3h6v6" />
-            <path d="M10 14L21 3" />
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-          </svg>
-          <span class="zoom-label">Full Size</span>
-        </a>
       </div>
 
       <div class="family-photo-content">

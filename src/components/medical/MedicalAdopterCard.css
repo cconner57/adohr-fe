@@ -124,34 +124,6 @@
   }
 }
 
-.family-photo-zoom {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgb(0 0 0 / 70%);
-  color: #fff;
-  backdrop-filter: blur(4px);
-  border-radius: var(--radius-full);
-  padding: 4px 10px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all var(--transition-fast);
-
-  &:hover {
-    background: rgb(0 0 0 / 88%);
-    transform: translateY(-1px);
-    color: #fff;
-  }
-
-  .zoom-label {
-    line-height: 1;
-  }
-}
-
 .family-photo-content {
   display: flex;
   flex-direction: column;

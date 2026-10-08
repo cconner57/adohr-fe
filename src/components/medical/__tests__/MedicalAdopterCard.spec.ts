@@ -113,16 +113,14 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.text()).toContain('Welcome Home, Jaylene!')
     expect(wrapper.text()).toContain('May 15, 2025')
 
-    const zoomLink = wrapper.find('a.family-photo-zoom')
-    expect(zoomLink.exists()).toBe(true)
-    expect(zoomLink.attributes('href')).toBe('https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg')
-    expect(zoomLink.attributes('target')).toBe('_blank')
+    expect(wrapper.find('a.family-photo-zoom').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('Full Size')
   })
 
-  it('displays fallback icon and keeps card visible if image encounters loading error', async () => {
+  it('displays fallback icon and keeps card visible if all photo attempts encounter loading errors', async () => {
     const adopterWithPhoto: IAdopterPaymentInfo = {
       ...mockAdopter,
-      familyPhotoUrl: 'https://api.adoption-os.com/broken-photo.jpg',
+      familyPhotoUrl: 'https://example.com/broken-photo.jpg',
     }
 
     const wrapper = mount(MedicalAdopterCard, {
@@ -140,7 +138,32 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.find('.family-photo-card').exists()).toBe(true)
     expect(wrapper.find('.family-photo-fallback').exists()).toBe(true)
     expect(wrapper.text()).toContain('Adoption Day Photo')
-    expect(wrapper.find('a.family-photo-zoom').attributes('href')).toBe('https://api.adoption-os.com/broken-photo.jpg')
+    expect(wrapper.find('a.family-photo-zoom').exists()).toBe(false)
+  })
+
+  it('falls back to petPhotoUrl when familyPhotoUrl fails to load', async () => {
+    const adopterWithPhoto: IAdopterPaymentInfo = {
+      ...mockAdopter,
+      familyPhotoUrl: 'https://example.com/broken-family.jpg',
+    }
+
+    const wrapper = mount(MedicalAdopterCard, {
+      props: {
+        adopter: adopterWithPhoto,
+        petName: 'Jaylene',
+        petPhotoUrl: 'https://example.com/jaylene-profile.jpg',
+      },
+    })
+
+    const img = wrapper.find('img.family-photo-img')
+    expect(img.attributes('src')).toBe('https://example.com/broken-family.jpg')
+
+    await img.trigger('error')
+
+    const fallbackImg = wrapper.find('img.family-photo-img')
+    expect(fallbackImg.exists()).toBe(true)
+    expect(fallbackImg.attributes('src')).toBe('https://example.com/jaylene-profile.jpg')
+    expect(wrapper.find('.family-photo-fallback').exists()).toBe(false)
   })
 
   it('does not render family photo card when familyPhotoUrl is null or undefined', () => {
