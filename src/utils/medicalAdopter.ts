@@ -50,6 +50,7 @@ export const hasAdopterPaymentData = (
       adoptionObj.paymentMethod ||
       adoptionObj.receiptNumber ||
       adoptionObj.transactionId ||
+      adoptionObj.zelleConfirmationId ||
       adoptionObj.adopterContactInfo
     if (hasField) return true
   }
@@ -197,18 +198,28 @@ export const buildAdopterPaymentInfo = (
       ? rawMethod.trim()
       : 'Electronic Payment (Card / Digital)'
 
-  // 9. Identifiers (Transaction & Receipt)
+  // 9. Identifiers (Transaction, Zelle Confirmation, & Receipt)
   const slugOrId = (portalData?.slug || portalData?.petId || 'ADOHR').toUpperCase().replace(/[^A-Z0-9]/g, '')
   const yearSuffix = session?.adoptionYear || '2025'
+
+  const rawZelle =
+    getFieldIgnoreCase(adoptionObj, 'zelleConfirmationId', 'zelleConfirmationID', 'confirmationNumber', 'confirmationId') ??
+    getFieldIgnoreCase(paymentObj, 'zelleConfirmationId', 'confirmationNumber') ??
+    (paymentMethod === 'Zelle' ? getFieldIgnoreCase(adoptionObj, 'paymentReference') : undefined)
+
+  const zelleConfirmationId =
+    typeof rawZelle === 'string' && rawZelle.trim() ? rawZelle.trim() : undefined
 
   const rawTxn =
     getFieldIgnoreCase(paymentObj, 'transactionId', 'txnId', 'transaction_id') ??
     getFieldIgnoreCase(adoptionObj, 'transactionId')
 
-  const transactionId =
-    typeof rawTxn === 'string' && rawTxn.trim()
-      ? rawTxn.trim()
-      : `TXN-${yearSuffix}-${slugOrId.slice(0, 6)}-${Math.abs(slugOrId.split('').reduce((acc, c) => acc + c.charCodeAt(0), 1000) % 9000 + 1000)}`
+  let transactionId = ''
+  if (typeof rawTxn === 'string' && rawTxn.trim()) {
+    transactionId = rawTxn.trim()
+  } else if (!zelleConfirmationId) {
+    transactionId = `TXN-${yearSuffix}-${slugOrId.slice(0, 6)}-${Math.abs(slugOrId.split('').reduce((acc, c) => acc + c.charCodeAt(0), 1000) % 9000 + 1000)}`
+  }
 
   const rawReceipt =
     getFieldIgnoreCase(paymentObj, 'receiptNumber', 'receiptNo', 'receipt_number') ??
@@ -265,6 +276,7 @@ export const buildAdopterPaymentInfo = (
     paymentDate,
     paymentMethod,
     transactionId,
+    zelleConfirmationId,
     receiptNumber,
     itemizedFees,
   }

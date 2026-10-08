@@ -184,8 +184,8 @@ onUnmounted(() => {
               <span class="txn-val">{{ adopter.paymentMethod }}</span>
             </div>
             <div class="txn-field">
-              <span class="txn-label">Transaction Reference:</span>
-              <span class="txn-val font-mono">{{ adopter.transactionId }}</span>
+              <span class="txn-label">{{ adopter.zelleConfirmationId ? 'Zelle Confirmation ID:' : 'Transaction Reference:' }}</span>
+              <span class="txn-val font-mono">{{ adopter.zelleConfirmationId || adopter.transactionId }}</span>
             </div>
             <div class="txn-field">
               <span class="txn-label">Payment Status:</span>

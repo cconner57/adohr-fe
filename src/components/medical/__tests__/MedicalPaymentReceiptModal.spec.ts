@@ -94,4 +94,29 @@ describe('MedicalPaymentReceiptModal.vue', () => {
 
     printSpy.mockRestore()
   })
+
+  it('renders Zelle Confirmation ID label and value when zelleConfirmationId is present', () => {
+    const zelleAdopter: IAdopterPaymentInfo = {
+      ...mockAdopter,
+      paymentMethod: 'Zelle',
+      transactionId: '',
+      zelleConfirmationId: 'BACapdp7gdkg',
+    }
+    const wrapper = mount(MedicalPaymentReceiptModal, {
+      props: {
+        isOpen: true,
+        adopter: zelleAdopter,
+        petName: 'Jaylene',
+      },
+      global: {
+        stubs: {
+          Teleport: true,
+        },
+      },
+    })
+
+    expect(wrapper.text()).toContain('Zelle Confirmation ID:')
+    expect(wrapper.text()).toContain('BACapdp7gdkg')
+    expect(wrapper.text()).not.toContain('Transaction Reference:')
+  })
 })

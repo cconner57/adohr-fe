@@ -308,7 +308,8 @@ export interface IAdopterPaymentInfo {
   paymentStatus: string
   paymentDate: string
   paymentMethod: string
-  transactionId: string
+  transactionId?: string | null
+  zelleConfirmationId?: string | null
   receiptNumber: string
   itemizedFees?: IAdopterFeeItem[]
   notes?: string | null
@@ -342,6 +343,7 @@ export interface IPetMedicalPortalData {
     adopterContactInfo?: IContactInfo | null
     paymentMethod?: string | null
     transactionId?: string | null
+    zelleConfirmationId?: string | null
     receiptNumber?: string | null
     paymentStatus?: string | null
     itemizedFees?: IAdopterFeeItem[] | null
@@ -353,6 +355,7 @@ export interface IPetMedicalPortalData {
     date?: string | null
     method?: string | null
     transactionId?: string | null
+    zelleConfirmationId?: string | null
     receiptNumber?: string | null
   } | null
   adoptionFee?: number | string | null

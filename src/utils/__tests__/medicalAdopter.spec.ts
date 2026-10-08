@@ -95,4 +95,40 @@ describe('medicalAdopter utility', () => {
     const result = buildAdopterPaymentInfo(mockData as IPetMedicalPortalData)
     expect(result).toBeNull()
   })
+
+  it('provides zelleConfirmationId and omits transactionId when zelle confirmation number exists', () => {
+    const mockData: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      adoption: {
+        adoptedBy: 'Conner Family',
+        paymentMethod: 'Zelle',
+        zelleConfirmationId: 'BACapdp7gdkg',
+        receiptNumber: 'REC-2025-JAYL-0576',
+      },
+    }
+
+    const result = buildAdopterPaymentInfo(mockData as IPetMedicalPortalData)
+    expect(result).not.toBeNull()
+    expect(result?.zelleConfirmationId).toBe('BACapdp7gdkg')
+    expect(result?.transactionId).toBe('')
+    expect(result?.paymentMethod).toBe('Zelle')
+  })
+
+  it('provides synthesized transactionId when zelle has no confirmation number', () => {
+    const mockData: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      adoption: {
+        adoptedBy: 'Conner Family',
+        paymentMethod: 'Zelle',
+        receiptNumber: 'REC-2025-JAYL-0576',
+      },
+    }
+
+    const result = buildAdopterPaymentInfo(mockData as IPetMedicalPortalData)
+    expect(result).not.toBeNull()
+    expect(result?.zelleConfirmationId).toBeUndefined()
+    expect(result?.transactionId).toContain('TXN-2025-JAYL')
+  })
 })

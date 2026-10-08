@@ -67,4 +67,23 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.emitted('print-receipt')).toBeTruthy()
     expect(wrapper.emitted('print-receipt')?.length).toBe(1)
   })
+
+  it('renders Zelle Confirmation ID when zelleConfirmationId is present', () => {
+    const zelleAdopter: IAdopterPaymentInfo = {
+      ...mockAdopter,
+      paymentMethod: 'Zelle',
+      transactionId: '',
+      zelleConfirmationId: 'BACapdp7gdkg',
+    }
+    const wrapper = mount(MedicalAdopterCard, {
+      props: {
+        adopter: zelleAdopter,
+        petName: 'Jaylene',
+      },
+    })
+
+    expect(wrapper.text()).toContain('Zelle Confirmation ID')
+    expect(wrapper.text()).toContain('BACapdp7gdkg')
+    expect(wrapper.text()).not.toContain('Transaction ID')
+  })
 })

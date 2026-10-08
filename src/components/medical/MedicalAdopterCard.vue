@@ -136,7 +136,11 @@ const emit = defineEmits<{
             <strong class="value code-val">{{ adopter.receiptNumber }}</strong>
           </div>
 
-          <div class="data-item">
+          <div v-if="adopter.zelleConfirmationId" class="data-item">
+            <span class="label">Zelle Confirmation ID</span>
+            <strong class="value code-val">{{ adopter.zelleConfirmationId }}</strong>
+          </div>
+          <div v-else-if="adopter.transactionId" class="data-item">
             <span class="label">Transaction ID</span>
             <strong class="value code-val">{{ adopter.transactionId }}</strong>
           </div>
