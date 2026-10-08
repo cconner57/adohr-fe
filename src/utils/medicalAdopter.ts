@@ -387,12 +387,16 @@ export const buildAdopterPaymentInfo = (
     return false
   }
 
-  const isFosterToAdopt =
-    isFoster(rawIsFTA) ||
-    isFoster(rawType) ||
-    isFoster(rawPetStatus) ||
-    (typeof contractUrl === 'string' &&
-      (contractUrl.toLowerCase().includes('foster') || contractUrl.toLowerCase().includes('fta')))
+  let isFosterToAdopt = false
+  if (typeof rawIsFTA === 'boolean') {
+    isFosterToAdopt = rawIsFTA
+  } else {
+    isFosterToAdopt =
+      isFoster(rawType) ||
+      isFoster(rawPetStatus) ||
+      (typeof contractUrl === 'string' &&
+        (contractUrl.toLowerCase().includes('foster') || contractUrl.toLowerCase().includes('fta')))
+  }
 
   const adoptionType: 'Adoption' | 'Foster-to-Adopt' = isFosterToAdopt
     ? 'Foster-to-Adopt'
@@ -414,6 +418,7 @@ export const buildAdopterPaymentInfo = (
     contractUrl,
     itemizedFees,
     adoptionType,
+    fosterToAdopt: isFosterToAdopt,
     isFosterToAdopt,
   }
 }

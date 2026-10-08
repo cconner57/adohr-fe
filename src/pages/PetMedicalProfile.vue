@@ -142,9 +142,12 @@ const adopterInfo = computed(() =>
 )
 
 const isFosterToAdopt = computed(() => {
-  if (adopterInfo.value?.isFosterToAdopt) return true
-  const status = (portalData.value?.status || '').toLowerCase().trim()
-  if (status.includes('foster') || status === 'fta') return true
+  if (typeof portalData.value?.fosterToAdopt === 'boolean') return portalData.value.fosterToAdopt
+  if (typeof portalData.value?.isFosterToAdopt === 'boolean') return portalData.value.isFosterToAdopt
+  if (typeof portalData.value?.adoption?.fosterToAdopt === 'boolean') return portalData.value.adoption.fosterToAdopt
+  if (typeof portalData.value?.adoption?.isFosterToAdopt === 'boolean') return portalData.value.adoption.isFosterToAdopt
+  if (typeof adopterInfo.value?.fosterToAdopt === 'boolean') return adopterInfo.value.fosterToAdopt
+  if (typeof adopterInfo.value?.isFosterToAdopt === 'boolean') return adopterInfo.value.isFosterToAdopt
   const placementType = (portalData.value?.placementType || portalData.value?.adoptionType || '').toLowerCase().trim()
   if (placementType.includes('foster') || placementType === 'fta') return true
   const contractUrl = (portalData.value?.contractUrl || '').toLowerCase().trim()
