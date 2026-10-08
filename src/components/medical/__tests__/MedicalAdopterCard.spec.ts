@@ -109,7 +109,8 @@ describe('MedicalAdopterCard.vue', () => {
     expect(img.attributes('alt')).toContain('Sarah Jenkins')
     expect(img.attributes('alt')).toContain('Jaylene')
 
-    expect(wrapper.text()).toContain('Forever Family Photo')
+    expect(wrapper.find('.family-badge').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('Forever Family Photo')
     expect(wrapper.text()).toContain('Welcome Home, Jaylene!')
     expect(wrapper.text()).toContain('May 15, 2025')
 

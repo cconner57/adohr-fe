@@ -131,21 +131,6 @@
   flex: 1;
 }
 
-.family-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background-color: oklch(from var(--color-primary) 95% 0.05 h);
-  color: var(--color-primary);
-  font-size: 0.74rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
-  align-self: flex-start;
-}
-
 .family-title {
   font-size: 1.1rem;
   font-weight: 800;
