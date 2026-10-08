@@ -153,7 +153,7 @@ watch(
 
     <section class="cta-section">
       <div class="content-wrapper" v-scroll-reveal>
-        <h2>Your pet could be next</h2>
+        <h2>Your happy tail starts here</h2>
         <p>There are so many animals waiting for their forever homes. Start your journey today.</p>
         <router-link to="/adopt" class="cta-button">View Adoptable Pets</router-link>
       </div>
