@@ -115,7 +115,7 @@
   }
 
   .status-badge {
-    text-transform: capitalize;
+    text-transform: none;
     font-size: 0.78rem;
     font-weight: 700;
     padding: 3px 10px;

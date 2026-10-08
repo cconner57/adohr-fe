@@ -83,7 +83,6 @@ const petAge = computed(() => {
   return calculated === '-' ? '' : calculated
 })
 
-const petStatus = computed(() => portalData.value?.status || 'adopted')
 const isImgError = ref(false)
 
 const petPhotoUrl = computed(() => {
@@ -141,6 +140,21 @@ const healthSummary = computed(() => portalData.value?.medical?.healthSummary ||
 const adopterInfo = computed(() =>
   buildAdopterPaymentInfo(portalData.value, verifiedSession.value),
 )
+
+const isFosterToAdopt = computed(() => {
+  if (adopterInfo.value?.isFosterToAdopt) return true
+  const status = (portalData.value?.status || '').toLowerCase().trim()
+  if (status.includes('foster') || status === 'fta') return true
+  const placementType = (portalData.value?.placementType || portalData.value?.adoptionType || '').toLowerCase().trim()
+  if (placementType.includes('foster') || placementType === 'fta') return true
+  const contractUrl = (portalData.value?.contractUrl || '').toLowerCase().trim()
+  if (contractUrl.includes('foster') || contractUrl.includes('fta')) return true
+  return false
+})
+
+const petStatus = computed(() => {
+  return isFosterToAdopt.value ? 'Foster-to-Adopt' : 'Adopted'
+})
 
 watch(isReceiptModalOpen, (isOpen) => {
   if (isOpen) {
@@ -244,7 +258,7 @@ onMounted(async () => {
           <header class="hero">
             <div class="hero-top">
               <span class="eyebrow">Veterinary &amp; Care Record</span>
-              <span class="status-badge">Adopted</span>
+              <span class="status-badge">{{ petStatus }}</span>
             </div>
             <div class="hero-content">
               <div class="photo-placeholder"></div>
