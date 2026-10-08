@@ -42,7 +42,7 @@ onMounted(() => {
         <p v-else-if="error" class="status error">{{ error }}</p>
         <div v-else-if="sortedItems.length === 0" class="empty-state">
           <div class="empty-icon" aria-hidden="true">🐾</div>
-          <h2>Paws &amp; Relax — No News Just Yet</h2>
+          <h2>Paws &amp; Relax, No News Just Yet</h2>
           <p>
             Our rescue crew is currently busy giving head scratches, belly rubs, and helping pets find their forever homes. Check back soon for upcoming events, rescue stories, and announcements!
           </p>

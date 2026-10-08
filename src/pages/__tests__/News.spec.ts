@@ -29,7 +29,7 @@ describe('News.vue', () => {
 
     const emptyState = wrapper.find('.empty-state')
     expect(emptyState.exists()).toBe(true)
-    expect(wrapper.text()).toContain('Paws & Relax — No News Just Yet')
+    expect(wrapper.text()).toContain('Paws & Relax, No News Just Yet')
     expect(wrapper.text()).toContain('Our rescue crew is currently busy')
     expect(wrapper.text()).toContain('Meet Adoptable Pets')
     expect(wrapper.text()).toContain('Follow on Instagram')
