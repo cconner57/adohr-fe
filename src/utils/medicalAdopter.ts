@@ -135,7 +135,8 @@ export const hasAdopterPaymentData = (
       paymentObj.receiptNumber ||
       paymentObj.familyPhotoUrl ||
       paymentObj.family_photo_url ||
-      paymentObj.familyPhoto
+      paymentObj.familyPhoto ||
+      paymentObj.contractUrl
     if (hasField) return true
   }
 
@@ -146,7 +147,8 @@ export const hasAdopterPaymentData = (
     root.transactionId ||
     root.familyPhotoUrl ||
     root.family_photo_url ||
-    root.familyPhoto
+    root.familyPhoto ||
+    root.contractUrl
   ) {
     return true
   }
@@ -352,6 +354,15 @@ export const buildAdopterPaymentInfo = (
   const familyPhotoUrl =
     typeof rawFamilyPhoto === 'string' && rawFamilyPhoto.trim() ? rawFamilyPhoto.trim() : null
 
+  const rawContractUrl =
+    getFieldIgnoreCase(adoptionObj, 'contractUrl', 'contractURL', 'contract_url') ??
+    getFieldIgnoreCase(paymentObj, 'contractUrl', 'contractURL', 'contract_url') ??
+    getFieldIgnoreCase(adopterObj, 'contractUrl', 'contractURL', 'contract_url') ??
+    getFieldIgnoreCase(root, 'contractUrl', 'contractURL', 'contract_url')
+
+  const contractUrl =
+    typeof rawContractUrl === 'string' && rawContractUrl.trim() ? rawContractUrl.trim() : null
+
   return {
     adopterName,
     email,
@@ -365,6 +376,7 @@ export const buildAdopterPaymentInfo = (
     zelleConfirmationId,
     receiptNumber,
     familyPhotoUrl,
+    contractUrl,
     itemizedFees,
   }
 }

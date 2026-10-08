@@ -312,6 +312,7 @@ export interface IAdopterPaymentInfo {
   zelleConfirmationId?: string | null
   receiptNumber: string
   familyPhotoUrl?: string | null
+  contractUrl?: string | null
   itemizedFees?: IAdopterFeeItem[]
   notes?: string | null
 }
@@ -327,6 +328,7 @@ export interface IPetMedicalPortalData {
   dateOfBirth?: string | null
   photoUrl: string
   familyPhotoUrl?: string | null
+  contractUrl?: string | null
   physical?: IPetPhysicalData | null
   nutrition?: IPetDietData | null
   diet?: IPetDietData | null
@@ -340,6 +342,7 @@ export interface IPetMedicalPortalData {
     newAdoptedName?: string | null
     photo?: IPhoto | null
     familyPhotoUrl?: string | null
+    contractUrl?: string | null
     fee?: number | string | null
     feePaid?: number | string | null
     adoptionFee?: number | string | null
@@ -364,6 +367,7 @@ export interface IPetMedicalPortalData {
     zelleConfirmationId?: string | null
     receiptNumber?: string | null
     familyPhotoUrl?: string | null
+    contractUrl?: string | null
     itemizedFees?: IAdopterFeeItem[] | null
   } | null
   adoptionFee?: number | string | null

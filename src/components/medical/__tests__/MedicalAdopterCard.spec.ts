@@ -151,4 +151,52 @@ describe('MedicalAdopterCard.vue', () => {
 
     expect(wrapper.find('.family-photo-card').exists()).toBe(false)
   })
+
+  it('renders contract link when contractUrl is provided', () => {
+    const adopterWithContract: IAdopterPaymentInfo = {
+      ...mockAdopter,
+      familyPhotoUrl: 'https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg',
+      contractUrl: 'https://adoption-os.com/contract/signed-token-123?view=true',
+    }
+
+    const wrapper = mount(MedicalAdopterCard, {
+      props: {
+        adopter: adopterWithContract,
+        petName: 'Jaylene',
+      },
+    })
+
+    const link = wrapper.find('a.contract-link')
+    expect(link.exists()).toBe(true)
+    expect(link.attributes('href')).toBe('https://adoption-os.com/contract/signed-token-123?view=true')
+    expect(link.attributes('target')).toBe('_blank')
+    expect(link.text()).toContain('View Signed Adoption Contract')
+
+    const panelLink = wrapper.find('a.panel-contract-link')
+    expect(panelLink.exists()).toBe(true)
+    expect(panelLink.attributes('href')).toBe('https://adoption-os.com/contract/signed-token-123?view=true')
+    expect(panelLink.text()).toContain('View Signed Contract')
+  })
+
+  it('does not render any contract text or link when contractUrl is not provided', () => {
+    const adopterWithoutContract: IAdopterPaymentInfo = {
+      ...mockAdopter,
+      familyPhotoUrl: 'https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg',
+      contractUrl: null,
+    }
+
+    const wrapper = mount(MedicalAdopterCard, {
+      props: {
+        adopter: adopterWithoutContract,
+        petName: 'Jaylene',
+      },
+    })
+
+    expect(wrapper.find('a.contract-link').exists()).toBe(false)
+    expect(wrapper.find('a.panel-contract-link').exists()).toBe(false)
+    expect(wrapper.find('.family-contract').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('View Signed Adoption Contract')
+    expect(wrapper.text()).not.toContain('View Signed Contract')
+    expect(wrapper.text()).not.toContain('Adoption Contract')
+  })
 })

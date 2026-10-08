@@ -202,4 +202,31 @@ describe('medicalAdopter utility', () => {
     expect(result?.itemizedFees).toHaveLength(1)
     expect(result?.itemizedFees?.[0].label).toBe('Adoption Placement Fee')
   })
+
+  it('extracts contractUrl when present on adoption, payment, or root', () => {
+    const mockDataWithContract: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      contractUrl: 'https://adoption-os.com/contract/token-123?view=true',
+      adoption: {
+        adoptedBy: 'Chris Conner',
+        paymentMethod: 'Credit Card',
+      },
+    }
+
+    const result = buildAdopterPaymentInfo(mockDataWithContract as IPetMedicalPortalData)
+    expect(result).not.toBeNull()
+    expect(result?.contractUrl).toBe('https://adoption-os.com/contract/token-123?view=true')
+
+    const mockDataNoContract: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      adoption: {
+        adoptedBy: 'Chris Conner',
+      },
+    }
+    const resultNoContract = buildAdopterPaymentInfo(mockDataNoContract as IPetMedicalPortalData)
+    expect(resultNoContract).not.toBeNull()
+    expect(resultNoContract?.contractUrl).toBeNull()
+  })
 })
