@@ -12,7 +12,7 @@ const ZELLE_EMAIL = 'help.adohr@gmail.com'
 const isCopied = ref(false)
 const copyEIN = async () => {
   try {
-    await navigator.clipboard.writeText('81-0780050')
+    await navigator.clipboard.writeText('42-3096944')
     isCopied.value = true
     setTimeout(() => {
       isCopied.value = false
@@ -104,7 +104,7 @@ const getOneTimeDonationUrl = (): string => {
     <section class="trust-banner">
       <div class="content-wrapper" v-scroll-reveal>
         <p class="legal">
-          ADOHR is a 501(c)(3) nonprofit · Charity ID / EIN: <strong>81-0780050</strong> · Donations are tax-deductible as allowed by law.
+          ADOHR is a 501(c)(3) nonprofit · Charity ID / EIN: <strong>42-3096944</strong> · Donations are tax-deductible as allowed by law.
         </p>
       </div>
     </section>
@@ -229,7 +229,7 @@ const getOneTimeDonationUrl = (): string => {
 
           <div class="match-ein-box">
             <span class="ein-label">Charity ID / Tax ID (EIN):</span>
-            <span class="ein-code">81-0780050</span>
+            <span class="ein-code">42-3096944</span>
             <button type="button" class="copy-btn" @click="copyEIN">
               {{ isCopied ? '✓ Copied to Clipboard!' : 'Copy EIN' }}
             </button>

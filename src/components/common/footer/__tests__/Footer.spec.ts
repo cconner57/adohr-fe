@@ -89,7 +89,7 @@ describe('Footer.vue', () => {
     })
 
     const text = wrapper.text()
-    expect(text).toContain('Charity ID / EIN: 81-0780050')
+    expect(text).toContain('Charity ID / EIN: 42-3096944')
     expect(text).toContain('3016 E Colorado Blvd, Unit 5543, Pasadena, CA 91107')
   })
 })

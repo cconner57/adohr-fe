@@ -58,7 +58,7 @@ const currentYear = computed(() => new Date().getFullYear())
 
       <div class="footer-legal">
         <p>
-          A Dream of Home Rescue, Inc. is a 501(c)(3) non-profit organization · Charity ID / EIN: 81-0780050
+          A Dream of Home Rescue, Inc. is a 501(c)(3) non-profit organization · Charity ID / EIN: 42-3096944
         </p>
         <p>3016 E Colorado Blvd, Unit 5543, Pasadena, CA 91107</p>
         <p>
