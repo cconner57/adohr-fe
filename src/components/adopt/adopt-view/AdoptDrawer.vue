@@ -133,7 +133,7 @@ const submitForm = async () => {
       </div>
       <h3 class="success__title">Request Sent!</h3>
       <p class="success__message">
-        Thank you! One of our volunteers will reach out to schedule your meet and greet.
+        Thank you! One of our volunteers will reach out to schedule your meet and greet
       </p>
     </div>
 
@@ -150,7 +150,7 @@ const submitForm = async () => {
       <p>
         If these times don’t work for you, no problem! Simply fill out the form below, and one of
         our volunteers will get in touch with you as soon as possible to arrange a time that works
-        best for you.
+        best for you
       </p>
 
       <form @submit.prevent="submitForm">

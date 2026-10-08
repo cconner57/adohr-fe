@@ -199,7 +199,7 @@ onUnmounted(() => {
             <p>
               This official receipt verifies full payment for the pet adoption detailed above. A Dream of Home Rescue
               is a recognized 501(c)(3) nonprofit public charity. Adoption fees help cover rescue transportation,
-              veterinary medical care, spay/neuter sterilization, and vital preventative immunizations.
+              veterinary medical care, spay/neuter sterilization, and vital preventative immunizations
             </p>
             <div class="sign-off">
               <div class="tax-info">

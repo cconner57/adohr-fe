@@ -44,7 +44,7 @@ onMounted(() => {
         <p class="lead">
           Our foster families need everyday supplies to care for our animals. 
           Whether it's a bag of food or a warm blanket, every contribution helps 
-          set a rescue up for success.
+          set a rescue up for success
         </p>
         
         <div class="quick-links">
@@ -130,7 +130,7 @@ onMounted(() => {
           </svg>
           <p class="empty-title">No items at this time</p>
           <p class="empty-subtitle">
-            Our wishlist currently has no items requested. Check back soon or consider supporting our rescue with a direct donation.
+            Our wishlist currently has no items requested. Check back soon or consider supporting our rescue with a direct donation
           </p>
         </div>
         
@@ -171,12 +171,12 @@ onMounted(() => {
           <li class="step-card">
             <span class="step-num">1</span>
             <h3>Browse or Shop Online</h3>
-            <p>Browse our list of needs above, or use our 1-click Chewy wishlist (and upcoming Amazon wishlist) to send items directly to us.</p>
+            <p>Browse our list of needs above, or use our 1-click Chewy wishlist (and upcoming Amazon wishlist) to send items directly to us</p>
           </li>
           <li class="step-card">
             <span class="step-num">2</span>
             <h3>Drop Off Locally</h3>
-            <p>Bring physical donations to our weekend adoption events at <strong>PetSmart Pasadena (3347 E Foothill Blvd)</strong>.</p>
+            <p>Bring physical donations to our weekend adoption events at <strong>PetSmart Pasadena (3347 E Foothill Blvd)</strong></p>
           </li>
         </ol>
       </div>

@@ -62,7 +62,7 @@ const currentYear = computed(() => new Date().getFullYear())
         </p>
         <p>3016 E Colorado Blvd, Unit 5543, Pasadena, CA 91107</p>
         <p>
-          &copy; {{ currentYear }} A Dream of Home Rescue. All rights reserved. ·
+          &copy; {{ currentYear }} A Dream of Home Rescue. All rights reserved ·
           <a href="/legal.html" class="footer-legal-link">501(c)(3) Legal Notice</a>
         </p>
       </div>

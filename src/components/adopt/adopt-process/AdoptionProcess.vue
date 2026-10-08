@@ -14,28 +14,28 @@ defineProps<{
         <span>Submit Your Application</span> <br />
         <p>
           Tell us about yourself, your home, and the kind of cat you’re hoping to welcome into your
-          family.
+          family
         </p>
       </li>
       <li>
         <span> Share Your Home Photos or Video </span>
         <p>
           Help us get to know your space by sending a few photos or a quick video tour so we can
-          make sure it’s a safe, happy place for your future feline friend.
+          make sure it’s a safe, happy place for your future feline friend
         </p>
       </li>
       <li>
         <span>Adoption Fee &amp; Final Steps</span>
         <p>
           Once your application is reviewed, we’ll work with you to finalize the adoption with a
-          small fee that helps cover your cat’s care, vaccinations, and microchipping.
+          small fee that helps cover your cat’s care, vaccinations, and microchipping
         </p>
       </li>
       <li>
         <span>Adoption Day! 🎉</span> <br />
         <p>
           Congratulations! Your new cat is ready to come home. We’ll be here to support you as they
-          settle in and start exploring their new home.
+          settle in and start exploring their new home
         </p>
       </li>
     </ol>
@@ -44,42 +44,42 @@ defineProps<{
         <span>Submit Your Application</span> <br />
         <p>
           Tell us a little about yourself, your home, and the kind of dog you’re hoping to welcome
-          into your life.
+          into your life
         </p>
       </li>
       <li>
         <span>Chat With Our Team</span> <br />
         <p>
           After reviewing your application, a friendly volunteer will reach out for a quick
-          conversation to get to know you and answer any questions.
+          conversation to get to know you and answer any questions
         </p>
       </li>
       <li>
         <span>Virtual Home Visit</span> <br />
         <p>
           To ensure a safe and loving environment, we’ll take a virtual tour of your home via video
-          call.
+          call
         </p>
       </li>
       <li>
         <span>Meet &amp; Greet</span> <br />
         <p>
           Meet your potential new best friend! We’ll arrange a meet-and-greet with all household
-          members (including pets) to ensure everyone gets along.
+          members (including pets) to ensure everyone gets along
         </p>
       </li>
       <li>
         <span>Adoption Fee &amp; Final Steps</span> <br />
         <p>
           Once it’s a match, we’ll finalize the adoption with a small fee that helps cover your
-          dog’s care, vaccinations, and microchipping.
+          dog’s care, vaccinations, and microchipping
         </p>
       </li>
       <li>
         <span>Welcome Home! 🎉</span> <br />
         <p>
           Congratulations! Your new family member is ready to come home. We’re here to support you
-          as your dog settles in and begins their new adventure.
+          as your dog settles in and begins their new adventure
         </p>
       </li>
     </ol>

@@ -28,7 +28,7 @@ export const PAGES_1_TO_5: IFosterPage[] = [
       {
         id: 'q9',
         number: 9,
-        label: 'Please describe your typical daily routine.',
+        label: 'Please describe your typical daily routine',
         type: 'textarea',
         required: true,
       },
@@ -56,7 +56,7 @@ export const PAGES_1_TO_5: IFosterPage[] = [
       {
         id: 'q12',
         number: 12,
-        label: 'Provide contact info and confirm pets are allowed.',
+        label: 'Provide contact info and confirm pets are allowed',
         type: 'textarea',
         required: true,
       },
@@ -71,7 +71,7 @@ export const PAGES_1_TO_5: IFosterPage[] = [
       {
         id: 'q14',
         number: 14,
-        label: 'Please list ages of all children in the home.',
+        label: 'Please list ages of all children in the home',
         type: 'textarea',
         required: true,
       },
@@ -85,7 +85,7 @@ export const PAGES_1_TO_5: IFosterPage[] = [
       {
         id: 'q16',
         number: 16,
-        label: 'Describe the fence (height, material, gate security).',
+        label: 'Describe the fence (height, material, gate security)',
         type: 'textarea',
         speciesScope: 'dog',
       },
@@ -212,7 +212,7 @@ export const PAGES_1_TO_5: IFosterPage[] = [
       {
         id: 'q31',
         number: 31,
-        label: 'List all pets (Name, Species, Breed, Age, Sex).',
+        label: 'List all pets (Name, Species, Breed, Age, Sex)',
         type: 'textarea',
       },
       {
@@ -269,7 +269,7 @@ export const PAGES_1_TO_5: IFosterPage[] = [
       {
         id: 'q40',
         number: 40,
-        label: 'Name and phone number of your current clinic.',
+        label: 'Name and phone number of your current clinic',
         type: 'textarea',
         required: true,
       },
@@ -290,13 +290,13 @@ export const PAGES_1_TO_5: IFosterPage[] = [
       {
         id: 'q41',
         number: 41,
-        label: 'List pets owned in the last decade not currently with you.',
+        label: 'List pets owned in the last decade not currently with you',
         type: 'textarea',
       },
       {
         id: 'q42',
         number: 42,
-        label: 'What happened to each of those pets? (Passed away, rehomed, etc.).',
+        label: 'What happened to each of those pets? (Passed away, rehomed, etc.)',
         type: 'textarea',
       },
       {

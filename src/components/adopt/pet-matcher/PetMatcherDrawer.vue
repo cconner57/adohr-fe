@@ -89,7 +89,7 @@ const handleBack = () => {
       <!-- Step 1: Species -->
       <div v-if="step === 1" class="quiz-step">
         <h3>Who are you hoping to welcome home?</h3>
-        <p class="step-desc">Select the companion type you're looking to adopt.</p>
+        <p class="step-desc">Select the companion type you're looking to adopt</p>
         <div class="options-grid">
           <button
             type="button"
@@ -129,7 +129,7 @@ const handleBack = () => {
       <!-- Step 2: Energy -->
       <div v-else-if="step === 2" class="quiz-step">
         <h3>What is your ideal activity level?</h3>
-        <p class="step-desc">Pick the energy that fits your daily lifestyle best.</p>
+        <p class="step-desc">Pick the energy that fits your daily lifestyle best</p>
         <div class="options-grid">
           <button
             type="button"
@@ -169,7 +169,7 @@ const handleBack = () => {
       <!-- Step 3: Home Environment -->
       <div v-else-if="step === 3" class="quiz-step">
         <h3>What type of home environment do you have?</h3>
-        <p class="step-desc">Helps ensure the pet will thrive in your space.</p>
+        <p class="step-desc">Helps ensure the pet will thrive in your space</p>
         <div class="options-grid">
           <button
             type="button"
@@ -209,7 +209,7 @@ const handleBack = () => {
       <!-- Step 4: Household Members -->
       <div v-else-if="step === 4" class="quiz-step">
         <h3>Who else lives in your household?</h3>
-        <p class="step-desc">Select all that apply to ensure safe compatibility.</p>
+        <p class="step-desc">Select all that apply to ensure safe compatibility</p>
         <div class="checkbox-grid">
           <label class="checkbox-card" :class="{ selected: goodWithKids }">
             <input type="checkbox" v-model="goodWithKids" class="sr-only" />

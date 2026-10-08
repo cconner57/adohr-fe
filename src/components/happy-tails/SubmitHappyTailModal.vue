@@ -198,7 +198,7 @@ function handleClose() {
             <p>
               We loved reading about <strong>{{ petName }}</strong>’s new life with you.
               Your Happy Tail has been received by our rescue volunteers and will appear on
-              our alumni wall following quick review.
+              our alumni wall following quick review
             </p>
             <button type="button" class="btn btn-primary" @click="handleClose">
               Close

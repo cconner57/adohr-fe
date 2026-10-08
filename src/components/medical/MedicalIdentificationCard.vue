@@ -27,7 +27,7 @@ defineProps<{
       <div>
         <h2>Pet Identification &amp; Official Tags</h2>
         <p class="section-desc">
-          Official microchip registration, rabies certificates, and municipal license tags.
+          Official microchip registration, rabies certificates, and municipal license tags
         </p>
       </div>
     </div>

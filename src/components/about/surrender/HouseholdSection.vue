@@ -217,7 +217,7 @@ const animalLabel = computed(() => {
     </fieldset>
     <div class="household-members-section">
       <h5>Including yourself, how many people live in your home?</h5>
-      <p class="subtitle">Please list the age and gender of each person.</p>
+      <p class="subtitle">Please list the age and gender of each person</p>
 
       <div v-for="(member, index) in formState.householdMembers" :key="index" class="member-row">
         <div class="field-group gender-group">

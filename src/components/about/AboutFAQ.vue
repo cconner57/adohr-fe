@@ -6,27 +6,27 @@ const faqGroups = [
       {
         question: 'Can I adopt if I rent my home?',
         answer:
-          'Yes. Renters can adopt with landlord or HOA approval that confirms pets are allowed.',
+          'Yes. Renters can adopt with landlord or HOA approval that confirms pets are allowed',
       },
       {
         question: 'Do you offer post-adoption support?',
         answer:
-          'Yes. Our team provides guidance after adoption, including transition tips and behavioral support resources.',
+          'Yes. Our team provides guidance after adoption, including transition tips and behavioral support resources',
       },
       {
         question: 'Can I return the pet if the match is not successful?',
         answer:
-          'Yes. Contact ADOHR directly so we can coordinate a safe return plan and next placement steps.',
+          'Yes. Contact ADOHR directly so we can coordinate a safe return plan and next placement steps',
       },
       {
         question: 'How long does the adoption process usually take?',
         answer:
-          'Timelines vary by pet and application volume, but most completed applications are reviewed within a few days.',
+          'Timelines vary by pet and application volume, but most completed applications are reviewed within a few days',
       },
       {
         question: 'Are adoption fees the same for every pet?',
         answer:
-          'Not always. Fees can vary based on age, medical history, and special care needs, and each profile lists current details.',
+          'Not always. Fees can vary based on age, medical history, and special care needs, and each profile lists current details',
       },
     ],
   },
@@ -36,27 +36,27 @@ const faqGroups = [
       {
         question: 'Do adult cats need another cat at home?',
         answer:
-          'It depends on the cat. Some do best with a companion, while others thrive as solo pets. We list this in each cat profile.',
+          'It depends on the cat. Some do best with a companion, while others thrive as solo pets. We list this in each cat profile',
       },
       {
         question: 'Can kittens be adopted in pairs?',
         answer:
-          'Often yes. Paired kitten adoptions are encouraged when possible because they benefit from social development together.',
+          'Often yes. Paired kitten adoptions are encouraged when possible because they benefit from social development together',
       },
       {
         question: 'What litter setup should I have before pickup?',
         answer:
-          'Have at least one litter box per cat plus one extra, unscented litter, food and water stations, and a quiet decompression space.',
+          'Have at least one litter box per cat plus one extra, unscented litter, food and water stations, and a quiet decompression space',
       },
       {
         question: 'Should I keep a new cat in one room at first?',
         answer:
-          'Yes. A quiet starter room helps your cat decompress and adjust before gradually exploring the rest of the home.',
+          'Yes. A quiet starter room helps your cat decompress and adjust before gradually exploring the rest of the home',
       },
       {
         question: 'How should I introduce a new cat to resident pets?',
         answer:
-          'Use slow, supervised introductions with scent swapping and short sessions to reduce stress and support a safer transition.',
+          'Use slow, supervised introductions with scent swapping and short sessions to reduce stress and support a safer transition',
       },
     ],
   },
@@ -66,27 +66,27 @@ const faqGroups = [
       {
         question: 'Is a fenced yard required to adopt a dog?',
         answer:
-          'Not always. Apartment and condo adopters can qualify with a realistic daily exercise and potty plan.',
+          'Not always. Apartment and condo adopters can qualify with a realistic daily exercise and potty plan',
       },
       {
         question: 'How soon should I begin training with a new dog?',
         answer:
-          'Start immediately with calm routines and positive reinforcement. Consistency in the first few weeks is key.',
+          'Start immediately with calm routines and positive reinforcement. Consistency in the first few weeks is key',
       },
       {
         question: 'Can I schedule a meet-and-greet with my current dog?',
         answer:
-          "Yes. If a profile allows meet-and-greets, we can coordinate a safe introduction based on the dog's temperament and status.",
+          "Yes. If a profile allows meet-and-greets, we can coordinate a safe introduction based on the dog's temperament and status",
       },
       {
         question: 'What supplies should I prepare before bringing a new dog home?',
         answer:
-          'Have a leash, collar with ID tag, crate or safe rest area, food and water bowls, appropriate food, and enrichment toys ready.',
+          'Have a leash, collar with ID tag, crate or safe rest area, food and water bowls, appropriate food, and enrichment toys ready',
       },
       {
         question: 'How much daily exercise will my adopted dog need?',
         answer:
-          'Exercise needs depend on age, breed, and energy level, and we can help you choose a dog whose needs match your routine.',
+          'Exercise needs depend on age, breed, and energy level, and we can help you choose a dog whose needs match your routine',
       },
     ],
   },

@@ -26,7 +26,7 @@ onMounted(() => {
   <section class="impact">
     <header class="impact-header">
       <p class="eyebrow">Our impact</p>
-      <h2>Every number is a <span class="display-accent">life changed.</span></h2>
+      <h2>Every number is a <span class="display-accent">life changed</span></h2>
     </header>
 
     <div class="stat-rows">

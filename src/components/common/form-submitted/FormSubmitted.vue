@@ -9,7 +9,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   title: 'Application Received!',
-  message: "Thank you for volunteering! We'll review your application and get back to you shortly.",
+  message: "Thank you for volunteering! We'll review your application and get back to you shortly",
   formType: 'volunteer',
 })
 
@@ -37,16 +37,16 @@ const headerText = () => {
 
 const messageText = () => {
   if (props.formType === 'volunteer') {
-    return "Thank you for applying! We'll review your application and get back to you shortly."
+    return "Thank you for applying! We'll review your application and get back to you shortly"
   }
   if (props.formType === 'surrender') {
-    return "We'll review your form and get back to you shortly."
+    return "We'll review your form and get back to you shortly"
   }
   if (props.formType === 'adoption') {
-    return "We'll review your adoption application and get back to you shortly."
+    return "We'll review your adoption application and get back to you shortly"
   }
   if (props.formType === 'foster') {
-    return "We'll review your foster application and get back to you shortly."
+    return "We'll review your foster application and get back to you shortly"
   }
   return ''
 }

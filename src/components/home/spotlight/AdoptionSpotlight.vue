@@ -73,7 +73,7 @@ const displayedPets = computed((): IPet[] => {
           <line x1="15" y1="9" x2="15.01" y2="9"></line>
         </svg>
         <h3>Spotlight unavailable</h3>
-        <p>We're having trouble loading the featured pets right now, but you can still view all of our adoptable friends.</p>
+        <p>We're having trouble loading the featured pets right now, but you can still view all of our adoptable friends</p>
         <Button title="View all pets" @click="router.push('/adopt')" color="blue" size="medium" />
       </div>
     </div>

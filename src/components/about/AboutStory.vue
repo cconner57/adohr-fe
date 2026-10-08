@@ -23,13 +23,13 @@
           A Dream of Home Rescue may be a newer name, but our roots in Southern California rescue
           run deep. We are a close-knit group of longtime volunteers, fosters, and animal advocates
           who came together with a simple promise: to put animals first, every single day, with
-          complete openness and honesty.
+          complete openness and honesty
         </p>
         <p>
           Every pet who enters our care is treated like family from the very start. With the help of
           our amazing foster homes, dedicated adopters, and kind supporters, we get to watch second
           chances turn into lifelong happy endings. We believe with all our hearts that compassion
-          changes lives, both animal and human.
+          changes lives, both animal and human
         </p>
       </div>
     </div>

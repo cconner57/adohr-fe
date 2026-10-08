@@ -111,7 +111,7 @@ const handleSubmit = () => {
       </h2>
       <p class="subtitle">
         Enter your adoption details below to unlock and download official veterinary records,
-        vaccine certificates, and care timelines.
+        vaccine certificates, and care timelines
       </p>
     </div>
 
@@ -231,7 +231,7 @@ const handleSubmit = () => {
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
-          <span>No account needed · Information is verified against adoption files.</span>
+          <span>No account needed · Information is verified against adoption files</span>
         </p>
         <p class="help-link">
           <span>Having trouble accessing records?</span>

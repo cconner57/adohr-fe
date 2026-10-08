@@ -96,7 +96,7 @@ const getOneTimeDonationUrl = (): string => {
         <h1>Help a rescue find a <em>home</em></h1>
         <p class="lead">
           ADOHR is volunteer-powered, so your donation goes directly to the animals: medical care,
-          food, foster supplies, and the path to a forever family.
+          food, foster supplies, and the path to a forever family
         </p>
       </div>
     </section>
@@ -104,7 +104,7 @@ const getOneTimeDonationUrl = (): string => {
     <section class="trust-banner">
       <div class="content-wrapper" v-scroll-reveal>
         <p class="legal">
-          ADOHR is a 501(c)(3) nonprofit · Charity ID / EIN: <strong>42-3096944</strong> · Donations are tax-deductible as allowed by law.
+          ADOHR is a 501(c)(3) nonprofit · Charity ID / EIN: <strong>42-3096944</strong> · Donations are tax-deductible as allowed by law
         </p>
       </div>
     </section>
@@ -118,7 +118,7 @@ const getOneTimeDonationUrl = (): string => {
           <li class="way-item">
             <article class="way-card">
               <h3>One-Time Gift</h3>
-              <p>Make a direct, secure donation to help cover food, shelter, and medical care for an animal in need.</p>
+              <p>Make a direct, secure donation to help cover food, shelter, and medical care for an animal in need</p>
               <a
                 :href="getOneTimeDonationUrl()"
                 target="_blank"
@@ -132,7 +132,7 @@ const getOneTimeDonationUrl = (): string => {
           <li class="way-item">
             <article class="way-card">
               <h3>Send via Zelle</h3>
-              <p>Donate with zero processing fees so 100% of your gift goes straight to animal care.</p>
+              <p>Donate with zero processing fees so 100% of your gift goes straight to animal care</p>
               <div class="zelle-box">
                 <span class="way-detail">{{ ZELLE_EMAIL }}</span>
                 <button
@@ -149,7 +149,7 @@ const getOneTimeDonationUrl = (): string => {
           <li class="way-item">
             <article class="way-card">
               <h3>Foster Supply Wishlist</h3>
-              <p>Send needed food, kitten formula, litter, and supplies directly to our foster homes.</p>
+              <p>Send needed food, kitten formula, litter, and supplies directly to our foster homes</p>
               <RouterLink to="/wishlist" class="way-cta">View Wishlist</RouterLink>
             </article>
           </li>
@@ -162,7 +162,7 @@ const getOneTimeDonationUrl = (): string => {
               Monthly Rescue Pack
             </span>
             <h3>Become a Monthly Supporter</h3>
-            <p>Monthly gifts provide steady, life-saving support for foster supplies, medical care, and rescue emergencies.</p>
+            <p>Monthly gifts provide steady, life-saving support for foster supplies, medical care, and rescue emergencies</p>
           </div>
           <div class="vip-action">
             <a
@@ -213,16 +213,16 @@ const getOneTimeDonationUrl = (): string => {
         <p class="eyebrow">Double your impact</p>
         <h2 id="match-title">Employer Donation Matching</h2>
         <p class="match-lead">
-          Thousands of companies (Apple, Disney, Google, Microsoft, Boeing, Kaiser Permanente, Amgen, Netflix, etc.) match employee donations dollar-for-dollar.
+          Thousands of companies (Apple, Disney, Google, Microsoft, Boeing, Kaiser Permanente, Amgen, Netflix, etc.) match employee donations dollar-for-dollar
         </p>
 
         <div class="match-card">
           <div class="match-info">
             <h3>How to Request a Match:</h3>
             <ol class="match-steps">
-              <li>Donate to ADOHR online or via Zelle.</li>
-              <li>Log into your company giving portal (e.g. <em>Benevity, CyberGrants, YourCause, Bright Funds</em>).</li>
-              <li>Search for <strong>A Dream of Home Rescue</strong> using our Tax ID below.</li>
+              <li>Donate to ADOHR online or via Zelle</li>
+              <li>Log into your company giving portal (e.g. <em>Benevity, CyberGrants, YourCause, Bright Funds</em>)</li>
+              <li>Search for <strong>A Dream of Home Rescue</strong> using our Tax ID below</li>
               <li>Submit your receipt to double your gift!</li>
             </ol>
           </div>

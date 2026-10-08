@@ -31,7 +31,7 @@ defineProps<{
       <div>
         <h2>Diet, Nutrition &amp; Transition Guidelines</h2>
         <p class="section-desc">
-          Current nutrition schedule, food formula, and portion amounts for {{ petName || 'your pet' }}.
+          Current nutrition schedule, food formula, and portion amounts for {{ petName || 'your pet' }}
         </p>
       </div>
     </div>

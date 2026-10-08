@@ -38,7 +38,7 @@ const emit = defineEmits<{
       I hereby release and forever discharge ADOHR, its board, and affiliates from any claims,
       demands, or causes of action arising from my service. In an emergency, I authorize ADOHR to
       seek medical treatment on my behalf. I further grant ADOHR the right to use photos or videos
-      of me for promotional or social media purposes.
+      of me for promotional or social media purposes
     </p>
 
     <div class="acknowledgement">

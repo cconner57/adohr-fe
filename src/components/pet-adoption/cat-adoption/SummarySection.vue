@@ -96,7 +96,7 @@ const showTypedNameMismatch = computed(() => {
       "
       @blur="props.handleBlur('agreementSignature2')"
     />
-    <p v-if="showTypedNameMismatch" class="field-error">Both typed names must match exactly.</p>
+    <p v-if="showTypedNameMismatch" class="field-error">Both typed names must match exactly</p>
 
     <InputSignature
       label="Signature"

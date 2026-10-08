@@ -155,7 +155,7 @@ const stepPrefix = computed(() => String(step.value + 1).padStart(2, '0'))
             </div>
             <p class="lead-note">
               Start by telling us which pet you need to surrender. We'll only ask what we need to find
-              the best path forward.
+              the best path forward
             </p>
           </div>
 

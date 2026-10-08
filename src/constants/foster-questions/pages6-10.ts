@@ -358,7 +358,7 @@ export const PAGES_6_TO_10: IFosterPage[] = [
       {
         id: 'q94',
         number: 94,
-        label: 'Type your name to confirm application accuracy and age certification.',
+        label: 'Type your name to confirm application accuracy and age certification',
         type: 'text',
         required: true,
       },
@@ -366,7 +366,7 @@ export const PAGES_6_TO_10: IFosterPage[] = [
       {
         id: 'q95',
         number: 95,
-        label: 'Type your name to confirm agreement to foster policies and liability terms.',
+        label: 'Type your name to confirm agreement to foster policies and liability terms',
         type: 'text',
         required: true,
       },

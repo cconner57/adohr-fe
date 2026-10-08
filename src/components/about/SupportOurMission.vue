@@ -22,7 +22,7 @@ const goToWishlist = () => {
         <h2>Help us open more doors</h2>
         <p>
           We rely entirely on donations to provide shelter, medical care, and love to homeless pets
-          in Southern California. Your support makes every rescue possible.
+          in Southern California. Your support makes every rescue possible
         </p>
         <div class="support-actions">
           <Button

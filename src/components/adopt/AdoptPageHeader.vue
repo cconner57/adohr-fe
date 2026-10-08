@@ -33,7 +33,7 @@ const emit = defineEmits<{
     <h1>Find your new best friend</h1>
     <p>
       Search adoptable cats and dogs across Southern California. Every adoption helps us rescue
-      another life.
+      another life
     </p>
 
     <!-- Search Input Bar -->

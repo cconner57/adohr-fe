@@ -5,7 +5,7 @@
       <h1>The people behind <em>the door</em></h1>
       <p class="lead">
         A Dream of Home Rescue (ADOHR) is a volunteer-powered nonprofit helping homeless cats and
-        dogs heal, thrive, and find loving homes across Southern California.
+        dogs heal, thrive, and find loving homes across Southern California
       </p>
     </div>
   </section>

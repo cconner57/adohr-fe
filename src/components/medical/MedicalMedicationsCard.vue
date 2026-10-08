@@ -28,7 +28,7 @@ defineProps<{
       <div>
         <h2>Surgeries, Medications &amp; Clinical Notes</h2>
         <p class="section-desc">
-          Veterinary summaries, active medication schedules, and clinical procedures.
+          Veterinary summaries, active medication schedules, and clinical procedures
         </p>
       </div>
     </div>

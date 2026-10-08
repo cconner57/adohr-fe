@@ -22,7 +22,7 @@ onMounted(() => {
       <div class="content-wrapper">
         <p class="eyebrow">Dispatches from the rescue</p>
         <h1>ADOHR News</h1>
-        <p>Updates from rescue operations, events, and community milestones.</p>
+        <p>Updates from rescue operations, events, and community milestones</p>
       </div>
     </section>
 

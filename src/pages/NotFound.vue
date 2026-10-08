@@ -25,7 +25,7 @@ const handleGoAdopt = () => {
         height="380"
       />
       <h1 id="not-found-heading">Oops! Page Not Found</h1>
-      <p>The page you are looking for might have been moved, renamed, or is temporarily unavailable.</p>
+      <p>The page you are looking for might have been moved, renamed, or is temporarily unavailable</p>
       <div class="action-buttons">
         <Button
           class="btn-return-home"

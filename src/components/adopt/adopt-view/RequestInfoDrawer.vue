@@ -125,14 +125,14 @@ const submitForm = async () => {
         </svg>
       </div>
       <h3 class="success__title">Message Sent!</h3>
-      <p class="success__message">Thank you! We'll get back to you as soon as possible.</p>
+      <p class="success__message">Thank you! We'll get back to you as soon as possible</p>
     </div>
 
     <template v-else>
       <p>
         Have a question about <strong>{{ pet.name }}</strong
         >? Fill out the form below and one of our team members will get back to you as soon as
-        possible.
+        possible
       </p>
 
       <form @submit.prevent>

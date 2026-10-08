@@ -75,7 +75,7 @@ const siblingsList = computed<IDisplaySibling[]>(() => {
       <p class="eyebrow">Family Ties</p>
       <h2>Meet {{ pet.name }}'s Littermates</h2>
       <p class="litter-desc">
-        {{ litterGroupName ? `${litterGroupName} · ` : '' }}These brothers and sisters were rescued together and are also looking for their forever homes.
+        {{ litterGroupName ? `${litterGroupName} · ` : '' }}These brothers and sisters were rescued together and are also looking for their forever homes
       </p>
     </div>
 

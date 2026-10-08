@@ -31,7 +31,7 @@ const scrollToFaq = () => {
         <h1>Pet Medical Records &amp; Documents</h1>
         <p class="hero-sub">
           Enter your adoption application details below to verify access and view your pet's
-          official veterinary history, rabies certificates, and downloadable PDF records.
+          official veterinary history, rabies certificates, and downloadable PDF records
         </p>
       </header>
 
@@ -70,7 +70,7 @@ const scrollToFaq = () => {
             <p>
               We protect medical privacy by requiring 5 verification points matching your adoption
               application (Pet Name, Adopter Last Name, Email, Phone Number, and Adoption Month &amp;
-              Year) before revealing sensitive records.
+              Year) before revealing sensitive records
             </p>
           </div>
 
@@ -98,7 +98,7 @@ const scrollToFaq = () => {
             </div>
             <p>
               You can download rabies certificates, spay/neuter proof, complete immunization
-              records, and intake veterinary summaries in standard PDF format.
+              records, and intake veterinary summaries in standard PDF format
             </p>
           </div>
 
@@ -125,7 +125,7 @@ const scrollToFaq = () => {
             <p>
               Records for all pets adopted through ADOHR are archived. If you encounter any
               difficulties finding your pet, our adoption team can assist you at
-              <a href="mailto:help.adohr@gmail.com">help.adohr@gmail.com</a>.
+              <a href="mailto:help.adohr@gmail.com">help.adohr@gmail.com</a>
             </p>
           </div>
         </div>

@@ -31,7 +31,7 @@ defineProps<{
       <div>
         <h2>Diagnostic Lab &amp; Disease Screening</h2>
         <p class="section-desc">
-          Official laboratory screening results and infectious disease panels for {{ petName || 'your pet' }}.
+          Official laboratory screening results and infectious disease panels for {{ petName || 'your pet' }}
         </p>
       </div>
     </div>

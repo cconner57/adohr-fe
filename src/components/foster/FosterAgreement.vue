@@ -23,7 +23,7 @@ const emit = defineEmits<{
         understand that fostering may be costly and time intensive, and that I may incur
         out-of-pocket expenses, including urgent care expenses, unless reimbursement is expressly
         authorized in writing by ADOHR in advance. If you understand and agree, please type your
-        full name below.
+        full name below
       </p>
 
       <div class="agreement-card">
@@ -67,7 +67,7 @@ const emit = defineEmits<{
         liabilities, judgments, and expenses (including reasonable attorneys' fees) arising out of
         or related to my fostering activities, except to the extent caused by ADOHR's gross
         negligence or willful misconduct. If you understand and agree, please type your full name
-        below.
+        below
       </p>
 
       <div class="agreement-card">

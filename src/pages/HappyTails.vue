@@ -54,7 +54,7 @@ watch(
       <div class="content-wrapper" v-scroll-reveal>
         <p class="eyebrow">From rescue to home</p>
         <h1>Happy Tails</h1>
-        <p class="lead">Celebrating the beautiful journeys of adopted pets and the loving families who gave them a second chance at life.</p>
+        <p class="lead">Celebrating the beautiful journeys of adopted pets and the loving families who gave them a second chance at life</p>
         <button type="button" class="hero-submit-btn" @click="isSubmitModalOpen = true">
           🐾 Share Your Happy Tail
         </button>
@@ -118,7 +118,7 @@ watch(
         </div>
 
         <div v-else-if="filteredItems.length === 0" class="status empty">
-          No {{ currentFilter === 'dog' ? 'dog' : currentFilter === 'cat' ? 'cat' : '' }} alumni stories found.
+          No {{ currentFilter === 'dog' ? 'dog' : currentFilter === 'cat' ? 'cat' : '' }} alumni stories found
         </div>
         
         <div v-else class="masonry-grid">

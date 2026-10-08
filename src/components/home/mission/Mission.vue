@@ -24,7 +24,7 @@ onMounted(() => {
         A Dream of Home Rescue (ADOHR) rescues abandoned, unwanted, and surrendered animals. While
         we search for loving homes, we give them what every animal deserves: shelter, food,
         veterinary care, and love. We also advocate for pet adoption, spaying, neutering, and
-        responsible pet care.
+        responsible pet care
       </p>
       <ul class="mission-list">
         <li>Vaccinations, microchipping &amp; spay/neuter</li>

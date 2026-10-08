@@ -39,7 +39,7 @@ const getCategoryLabel = (category?: string) => {
       <div class="header-text">
         <h2 id="documents-title">Official Medical Documents &amp; PDFs</h2>
         <p class="section-sub">
-          Download certified PDF records for your veterinarian, pet insurance claims, or personal archives.
+          Download certified PDF records for your veterinarian, pet insurance claims, or personal archives
         </p>
       </div>
       <div v-if="props.documents.length > 0" class="doc-count-badge">
@@ -153,7 +153,7 @@ const getCategoryLabel = (category?: string) => {
       <h3>No Attached PDF Records Yet</h3>
       <p>
         Digital medical files for {{ props.petName || 'this pet' }} have not been uploaded yet.
-        Please check back soon or contact ADOHR if you need physical records expedited.
+        Please check back soon or contact ADOHR if you need physical records expedited
       </p>
     </div>
   </section>

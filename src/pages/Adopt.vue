@@ -369,7 +369,7 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special',
               </svg>
             </div>
             <h2>No pets found</h2>
-            <p>We couldn't find any friends matching your current search and filters.</p>
+            <p>We couldn't find any friends matching your current search and filters</p>
             <div class="empty-actions">
               <button v-if="filterCount > 0 || searchQuery || isAttendingWeekendOnly" class="reset-btn" @click="clearFilters">
                 Reset all filters

@@ -62,30 +62,30 @@ const goodToKnowItems = computed<IPolicyItem[]>(() => {
     return [
       {
         title: 'Indoor Only',
-        description: 'For their safety and wellbeing, adopted cats must be kept indoors.',
+        description: 'For their safety and wellbeing, adopted cats must be kept indoors',
       },
       {
         title: 'No Declawing',
-        description: 'Adopters must agree never to declaw their cat.',
+        description: 'Adopters must agree never to declaw their cat',
       },
       {
         title: 'Not as Gifts',
-        description: 'We do not place cats as gifts for others.',
+        description: 'We do not place cats as gifts for others',
       },
     ]
   }
   return [
     {
       title: 'Safe & Secure Home',
-      description: 'A secure yard or dedicated on-leash walking routine is required.',
+      description: 'A secure yard or dedicated on-leash walking routine is required',
     },
     {
       title: 'Training & Socialization',
-      description: 'Adopters must commit to humane, positive-reinforcement care.',
+      description: 'Adopters must commit to humane, positive-reinforcement care',
     },
     {
       title: 'Not as Gifts',
-      description: 'We do not place dogs as gifts for others.',
+      description: 'We do not place dogs as gifts for others',
     },
   ]
 })
@@ -118,7 +118,7 @@ const goodToKnowItems = computed<IPolicyItem[]>(() => {
             class="kitten-link"
             >single kitten syndrome</a
           >
-          and ensure they have a healthy social environment.
+          and ensure they have a healthy social environment
         </p>
       </div>
     </div>
@@ -147,7 +147,7 @@ const goodToKnowItems = computed<IPolicyItem[]>(() => {
           Kittens may not have completed every service at the time of adoption. By around 6 months
           of age, kittens are expected to receive all required veterinary care listed above. If you
           adopt a kitten, you agree to coordinate with an ADOHR director so your cat can attend
-          required follow-up vet visits.
+          required follow-up vet visits
         </p>
         <p v-else class="policy-body">
           Puppies may not have completed every service at the time of adoption. While smaller breeds
@@ -156,11 +156,11 @@ const goodToKnowItems = computed<IPolicyItem[]>(() => {
           joint development. All other required puppy veterinary care will be completed on schedule.
           If you adopt a puppy, you agree to coordinate with an ADOHR director and your veterinarian
           so your dog can attend required follow-up visits and complete their spay or neuter at the
-          recommended age.
+          recommended age
         </p>
         <p class="policy-body">
           These services would ordinarily cost well over $350. Additional donations are always
-          appreciated and directly support {{ isCat ? 'cats' : 'dogs' }} needing extra medical care.
+          appreciated and directly support {{ isCat ? 'cats' : 'dogs' }} needing extra medical care
         </p>
       </article>
 
@@ -174,7 +174,7 @@ const goodToKnowItems = computed<IPolicyItem[]>(() => {
         </ul>
         <p class="policy-body final-note">
           Not every application is approved. Our first responsibility is always the long-term
-          welfare of the {{ animalLabel }}, and we appreciate your understanding.
+          welfare of the {{ animalLabel }}, and we appreciate your understanding
         </p>
       </article>
     </section>

@@ -159,7 +159,7 @@ watch(
         <div>
           <h2>Adopter &amp; Payment Record</h2>
           <p class="section-desc">
-            Verified adoption file, contact records, and payment confirmation for {{ petName || 'your pet' }}.
+            Verified adoption file, contact records, and payment confirmation for {{ petName || 'your pet' }}
           </p>
         </div>
       </div>

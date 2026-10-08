@@ -7,7 +7,7 @@
         <p>
           We rescue, rehabilitate, and rehome animals in need—one tail, one paw, one heart at a
           time. Every animal receives medical care, a safe foster home, love-based socialization,
-          and a path to a forever family.
+          and a path to a forever family
         </p>
         <ul class="ticks">
           <li>Vaccinations, microchipping, and spay/neuter</li>

@@ -3,7 +3,7 @@
     <div class="content-wrapper" v-scroll-reveal>
       <p class="eyebrow">Where to find us</p>
       <h2>Come say hello</h2>
-      <p>We host many volunteer and adoption activities through our PetSmart partner location.</p>
+      <p>We host many volunteer and adoption activities through our PetSmart partner location</p>
       <address>
         PetSmart Pasadena<br />
         <a
@@ -36,7 +36,7 @@
         <p class="visit-note">
           Volunteers are on-site during Cat Center hours to feed, clean, and socialize with the
           cats. Potential adopters and potential volunteers are welcome to stop by if they are
-          interested in adopting or volunteering.
+          interested in adopting or volunteering
         </p>
       </div>
     </div>
