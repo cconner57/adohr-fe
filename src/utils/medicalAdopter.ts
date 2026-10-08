@@ -128,9 +128,14 @@ export const hasAdopterPaymentData = (
       paymentObj.amount !== undefined ||
       paymentObj.fee !== undefined ||
       paymentObj.status ||
+      paymentObj.paymentStatus ||
       paymentObj.method ||
+      paymentObj.paymentMethod ||
       paymentObj.transactionId ||
-      paymentObj.receiptNumber
+      paymentObj.receiptNumber ||
+      paymentObj.familyPhotoUrl ||
+      paymentObj.family_photo_url ||
+      paymentObj.familyPhoto
     if (hasField) return true
   }
 
@@ -139,7 +144,9 @@ export const hasAdopterPaymentData = (
     root.paymentStatus ||
     root.receiptNumber ||
     root.transactionId ||
-    root.familyPhotoUrl
+    root.familyPhotoUrl ||
+    root.family_photo_url ||
+    root.familyPhoto
   ) {
     return true
   }
@@ -297,8 +304,13 @@ export const buildAdopterPaymentInfo = (
 
   // 10. Itemized Fees
   let itemizedFees: IAdopterFeeItem[] = []
-  if (Array.isArray(adoptionObj.itemizedFees) && adoptionObj.itemizedFees.length > 0) {
-    itemizedFees = adoptionObj.itemizedFees as IAdopterFeeItem[]
+  const rawFees =
+    (Array.isArray(adoptionObj.itemizedFees) && adoptionObj.itemizedFees.length > 0 && adoptionObj.itemizedFees) ||
+    (Array.isArray(paymentObj.itemizedFees) && paymentObj.itemizedFees.length > 0 && paymentObj.itemizedFees) ||
+    (Array.isArray(root.itemizedFees) && root.itemizedFees.length > 0 && root.itemizedFees)
+
+  if (rawFees) {
+    itemizedFees = rawFees as IAdopterFeeItem[]
   } else {
     const petDisplayName = portalData?.name ? portalData.name.trim() : 'Pet'
     itemizedFees = [
@@ -332,9 +344,10 @@ export const buildAdopterPaymentInfo = (
 
   // 11. Family Photo URL
   const rawFamilyPhoto =
-    getFieldIgnoreCase(adoptionObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl') ??
-    getFieldIgnoreCase(adopterObj, 'familyPhotoUrl', 'familyPhotoURL') ??
-    getFieldIgnoreCase(root, 'familyPhotoUrl', 'familyPhotoURL')
+    getFieldIgnoreCase(adoptionObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
+    getFieldIgnoreCase(paymentObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
+    getFieldIgnoreCase(adopterObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
+    getFieldIgnoreCase(root, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto')
 
   const familyPhotoUrl =
     typeof rawFamilyPhoto === 'string' && rawFamilyPhoto.trim() ? rawFamilyPhoto.trim() : null

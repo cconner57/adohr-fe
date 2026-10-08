@@ -119,7 +119,7 @@ describe('MedicalAdopterCard.vue', () => {
     expect(zoomLink.attributes('target')).toBe('_blank')
   })
 
-  it('hides family photo card if image encounters loading error', async () => {
+  it('displays fallback icon and keeps card visible if image encounters loading error', async () => {
     const adopterWithPhoto: IAdopterPaymentInfo = {
       ...mockAdopter,
       familyPhotoUrl: 'https://api.adoption-os.com/broken-photo.jpg',
@@ -137,7 +137,10 @@ describe('MedicalAdopterCard.vue', () => {
     const img = wrapper.find('img.family-photo-img')
     await img.trigger('error')
 
-    expect(wrapper.find('.family-photo-card').exists()).toBe(false)
+    expect(wrapper.find('.family-photo-card').exists()).toBe(true)
+    expect(wrapper.find('.family-photo-fallback').exists()).toBe(true)
+    expect(wrapper.text()).toContain('Adoption Day Photo')
+    expect(wrapper.find('a.family-photo-zoom').attributes('href')).toBe('https://api.adoption-os.com/broken-photo.jpg')
   })
 
   it('does not render family photo card when familyPhotoUrl is null or undefined', () => {

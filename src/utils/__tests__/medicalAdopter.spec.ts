@@ -4,6 +4,7 @@ import type { IPetMedicalPortalData } from '@/models/common'
 import {
   buildAdopterPaymentInfo,
   formatCurrency,
+  hasAdopterPaymentData,
   type IVerifiedAdopterSession,
 } from '@/utils/medicalAdopter'
 
@@ -176,5 +177,29 @@ describe('medicalAdopter utility', () => {
     const result = buildAdopterPaymentInfo(mockDataWithStripeFee as IPetMedicalPortalData)
     expect(result).not.toBeNull()
     expect(result?.adoptionFee).toBe('$250.00')
+  })
+
+  it('extracts familyPhotoUrl and itemizedFees when present on payment object', () => {
+    const mockDataPaymentPhoto: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      payment: {
+        paymentStatus: 'Paid in Full',
+        paymentMethod: 'Zelle',
+        receiptNumber: 'REC-2025-JAYL-0576',
+        transactionId: 'TXN-2025-JAYLEN-5423',
+        familyPhotoUrl: 'https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg',
+        itemizedFees: [
+          { label: 'Adoption Placement Fee', amount: '$150.00', included: false },
+        ],
+      },
+    }
+
+    expect(hasAdopterPaymentData(mockDataPaymentPhoto as IPetMedicalPortalData)).toBe(true)
+    const result = buildAdopterPaymentInfo(mockDataPaymentPhoto as IPetMedicalPortalData)
+    expect(result).not.toBeNull()
+    expect(result?.familyPhotoUrl).toBe('https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg')
+    expect(result?.itemizedFees).toHaveLength(1)
+    expect(result?.itemizedFees?.[0].label).toBe('Adoption Placement Fee')
   })
 })

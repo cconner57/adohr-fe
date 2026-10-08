@@ -48,11 +48,12 @@ const isFamilyPhotoError = ref(false)
 
     <!-- Adoption Family Photo -->
     <div
-      v-if="adopter.familyPhotoUrl && !isFamilyPhotoError"
+      v-if="adopter.familyPhotoUrl"
       class="family-photo-card"
     >
-      <div class="family-photo-media">
+      <div class="family-photo-media" :class="{ 'has-fallback': isFamilyPhotoError }">
         <img
+          v-if="!isFamilyPhotoError"
           :src="adopter.familyPhotoUrl"
           :alt="`${adopter.adopterName || 'Adopter'} forever family photo with ${petName || 'pet'}`"
           class="family-photo-img"
@@ -60,6 +61,22 @@ const isFamilyPhotoError = ref(false)
           referrerpolicy="no-referrer"
           @error="isFamilyPhotoError = true"
         />
+        <div v-else class="family-photo-fallback" aria-hidden="true">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+            <circle cx="12" cy="13" r="4" />
+          </svg>
+          <span class="fallback-label">Adoption Day Photo</span>
+        </div>
         <a
           :href="adopter.familyPhotoUrl"
           target="_blank"

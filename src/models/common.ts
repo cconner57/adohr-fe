@@ -356,11 +356,15 @@ export interface IPetMedicalPortalData {
     amount?: number | string | null
     fee?: number | string | null
     status?: string | null
+    paymentStatus?: string | null
     date?: string | null
     method?: string | null
+    paymentMethod?: string | null
     transactionId?: string | null
     zelleConfirmationId?: string | null
     receiptNumber?: string | null
+    familyPhotoUrl?: string | null
+    itemizedFees?: IAdopterFeeItem[] | null
   } | null
   adoptionFee?: number | string | null
   paymentStatus?: string | null

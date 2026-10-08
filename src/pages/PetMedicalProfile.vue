@@ -32,6 +32,7 @@ import {
   buildPhysicalTraitCapsules,
   buildProceduresList,
   buildVaccineRecords,
+  getFieldIgnoreCase,
 } from '@/utils/medicalParser'
 
 const route = useRoute()
@@ -104,8 +105,17 @@ const petPhotoUrl = computed(() => {
       return first.url
     }
   }
-  if (typeof data.familyPhotoUrl === 'string' && data.familyPhotoUrl.trim()) {
-    return data.familyPhotoUrl.trim()
+  const adoptionObj = data.adoption as Record<string, unknown> | undefined
+  const paymentObj = data.payment as Record<string, unknown> | undefined
+  const adopterObj = data.adopter as Record<string, unknown> | undefined
+  const famPhoto =
+    getFieldIgnoreCase(adoptionObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
+    getFieldIgnoreCase(paymentObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
+    getFieldIgnoreCase(adopterObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
+    getFieldIgnoreCase(data, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto')
+
+  if (typeof famPhoto === 'string' && famPhoto.trim()) {
+    return famPhoto.trim()
   }
   return ''
 })
