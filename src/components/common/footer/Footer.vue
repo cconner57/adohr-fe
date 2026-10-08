@@ -16,7 +16,7 @@ const currentYear = computed(() => new Date().getFullYear())
 <template>
   <footer class="footer" :class="[`border-top-${props.borderTopColor}`]">
     <div class="footer-inner">
-      <h2 class="footer-headline">Every pet, <span class="footer-accent">home.</span></h2>
+      <h2 class="footer-headline">Every pet, <span class="footer-accent">home</span></h2>
 
       <div class="footer-grid">
         <nav class="footer-links" aria-label="Footer navigation">
