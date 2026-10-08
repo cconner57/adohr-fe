@@ -70,6 +70,12 @@ const adoptionDateLabel = computed(() => {
   return isFosterToAdopt.value ? 'Foster-to-Adopt Date' : 'Adoption Date'
 })
 
+const contractButtonLabel = computed(() => {
+  return isFosterToAdopt.value
+    ? 'View Signed Foster-to-Adopt Contract'
+    : 'View Signed Adoption Contract'
+})
+
 const hasFamilyPhoto = computed(() => {
   return Boolean(props.adopter.familyPhotoUrl?.trim()) && !isPhotoError.value && Boolean(currentPhotoUrl.value)
 })
@@ -202,7 +208,7 @@ watch(
               <line x1="16" y1="17" x2="8" y2="17" />
               <polyline points="10 9 9 9 8 9" />
             </svg>
-            <span>View Signed Adoption Contract</span>
+            <span>{{ contractButtonLabel }}</span>
             <svg
               width="11"
               height="11"

@@ -144,6 +144,8 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.find('.family-meta').text()).not.toContain('Adoption Finalized')
     expect(wrapper.text()).toContain('Foster-to-Adopt Date')
     expect(wrapper.text()).not.toContain('Adoption Finalized')
+    expect(wrapper.text()).toContain('View Signed Foster-to-Adopt Contract')
+    expect(wrapper.text()).not.toContain('View Signed Adoption Contract')
   })
 
   it('renders "No image available" fallback box if contract is available but no family photo is provided', () => {
