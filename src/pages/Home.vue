@@ -122,7 +122,7 @@ onMounted(() => {
               icon="foster"
               imgSrc="/images/hand.svg"
               title="Foster a pet"
-              subtitle="Provide temporary care and save a life"
+              subtitle="Open your home, save a life"
               color="purple"
               @click="() => router.push('/foster')"
               class="hover-scale"
