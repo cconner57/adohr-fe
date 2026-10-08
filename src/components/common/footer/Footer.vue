@@ -88,7 +88,6 @@ const currentYear = computed(() => new Date().getFullYear())
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: clamp(2.5rem, 5vw, 4rem);
 }
 
 .footer-headline {
@@ -96,6 +95,7 @@ const currentYear = computed(() => new Date().getFullYear())
   color: var(--text-inverse);
   line-height: 0.95;
   letter-spacing: -0.035em;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
 }
 
 .footer-accent {
@@ -112,6 +112,7 @@ const currentYear = computed(() => new Date().getFullYear())
   flex-wrap: wrap;
   padding-top: 1.5rem;
   border-top: 1px solid oklch(from var(--text-inverse) l c h / 22%);
+  margin-bottom: clamp(1rem, 2vw, 1.5rem);
 }
 
 .footer-links {
