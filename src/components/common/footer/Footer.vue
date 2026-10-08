@@ -75,7 +75,7 @@ const currentYear = computed(() => new Date().getFullYear())
   background-color: var(--color-primary);
   color: var(--text-inverse);
   border-top: 1.5px solid var(--text-primary);
-  padding: clamp(48px, 8vw, 96px) var(--layout-padding-side) clamp(28px, 4vw, 48px);
+  padding: clamp(28px, 4vw, 48px) var(--layout-padding-side);
 }
 
 .footer.border-top-white,
