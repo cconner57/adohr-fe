@@ -149,21 +149,6 @@
   }
 }
 
-.family-meta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin-top: 4px;
-
-  svg {
-    color: var(--color-secondary);
-    flex-shrink: 0;
-  }
-}
-
 .family-contract {
   display: inline-flex;
   align-items: center;

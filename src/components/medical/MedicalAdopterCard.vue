@@ -59,13 +59,6 @@ const isFosterToAdopt = computed(() => {
   )
 })
 
-const adoptionTypeLabel = computed(() => {
-  if (props.adopter.adoptionType) {
-    return props.adopter.adoptionType
-  }
-  return isFosterToAdopt.value ? 'Foster-to-Adopt' : 'Adoption'
-})
-
 const adoptionDateLabel = computed(() => {
   return isFosterToAdopt.value ? 'Foster-to-Adopt Date' : 'Adoption Date'
 })
@@ -167,22 +160,6 @@ watch(
           <span>Official adoption day portrait with {{ adopter.adopterName }}.</span>
           <span class="family-desc-second">Celebrating a new chapter of love and lifelong companionship.</span>
         </p>
-        <div class="family-meta">
-          <svg
-            width="13"
-            height="13"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-          </svg>
-          <span>{{ adoptionTypeLabel }}</span>
-        </div>
 
         <div v-if="adopter.contractUrl" class="family-contract">
           <a

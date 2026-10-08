@@ -113,19 +113,18 @@ describe('MedicalAdopterCard.vue', () => {
     expect(img.attributes('alt')).toContain('Jaylene')
 
     expect(wrapper.find('.family-badge').exists()).toBe(false)
+    expect(wrapper.find('.family-meta').exists()).toBe(false)
     expect(wrapper.text()).not.toContain('Forever Family Photo')
     expect(wrapper.text()).toContain('Welcome Home, Jaylene!')
     expect(wrapper.text()).toContain('May 15, 2025')
     expect(wrapper.text()).toContain('View Signed Adoption Contract')
-    expect(wrapper.find('.family-meta').text()).toBe('Adoption')
-    expect(wrapper.find('.family-meta').text()).not.toContain('Adoption Finalized')
 
     expect(wrapper.find('.family-photo-fallback').exists()).toBe(false)
     expect(wrapper.find('a.family-photo-zoom').exists()).toBe(false)
     expect(wrapper.text()).not.toContain('Full Size')
   })
 
-  it('renders "Foster-to-Adopt" in family meta when record is foster-to-adopt', () => {
+  it('renders Foster-to-Adopt contract link and date label when record is foster-to-adopt', () => {
     const fosterAdopter: IAdopterPaymentInfo = {
       ...mockAdopter,
       adoptionType: 'Foster-to-Adopt',
@@ -140,8 +139,7 @@ describe('MedicalAdopterCard.vue', () => {
       },
     })
 
-    expect(wrapper.find('.family-meta').text()).toBe('Foster-to-Adopt')
-    expect(wrapper.find('.family-meta').text()).not.toContain('Adoption Finalized')
+    expect(wrapper.find('.family-meta').exists()).toBe(false)
     expect(wrapper.text()).toContain('Foster-to-Adopt Date')
     expect(wrapper.text()).not.toContain('Adoption Finalized')
     expect(wrapper.text()).toContain('View Signed Foster-to-Adopt Contract')
