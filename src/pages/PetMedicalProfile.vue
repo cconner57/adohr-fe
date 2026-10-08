@@ -30,7 +30,7 @@ import {
   buildPhysicalTraitCapsules,
   buildProceduresList,
   buildVaccineRecords,
-  getFieldIgnoreCase,
+  resolvePetPhotoCandidates,
 } from '@/utils/medicalParser'
 
 const route = useRoute()
@@ -82,42 +82,26 @@ const petAge = computed(() => {
 })
 
 const isImgError = ref(false)
+const currentPhotoIndex = ref(0)
+const candidatePetPhotoUrls = computed(() => resolvePetPhotoCandidates(portalData.value))
 
 const petPhotoUrl = computed(() => {
-  const data = portalData.value as unknown as Record<string, unknown>
-  if (!data) return ''
-  if (typeof data.photoUrl === 'string' && data.photoUrl.trim()) return data.photoUrl.trim()
-  if (typeof data.photo_url === 'string' && data.photo_url.trim()) return data.photo_url.trim()
-  if (typeof data.imageUrl === 'string' && data.imageUrl.trim()) return data.imageUrl.trim()
-  if (typeof data.image_url === 'string' && data.image_url.trim()) return data.image_url.trim()
-  if (typeof data.photo === 'string' && data.photo.trim()) return data.photo.trim()
-  if (Array.isArray(data.photos) && data.photos.length > 0) {
-    const primary = (data.photos as Array<{ isPrimary?: boolean; url?: string }>).find(
-      (p) => p.isPrimary && p.url,
-    )
-    if (primary?.url) return primary.url
-    const first = (data.photos as Array<string | { url?: string }>)[0]
-    if (typeof first === 'string' && first.trim()) return first.trim()
-    if (first && typeof first === 'object' && 'url' in first && typeof first.url === 'string') {
-      return first.url
-    }
-  }
-  const adoptionObj = data.adoption as Record<string, unknown> | undefined
-  const paymentObj = data.payment as Record<string, unknown> | undefined
-  const adopterObj = data.adopter as Record<string, unknown> | undefined
-  const famPhoto =
-    getFieldIgnoreCase(adoptionObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
-    getFieldIgnoreCase(paymentObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
-    getFieldIgnoreCase(adopterObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
-    getFieldIgnoreCase(data, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto')
-
-  if (typeof famPhoto === 'string' && famPhoto.trim()) {
-    return famPhoto.trim()
+  if (currentPhotoIndex.value < candidatePetPhotoUrls.value.length) {
+    return candidatePetPhotoUrls.value[currentPhotoIndex.value]
   }
   return ''
 })
 
-watch(petPhotoUrl, () => {
+const handlePetImgError = () => {
+  if (currentPhotoIndex.value < candidatePetPhotoUrls.value.length - 1) {
+    currentPhotoIndex.value += 1
+  } else {
+    isImgError.value = true
+  }
+}
+
+watch(candidatePetPhotoUrls, () => {
+  currentPhotoIndex.value = 0
   isImgError.value = false
 })
 
@@ -296,7 +280,7 @@ onMounted(async () => {
                 :alt="petName"
                 class="pet-avatar"
                 loading="lazy"
-                @error="isImgError = true"
+                @error="handlePetImgError"
               />
               <div v-else class="pet-avatar-fallback" aria-hidden="true">
                 <span class="pet-avatar-initial">{{ petName ? petName.charAt(0).toUpperCase() : '🐾' }}</span>

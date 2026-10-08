@@ -364,3 +364,100 @@ export const buildIdentificationInfo = (
   }
 }
 
+const DEFAULT_R2_BASE = 'https://pub-768b3a497dc648f2895152092bf57934.r2.dev'
+
+export const resolvePetPhotoCandidates = (
+  portalData: unknown,
+  customR2Base?: string,
+): string[] => {
+  if (!portalData || typeof portalData !== 'object') return []
+  const data = portalData as Record<string, unknown>
+
+  const rawList: string[] = []
+  if (typeof data.photoUrl === 'string' && data.photoUrl.trim()) rawList.push(data.photoUrl.trim())
+  if (typeof data.photo_url === 'string' && data.photo_url.trim()) rawList.push(data.photo_url.trim())
+  if (typeof data.imageUrl === 'string' && data.imageUrl.trim()) rawList.push(data.imageUrl.trim())
+  if (typeof data.image_url === 'string' && data.image_url.trim()) rawList.push(data.image_url.trim())
+  if (typeof data.photo === 'string' && data.photo.trim()) rawList.push(data.photo.trim())
+
+  if (Array.isArray(data.photos)) {
+    const primary = (data.photos as Array<{ isPrimary?: boolean; url?: string }>).find(
+      (p) => p.isPrimary && p.url,
+    )
+    if (primary?.url) rawList.push(primary.url.trim())
+
+    for (const item of data.photos) {
+      if (typeof item === 'string' && item.trim()) {
+        rawList.push(item.trim())
+      } else if (item && typeof item === 'object') {
+        const p = item as { url?: string; photoUrl?: string }
+        if (typeof p.url === 'string' && p.url.trim()) rawList.push(p.url.trim())
+        if (typeof p.photoUrl === 'string' && p.photoUrl.trim()) rawList.push(p.photoUrl.trim())
+      }
+    }
+  }
+
+  const adoptionObj = data.adoption as Record<string, unknown> | undefined
+  const paymentObj = data.payment as Record<string, unknown> | undefined
+  const adopterObj = data.adopter as Record<string, unknown> | undefined
+  const famPhoto =
+    getFieldIgnoreCase(adoptionObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
+    getFieldIgnoreCase(paymentObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
+    getFieldIgnoreCase(adopterObj, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto') ??
+    getFieldIgnoreCase(data, 'familyPhotoUrl', 'familyPhotoURL', 'adoptionPhotoUrl', 'family_photo_url', 'familyPhoto')
+
+  if (typeof famPhoto === 'string' && famPhoto.trim()) {
+    rawList.push(famPhoto.trim())
+  }
+
+  const r2Base = (
+    customR2Base ||
+    (import.meta.env?.VITE_R2_PUBLIC_URL as string) ||
+    DEFAULT_R2_BASE
+  ).replace(/\/+$/, '')
+
+  const candidates: string[] = []
+  const seen = new Set<string>()
+
+  const addCandidate = (url?: string | null) => {
+    if (!url) return
+    const clean = url.trim()
+    if (!clean || seen.has(clean)) return
+    seen.add(clean)
+    candidates.push(clean)
+  }
+
+  for (const raw of rawList) {
+    if (!raw) continue
+
+    if (!raw.startsWith('http://') && !raw.startsWith('https://') && !raw.startsWith('data:')) {
+      const strippedKey = raw.replace(/^\/?pets\//, '').replace(/^\//, '')
+      addCandidate(`${r2Base}/${strippedKey}`)
+      addCandidate(`${r2Base}/${raw.replace(/^\//, '')}`)
+      continue
+    }
+
+    if (raw.includes('api.adoption-os.com')) {
+      const withoutDomain = raw.replace(/^https?:\/\/api\.adoption-os\.com\/?/, '')
+      const strippedKey = withoutDomain.replace(/^pets\//, '')
+      addCandidate(`${r2Base}/${strippedKey}`)
+      addCandidate(`${r2Base}/${withoutDomain}`)
+      addCandidate(raw)
+      continue
+    }
+
+    if (raw.includes('.r2.dev/pets/')) {
+      addCandidate(raw.replace('.r2.dev/pets/', '.r2.dev/'))
+      addCandidate(raw)
+      continue
+    }
+
+    if (raw.includes('/pets/')) {
+      addCandidate(raw.replace('/pets/', '/'))
+    }
+    addCandidate(raw)
+  }
+
+  return candidates
+}
+
