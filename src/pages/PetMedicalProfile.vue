@@ -5,7 +5,6 @@ import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 import Capsules from '@/components/common/ui/Capsules.vue'
 import Spinner from '@/components/common/ui/Spinner.vue'
 import MedicalAdopterCard from '@/components/medical/MedicalAdopterCard.vue'
-import MedicalDiagnosticsCard from '@/components/medical/MedicalDiagnosticsCard.vue'
 import MedicalDietCard from '@/components/medical/MedicalDietCard.vue'
 import MedicalDocumentsList from '@/components/medical/MedicalDocumentsList.vue'
 import MedicalIdentificationCard from '@/components/medical/MedicalIdentificationCard.vue'
@@ -25,7 +24,6 @@ import {
 } from '@/utils/medicalAdopter'
 import {
   buildCareTimeline,
-  buildDiagnosticTests,
   buildDietInfo,
   buildIdentificationInfo,
   buildMedicationsList,
@@ -132,7 +130,6 @@ const vaccineRecords = computed(() => buildVaccineRecords(portalData.value))
 const careTimeline = computed(() => buildCareTimeline(portalData.value, vaccineRecords.value))
 const physicalTraits = computed(() => buildPhysicalTraitCapsules(portalData.value))
 const identInfo = computed(() => buildIdentificationInfo(portalData.value))
-const diagnosticTests = computed(() => buildDiagnosticTests(portalData.value))
 const dietInfo = computed(() => buildDietInfo(portalData.value))
 const medicationsList = computed(() => buildMedicationsList(portalData.value))
 const proceduresList = computed(() => buildProceduresList(portalData.value))
@@ -429,13 +426,6 @@ onMounted(async () => {
             </div>
           </div>
         </article>
-
-        <!-- Diagnostic Testing Panel (only displayed when lab screening tests are recorded) -->
-        <MedicalDiagnosticsCard
-          v-if="diagnosticTests && diagnosticTests.length > 0"
-          :diagnostics="diagnosticTests"
-          :petName="petName"
-        />
 
         <!-- Adopter & Payment Information (only displayed when API returns adoption data) -->
         <MedicalAdopterCard
