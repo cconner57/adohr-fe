@@ -118,6 +118,11 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.text()).toContain('Welcome Home, Jaylene!')
     expect(wrapper.text()).toContain('May 15, 2025')
     expect(wrapper.text()).toContain('View Signed Adoption Contract')
+    expect(wrapper.text()).toContain('Official adoption day portrait with Sarah Jenkins')
+    expect(wrapper.text()).not.toContain('Official adoption day portrait with Sarah Jenkins.')
+    expect(wrapper.text()).toContain('Celebrating a new chapter of love and lifelong companionship')
+    expect(wrapper.text()).not.toContain('Celebrating a new chapter of love and lifelong companionship.')
+    expect(wrapper.find('.family-heart-icon').exists()).toBe(true)
 
     expect(wrapper.find('.family-photo-fallback').exists()).toBe(false)
     expect(wrapper.find('a.family-photo-zoom').exists()).toBe(false)

@@ -147,6 +147,13 @@
   .family-desc-second {
     display: block;
   }
+
+  .family-heart-icon {
+    display: inline-block;
+    vertical-align: -2px;
+    margin-left: 5px;
+    color: var(--color-danger, #e11d48);
+  }
 }
 
 .family-contract {
