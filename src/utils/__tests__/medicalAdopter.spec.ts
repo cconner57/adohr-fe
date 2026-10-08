@@ -160,4 +160,21 @@ describe('medicalAdopter utility', () => {
     expect(resultNoPhoto).not.toBeNull()
     expect(resultNoPhoto?.familyPhotoUrl).toBeNull()
   })
+
+  it('excludes stripe fee from adoption fee paid when payment method is Stripe or card', () => {
+    const mockDataWithStripeFee: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      adoption: {
+        adoptedBy: 'Linda Tagle',
+        fee: 250,
+        feePaid: 257.78,
+        paymentMethod: 'Credit Card',
+      },
+    }
+
+    const result = buildAdopterPaymentInfo(mockDataWithStripeFee as IPetMedicalPortalData)
+    expect(result).not.toBeNull()
+    expect(result?.adoptionFee).toBe('$250.00')
+  })
 })

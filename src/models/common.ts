@@ -341,6 +341,7 @@ export interface IPetMedicalPortalData {
     photo?: IPhoto | null
     familyPhotoUrl?: string | null
     fee?: number | string | null
+    feePaid?: number | string | null
     adoptionFee?: number | string | null
     surveyCompleted?: boolean | null
     adopterContactInfo?: IContactInfo | null

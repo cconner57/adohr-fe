@@ -30,6 +30,61 @@ export const formatCurrency = (val: number | string | null | undefined): string 
   return clean
 }
 
+export const isStripeMethod = (method?: string | null): boolean => {
+  if (!method) return false
+  const m = method.trim().toLowerCase()
+  return (
+    m === 'stripe' ||
+    m === 'debit / credit' ||
+    m === 'debit/credit' ||
+    m === 'credit card' ||
+    m === 'credit_card' ||
+    m === 'card' ||
+    m === 'debit_credit' ||
+    m === 'debit' ||
+    m === 'credit' ||
+    m === 'electronic payment (card / digital)' ||
+    m === 'digital'
+  )
+}
+
+export const getNetAdoptionFee = (
+  gross: number | string | null | undefined,
+  method?: string | null,
+  baseFee?: number | string | null,
+): number | null => {
+  if (gross == null || gross === '') return null
+  const num = Number(gross)
+  if (Number.isNaN(num)) return null
+  if (num <= 0) return 0
+
+  const parsedBase = baseFee != null && baseFee !== '' ? Number(baseFee) : null
+  if (
+    parsedBase != null &&
+    !Number.isNaN(parsedBase) &&
+    parsedBase > 0 &&
+    num > parsedBase &&
+    isStripeMethod(method)
+  ) {
+    return parsedBase
+  }
+
+  if (isStripeMethod(method)) {
+    if (num % 1 === 0) {
+      return num
+    }
+    const cents = Math.round(num * 100)
+    const feeCents = Math.round(cents * 0.029) + 30
+    const net = (cents - feeCents) / 100
+    if (Math.abs(net - Math.round(net)) < 0.05) {
+      return Math.round(net)
+    }
+    return Math.round(net * 100) / 100
+  }
+
+  return num
+}
+
 export const hasAdopterPaymentData = (
   portalData: IPetMedicalPortalData | null,
 ): boolean => {
@@ -155,17 +210,33 @@ export const buildAdopterPaymentInfo = (
       ? rawAddress.trim()
       : 'Private Residential Record on File'
 
-  // 5. Adoption Fee & Payment
+  // 5. Payment Method
+  const rawMethod =
+    getFieldIgnoreCase(paymentObj, 'method', 'paymentMethod') ??
+    getFieldIgnoreCase(adoptionObj, 'paymentMethod', 'method')
+
+  const paymentMethod =
+    typeof rawMethod === 'string' && rawMethod.trim()
+      ? rawMethod.trim()
+      : 'Electronic Payment (Card / Digital)'
+
+  // 6. Adoption Fee & Payment
   const rawFee =
-    getFieldIgnoreCase(adoptionObj, 'fee', 'adoptionFee', 'amount') ??
+    getFieldIgnoreCase(adoptionObj, 'feePaid', 'fee', 'adoptionFee', 'amount') ??
     getFieldIgnoreCase(paymentObj, 'amount', 'fee', 'total') ??
     getFieldIgnoreCase(adopterObj, 'adoptionFee', 'fee') ??
     getFieldIgnoreCase(root, 'adoptionFee', 'fee') ??
     150
 
-  const adoptionFee = formatCurrency(rawFee as number | string)
+  const baseFee = getFieldIgnoreCase(adoptionObj, 'fee')
+  const netFee = getNetAdoptionFee(
+    rawFee as number | string,
+    paymentMethod,
+    typeof baseFee === 'number' || typeof baseFee === 'string' ? baseFee : null,
+  )
+  const adoptionFee = formatCurrency(netFee ?? (rawFee as number | string))
 
-  // 6. Payment Status
+  // 7. Payment Status
   const rawStatus =
     getFieldIgnoreCase(paymentObj, 'status', 'paymentStatus') ??
     getFieldIgnoreCase(adoptionObj, 'paymentStatus', 'status') ??
@@ -176,7 +247,7 @@ export const buildAdopterPaymentInfo = (
       ? rawStatus.trim()
       : 'Paid in Full'
 
-  // 7. Payment / Adoption Date
+  // 8. Payment / Adoption Date
   const rawDate =
     getFieldIgnoreCase(paymentObj, 'date', 'paymentDate') ??
     getFieldIgnoreCase(adoptionObj, 'date', 'adoptionDate') ??
@@ -190,16 +261,6 @@ export const buildAdopterPaymentInfo = (
     const m = session.adoptionMonth.trim().padStart(2, '0')
     paymentDate = formatDate(`${y}-${m}-01`)
   }
-
-  // 8. Payment Method
-  const rawMethod =
-    getFieldIgnoreCase(paymentObj, 'method', 'paymentMethod') ??
-    getFieldIgnoreCase(adoptionObj, 'paymentMethod', 'method')
-
-  const paymentMethod =
-    typeof rawMethod === 'string' && rawMethod.trim()
-      ? rawMethod.trim()
-      : 'Electronic Payment (Card / Digital)'
 
   // 9. Identifiers (Transaction, Zelle Confirmation, & Receipt)
   const slugOrId = (portalData?.slug || portalData?.petId || 'ADOHR').toUpperCase().replace(/[^A-Z0-9]/g, '')
