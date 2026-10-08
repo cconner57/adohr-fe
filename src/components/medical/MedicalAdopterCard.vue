@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
 import type { IAdopterPaymentInfo } from '@/models/common'
 
 defineProps<{
@@ -9,6 +11,8 @@ defineProps<{
 const emit = defineEmits<{
   'print-receipt': []
 }>()
+
+const isFamilyPhotoError = ref(false)
 </script>
 
 <template>
@@ -38,6 +42,86 @@ const emit = defineEmits<{
           <p class="section-desc">
             Verified adoption file, contact records, and payment confirmation for {{ petName || 'your pet' }}.
           </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Adoption Family Photo -->
+    <div
+      v-if="adopter.familyPhotoUrl && !isFamilyPhotoError"
+      class="family-photo-card"
+    >
+      <div class="family-photo-media">
+        <img
+          :src="adopter.familyPhotoUrl"
+          :alt="`${adopter.adopterName || 'Adopter'} forever family photo with ${petName || 'pet'}`"
+          class="family-photo-img"
+          loading="lazy"
+          referrerpolicy="no-referrer"
+          @error="isFamilyPhotoError = true"
+        />
+        <a
+          :href="adopter.familyPhotoUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="family-photo-zoom"
+          title="Open full-size family photo"
+          aria-label="Open full-size family photo in a new tab"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M15 3h6v6" />
+            <path d="M10 14L21 3" />
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+          </svg>
+          <span class="zoom-label">Full Size</span>
+        </a>
+      </div>
+
+      <div class="family-photo-content">
+        <div class="family-badge">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+          </svg>
+          <span>Forever Family Photo</span>
+        </div>
+        <h3 class="family-title">Welcome Home, {{ petName || 'Pet' }}!</h3>
+        <p class="family-desc">
+          Official adoption day portrait with {{ adopter.adopterName }}. Celebrating a new chapter of love, safety, and lifelong companionship.
+        </p>
+        <div v-if="adopter.paymentDate" class="family-meta">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          <span>Adoption Finalized &bull; {{ adopter.paymentDate }}</span>
         </div>
       </div>
     </div>

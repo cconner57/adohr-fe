@@ -86,4 +86,68 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.text()).toContain('BACapdp7gdkg')
     expect(wrapper.text()).not.toContain('Transaction ID')
   })
+
+  it('renders family photo card when familyPhotoUrl is provided', () => {
+    const adopterWithPhoto: IAdopterPaymentInfo = {
+      ...mockAdopter,
+      familyPhotoUrl: 'https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg',
+    }
+
+    const wrapper = mount(MedicalAdopterCard, {
+      props: {
+        adopter: adopterWithPhoto,
+        petName: 'Jaylene',
+      },
+    })
+
+    const photoCard = wrapper.find('.family-photo-card')
+    expect(photoCard.exists()).toBe(true)
+
+    const img = wrapper.find('img.family-photo-img')
+    expect(img.exists()).toBe(true)
+    expect(img.attributes('src')).toBe('https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg')
+    expect(img.attributes('alt')).toContain('Sarah Jenkins')
+    expect(img.attributes('alt')).toContain('Jaylene')
+
+    expect(wrapper.text()).toContain('Forever Family Photo')
+    expect(wrapper.text()).toContain('Welcome Home, Jaylene!')
+    expect(wrapper.text()).toContain('May 15, 2025')
+
+    const zoomLink = wrapper.find('a.family-photo-zoom')
+    expect(zoomLink.exists()).toBe(true)
+    expect(zoomLink.attributes('href')).toBe('https://api.adoption-os.com/pets/jaylene/adoption/family_photo.jpg')
+    expect(zoomLink.attributes('target')).toBe('_blank')
+  })
+
+  it('hides family photo card if image encounters loading error', async () => {
+    const adopterWithPhoto: IAdopterPaymentInfo = {
+      ...mockAdopter,
+      familyPhotoUrl: 'https://api.adoption-os.com/broken-photo.jpg',
+    }
+
+    const wrapper = mount(MedicalAdopterCard, {
+      props: {
+        adopter: adopterWithPhoto,
+        petName: 'Jaylene',
+      },
+    })
+
+    expect(wrapper.find('.family-photo-card').exists()).toBe(true)
+
+    const img = wrapper.find('img.family-photo-img')
+    await img.trigger('error')
+
+    expect(wrapper.find('.family-photo-card').exists()).toBe(false)
+  })
+
+  it('does not render family photo card when familyPhotoUrl is null or undefined', () => {
+    const wrapper = mount(MedicalAdopterCard, {
+      props: {
+        adopter: { ...mockAdopter, familyPhotoUrl: null },
+        petName: 'Jaylene',
+      },
+    })
+
+    expect(wrapper.find('.family-photo-card').exists()).toBe(false)
+  })
 })

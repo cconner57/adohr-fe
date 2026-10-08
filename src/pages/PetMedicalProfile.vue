@@ -104,6 +104,9 @@ const petPhotoUrl = computed(() => {
       return first.url
     }
   }
+  if (typeof data.familyPhotoUrl === 'string' && data.familyPhotoUrl.trim()) {
+    return data.familyPhotoUrl.trim()
+  }
   return ''
 })
 
