@@ -82,7 +82,7 @@
           ADOHR is a 501(c)(3) nonprofit. Donations are tax-deductible as allowed by law. We publish
           annual updates and operate with financial transparency.
         </p>
-        <p class="small mono">EIN: 81-0780050 · PO Box 5543, Pasadena, CA 91107</p>
+        <p class="small mono">Charity ID / EIN: 81-0780050 · 3016 E Colorado Blvd, Unit 5543, Pasadena, CA 91107</p>
         <p class="small">
           All contributions directly fund animal rescue, medical treatments, foster supplies, and
           rehoming efforts across Southern California.

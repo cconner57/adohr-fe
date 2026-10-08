@@ -104,7 +104,7 @@ const getOneTimeDonationUrl = (): string => {
     <section class="trust-banner">
       <div class="content-wrapper" v-scroll-reveal>
         <p class="legal">
-          ADOHR is a 501(c)(3) nonprofit · EIN: <strong>81-0780050</strong> · Donations are tax-deductible as allowed by law.
+          ADOHR is a 501(c)(3) nonprofit · Charity ID / EIN: <strong>81-0780050</strong> · Donations are tax-deductible as allowed by law.
         </p>
       </div>
     </section>
@@ -228,12 +228,12 @@ const getOneTimeDonationUrl = (): string => {
           </div>
 
           <div class="match-ein-box">
-            <span class="ein-label">Nonprofit Tax ID / EIN:</span>
+            <span class="ein-label">Charity ID / Tax ID (EIN):</span>
             <span class="ein-code">81-0780050</span>
             <button type="button" class="copy-btn" @click="copyEIN">
               {{ isCopied ? '✓ Copied to Clipboard!' : 'Copy EIN' }}
             </button>
-            <p class="ein-sub">A Dream of Home Rescue, Inc. · Pasadena, CA</p>
+            <p class="ein-sub">A Dream of Home Rescue, Inc. · 3016 E Colorado Blvd, Unit 5543, Pasadena, CA 91107</p>
           </div>
         </div>
       </div>

@@ -78,4 +78,18 @@ describe('Footer.vue', () => {
     expect(igLink!.attributes('target')).toBe('_blank')
     expect(igLink!.attributes('rel')).toBe('noopener noreferrer')
   })
+
+  it('renders physical street address and Charity ID / EIN', () => {
+    const wrapper = mount(Footer, {
+      global: {
+        stubs: {
+          RouterLink: true,
+        },
+      },
+    })
+
+    const text = wrapper.text()
+    expect(text).toContain('Charity ID / EIN: 81-0780050')
+    expect(text).toContain('3016 E Colorado Blvd, Unit 5543, Pasadena, CA 91107')
+  })
 })
