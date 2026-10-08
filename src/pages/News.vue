@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 
+import Footer from '@/components/common/footer/Footer.vue'
 import ImagePlaceholder from '@/components/common/ui/ImagePlaceholder.vue'
 import { useNewsStore } from '@/stores/news'
 import { formatDate } from '@/utils/date'
@@ -39,6 +40,26 @@ onMounted(() => {
           </div>
         </div>
         <p v-else-if="error" class="status error">{{ error }}</p>
+        <div v-else-if="sortedItems.length === 0" class="empty-state">
+          <div class="empty-icon" aria-hidden="true">🐾</div>
+          <h2>Paws &amp; Relax — No News Just Yet</h2>
+          <p>
+            Our rescue crew is currently busy giving head scratches, belly rubs, and helping pets find their forever homes. Check back soon for upcoming events, rescue stories, and announcements!
+          </p>
+          <div class="empty-actions">
+            <RouterLink to="/adopt" class="empty-btn primary">
+              Meet Adoptable Pets
+            </RouterLink>
+            <a
+              href="https://www.instagram.com/adohrpets"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="empty-btn secondary"
+            >
+              Follow on Instagram
+            </a>
+          </div>
+        </div>
         <template v-else>
           <article v-for="item in sortedItems" :key="item.id" class="news-card">
             <img
@@ -62,6 +83,8 @@ onMounted(() => {
         </template>
       </div>
     </section>
+
+    <Footer />
   </main>
 </template>
 
@@ -247,6 +270,84 @@ onMounted(() => {
         min-height: 180px;
         max-height: 240px;
       }
+    }
+  }
+
+  /* ── Empty State ────────────────────────────────────────── */
+  .empty-state {
+    text-align: center;
+    padding: clamp(3rem, 6vw, 5rem) 1.5rem;
+    max-width: 580px;
+    margin: 0 auto;
+
+    .empty-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      animation: floatPaw 3s ease-in-out infinite;
+    }
+
+    h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.015em;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .empty-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .empty-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.85rem 1.75rem;
+      border-radius: var(--radius-full, 99px);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+
+      &.primary {
+        background-color: var(--color-primary);
+        color: var(--text-inverse);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 14px rgb(0 0 0 / 12%);
+        }
+      }
+
+      &.secondary {
+        background-color: transparent;
+        color: var(--text-primary);
+        border: 1.5px solid var(--line-ink, oklch(from var(--text-primary) l c h / 20%));
+
+        &:hover {
+          border-color: var(--text-primary);
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+
+  @keyframes floatPaw {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
     }
   }
 }
