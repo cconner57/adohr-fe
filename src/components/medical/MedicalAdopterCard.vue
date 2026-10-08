@@ -138,7 +138,8 @@ watch(
       <div class="family-photo-content">
         <h3 class="family-title">Welcome Home, {{ petName || 'Pet' }}!</h3>
         <p class="family-desc">
-          Official adoption day portrait with {{ adopter.adopterName }}. Celebrating a new chapter of love, safety, and lifelong companionship.
+          <span>Official adoption day portrait with {{ adopter.adopterName }}.</span>
+          <span class="family-desc-second">Celebrating a new chapter of love, safety, and lifelong companionship.</span>
         </p>
         <div v-if="adopter.paymentDate" class="family-meta">
           <svg

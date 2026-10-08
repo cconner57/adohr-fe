@@ -143,6 +143,10 @@
   color: var(--text-secondary);
   line-height: 1.45;
   margin: 0;
+
+  .family-desc-second {
+    display: block;
+  }
 }
 
 .family-meta {
