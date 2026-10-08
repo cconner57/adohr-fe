@@ -45,6 +45,8 @@ describe('MedicalAdopterCard.vue', () => {
     expect(wrapper.text()).toContain('REC-2025-JAYL-01')
     expect(wrapper.text()).toContain('TXN-2025-JAYL-8492')
     expect(wrapper.text()).toContain('Spay / Neuter Surgical Sterilization')
+    expect(wrapper.text()).toContain('Adoption Date')
+    expect(wrapper.text()).not.toContain('Adoption Finalized')
   })
 
   it('emits print-receipt when the footer print payment receipt button is clicked', async () => {
@@ -140,6 +142,8 @@ describe('MedicalAdopterCard.vue', () => {
 
     expect(wrapper.find('.family-meta').text()).toBe('Foster-to-Adopt')
     expect(wrapper.find('.family-meta').text()).not.toContain('Adoption Finalized')
+    expect(wrapper.text()).toContain('Foster-to-Adopt Date')
+    expect(wrapper.text()).not.toContain('Adoption Finalized')
   })
 
   it('renders "No image available" fallback box if contract is available but no family photo is provided', () => {

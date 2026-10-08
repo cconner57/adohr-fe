@@ -66,6 +66,10 @@ const adoptionTypeLabel = computed(() => {
   return isFosterToAdopt.value ? 'Foster-to-Adopt' : 'Adoption'
 })
 
+const adoptionDateLabel = computed(() => {
+  return isFosterToAdopt.value ? 'Foster-to-Adopt Date' : 'Adoption Date'
+})
+
 const hasFamilyPhoto = computed(() => {
   return Boolean(props.adopter.familyPhotoUrl?.trim()) && !isPhotoError.value && Boolean(currentPhotoUrl.value)
 })
@@ -253,7 +257,7 @@ watch(
           </div>
 
           <div class="data-item">
-            <span class="label">Adoption Finalized</span>
+            <span class="label">{{ adoptionDateLabel }}</span>
             <span class="value">{{ adopter.paymentDate }}</span>
           </div>
         </div>
