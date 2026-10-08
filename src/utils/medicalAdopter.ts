@@ -375,8 +375,8 @@ export const buildAdopterPaymentInfo = (
     getFieldIgnoreCase(adoptionObj, 'status')
 
   const rawIsFTA =
-    getFieldIgnoreCase(adoptionObj, 'isFosterToAdopt', 'is_foster_to_adopt', 'fosterToAdopt') ??
-    getFieldIgnoreCase(root, 'isFosterToAdopt', 'is_foster_to_adopt', 'fosterToAdopt')
+    getFieldIgnoreCase(adoptionObj, 'fosterToAdopt', 'isFosterToAdopt', 'is_foster_to_adopt') ??
+    getFieldIgnoreCase(root, 'fosterToAdopt', 'isFosterToAdopt', 'is_foster_to_adopt')
 
   const isFoster = (val: unknown): boolean => {
     if (typeof val === 'boolean') return val
@@ -419,6 +419,5 @@ export const buildAdopterPaymentInfo = (
     itemizedFees,
     adoptionType,
     fosterToAdopt: isFosterToAdopt,
-    isFosterToAdopt,
   }
 }

@@ -242,7 +242,6 @@ describe('medicalAdopter utility', () => {
     const adoptionResult = buildAdopterPaymentInfo(adoptionData as IPetMedicalPortalData)
     expect(adoptionResult?.adoptionType).toBe('Adoption')
     expect(adoptionResult?.fosterToAdopt).toBe(false)
-    expect(adoptionResult?.isFosterToAdopt).toBe(false)
 
     const fosterData: Partial<IPetMedicalPortalData> = {
       name: 'Jaylene',
@@ -250,13 +249,12 @@ describe('medicalAdopter utility', () => {
       status: 'foster',
       adoption: {
         adoptedBy: 'Linda Tagle',
-        isFosterToAdopt: true,
+        fosterToAdopt: true,
       },
     }
     const fosterResult = buildAdopterPaymentInfo(fosterData as IPetMedicalPortalData)
     expect(fosterResult?.adoptionType).toBe('Foster-to-Adopt')
     expect(fosterResult?.fosterToAdopt).toBe(true)
-    expect(fosterResult?.isFosterToAdopt).toBe(true)
 
     const ftaContractData: Partial<IPetMedicalPortalData> = {
       name: 'Jaylene',
@@ -270,7 +268,6 @@ describe('medicalAdopter utility', () => {
     const ftaContractResult = buildAdopterPaymentInfo(ftaContractData as IPetMedicalPortalData)
     expect(ftaContractResult?.adoptionType).toBe('Foster-to-Adopt')
     expect(ftaContractResult?.fosterToAdopt).toBe(true)
-    expect(ftaContractResult?.isFosterToAdopt).toBe(true)
 
     const ftaKeyData: Partial<IPetMedicalPortalData> = {
       name: 'Jaylene',
@@ -283,46 +280,39 @@ describe('medicalAdopter utility', () => {
     const ftaKeyResult = buildAdopterPaymentInfo(ftaKeyData as IPetMedicalPortalData)
     expect(ftaKeyResult?.adoptionType).toBe('Foster-to-Adopt')
     expect(ftaKeyResult?.fosterToAdopt).toBe(true)
-    expect(ftaKeyResult?.isFosterToAdopt).toBe(true)
 
     const apiFTAPayload: Partial<IPetMedicalPortalData> = {
       petId: 'pet-bella-123',
       name: 'Bella',
       status: 'ADOPTED',
       fosterToAdopt: true,
-      isFosterToAdopt: true,
       contractUrl: 'https://example.com/contract',
       adoption: {
         adoptedBy: 'Jane Doe',
         date: '2026-03-24',
         fosterToAdopt: true,
-        isFosterToAdopt: true,
         contractUrl: 'https://example.com/contract',
       },
     }
     const apiFTAResult = buildAdopterPaymentInfo(apiFTAPayload as IPetMedicalPortalData)
     expect(apiFTAResult?.adoptionType).toBe('Foster-to-Adopt')
     expect(apiFTAResult?.fosterToAdopt).toBe(true)
-    expect(apiFTAResult?.isFosterToAdopt).toBe(true)
 
     const apiAdoptedPayload: Partial<IPetMedicalPortalData> = {
       petId: 'pet-bella-456',
       name: 'Bella',
       status: 'ADOPTED',
       fosterToAdopt: false,
-      isFosterToAdopt: false,
       contractUrl: 'https://example.com/contract',
       adoption: {
         adoptedBy: 'Jane Doe',
         date: '2026-03-24',
         fosterToAdopt: false,
-        isFosterToAdopt: false,
         contractUrl: 'https://example.com/contract',
       },
     }
     const apiAdoptedResult = buildAdopterPaymentInfo(apiAdoptedPayload as IPetMedicalPortalData)
     expect(apiAdoptedResult?.adoptionType).toBe('Adoption')
     expect(apiAdoptedResult?.fosterToAdopt).toBe(false)
-    expect(apiAdoptedResult?.isFosterToAdopt).toBe(false)
   })
 })

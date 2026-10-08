@@ -53,7 +53,6 @@ const shouldShowAdoptionSection = computed(() => {
 const isFosterToAdopt = computed(() => {
   return Boolean(
     props.adopter.fosterToAdopt ||
-      props.adopter.isFosterToAdopt ||
       props.adopter.adoptionType === 'Foster-to-Adopt' ||
       props.adopter.contractUrl?.toLowerCase().includes('foster') ||
       props.adopter.contractUrl?.toLowerCase().includes('fta'),

@@ -128,7 +128,7 @@ describe('MedicalAdopterCard.vue', () => {
     const fosterAdopter: IAdopterPaymentInfo = {
       ...mockAdopter,
       adoptionType: 'Foster-to-Adopt',
-      isFosterToAdopt: true,
+      fosterToAdopt: true,
       contractUrl: 'https://adoption-os.com/contract/signed-fta-123?view=true',
     }
 

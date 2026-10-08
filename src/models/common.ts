@@ -317,7 +317,6 @@ export interface IAdopterPaymentInfo {
   notes?: string | null
   adoptionType?: 'Adoption' | 'Foster-to-Adopt' | string
   fosterToAdopt?: boolean
-  isFosterToAdopt?: boolean
 }
 
 export interface IPetMedicalPortalData {
@@ -334,7 +333,6 @@ export interface IPetMedicalPortalData {
   contractUrl?: string | null
   adoptionType?: string | null
   fosterToAdopt?: boolean | null
-  isFosterToAdopt?: boolean | null
   placementType?: string | null
   physical?: IPetPhysicalData | null
   nutrition?: IPetDietData | null
@@ -352,7 +350,6 @@ export interface IPetMedicalPortalData {
     contractUrl?: string | null
     adoptionType?: string | null
     fosterToAdopt?: boolean | null
-    isFosterToAdopt?: boolean | null
     placementType?: string | null
     contractType?: string | null
     type?: string | null
@@ -382,7 +379,6 @@ export interface IPetMedicalPortalData {
     familyPhotoUrl?: string | null
     contractUrl?: string | null
     fosterToAdopt?: boolean | null
-    isFosterToAdopt?: boolean | null
     itemizedFees?: IAdopterFeeItem[] | null
   } | null
   adoptionFee?: number | string | null
