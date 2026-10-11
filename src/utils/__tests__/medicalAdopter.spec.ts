@@ -162,8 +162,9 @@ describe('medicalAdopter utility', () => {
     expect(resultNoPhoto?.familyPhotoUrl).toBeNull()
   })
 
-  it('excludes stripe fee from adoption fee paid when payment method is Stripe or card', () => {
-    const mockDataWithStripeFee: Partial<IPetMedicalPortalData> = {
+  it('excludes stripe fee from adoption fee paid when payment method is Stripe or card (both 2.2% non-profit and 2.9% legacy rates)', () => {
+    // 2.9% legacy rate test ($250 + $7.78 fee = $257.78)
+    const mockDataWithLegacyFee: Partial<IPetMedicalPortalData> = {
       name: 'Jaylene',
       slug: 'jaylene',
       adoption: {
@@ -174,9 +175,25 @@ describe('medicalAdopter utility', () => {
       },
     }
 
-    const result = buildAdopterPaymentInfo(mockDataWithStripeFee as IPetMedicalPortalData)
-    expect(result).not.toBeNull()
-    expect(result?.adoptionFee).toBe('$250.00')
+    const resultLegacy = buildAdopterPaymentInfo(mockDataWithLegacyFee as IPetMedicalPortalData)
+    expect(resultLegacy).not.toBeNull()
+    expect(resultLegacy?.adoptionFee).toBe('$250.00')
+
+    // 2.2% non-profit rate test ($250 + $5.94 fee = $255.94)
+    const mockDataWithNonProfitFee: Partial<IPetMedicalPortalData> = {
+      name: 'Jaylene',
+      slug: 'jaylene',
+      adoption: {
+        adoptedBy: 'Linda Tagle',
+        fee: 250,
+        feePaid: 255.94,
+        paymentMethod: 'Credit Card',
+      },
+    }
+
+    const resultNonProfit = buildAdopterPaymentInfo(mockDataWithNonProfitFee as IPetMedicalPortalData)
+    expect(resultNonProfit).not.toBeNull()
+    expect(resultNonProfit?.adoptionFee).toBe('$250.00')
   })
 
   it('extracts familyPhotoUrl and itemizedFees when present on payment object', () => {

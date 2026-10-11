@@ -74,10 +74,15 @@ export const getNetAdoptionFee = (
       return num
     }
     const cents = Math.round(num * 100)
-    const feeCents = Math.round(cents * 0.029) + 30
+    const feeCents = Math.round(cents * 0.022) + 30
     const net = (cents - feeCents) / 100
     if (Math.abs(net - Math.round(net)) < 0.05) {
       return Math.round(net)
+    }
+    const legacyFeeCents = Math.round(cents * 0.029) + 30
+    const legacyNet = (cents - legacyFeeCents) / 100
+    if (Math.abs(legacyNet - Math.round(legacyNet)) < 0.05) {
+      return Math.round(legacyNet)
     }
     return Math.round(net * 100) / 100
   }
