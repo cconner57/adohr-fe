@@ -87,6 +87,11 @@
           All contributions directly fund animal rescue, medical treatments, foster supplies, and
           rehoming efforts across Southern California
         </p>
+        <div class="transparency-actions">
+          <RouterLink to="/transparency" class="transparency-btn">
+            View Live Shelter Statistics &amp; Maddie's Fund Report &rarr;
+          </RouterLink>
+        </div>
       </div>
     </div>
   </section>
@@ -271,6 +276,27 @@
         letter-spacing: 0.02em;
         padding-top: 14px;
         border-top: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
+      }
+    }
+
+    .transparency-actions {
+      margin-top: 1.5rem;
+    }
+
+    .transparency-btn {
+      display: inline-block;
+      background-color: var(--color-primary);
+      color: var(--text-inverse);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+
+      &:hover {
+        opacity: 0.92;
+        transform: translateY(-1px);
       }
     }
   }

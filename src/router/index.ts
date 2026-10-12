@@ -17,6 +17,7 @@ const PetAdoption = () => import('../pages/PetAdoption.vue')
 const SurrenderPet = () => import('../pages/SurrenderPet.vue')
 const Volunteer = () => import('../pages/Volunteer.vue')
 const Wishlist = () => import('../pages/Wishlist.vue')
+const Transparency = () => import('../pages/Transparency.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,6 +29,11 @@ const router = createRouter({
     {
       path: '/about',
       component: About,
+    },
+    {
+      path: '/transparency',
+      name: 'transparency',
+      component: Transparency,
     },
     {
       path: '/medical-records',

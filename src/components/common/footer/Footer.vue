@@ -29,6 +29,7 @@ const currentYear = computed(() => new Date().getFullYear())
           <RouterLink to="/news">News</RouterLink>
           <RouterLink to="/medical-records">Medical Records</RouterLink>
           <RouterLink to="/about">About</RouterLink>
+          <RouterLink to="/transparency">Transparency</RouterLink>
         </nav>
 
         <div class="footer-social">

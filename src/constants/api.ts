@@ -58,4 +58,10 @@ export const API_ENDPOINTS = {
 
   // Public Wishlist
   WISHLIST_PUBLIC: `${API_BASE_URL}/v1/public/wishlist`,
+
+  // Public Transparency & Shelter Statistics
+  TRANSPARENCY_PUBLIC: (year?: number) =>
+    year
+      ? `${API_BASE_URL}/public/transparency?orgId=adohr&year=${year}`
+      : `${API_BASE_URL}/public/transparency?orgId=adohr`,
 }
