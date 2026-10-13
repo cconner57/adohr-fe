@@ -164,12 +164,12 @@ function handleDonate() {
     gap: 1.5rem;
     padding: 0.5rem 0.625rem 0.5rem 1rem;
     border-radius: var(--radius-full);
-    background-color: oklch(from var(--text-inverse) l c h / 82%);
+    background-color: oklch(from var(--text-inverse) l c h / 95%);
     border: 1px solid var(--line-ink);
     box-shadow: 0 10px 30px -14px oklch(from var(--shadow-color) l c h / 30%);
-    backdrop-filter: blur(14px);
+    backdrop-filter: blur(20px);
     /* stylelint-disable-next-line property-no-vendor-prefix */
-    -webkit-backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(20px);
     user-select: none;
   }
 
