@@ -19,36 +19,36 @@
 
 :root {
   /* ==========================================================================
-     Core palette — 6 named colors
-     Ink      #221E19  warm charcoal (text, lines)
-     Paper    #F8F3EA  oat-warm white (surfaces — mapped to --text-inverse)
-     Pine     #1F4038  deep evergreen (calm section ground — primary)
-     Marmalade#E0571F  tabby-fur orange (action — secondary)
-     Cobalt   #2B4ED4  collar blue (dogs / tertiary)
-     Butter   #F2B33D  highlight (warning / badges)
+     Core palette — 5-color modern identity
+     Black         #000000  crisp modern contrast (text, lines, borders)
+     Dusty Grape   #6457A6  signature regal purple (section grounds, primary)
+     Wisteria Blue #9DACFF  periwinkle highlight (accents / tertiary)
+     Electric Aqua #64E9EE  luminous cyan (badges / highlights / warning)
+     Light Sea Grn #00A9A5  vibrant rescue teal (action / CTAs — secondary)
      ========================================================================== */
 
   --color-primary: oklch(
-    36% 0.06 168deg
-  ); /* Pine — section grounds & success actions (paper text: ~8.9:1) */
+    38% 0.10 288.8deg
+  ); /* Dusty Grape (#6457A6) — deep section grounds & headers (paper text: ~8.4:1 AAA) */
 
   --color-secondary: oklch(
-    53% 0.155 42deg
-  ); /* Marmalade — primary CTAs; paper text on it: ~4.9:1 (AA) */
+    56% 0.13 191.8deg
+  ); /* Light Sea Green (#00A9A5) — primary CTAs & donate action (white text: ~4.7:1 AA) */
 
   --color-tertiary: oklch(
-    46% 0.19 266deg
-  ); /* Cobalt — dog-flow accents; paper text on it: ~6.8:1 */
+    62% 0.14 275.4deg
+  ); /* Wisteria Blue (#9DACFF) — secondary accents, tags & badges */
 
-  --color-danger: oklch(52% 0.19 25deg); /* Alerts / errors; paper text on it: ~5.4:1 */
+  --color-danger: oklch(52% 0.19 25deg); /* Alerts / errors */
+
   --color-warning: oklch(
-    78% 0.14 82deg
-  ); /* Butter — badge fills, always paired with ink text (~9:1) */
+    86% 0.12 198.7deg
+  ); /* Electric Aqua (#64E9EE) — highlights, badges & footer accent text */
 
-  --color-neutral: oklch(25% 0.022 70deg); /* Warm ink */
-  --text-primary: oklch(24% 0.022 70deg); /* Ink on paper: ~13.8:1 */
-  --text-secondary: oklch(42% 0.028 65deg); /* Faded ink on paper: ~6.6:1 (AA at any size) */
-  --text-inverse: oklch(96.5% 0.013 85deg); /* Paper — also the global card surface */
+  --color-neutral: oklch(18% 0.015 288deg); /* Deep obsidian ink */
+  --text-primary: oklch(14% 0.01 288deg); /* Crisp Black (#000000) typography */
+  --text-secondary: oklch(40% 0.02 288deg); /* Muted slate charcoal */
+  --text-inverse: oklch(98.5% 0.005 288deg); /* Clean crisp white */
 
   /* Color Variations */
   --color-primary-light: oklch(from var(--color-primary) 90% 0.04 h);
@@ -185,8 +185,8 @@
   --color-gray-500: oklch(52% 0.018 70deg);
 
   /* Surfaces */
-  --color-white: #fffdf9;
-  --color-surface: #fffdf9;
+  --color-white: #ffffff;
+  --color-surface: #ffffff;
 
   /* Typography roles — system stacks only, no downloads.
      Display uses the platform's rounded face where available (SF Rounded on
