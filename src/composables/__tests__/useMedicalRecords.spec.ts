@@ -199,6 +199,45 @@ describe('useMedicalRecords', () => {
     expect(data?.medical.spayedOrNeutered).toBe(true)
   })
 
+  it('fetches medical records with direct overrideToken from email magic link', async () => {
+    const { fetchMedicalRecords, isVerifiedForPet } = useMedicalRecords()
+
+    expect(isVerifiedForPet('bella')).toBe(false)
+
+    global.fetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        success: true,
+        data: {
+          petId: 'pet_002',
+          name: 'Bella',
+          slug: 'bella',
+          status: 'adopted',
+          species: 'dog',
+          photoUrl: 'https://example.com/bella.jpg',
+          medical: {
+            spayedOrNeutered: true,
+            documents: [],
+          },
+        },
+      }),
+    } as Response)
+
+    const data = await fetchMedicalRecords('bella', 'email-direct-token-abc')
+    expect(data).not.toBeNull()
+    expect(data?.name).toBe('Bella')
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining('token=email-direct-token-abc'),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: 'Bearer email-direct-token-abc',
+          'X-Medical-Token': 'email-direct-token-abc',
+        }),
+      }),
+    )
+  })
+
   it('manages adopter session persistence and cleanup', () => {
     const {
       getVerifiedAdopterSession,

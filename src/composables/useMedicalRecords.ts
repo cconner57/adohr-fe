@@ -278,19 +278,21 @@ export function useMedicalRecords() {
 
   const fetchMedicalRecords = async (
     petIdOrSlug: string,
+    overrideToken?: string | null,
   ): Promise<IPetMedicalPortalData | null> => {
-    const token = getVerifiedToken(petIdOrSlug)
+    const token = overrideToken || getVerifiedToken(petIdOrSlug)
     if (!token) {
       clearVerification(petIdOrSlug)
       return null
     }
 
     try {
+      const tokenParam = `token=${encodeURIComponent(token)}`
       const candidateEndpoints = [
-        withPublicOrgId(`${API_BASE_URL}/api/pets/${petIdOrSlug}/medical`),
-        withPublicOrgId(`${API_BASE_URL}/v1/pets/${petIdOrSlug}/medical`),
-        withPublicOrgId(`${API_BASE_URL}/pets/${petIdOrSlug}/medical`),
-        withPublicOrgId(`${API_BASE_URL}/api/v1/pets/${petIdOrSlug}/medical`),
+        withPublicOrgId(`${API_BASE_URL}/api/pets/${petIdOrSlug}/medical?${tokenParam}`),
+        withPublicOrgId(`${API_BASE_URL}/v1/pets/${petIdOrSlug}/medical?${tokenParam}`),
+        withPublicOrgId(`${API_BASE_URL}/pets/${petIdOrSlug}/medical?${tokenParam}`),
+        withPublicOrgId(`${API_BASE_URL}/api/v1/pets/${petIdOrSlug}/medical?${tokenParam}`),
       ]
 
       let response: Response | null = null
@@ -302,6 +304,7 @@ export function useMedicalRecords() {
               'Content-Type': 'application/json',
               'X-Org-Id': PUBLIC_ORG_ID,
               Authorization: `Bearer ${token}`,
+              'X-Medical-Token': token,
             },
           })
           if (res.status !== 404 && res.status !== 405) {

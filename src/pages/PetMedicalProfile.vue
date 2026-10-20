@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
 
 import Capsules from '@/components/common/ui/Capsules.vue'
 import Spinner from '@/components/common/ui/Spinner.vue'
@@ -36,12 +36,12 @@ import {
 } from '@/utils/medicalParser'
 
 const route = useRoute()
-const router = useRouter()
 const {
   isVerifying,
   verificationError,
   isVerifiedForPet,
   getVerifiedToken,
+  setVerifiedToken,
   getVerifiedAdopterSession,
   verifyAccess,
   fetchMedicalRecords,
@@ -157,19 +157,25 @@ const handlePrintReceipt = () => {
 
 const loadPet = async () => {
   const currentSlug = slug.value
+  if (!currentSlug) return
+
+  const queryToken = typeof route.query.token === 'string' ? route.query.token.trim() : ''
+  if (queryToken) {
+    setVerifiedToken(currentSlug, queryToken)
+  }
+
   const hasLocalVerified = isVerifiedForPet(currentSlug) && Boolean(getVerifiedToken(currentSlug))
 
   if (!hasLocalVerified) {
     isVerified.value = false
     portalData.value = null
     isLoading.value = false
-    router.replace({ name: 'medical-records' })
     return
   }
 
   isLoading.value = true
   try {
-    const data = await fetchMedicalRecords(currentSlug)
+    const data = await fetchMedicalRecords(currentSlug, queryToken || undefined)
     if (data) {
       portalData.value = data
       verifiedSession.value = getVerifiedAdopterSession(currentSlug)
@@ -178,7 +184,6 @@ const loadPet = async () => {
       portalData.value = null
       clearVerification(currentSlug)
       isVerified.value = false
-      router.replace({ name: 'medical-records' })
     }
   } finally {
     isLoading.value = false
