@@ -4,13 +4,11 @@ import { onBeforeRouteLeave, useRoute } from 'vue-router'
 
 import Capsules from '@/components/common/ui/Capsules.vue'
 import Spinner from '@/components/common/ui/Spinner.vue'
-import MedicalAdopterCard from '@/components/medical/MedicalAdopterCard.vue'
 import MedicalDiagnosticsCard from '@/components/medical/MedicalDiagnosticsCard.vue'
 import MedicalDietCard from '@/components/medical/MedicalDietCard.vue'
 import MedicalDocumentsList from '@/components/medical/MedicalDocumentsList.vue'
 import MedicalIdentificationCard from '@/components/medical/MedicalIdentificationCard.vue'
 import MedicalMedicationsCard from '@/components/medical/MedicalMedicationsCard.vue'
-import MedicalPaymentReceiptModal from '@/components/medical/MedicalPaymentReceiptModal.vue'
 import MedicalVerificationGatekeeper from '@/components/medical/MedicalVerificationGatekeeper.vue'
 import { useMedicalRecords } from '@/composables/useMedicalRecords'
 import type {
@@ -19,10 +17,6 @@ import type {
   IPetMedicalPortalData,
 } from '@/models/common'
 import { calculateAge } from '@/utils/date'
-import {
-  buildAdopterPaymentInfo,
-  type IVerifiedAdopterSession,
-} from '@/utils/medicalAdopter'
 import {
   buildCareTimeline,
   buildDiagnosticTests,
@@ -42,7 +36,6 @@ const {
   isVerifiedForPet,
   getVerifiedToken,
   setVerifiedToken,
-  getVerifiedAdopterSession,
   verifyAccess,
   fetchMedicalRecords,
   clearVerification,
@@ -51,8 +44,6 @@ const {
 const isLoading = ref(true)
 const isVerified = ref(false)
 const portalData = ref<IPetMedicalPortalData | null>(null)
-const isReceiptModalOpen = ref(false)
-const verifiedSession = ref<IVerifiedAdopterSession | null>(null)
 
 const slug = computed(() => String(route.params.slug ?? '').trim())
 
@@ -121,14 +112,10 @@ const dietInfo = computed(() => buildDietInfo(portalData.value))
 const medicationsList = computed(() => buildMedicationsList(portalData.value))
 const proceduresList = computed(() => buildProceduresList(portalData.value))
 const healthSummary = computed(() => portalData.value?.medical?.healthSummary || null)
-const adopterInfo = computed(() =>
-  buildAdopterPaymentInfo(portalData.value, verifiedSession.value),
-)
 
 const isFosterToAdopt = computed(() => {
   if (typeof portalData.value?.fosterToAdopt === 'boolean') return portalData.value.fosterToAdopt
   if (typeof portalData.value?.adoption?.fosterToAdopt === 'boolean') return portalData.value.adoption.fosterToAdopt
-  if (typeof adopterInfo.value?.fosterToAdopt === 'boolean') return adopterInfo.value.fosterToAdopt
   const placementType = (portalData.value?.placementType || portalData.value?.adoptionType || '').toLowerCase().trim()
   if (placementType.includes('foster') || placementType === 'fta') return true
   const contractUrl = (portalData.value?.contractUrl || '').toLowerCase().trim()
@@ -139,21 +126,6 @@ const isFosterToAdopt = computed(() => {
 const petStatus = computed(() => {
   return isFosterToAdopt.value ? 'Foster-to-Adopt' : 'Adopted'
 })
-
-watch(isReceiptModalOpen, (isOpen) => {
-  if (isOpen) {
-    document.body.classList.add('printing-receipt')
-  } else {
-    document.body.classList.remove('printing-receipt')
-  }
-})
-
-const handlePrintReceipt = () => {
-  isReceiptModalOpen.value = true
-  setTimeout(() => {
-    window.print()
-  }, 150)
-}
 
 const loadPet = async () => {
   const currentSlug = slug.value
@@ -178,7 +150,6 @@ const loadPet = async () => {
     const data = await fetchMedicalRecords(currentSlug, queryToken || undefined)
     if (data) {
       portalData.value = data
-      verifiedSession.value = getVerifiedAdopterSession(currentSlug)
       isVerified.value = true
     } else {
       portalData.value = null
@@ -198,14 +169,12 @@ const handleVerify = async (form: IMedicalVerificationForm) => {
 }
 
 onBeforeRouteLeave(() => {
-  document.body.classList.remove('printing-receipt')
   clearVerification(slug.value)
   portalData.value = null
   isVerified.value = false
 })
 
 onUnmounted(() => {
-  document.body.classList.remove('printing-receipt')
   clearVerification(slug.value)
   portalData.value = null
   isVerified.value = false
@@ -426,15 +395,6 @@ onMounted(async () => {
           :petName="petName"
         />
 
-        <!-- Adopter & Payment Information (only displayed when API returns adoption data) -->
-        <MedicalAdopterCard
-          v-if="adopterInfo"
-          :adopter="adopterInfo"
-          :petName="petName"
-          :petPhotoUrl="petPhotoUrl"
-          @print-receipt="handlePrintReceipt"
-        />
-
         <!-- Diet, Nutrition & Daily Guidelines -->
         <MedicalDietCard :diet="dietInfo" :petName="petName" />
 
@@ -446,17 +406,6 @@ onMounted(async () => {
         />
       </div>
     </Transition>
-
-    <!-- Printable Official Payment Receipt Modal -->
-    <MedicalPaymentReceiptModal
-      v-if="adopterInfo"
-      :isOpen="isReceiptModalOpen"
-      :adopter="adopterInfo"
-      :petName="petName"
-      :species="petSpecies"
-      :microchipId="identInfo.microchipId"
-      @close="isReceiptModalOpen = false"
-    />
   </section>
 </template>
 
