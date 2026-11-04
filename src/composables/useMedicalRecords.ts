@@ -83,14 +83,31 @@ export function useMedicalRecords() {
 
   const isVerifiedForPet = (petIdOrSlug?: string | null): boolean => {
     if (!petIdOrSlug) return false
-    const key = `${VERIFIED_STORAGE_PREFIX}${petIdOrSlug.trim().toLowerCase()}`
-    return sessionStorage.getItem(key) === 'true'
+    const normalized = petIdOrSlug.trim().toLowerCase()
+    const key = `${VERIFIED_STORAGE_PREFIX}${normalized}`
+    if (sessionStorage.getItem(key) === 'true') return true
+    if (normalized.includes('-')) {
+      const base = normalized.split('-')[0]
+      if (base && sessionStorage.getItem(`${VERIFIED_STORAGE_PREFIX}${base}`) === 'true') {
+        return true
+      }
+    }
+    return false
   }
 
   const getVerifiedToken = (petIdOrSlug?: string | null): string | null => {
     if (!petIdOrSlug) return null
-    const key = `${TOKEN_STORAGE_PREFIX}${petIdOrSlug.trim().toLowerCase()}`
-    return sessionStorage.getItem(key)
+    const normalized = petIdOrSlug.trim().toLowerCase()
+    const key = `${TOKEN_STORAGE_PREFIX}${normalized}`
+    const token = sessionStorage.getItem(key)
+    if (token) return token
+    if (normalized.includes('-')) {
+      const base = normalized.split('-')[0]
+      if (base) {
+        return sessionStorage.getItem(`${TOKEN_STORAGE_PREFIX}${base}`)
+      }
+    }
+    return null
   }
 
   const setVerifiedToken = (petIdOrSlug: string, token: string) => {
@@ -101,8 +118,15 @@ export function useMedicalRecords() {
 
   const getVerifiedAdopterSession = (petIdOrSlug?: string | null): IVerifiedAdopterSession | null => {
     if (!petIdOrSlug) return null
-    const key = `${ADOPTER_STORAGE_PREFIX}${petIdOrSlug.trim().toLowerCase()}`
-    const raw = sessionStorage.getItem(key)
+    const normalized = petIdOrSlug.trim().toLowerCase()
+    const key = `${ADOPTER_STORAGE_PREFIX}${normalized}`
+    let raw = sessionStorage.getItem(key)
+    if (!raw && normalized.includes('-')) {
+      const base = normalized.split('-')[0]
+      if (base) {
+        raw = sessionStorage.getItem(`${ADOPTER_STORAGE_PREFIX}${base}`)
+      }
+    }
     if (!raw) return null
     try {
       return JSON.parse(raw) as IVerifiedAdopterSession
@@ -122,6 +146,14 @@ export function useMedicalRecords() {
     sessionStorage.removeItem(`${VERIFIED_STORAGE_PREFIX}${normalized}`)
     sessionStorage.removeItem(`${TOKEN_STORAGE_PREFIX}${normalized}`)
     sessionStorage.removeItem(`${ADOPTER_STORAGE_PREFIX}${normalized}`)
+    if (normalized.includes('-')) {
+      const base = normalized.split('-')[0]
+      if (base) {
+        sessionStorage.removeItem(`${VERIFIED_STORAGE_PREFIX}${base}`)
+        sessionStorage.removeItem(`${TOKEN_STORAGE_PREFIX}${base}`)
+        sessionStorage.removeItem(`${ADOPTER_STORAGE_PREFIX}${base}`)
+      }
+    }
   }
 
   const validateVerificationForm = (
@@ -235,14 +267,28 @@ export function useMedicalRecords() {
       const token = resData.verifiedToken || 'verified'
 
       setVerifiedToken(verifiedPetSlug, token)
-      setVerifiedAdopterSession(verifiedPetSlug, {
+      if (targetPetIdOrSlug && targetPetIdOrSlug.toLowerCase() !== verifiedPetSlug.toLowerCase()) {
+        setVerifiedToken(targetPetIdOrSlug, token)
+      }
+      if (petSlug && petSlug.toLowerCase() !== verifiedPetSlug.toLowerCase()) {
+        setVerifiedToken(petSlug, token)
+      }
+
+      const adopterSession: IVerifiedAdopterSession = {
         lastName: form.adopterLastName.trim(),
         email: form.email.trim(),
         phone: form.phoneNumber.trim(),
         adoptionMonth: form.adoptionMonth.trim(),
         adoptionYear: form.adoptionYear.trim(),
         adoptionDate: `${form.adoptionYear.trim()}-${form.adoptionMonth.trim().padStart(2, '0')}-01`,
-      })
+      }
+      setVerifiedAdopterSession(verifiedPetSlug, adopterSession)
+      if (targetPetIdOrSlug && targetPetIdOrSlug.toLowerCase() !== verifiedPetSlug.toLowerCase()) {
+        setVerifiedAdopterSession(targetPetIdOrSlug, adopterSession)
+      }
+      if (petSlug && petSlug.toLowerCase() !== verifiedPetSlug.toLowerCase()) {
+        setVerifiedAdopterSession(petSlug, adopterSession)
+      }
 
       return { success: true, petSlug: verifiedPetSlug, verifiedToken: token }
     } catch {
@@ -304,7 +350,6 @@ export function useMedicalRecords() {
               'Content-Type': 'application/json',
               'X-Org-Id': PUBLIC_ORG_ID,
               Authorization: `Bearer ${token}`,
-              'X-Medical-Token': token,
             },
           })
           if (res.status !== 404 && res.status !== 405) {
@@ -317,7 +362,9 @@ export function useMedicalRecords() {
       }
 
       if (!response || !response.ok) {
-        clearVerification(petIdOrSlug)
+        if (response && (response.status === 401 || response.status === 403)) {
+          clearVerification(petIdOrSlug)
+        }
         return null
       }
 

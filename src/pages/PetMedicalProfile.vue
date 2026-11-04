@@ -153,7 +153,6 @@ const loadPet = async () => {
       isVerified.value = true
     } else {
       portalData.value = null
-      clearVerification(currentSlug)
       isVerified.value = false
     }
   } finally {

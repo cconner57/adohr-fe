@@ -93,10 +93,13 @@ describe('useMedicalRecords', () => {
     setVerifiedToken('luna', 'mock-token-123')
     expect(isVerifiedForPet('luna')).toBe(true)
     expect(isVerifiedForPet('LUNA ')).toBe(true) // case/trim resilience
+    expect(isVerifiedForPet('luna-c1951')).toBe(true) // prefix slug resilience
     expect(getVerifiedToken('luna')).toBe('mock-token-123')
+    expect(getVerifiedToken('luna-c1951')).toBe('mock-token-123')
 
     clearVerification('luna')
     expect(isVerifiedForPet('luna')).toBe(false)
+    expect(isVerifiedForPet('luna-c1951')).toBe(false)
     expect(getVerifiedToken('luna')).toBeNull()
   })
 
@@ -232,7 +235,6 @@ describe('useMedicalRecords', () => {
       expect.objectContaining({
         headers: expect.objectContaining({
           Authorization: 'Bearer email-direct-token-abc',
-          'X-Medical-Token': 'email-direct-token-abc',
         }),
       }),
     )
