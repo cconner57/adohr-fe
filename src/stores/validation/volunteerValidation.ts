@@ -41,6 +41,7 @@ export function getVolunteerValidationErrors(formState: IVolunteerFormState): st
   if (!formState.emergencyContactName) errors.push('Emergency Contact Name')
   if (!formState.emergencyContactPhone) errors.push('Emergency Contact Phone')
   if (!formState.interestReason) errors.push('Interest Reason')
+  if (!formState.preferredLocationId?.trim()) errors.push('Preferred Location')
   if (formState.positionPreferences.length === 0) errors.push('Position Preferences')
   if (formState.availability.length === 0) errors.push('Availability')
   if (!formState.nameFull) errors.push('Agreement Name')

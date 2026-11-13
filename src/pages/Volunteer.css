@@ -71,6 +71,18 @@
       margin: 1.5rem 0 2rem;
     }
 
+    .locations-loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 48px 16px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
     .draft-badge-bar {
       display: flex;
       justify-content: space-between;

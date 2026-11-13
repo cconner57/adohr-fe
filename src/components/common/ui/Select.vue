@@ -18,6 +18,7 @@ const props = withDefaults(
     placeholder?: string
     label?: string
     hasError?: boolean
+    disabled?: boolean
     fullWidth?: boolean
     multiple?: boolean
     variant?: 'default' | 'borderless'
@@ -27,6 +28,7 @@ const props = withDefaults(
   {
     placeholder: 'Select an option',
     fullWidth: false,
+    disabled: false,
     hasError: false,
     multiple: false,
     variant: 'default',
@@ -196,6 +198,7 @@ const highlightCurrentOrFirst = () => {
 }
 
 const openDropdown = () => {
+  if (props.disabled) return
   ensureSelectedIsVisible()
   updateDropdownPosition()
   isOpen.value = true
@@ -203,6 +206,7 @@ const openDropdown = () => {
 }
 
 const toggleDropdown = () => {
+  if (props.disabled) return
   if (isOpen.value) {
     isOpen.value = false
   } else {
@@ -227,6 +231,7 @@ const selectOption = (value: string | number) => {
 }
 
 const handleKeyDown = (event: KeyboardEvent) => {
+  if (props.disabled) return
   const options = displayedOptions.value
   if (options.length === 0) return
 
@@ -373,8 +378,10 @@ onUnmounted(() => {
       type="button"
       class="select-trigger"
       :id="uid"
+      :disabled="disabled"
       :class="{
         'is-open': isOpen,
+        'is-disabled': disabled,
         'is-placeholder': !modelValue,
         'has-rich-content': Boolean(selectedOption?.image || selectedOption?.species),
       }"

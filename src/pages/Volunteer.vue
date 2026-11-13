@@ -9,6 +9,8 @@ import Button from '@/components/common/ui/Button.vue'
 import HoneypotField from '@/components/common/ui/HoneypotField.vue'
 import InputField from '@/components/common/ui/InputField.vue'
 import InputTextArea from '@/components/common/ui/InputTextArea.vue'
+import Select from '@/components/common/ui/Select.vue'
+import Spinner from '@/components/common/ui/Spinner.vue'
 import AdoptionSteps from '@/components/pet-adoption/adoption-steps/AdoptionSteps.vue'
 import {
   Agreement,
@@ -33,29 +35,33 @@ import {
 const { submitMetric } = useMetrics()
 const { vScrollReveal } = useScrollReveal()
 
-onMounted(() => {
-  submitMetric('form_start', { form: 'volunteer' })
-})
-
 const volunteerStore = useVolunteerStore()
 const {
   formState,
   isSubmitted,
   isSubmitting,
+  isLoadingLocations,
+  locationsLoadFailed,
+  locationOptions,
   apiError,
   isFormValid,
   hasSavedDraft,
 } = storeToRefs(volunteerStore)
-const { submit, resetForm, clearPersistedState } = volunteerStore
+const { submit, resetForm, clearPersistedState, setPreferredLocation } = volunteerStore
+
+onMounted(() => {
+  submitMetric('form_start', { form: 'volunteer' })
+  void volunteerStore.fetchPublicLocations()
+})
 
 const currentStep = ref(0)
 const volunteerSteps = ['Personal Info', 'Interests', 'Availability', 'Agreement']
 
 const { touched, handleBlur, touchAll } = useFormState([
   'firstName', 'lastName', 'address', 'city', 'zip', 'phoneNumber', 'birthday', 'email',
-  'allergies', 'emergencyContactName', 'emergencyContactPhone', 'interestReason',
-  'positionPreferences', 'availability', 'nameFull', 'signatureDate', 'signatureData',
-  'parentName', 'parentSignatureDate', 'parentSignatureData',
+  'allergies', 'emergencyContactName', 'emergencyContactPhone', 'preferredLocationId',
+  'interestReason', 'positionPreferences', 'availability', 'nameFull', 'signatureDate',
+  'signatureData', 'parentName', 'parentSignatureDate', 'parentSignatureData',
 ])
 
 let debounceTimeout: ReturnType<typeof setTimeout> | null = null
@@ -100,6 +106,7 @@ const step0Errors = computed(() => {
 const step1Errors = computed(() => {
   const errs: string[] = []
   if (!formState.value.interestReason?.trim()) errs.push('Please share why you are interested in volunteering')
+  if (!formState.value.preferredLocationId?.trim()) errs.push('Please select a preferred volunteer location')
   if (!formState.value.positionPreferences?.length) errs.push('Please select at least one preferred position')
   return errs
 })
@@ -137,6 +144,7 @@ const handleNextStep = () => {
   if (currentStep.value === 1 && step1Errors.value.length > 0) {
     stepHasError.value = true
     touched.interestReason = true
+    touched.preferredLocationId = true
     touched.positionPreferences = true
     window.scrollTo({ top: 180, behavior: 'smooth' })
     return
@@ -191,6 +199,11 @@ const handleClearDraft = () => {
   currentStep.value = 0
 }
 
+const handleLocationSelect = (val: string) => {
+  setPreferredLocation(val)
+  handleBlur('preferredLocationId')
+}
+
 watch(
   () => formState.value.allergies,
   (newVal) => {
@@ -216,6 +229,12 @@ watch(
             header-text="A Dream of Home Rescue (ADOHR) is an all-volunteer, nonprofit dedicated to helping homeless cats and dogs find loving, permanent homes. Most volunteer shifts take place at our PetSmart partner location in Pasadena, plus occasional events and vet transport. Volunteers must be 21 or older (or have a parent/guardian co-sign). Join us and make a meaningful impact!"
           />
 
+          <div v-if="isLoadingLocations" class="locations-loading-state" role="status" aria-live="polite">
+            <Spinner />
+            <p class="locations-loading-text">Loading volunteer locations...</p>
+          </div>
+
+          <template v-else>
           <div class="stepper-wrapper" v-scroll-reveal>
             <AdoptionSteps :currentStep="currentStep" :steps="volunteerSteps" />
           </div>
@@ -316,6 +335,16 @@ watch(
               label="Why are you interested in volunteering:" placeholder="Tell us what drew you to ADOHR and what you hope to contribute" name="interestReason" maxlength="500"
               :class="{ 'has-error': touched.interestReason && !formState.interestReason }" @blur="handleBlur('interestReason')"
             />
+            <Select
+              :modelValue="formState.preferredLocationId ?? ''"
+              label="Preferred Volunteer Location"
+              placeholder="Select a location..."
+              :options="locationOptions"
+              :disabled="locationsLoadFailed"
+              :hasError="touched.preferredLocationId && !formState.preferredLocationId"
+              fullWidth
+              @update:modelValue="(v) => handleLocationSelect(String(v ?? ''))"
+            />
             <PositionPreferences
               v-model="formState.positionPreferences"
               :hasError="touched.positionPreferences && formState.positionPreferences.length === 0"
@@ -400,6 +429,7 @@ watch(
               :loading="isSubmitting"
             />
           </footer>
+          </template>
         </form>
       </div>
 

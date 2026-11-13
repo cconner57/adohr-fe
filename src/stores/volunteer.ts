@@ -4,7 +4,7 @@ import { computed, reactive, ref } from 'vue'
 import { useDemoMode } from '../composables/useDemoMode'
 import { useMetrics } from '../composables/useMetrics'
 import { API_ENDPOINTS } from '../constants/api'
-import type { IVolunteerFormState } from '../models/volunteer-form'
+import type { IPublicVolunteerLocation, IVolunteerFormState } from '../models/volunteer-form'
 import { getApiErrorMessage, PUBLIC_ORG_ID, withPublicOrgId } from '../utils/api'
 import { calculateAgeInYears } from '../utils/date'
 import { getVolunteerValidationErrors } from './validation/volunteerValidation'
@@ -36,6 +36,8 @@ export const useVolunteerStore = defineStore('volunteer', () => {
     emergencyContactPhone: '',
     volunteerExperience: '',
     interestReason: '',
+    preferredLocationId: '',
+    preferredLocationName: '',
     positionPreferences: [],
     availability: [],
     nameFull: '',
@@ -56,6 +58,83 @@ export const useVolunteerStore = defineStore('volunteer', () => {
   })
 
   const isSubmitting = ref(false)
+  const locations = ref<IPublicVolunteerLocation[]>([])
+  const isLoadingLocations = ref(false)
+  const locationsLoadFailed = ref(false)
+
+  const locationOptions = computed(() => {
+    if (locationsLoadFailed.value) {
+      return [{ value: 'unknown', label: 'Unknown' }]
+    }
+    return [
+      { value: 'any', label: 'Any Location' },
+      ...locations.value.map((loc) => ({ value: loc.id, label: loc.name })),
+    ]
+  })
+
+  const setPreferredLocation = (locationId: string) => {
+    if (locationsLoadFailed.value) return
+    if (locationId === 'any') {
+      formState.preferredLocationId = 'any'
+      formState.preferredLocationName = 'Any Location'
+      return
+    }
+    const match = locations.value.find((loc) => loc.id === locationId)
+    if (match) {
+      formState.preferredLocationId = match.id
+      formState.preferredLocationName = match.name
+    } else {
+      formState.preferredLocationId = ''
+      formState.preferredLocationName = ''
+    }
+  }
+
+  const fetchPublicLocations = async () => {
+    isLoadingLocations.value = true
+    locationsLoadFailed.value = false
+    try {
+      const response = await fetch(
+        withPublicOrgId(`${API_ENDPOINTS.PUBLIC_LOCATIONS}?for=volunteer`),
+        {
+          headers: { 'X-Org-Id': PUBLIC_ORG_ID },
+        },
+      )
+      if (!response.ok) {
+        throw new Error(`Failed to fetch public locations: ${response.status}`)
+      }
+      const json = await response.json()
+      let rawLocations: unknown = null
+      if (Array.isArray(json?.locations)) {
+        rawLocations = json.locations
+      } else if (Array.isArray(json?.data?.locations)) {
+        rawLocations = json.data.locations
+      }
+      if (!Array.isArray(rawLocations)) {
+        throw new Error('Malformed locations payload')
+      }
+      locations.value = rawLocations as IPublicVolunteerLocation[]
+      if (locations.value.length === 0) {
+        if (!formState.preferredLocationId || formState.preferredLocationId === 'unknown') {
+          formState.preferredLocationId = 'any'
+          formState.preferredLocationName = 'Any Location'
+        }
+      } else if (
+        formState.preferredLocationId &&
+        formState.preferredLocationId !== 'any' &&
+        !locations.value.some((loc) => loc.id === formState.preferredLocationId)
+      ) {
+        formState.preferredLocationId = ''
+        formState.preferredLocationName = ''
+      }
+    } catch {
+      locationsLoadFailed.value = true
+      locations.value = []
+      formState.preferredLocationId = 'unknown'
+      formState.preferredLocationName = 'Unknown'
+    } finally {
+      isLoadingLocations.value = false
+    }
+  }
 
   const STORAGE_KEY = 'adohr_volunteer_form_draft_v1'
 
@@ -88,6 +167,10 @@ export const useVolunteerStore = defineStore('volunteer', () => {
       if (stored) {
         const parsed = JSON.parse(stored)
         Object.assign(formState, parsed)
+        if (formState.preferredLocationId === 'unknown') {
+          formState.preferredLocationId = ''
+          formState.preferredLocationName = ''
+        }
       }
     } catch (e) {
       console.error('Failed to restore volunteer form state', e)
@@ -113,6 +196,8 @@ export const useVolunteerStore = defineStore('volunteer', () => {
     formState.emergencyContactPhone = ''
     formState.volunteerExperience = ''
     formState.interestReason = ''
+    formState.preferredLocationId = locationsLoadFailed.value ? 'unknown' : ''
+    formState.preferredLocationName = locationsLoadFailed.value ? 'Unknown' : ''
     formState.positionPreferences = []
     formState.availability = []
     formState.nameFull = ''
@@ -207,11 +292,16 @@ export const useVolunteerStore = defineStore('volunteer', () => {
     formState,
     isSubmitted,
     isSubmitting,
+    isLoadingLocations,
+    locationsLoadFailed,
+    locationOptions,
     hasAttemptedSubmit,
     apiError,
     validationErrors,
     isFormValid,
     hasSavedDraft,
+    fetchPublicLocations,
+    setPreferredLocation,
     persistState,
     clearPersistedState,
     submit,

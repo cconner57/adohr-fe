@@ -1,3 +1,12 @@
+export interface IPublicVolunteerLocation {
+  id: string
+  name: string
+  shortName?: string
+  locationType?: string
+  address?: string
+  isDefault?: boolean
+}
+
 export interface IVolunteerFormState {
   fax_number?: string
   firstName: string
@@ -15,6 +24,8 @@ export interface IVolunteerFormState {
   emergencyContactPhone: string
   volunteerExperience: string
   interestReason: string
+  preferredLocationId: string
+  preferredLocationName: string
   positionPreferences: string[]
   availability: string[]
   nameFull: string

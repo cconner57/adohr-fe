@@ -71,9 +71,38 @@ export async function mockApplicationsApi(page: Page) {
   })
 }
 
+/** Intercepts GET /public/locations* with default public ADOHR locations. */
+export async function mockPublicLocationsApi(page: Page) {
+  await page.route('**/public/locations*', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        locations: [
+          {
+            id: 'loc-main',
+            name: 'Main Shelter',
+            shortName: 'Main',
+            locationType: 'shelter',
+            isDefault: true,
+          },
+          {
+            id: 'loc-upland',
+            name: 'PetSmart - Upland',
+            shortName: 'Upland',
+            locationType: 'retail_partner',
+            isDefault: false,
+          },
+        ],
+      }),
+    }),
+  )
+}
+
 /** Convenience wrapper — mocks all API endpoints. */
 export async function mockAllApis(page: Page) {
   await mockPetsApi(page)
   await mockMetricsApi(page)
   await mockApplicationsApi(page)
+  await mockPublicLocationsApi(page)
 }

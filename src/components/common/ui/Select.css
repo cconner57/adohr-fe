@@ -42,6 +42,18 @@
     border-color: var(--color-primary);
     box-shadow: 0 0 0 2px oklch(from var(--color-primary) l c h / 20%);
   }
+
+  &.is-disabled,
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.72;
+    background-color: var(--color-gray-100, #f3f4f6);
+    box-shadow: none;
+  }
+}
+
+.select-container.has-error .select-trigger {
+  border-color: var(--color-danger);
 }
 
 .select-trigger.is-placeholder .selected-text {
