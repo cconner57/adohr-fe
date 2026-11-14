@@ -101,7 +101,7 @@ onUnmounted(() => {
   inset: 0;
   background: rgb(0 0 0 / 50%);
   backdrop-filter: blur(2px);
-  z-index: var(--z-dropdown);
+  z-index: var(--z-editor-overlay, 3002);
   cursor: pointer;
 }
 
@@ -116,7 +116,7 @@ onUnmounted(() => {
   box-shadow: -4px 0 24px rgb(0 0 0 / 15%);
   display: flex;
   flex-direction: column;
-  z-index: var(--z-sticky);
+  z-index: var(--z-editor, 3003);
 }
 
 /* Header */
