@@ -183,7 +183,43 @@ describe('AdoptionSpotlight.vue', () => {
     expect(wrapper.text()).toContain('Spotlight unavailable')
   })
 
-  it('renders empty state when no pets are available', () => {
+  it('randomly selects 4 unique pets on desktop view when more than 4 spotlight pets exist', () => {
+    isMobileMock.value = false
+    const sevenPets: IPet[] = [
+      ...mockPets,
+      { ...mockPets[0], id: '5', slug: 'milo', name: 'Milo' } as unknown as IPet,
+      { ...mockPets[1], id: '6', slug: 'cleo', name: 'Cleo' } as unknown as IPet,
+      { ...mockPets[2], id: '7', slug: 'oliver', name: 'Oliver' } as unknown as IPet,
+    ]
+    const wrapper = mount(AdoptionSpotlight, {
+      props: {
+        pets: sevenPets,
+        loading: false,
+        error: null,
+      },
+      global: {
+        stubs: {
+          PetItem: {
+            props: ['name', 'id'],
+            template: '<div class="pet-item">{{ name }}</div>',
+          },
+          PetItemSkeleton: true,
+          Button: true,
+        },
+      },
+    })
+
+    const items = wrapper.findAll('.pet-item')
+    expect(items).toHaveLength(4)
+    const renderedNames = items.map((i) => i.text())
+    expect(new Set(renderedNames).size).toBe(4)
+    const allowedNames = sevenPets.map((p) => p.name)
+    for (const name of renderedNames) {
+      expect(allowedNames).toContain(name)
+    }
+  })
+
+  it('hides spotlight section when no spotlight pets are available', () => {
     const wrapper = mount(AdoptionSpotlight, {
       props: {
         pets: [],
@@ -199,7 +235,6 @@ describe('AdoptionSpotlight.vue', () => {
       },
     })
 
-    expect(wrapper.find('.empty-container').exists()).toBe(true)
-    expect(wrapper.text()).toContain('No spotlight pets available right now')
+    expect(wrapper.find('.adoption-spotlight').exists()).toBe(false)
   })
 })

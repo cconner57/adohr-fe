@@ -6,7 +6,7 @@ import { usePetStore } from '@/stores/pets'
 
 export const usePets = () => {
   const store = usePetStore()
-  const { currentPets, isFetching: loading } = storeToRefs(store)
+  const { currentPets, isFetching: loading, lastFetched } = storeToRefs(store)
 
   const SESSION_CACHE_KEY = 'adohr_spotlight_pets'
   let initialCache: IPet[] = []
@@ -22,23 +22,29 @@ export const usePets = () => {
 
   const spotlightPets = computed(() => {
     const featured = currentPets.value.filter((p) => p.profileSettings?.isSpotlightFeatured)
-    const candidates = featured.length > 0 ? featured : currentPets.value
-    const fresh = candidates.slice(0, 4)
-    return fresh.length > 0 ? fresh : cachedPets.value
+    if (lastFetched.value > 0) {
+      return featured
+    }
+    return featured.length > 0 ? featured : cachedPets.value
   })
 
   watch(
-    () => currentPets.value,
-    (pets) => {
+    [() => currentPets.value, lastFetched],
+    ([pets, fetchedAt]) => {
       const featured = pets.filter((p) => p.profileSettings?.isSpotlightFeatured)
-      const candidates = featured.length > 0 ? featured : pets
-      const fresh = candidates.slice(0, 4)
-      if (fresh.length > 0 && typeof window !== 'undefined') {
-        cachedPets.value = fresh
+      if (featured.length > 0 && typeof window !== 'undefined') {
+        cachedPets.value = featured
         try {
-          sessionStorage.setItem(SESSION_CACHE_KEY, JSON.stringify(fresh))
+          sessionStorage.setItem(SESSION_CACHE_KEY, JSON.stringify(featured))
         } catch {
           // Ignore storage quota error
+        }
+      } else if (fetchedAt > 0 && typeof window !== 'undefined') {
+        cachedPets.value = []
+        try {
+          sessionStorage.removeItem(SESSION_CACHE_KEY)
+        } catch {
+          // Ignore storage error
         }
       }
     },

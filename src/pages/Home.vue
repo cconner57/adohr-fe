@@ -19,6 +19,9 @@ import { useHappyTailsStore } from '@/stores/happyTails'
 const router = useRouter()
 
 const { spotlightPets, loading, error, fetchSpotlight } = usePets()
+const showSpotlightSection = computed(
+  () => loading.value || Boolean(error) || spotlightPets.value.length > 0,
+)
 const {
   hasUpcomingEvents,
   isLoading: isEventsLoading,
@@ -61,14 +64,23 @@ onMounted(() => {
       </section>
 
       <!-- 3. Adoption Spotlight Section -->
-      <section class="section spotlight-section" aria-label="Adoption Spotlight">
+      <section
+        v-if="showSpotlightSection"
+        class="section spotlight-section"
+        aria-label="Adoption Spotlight"
+      >
         <div class="content-wrapper" v-scroll-reveal>
           <AdoptionSpotlight :pets="spotlightPets" :loading="loading" :error="error" />
         </div>
       </section>
 
       <!-- Divider between Spotlight & Mission -->
-      <div class="section-divider-wrapper" aria-hidden="true" v-scroll-reveal>
+      <div
+        v-if="showSpotlightSection"
+        class="section-divider-wrapper"
+        aria-hidden="true"
+        v-scroll-reveal
+      >
         <div class="section-divider">
           <span class="divider-line"></span>
           <span class="divider-icon">🐾</span>

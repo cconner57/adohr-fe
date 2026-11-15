@@ -379,6 +379,7 @@ export const usePetStore = defineStore('pets', () => {
     countsLoaded,
     selectedPet,
     isFetching,
+    lastFetched,
 
     fetchPets,
     fetchPetsList,

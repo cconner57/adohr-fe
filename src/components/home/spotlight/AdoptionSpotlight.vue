@@ -19,24 +19,50 @@ const isMobile = useIsMobile()
 const router = useRouter()
 
 const randomPet = ref<IPet | null>(null)
+const desktopRandomPets = ref<IPet[]>([])
+
+const pickRandomSubset = (items: IPet[], count: number): IPet[] => {
+  const pool = [...items]
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[pool[i], pool[j]] = [pool[j], pool[i]]
+  }
+  return pool.slice(0, count)
+}
 
 watch(
   [() => props.pets, isMobile],
   ([newPets, newIsMobile], [, oldIsMobile]) => {
-    if (!newIsMobile) return
-
     if (!newPets || newPets.length === 0) {
       randomPet.value = null
+      desktopRandomPets.value = []
       return
     }
 
-    const justSwitchedToMobile = !oldIsMobile
-    if (
-      justSwitchedToMobile ||
-      !randomPet.value ||
-      !newPets.some((p) => p.id === randomPet.value?.id)
-    ) {
-      randomPet.value = newPets[Math.floor(Math.random() * newPets.length)]
+    if (newIsMobile) {
+      const justSwitchedToMobile = !oldIsMobile
+      if (
+        justSwitchedToMobile ||
+        !randomPet.value ||
+        !newPets.some((p) => p.id === randomPet.value?.id)
+      ) {
+        randomPet.value = newPets[Math.floor(Math.random() * newPets.length)]
+      }
+      return
+    }
+
+    if (newPets.length <= 4) {
+      desktopRandomPets.value = newPets
+      return
+    }
+
+    const justSwitchedToDesktop = oldIsMobile === true
+    const currentStillValid =
+      desktopRandomPets.value.length === 4 &&
+      desktopRandomPets.value.every((picked) => newPets.some((p) => p.id === picked.id))
+
+    if (justSwitchedToDesktop || !currentStillValid) {
+      desktopRandomPets.value = pickRandomSubset(newPets, 4)
     }
   },
   { immediate: true },
@@ -50,12 +76,19 @@ const displayedPets = computed((): IPet[] => {
     }
     return []
   }
+  if (desktopRandomPets.value.length > 0) {
+    return desktopRandomPets.value
+  }
   return (props.pets ?? []).slice(0, 4)
 })
 </script>
 
 <template>
-  <section class="adoption-spotlight" aria-label="Featured adoptable pets">
+  <section
+    v-if="loading || error || displayedPets.length > 0"
+    class="adoption-spotlight"
+    aria-label="Featured adoptable pets"
+  >
     <header class="spotlight-header">
       <p class="eyebrow">Waiting right now</p>
       <h2>Adoption <span class="display-accent">spotlight</span></h2>
@@ -76,10 +109,6 @@ const displayedPets = computed((): IPet[] => {
         <p>We're having trouble loading the featured pets right now, but you can still view all of our adoptable friends</p>
         <Button title="View all pets" @click="router.push('/adopt')" color="blue" size="medium" />
       </div>
-    </div>
-    <div v-else-if="displayedPets.length === 0" class="empty-container">
-      <p class="empty-text">No spotlight pets available right now. Check back soon!</p>
-      <Button title="View all adoptable pets" @click="router.push('/adopt')" color="blue" size="medium" />
     </div>
     <div v-else class="pet-list">
       <PetItem
