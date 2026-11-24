@@ -110,22 +110,19 @@ describe('AdoptDetailMedia.vue', () => {
     })
 
     const buttons = wrapper.findAllComponents({ name: 'Button' })
-    expect(buttons.length).toBe(4)
+    expect(buttons.length).toBe(3)
+    expect(buttons.some((b) => b.props('title') === 'Schedule a Meet')).toBe(false)
 
     // Start Adoption
     await buttons[0].trigger('click')
     expect(wrapper.emitted('start-adoption')).toBeTruthy()
 
-    // Schedule a Meet
-    await buttons[1].trigger('click')
-    expect(wrapper.emitted('schedule-meet')).toBeTruthy()
-
     // Request Information
-    await buttons[2].trigger('click')
+    await buttons[1].trigger('click')
     expect(wrapper.emitted('request-info')).toBeTruthy()
 
     // Share
-    await buttons[3].trigger('click')
+    await buttons[2].trigger('click')
     expect(wrapper.emitted('share')).toBeTruthy()
   })
 })

@@ -231,6 +231,7 @@ watch(
           :disabled="isStartAdoptionDisabled"
           :fullWidth="true"
         />
+        <!--
         <Button
           title="Schedule a Meet"
           variant="secondary"
@@ -239,6 +240,7 @@ watch(
           :disabled="isComingSoon"
           :fullWidth="true"
         />
+        -->
         <Button
           title="Request Information"
           variant="secondary"
