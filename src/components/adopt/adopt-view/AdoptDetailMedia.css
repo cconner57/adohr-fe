@@ -261,6 +261,10 @@
   gap: 12px;
   width: 100%;
 
+  > :first-child:nth-last-child(3) {
+    grid-column: 1 / -1;
+  }
+
   @media (width <= 440px) {
     display: flex;
     flex-direction: column;
