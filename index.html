@@ -23,6 +23,36 @@
     <title>A Dream of Home Rescue</title>
     <meta name="apple-mobile-web-app-title" content="ADOHR">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <style>
+      .premount-loader {
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+      }
+
+      .premount-spinner {
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 3px solid rgba(100, 87, 166, 0.2);
+        border-top-color: #6457a6;
+        border-radius: 50%;
+        animation: premount-spin 0.75s linear infinite;
+      }
+
+      @keyframes premount-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .premount-spinner {
+          animation: none;
+        }
+      }
+    </style>
 
     <!--app-head-->
 
@@ -70,8 +100,13 @@
       }
     </script>
     <div id="app">
-      <!-- Crawlable legal entity notice for search engines and verification crawlers before JavaScript mounts -->
-      <div style="padding: 2rem; max-width: 800px; margin: 0 auto; font-family: system-ui, sans-serif; line-height: 1.6;">
+      <div class="premount-loader" role="status" aria-label="Loading A Dream of Home Rescue">
+        <div class="premount-spinner" aria-hidden="true"></div>
+      </div>
+      <!-- Crawlable legal entity notice kept in raw HTML for crawlers, visually hidden until Vue mounts -->
+      <div
+        style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; border: 0;"
+      >
         <h1>A Dream of Home Rescue</h1>
         <p>
           This website (<strong>www.adohr.org</strong> / <strong>adohr.org</strong>) is the official online portal owned and operated by
