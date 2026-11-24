@@ -135,4 +135,43 @@ describe('petNormalizer', () => {
     expect(specialInfo.specialNeedsList).toContain('Dental disease')
     expect(specialInfo.specialNeedsText).toContain('Blind (both eyes)')
   })
+
+  it('normalizes unknown tri-state behavior strings to null and preserves secondaryColor', () => {
+    const pet = normalizePet({
+      id: 'cookie-1c87f',
+      name: 'Cookie',
+      species: 'cat',
+      physical: {
+        breed: 'Domestic Long Hair',
+        color: 'Black',
+        secondaryColor: 'White',
+      },
+      behavior: {
+        isGoodWithCats: 'unknown',
+        isGoodWithDogs: 'unknown',
+        isGoodWithKids: 'unknown',
+        isGoodWithOtherAnimals: 'unknown',
+        isHouseTrained: 'unknown',
+      },
+    })
+
+    expect(pet.physical.color).toBe('Black')
+    expect(pet.physical.secondaryColor).toBe('White')
+    expect(pet.behavior.isGoodWithCats).toBeNull()
+    expect(pet.behavior.isGoodWithDogs).toBeNull()
+    expect(pet.behavior.isGoodWithKids).toBeNull()
+    expect(pet.behavior.isGoodWithOtherAnimals).toBeNull()
+    expect(pet.behavior.isHouseTrained).toBeNull()
+
+    const noneSecondary = normalizePet({
+      id: 'pet-none',
+      name: 'Misty',
+      species: 'cat',
+      physical: {
+        color: 'Gray',
+        secondaryColor: 'None',
+      },
+    })
+    expect(noneSecondary.physical.secondaryColor).toBeNull()
+  })
 })

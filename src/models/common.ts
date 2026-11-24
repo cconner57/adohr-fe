@@ -94,6 +94,7 @@ export interface IPet {
     breed: TPetBreed | 'Unknown' | 'unknown' | 'Mix' | 'mix' | null
     coatLength: TCoatLength | null
     color: string | null
+    secondaryColor?: string | null
     dateOfBirth?: string | null
 
     size: TSize | null
@@ -110,6 +111,7 @@ export interface IPet {
     isGoodWithCats: boolean | null
     isGoodWithDogs: boolean | null
     isGoodWithKids: boolean | null
+    isGoodWithOtherAnimals?: boolean | null
     isHouseTrained: boolean | null
     mustGoWithAnotherCat?: boolean | null
     mustGoWithAnotherDog?: boolean | null

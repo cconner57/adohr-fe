@@ -11,6 +11,17 @@ import type {
 
 export type TPetBreed = string
 
+export function parseTriStateBoolean(value: unknown): boolean | null {
+  if (value === true || value === 1) return true
+  if (value === false || value === 0) return false
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase()
+    if (normalized === 'true' || normalized === 'yes' || normalized === '1') return true
+    if (normalized === 'false' || normalized === 'no' || normalized === '0') return false
+  }
+  return null
+}
+
 /**
  * Ensures photo arrays always contain { id, isPrimary, url } objects.
  */
@@ -94,16 +105,32 @@ export function normalizePet(raw: Record<string, unknown>): IPet {
   const rawSize = String(phys.size || raw.size || 'medium').toLowerCase()
   const size = rawSize as TSize
   const coatLength = (phys.coatLength || raw.coatLength || raw.coat_length || null) as TCoatLength | null
-  const color = (phys.color || raw.color || null) as string | null
+  const rawColor = (phys.color || raw.color || null) as string | null
+  const rawSecondaryColor = (phys.secondaryColor || raw.secondaryColor || raw.secondary_color || null) as string | null
+  const color = rawColor?.trim() || null
+  const trimmedSecondary = rawSecondaryColor?.trim() || ''
+  const secondaryColor =
+    trimmedSecondary && trimmedSecondary.toLowerCase() !== 'none' ? trimmedSecondary : null
   const dateOfBirth = (phys.dateOfBirth || raw.dateOfBirth || raw.dob || raw.birthDate || null) as string | null
   const currentWeight = (phys.currentWeight ?? raw.weight ?? raw.current_weight ?? null) as number | null
 
   // Behavior sub-object or flat fallbacks
   const beh = (raw.behavior || {}) as Record<string, unknown>
-  const isGoodWithKids = (beh.isGoodWithKids ?? raw.isGoodWithKids ?? raw.goodWithKids ?? raw.good_with_kids ?? null) as boolean | null
-  const isGoodWithDogs = (beh.isGoodWithDogs ?? raw.isGoodWithDogs ?? raw.goodWithDogs ?? raw.good_with_dogs ?? null) as boolean | null
-  const isGoodWithCats = (beh.isGoodWithCats ?? raw.isGoodWithCats ?? raw.goodWithCats ?? raw.good_with_cats ?? null) as boolean | null
-  const isHouseTrained = (beh.isHouseTrained ?? raw.isHouseTrained ?? raw.houseTrained ?? null) as boolean | null
+  const isGoodWithKids = parseTriStateBoolean(
+    beh.isGoodWithKids ?? raw.isGoodWithKids ?? raw.goodWithKids ?? raw.good_with_kids,
+  )
+  const isGoodWithDogs = parseTriStateBoolean(
+    beh.isGoodWithDogs ?? raw.isGoodWithDogs ?? raw.goodWithDogs ?? raw.good_with_dogs,
+  )
+  const isGoodWithCats = parseTriStateBoolean(
+    beh.isGoodWithCats ?? raw.isGoodWithCats ?? raw.goodWithCats ?? raw.good_with_cats,
+  )
+  const isGoodWithOtherAnimals = parseTriStateBoolean(
+    beh.isGoodWithOtherAnimals ?? raw.isGoodWithOtherAnimals ?? raw.goodWithOtherAnimals,
+  )
+  const isHouseTrained = parseTriStateBoolean(
+    beh.isHouseTrained ?? raw.isHouseTrained ?? raw.houseTrained,
+  )
   
   // Medical sub-object or flat fallbacks
   const med = (raw.medical || {}) as Record<string, unknown>
@@ -177,6 +204,7 @@ export function normalizePet(raw: Record<string, unknown>): IPet {
       size,
       coatLength,
       color,
+      secondaryColor,
       dateOfBirth,
       currentWeight,
     },
@@ -188,6 +216,7 @@ export function normalizePet(raw: Record<string, unknown>): IPet {
       isGoodWithCats,
       isGoodWithDogs,
       isGoodWithKids,
+      isGoodWithOtherAnimals,
       isHouseTrained,
       mustGoWithAnotherCat: (beh.mustGoWithAnotherCat ?? raw.mustGoWithAnotherCat ?? null) as boolean | null,
       mustGoWithAnotherDog: (beh.mustGoWithAnotherDog ?? raw.mustGoWithAnotherDog ?? null) as boolean | null,

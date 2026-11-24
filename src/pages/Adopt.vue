@@ -181,9 +181,9 @@ const filteredPets = computed(() => {
   if (goodWith.length > 0) {
     result = result.filter((p: IPet) => {
       return goodWith.some((trait) => {
-        if (trait === 'kids') return p.behavior.isGoodWithKids
-        if (trait === 'dogs') return p.behavior.isGoodWithDogs
-        if (trait === 'cats') return p.behavior.isGoodWithCats
+        if (trait === 'kids') return p.behavior.isGoodWithKids === true
+        if (trait === 'dogs') return p.behavior.isGoodWithDogs === true
+        if (trait === 'cats') return p.behavior.isGoodWithCats === true
         return false
       })
     })

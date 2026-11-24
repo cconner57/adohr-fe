@@ -40,15 +40,23 @@ const normalizedBreed = computed(() => {
   return breed
 })
 
+const formattedColor = computed(() => {
+  const primary = props.pet.physical?.color?.trim() || ''
+  const rawSecondary = props.pet.physical?.secondaryColor?.trim() || ''
+  const secondary = rawSecondary.toLowerCase() === 'none' ? '' : rawSecondary
+
+  if (primary && secondary && primary.toLowerCase() !== secondary.toLowerCase()) {
+    return `${primary} & ${secondary}`
+  }
+
+  return primary || secondary || 'N/A'
+})
+
 const houseTrainedText = () => {
-  if (props.pet.behavior?.isHouseTrained === undefined) {
-    return 'N/A'
-  }
-  if (props.pet.behavior?.isHouseTrained) {
-    return 'Yes'
-  } else {
-    return 'No'
-  }
+  const value = props.pet.behavior?.isHouseTrained
+  if (value === true) return 'Yes'
+  if (value === false) return 'No'
+  return 'N/A'
 }
 </script>
 
@@ -60,7 +68,7 @@ const houseTrainedText = () => {
     </div>
     <div class="adopt-detail__additional-info__item">
       <p>Color</p>
-      <p>{{ pet.physical?.color ?? 'N/A' }}</p>
+      <p>{{ formattedColor }}</p>
     </div>
     <div class="adopt-detail__additional-info__item">
       <p>Size</p>

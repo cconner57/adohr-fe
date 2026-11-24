@@ -33,14 +33,40 @@ const statusBadge = computed(() => {
   }
 })
 
+const COMPATIBILITY_TRAITS = [
+  {
+    key: 'kids',
+    field: 'isGoodWithKids',
+    trueLabel: 'Good with kids',
+    falseLabel: 'Not good with kids',
+  },
+  {
+    key: 'dogs',
+    field: 'isGoodWithDogs',
+    trueLabel: 'Good with dogs',
+    falseLabel: 'Not good with dogs',
+  },
+  {
+    key: 'cats',
+    field: 'isGoodWithCats',
+    trueLabel: 'Good with cats',
+    falseLabel: 'Not good with cats',
+  },
+] as const
+
 const goodWithItems = computed(() => {
   const traits = props.pet.behavior
   if (!traits) return []
 
-  const items: { label: string; key: 'kids' | 'dogs' | 'cats' }[] = []
-  if (traits.isGoodWithKids) items.push({ label: 'Good with kids', key: 'kids' })
-  if (traits.isGoodWithDogs) items.push({ label: 'Good with dogs', key: 'dogs' })
-  if (traits.isGoodWithCats) items.push({ label: 'Good with cats', key: 'cats' })
+  const items: { label: string; key: 'kids' | 'dogs' | 'cats'; negative: boolean }[] = []
+  for (const config of COMPATIBILITY_TRAITS) {
+    const val = traits[config.field]
+    if (val === true) {
+      items.push({ label: config.trueLabel, key: config.key, negative: false })
+    } else if (val === false) {
+      items.push({ label: config.falseLabel, key: config.key, negative: true })
+    }
+  }
 
   return items
 })
@@ -62,7 +88,10 @@ const goodWithItems = computed(() => {
         />
       </div>
 
-      <div class="adopt-detail__traits">
+      <div
+        class="adopt-detail__traits"
+        :class="{ 'adopt-detail__traits--bordered': goodWithItems.length > 0 || Boolean(pet?.descriptions?.fun) }"
+      >
         <Capsules v-if="pet?.species" :label="pet?.species" />
         <Capsules v-if="pet?.sex" :label="pet?.sex" />
         <Capsules
@@ -72,7 +101,12 @@ const goodWithItems = computed(() => {
       </div>
 
       <div class="behavior-tags" v-if="goodWithItems.length > 0">
-        <div v-for="item in goodWithItems" :key="item.key" class="behavior-tag">
+        <div
+          v-for="item in goodWithItems"
+          :key="item.key"
+          class="behavior-tag"
+          :class="{ 'behavior-tag--negative': item.negative }"
+        >
           <svg
             v-if="item.key === 'kids'"
             class="tag-icon"
@@ -235,6 +269,9 @@ const goodWithItems = computed(() => {
     display: flex;
     flex-flow: row wrap;
     gap: 10px;
+  }
+
+  .adopt-detail__traits--bordered {
     margin-bottom: 1rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--line-ink, oklch(from var(--text-primary) l c h / 16%));
@@ -263,6 +300,17 @@ const goodWithItems = computed(() => {
       color: var(--color-primary);
       stroke: var(--color-primary);
       flex-shrink: 0;
+    }
+  }
+
+  .behavior-tag--negative {
+    background-color: oklch(from var(--color-danger) 95% 0.03 h);
+    border-color: oklch(from var(--color-danger) l c h / 30%);
+    color: oklch(from var(--color-danger) 38% 0.14 h);
+
+    .tag-icon {
+      color: oklch(from var(--color-danger) 46% 0.16 h);
+      stroke: oklch(from var(--color-danger) 46% 0.16 h);
     }
   }
 }
