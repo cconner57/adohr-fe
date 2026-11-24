@@ -227,6 +227,7 @@ watch(
         <Button
           title="Start Adoption"
           color="blue"
+          class="adopt-detail__action-primary"
           @click="emit('start-adoption')"
           :disabled="isStartAdoptionDisabled"
           :fullWidth="true"
