@@ -6,7 +6,7 @@ import { normalizePet } from '@/utils/petNormalizer'
 import AdditionalInfo from '../AdditionalInfo.vue'
 
 describe('AdditionalInfo.vue', () => {
-  it('displays combined primary & secondary colors and renders N/A for unknown house-trained', () => {
+  it('displays Litter Box Trained for cats and N/A for unknown', () => {
     const pet = normalizePet({
       id: 'cookie-1c87f',
       name: 'Cookie',
@@ -18,7 +18,8 @@ describe('AdditionalInfo.vue', () => {
         size: 'medium',
       },
       behavior: {
-        isHouseTrained: 'unknown',
+        isHouseTrained: true,
+        isLitterBoxTrained: 'unknown',
       },
     })
 
@@ -27,11 +28,13 @@ describe('AdditionalInfo.vue', () => {
     })
 
     expect(wrapper.text()).toContain('Black & White')
+    expect(wrapper.text()).toContain('Litter Box Trained')
+    expect(wrapper.text()).not.toContain('House-trained')
     expect(wrapper.text()).not.toContain('Yes')
     expect(wrapper.text()).toContain('N/A')
   })
 
-  it('displays single color cleanly when secondaryColor is missing or matches primary color', () => {
+  it('displays single color cleanly and uses isLitterBoxTrained for cats', () => {
     const singleColorPet = normalizePet({
       id: 'pet-single',
       name: 'Shadow',
@@ -41,7 +44,8 @@ describe('AdditionalInfo.vue', () => {
         secondaryColor: 'Black',
       },
       behavior: {
-        isHouseTrained: false,
+        isHouseTrained: true,
+        isLitterBoxTrained: false,
       },
     })
 
@@ -51,6 +55,27 @@ describe('AdditionalInfo.vue', () => {
 
     expect(wrapper.text()).toContain('Black')
     expect(wrapper.text()).not.toContain('Black & Black')
+    expect(wrapper.text()).toContain('Litter Box Trained')
     expect(wrapper.text()).toContain('No')
+  })
+
+  it('displays House-trained using isHouseTrained for dogs', () => {
+    const dog = normalizePet({
+      id: 'pet-dog',
+      name: 'Buddy',
+      species: 'dog',
+      behavior: {
+        isHouseTrained: true,
+        isLitterBoxTrained: false,
+      },
+    })
+
+    const wrapper = mount(AdditionalInfo, {
+      props: { pet: dog },
+    })
+
+    expect(wrapper.text()).toContain('House-trained')
+    expect(wrapper.text()).not.toContain('Litter Box Trained')
+    expect(wrapper.text()).toContain('Yes')
   })
 })

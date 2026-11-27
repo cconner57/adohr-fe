@@ -52,12 +52,18 @@ const formattedColor = computed(() => {
   return primary || secondary || 'N/A'
 })
 
-const houseTrainedText = () => {
-  const value = props.pet.behavior?.isHouseTrained
+const isCat = computed(() => props.pet.species?.trim().toLowerCase() === 'cat')
+
+const trainingLabel = computed(() => (isCat.value ? 'Litter Box Trained' : 'House-trained'))
+
+const trainingText = computed(() => {
+  const value = isCat.value
+    ? props.pet.behavior?.isLitterBoxTrained
+    : props.pet.behavior?.isHouseTrained
   if (value === true) return 'Yes'
   if (value === false) return 'No'
   return 'N/A'
-}
+})
 </script>
 
 <template>
@@ -75,8 +81,8 @@ const houseTrainedText = () => {
       <p>{{ pet.physical?.size ?? 'N/A' }}</p>
     </div>
     <div class="adopt-detail__additional-info__item">
-      <p>House-trained</p>
-      <p>{{ houseTrainedText() }}</p>
+      <p>{{ trainingLabel }}</p>
+      <p>{{ trainingText }}</p>
     </div>
     <div class="adopt-detail__additional-info__item">
       <p>Health</p>
