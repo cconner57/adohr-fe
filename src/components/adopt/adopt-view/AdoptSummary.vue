@@ -16,11 +16,15 @@ const { getPetAttendanceSchedule } = useAdoptionEvents()
   <div class="adopt-summary">
     <PetItem
       v-for="(pet, index) in pets"
-      :capsules="[
-        pet?.species ?? '',
-        pet?.sex ?? '',
-        pet?.physical?.dateOfBirth ? formatDate(pet?.physical?.dateOfBirth ?? '', true) : '',
-      ]"
+      :capsules="
+        pet.profileSettings?.showDetailCapsules === false
+          ? []
+          : [
+              pet?.species ?? '',
+              pet?.sex ?? '',
+              pet?.physical?.dateOfBirth ? formatDate(pet?.physical?.dateOfBirth ?? '', true) : '',
+            ]
+      "
       :description="pet.descriptions?.fun ?? ''"
       :id="pet.slug || pet.id"
       :key="pet.id"

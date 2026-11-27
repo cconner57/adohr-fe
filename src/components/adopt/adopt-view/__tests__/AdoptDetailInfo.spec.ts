@@ -65,4 +65,46 @@ describe('AdoptDetailInfo.vue', () => {
       'adopt-detail__traits--bordered',
     )
   })
+
+  it('hides species, sex, and age capsules when showDetailCapsules is false', () => {
+    const pet = normalizePet({
+      id: 'snowball-hidden-capsules',
+      name: 'Snowball',
+      species: 'cat',
+      sex: 'female',
+      physical: {
+        dateOfBirth: '2026-07-15',
+      },
+      profileSettings: {
+        showDetailCapsules: false,
+      },
+    })
+
+    const wrapper = mount(AdoptDetailInfo, {
+      props: { pet },
+    })
+
+    expect(wrapper.find('.adopt-detail__traits').exists()).toBe(false)
+    expect(wrapper.text()).toContain('Snowball')
+  })
+
+  it('shows species, sex, and age capsules when showDetailCapsules is omitted or true', () => {
+    const pet = normalizePet({
+      id: 'snowball-visible-capsules',
+      name: 'Snowball',
+      species: 'cat',
+      sex: 'female',
+      physical: {
+        dateOfBirth: '2026-07-15',
+      },
+    })
+
+    const wrapper = mount(AdoptDetailInfo, {
+      props: { pet },
+    })
+
+    expect(wrapper.find('.adopt-detail__traits').exists()).toBe(true)
+    expect(wrapper.text().toLowerCase()).toContain('cat')
+    expect(wrapper.text().toLowerCase()).toContain('female')
+  })
 })

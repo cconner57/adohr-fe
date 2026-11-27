@@ -117,11 +117,15 @@ const displayedPets = computed((): IPet[] => {
         :name="pet.name"
         :id="(pet.slug || pet.id).toLowerCase()"
         :photo="pet.photos?.find((p) => p.isPrimary)?.url || null"
-        :capsules="[
-          pet?.species ?? '',
-          pet?.sex ?? '',
-          pet?.physical?.dateOfBirth ? formatDate(pet?.physical?.dateOfBirth ?? '', true) : '',
-        ]"
+        :capsules="
+          pet.profileSettings?.showDetailCapsules === false
+            ? []
+            : [
+                pet?.species ?? '',
+                pet?.sex ?? '',
+                pet?.physical?.dateOfBirth ? formatDate(pet?.physical?.dateOfBirth ?? '', true) : '',
+              ]
+        "
         :size="isMobile ? 'large' : 'medium'"
         :isSponsored="pet.sponsored?.isSponsored ?? false"
         :status="pet.details?.status ?? ''"

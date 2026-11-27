@@ -89,6 +89,9 @@ const availablePetsOptions = computed<ISelectOption[]>(() => {
       if (status && status !== 'available') {
         return false
       }
+      if (p.profileSettings?.allowAdoptionInquiries === false) {
+        return false
+      }
       return true
     })
     .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))

@@ -125,4 +125,34 @@ describe('AdoptDetailMedia.vue', () => {
     await buttons[2].trigger('click')
     expect(wrapper.emitted('share')).toBeTruthy()
   })
+
+  it('disables visitor action buttons and blocks events when disabled props are true', async () => {
+    const wrapper = mount(AdoptDetailMedia, {
+      props: {
+        ...defaultProps,
+        isStartAdoptionDisabled: true,
+        isRequestInfoDisabled: true,
+        isShareDisabled: true,
+      },
+      global: {
+        stubs: {
+          PetPhotoBadges: true,
+          ImagePlaceholder: true,
+        },
+      },
+    })
+
+    const buttons = wrapper.findAll('button').filter((b) =>
+      ['Start Adoption', 'Request Information', 'Share'].includes(b.text()),
+    )
+    expect(buttons).toHaveLength(3)
+    for (const btn of buttons) {
+      expect(btn.attributes('disabled')).toBeDefined()
+      await btn.trigger('click')
+    }
+
+    expect(wrapper.emitted('start-adoption')).toBeFalsy()
+    expect(wrapper.emitted('request-info')).toBeFalsy()
+    expect(wrapper.emitted('share')).toBeFalsy()
+  })
 })

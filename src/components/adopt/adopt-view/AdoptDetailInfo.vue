@@ -12,6 +12,8 @@ const props = defineProps<{
   isComingSoon?: boolean
 }>()
 
+const showDetailCapsules = computed(() => props.pet.profileSettings?.showDetailCapsules !== false)
+
 const statusBadge = computed(() => {
   const normalizedStatus = props.pet.details?.status?.trim().toLowerCase() ?? ''
   if (props.isComingSoon || normalizedStatus === 'intake' || normalizedStatus === 'intake-processing' || normalizedStatus === 'intake processing') {
@@ -89,6 +91,7 @@ const goodWithItems = computed(() => {
       </div>
 
       <div
+        v-if="showDetailCapsules && (pet?.species || pet?.sex || pet?.physical?.dateOfBirth)"
         class="adopt-detail__traits"
         :class="{ 'adopt-detail__traits--bordered': goodWithItems.length > 0 || Boolean(pet?.descriptions?.fun) }"
       >

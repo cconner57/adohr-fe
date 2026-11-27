@@ -18,6 +18,9 @@ const props = defineProps<{
   videos?: Array<{ url: string; thumbnail?: string }>
   isComingSoon?: boolean
   isStartAdoptionDisabled?: boolean
+  isRequestInfoDisabled?: boolean
+  isShareDisabled?: boolean
+  isScheduleMeetDisabled?: boolean
 }>()
 
 const { getPetAttendanceSchedule } = useAdoptionEvents()
@@ -238,7 +241,7 @@ watch(
           variant="secondary"
           color="purple"
           @click="emit('schedule-meet')"
-          :disabled="isComingSoon"
+          :disabled="isScheduleMeetDisabled ?? isComingSoon"
           :fullWidth="true"
         />
         -->
@@ -247,6 +250,7 @@ watch(
           variant="secondary"
           color="orange"
           @click="emit('request-info')"
+          :disabled="isRequestInfoDisabled"
           :fullWidth="true"
         />
         <Button
@@ -254,6 +258,7 @@ watch(
           variant="secondary"
           color="green"
           @click="emit('share')"
+          :disabled="isShareDisabled"
           :fullWidth="true"
         />
       </div>

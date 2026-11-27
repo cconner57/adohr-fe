@@ -62,7 +62,19 @@ const isComingSoon = computed(() => {
   )
 })
 
-const isStartAdoptionDisabled = computed(() => isComingSoon.value)
+const isStartAdoptionDisabled = computed(
+  () => isComingSoon.value || props.pet.profileSettings?.allowAdoptionInquiries === false,
+)
+
+const isRequestInfoDisabled = computed(
+  () => props.pet.profileSettings?.allowRequestInfo === false,
+)
+
+const isShareDisabled = computed(() => props.pet.profileSettings?.allowShare === false)
+
+const isScheduleMeetDisabled = computed(
+  () => isComingSoon.value || props.pet.profileSettings?.allowScheduleMeet === false,
+)
 
 const fallbackBioStories = [
   (petName: string) =>
@@ -116,7 +128,18 @@ const copyToClipboard = async () => {
   }
 }
 
+const handleRequestInfo = () => {
+  if (isRequestInfoDisabled.value) return
+  isInfoDrawerOpen.value = true
+}
+
+const handleScheduleMeet = () => {
+  if (isScheduleMeetDisabled.value) return
+  isDrawerOpen.value = true
+}
+
 const handleShare = async () => {
+  if (isShareDisabled.value) return
   const shareData = {
     title: `Check out ${props.pet.name} for adoption!`,
     text: `I found ${props.pet.name} on ADOHR and thought you might be interested!`,
@@ -164,10 +187,13 @@ watch(
         :photos="pet.photos"
         :isComingSoon="isComingSoon"
         :isStartAdoptionDisabled="isStartAdoptionDisabled"
+        :isRequestInfoDisabled="isRequestInfoDisabled"
+        :isShareDisabled="isShareDisabled"
+        :isScheduleMeetDisabled="isScheduleMeetDisabled"
         @start-adoption="handleStartAdoption"
         @share="handleShare"
-        @request-info="isInfoDrawerOpen = true"
-        @schedule-meet="isDrawerOpen = true"
+        @request-info="handleRequestInfo"
+        @schedule-meet="handleScheduleMeet"
       />
       <AdoptDetailInfo
         :pet="pet"
