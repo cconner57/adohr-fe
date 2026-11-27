@@ -109,4 +109,41 @@ describe('AdoptPetDetail.vue', () => {
     expect(fetchSpy).toHaveBeenCalledTimes(2)
     expect(wrapper.find('.pet-detail').text()).toBe('Angel')
   })
+
+  it('loads pet profile on cold refresh when public API wraps pet in { data: pet }', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        data: {
+          id: '49b8bb1faf3c39f51e0f90b6c69ae44c',
+          slug: 'sylvester-49b8b',
+          name: 'Sylvester',
+          species: 'cat',
+          sex: 'male',
+          details: { status: 'available' },
+        },
+      }),
+    } as Response)
+
+    try {
+      const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false })
+      const wrapper = mount(AdoptPetDetail, {
+        props: { id: 'sylvester-49b8b' },
+        global: {
+          plugins: [pinia],
+          stubs: {
+            AdoptDetail: { props: ['pet'], template: '<div class="pet-detail">{{ pet.name }}</div>' },
+          },
+        },
+      })
+
+      await flushPromises()
+
+      expect(wrapper.text()).not.toContain('Pet not found')
+      expect(wrapper.find('.pet-detail').text()).toBe('Sylvester')
+    } finally {
+      fetchMock.mockRestore()
+    }
+  })
 })

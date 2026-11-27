@@ -316,6 +316,9 @@ export function normalizePet(raw: Record<string, unknown>): IPet {
   return normalized as unknown as IPet
 }
 
+const isSinglePetRecord = (record: Record<string, unknown>): boolean =>
+  ('id' in record || 'petId' in record || 'slug' in record) && 'name' in record
+
 /**
  * Extracts and normalizes pet arrays from all known API response formats.
  */
@@ -345,6 +348,8 @@ export function extractPetsFromApiResponse(json: unknown): IPet[] {
       rawList = sub.records
     } else if (Array.isArray(sub.list)) {
       rawList = sub.list
+    } else if (isSinglePetRecord(sub)) {
+      rawList = [sub]
     }
   } else if (Array.isArray(asRecord.items)) {
     rawList = asRecord.items
@@ -368,7 +373,7 @@ export function extractPetsFromApiResponse(json: unknown): IPet[] {
   }
 
   // Handle single pet response
-  if (rawList.length === 0 && ('id' in asRecord || 'petId' in asRecord || 'slug' in asRecord) && 'name' in asRecord) {
+  if (rawList.length === 0 && isSinglePetRecord(asRecord)) {
     rawList = [asRecord]
   }
 

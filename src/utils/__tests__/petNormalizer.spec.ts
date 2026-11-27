@@ -105,6 +105,28 @@ describe('petNormalizer', () => {
     expect(list2[0].name).toBe('Nala')
   })
 
+  it('extracts a single pet from { data: pet } and bare single-pet response shapes', () => {
+    const wrapped = {
+      data: {
+        id: '49b8bb1faf3c39f51e0f90b6c69ae44c',
+        slug: 'sylvester-49b8b',
+        name: 'Sylvester',
+        species: 'cat',
+        sex: 'male',
+      },
+    }
+
+    const list1 = extractPetsFromApiResponse(wrapped)
+    expect(list1).toHaveLength(1)
+    expect(list1[0].id).toBe('49b8bb1faf3c39f51e0f90b6c69ae44c')
+    expect(list1[0].slug).toBe('sylvester-49b8b')
+    expect(list1[0].name).toBe('Sylvester')
+
+    const list2 = extractPetsFromApiResponse(wrapped.data)
+    expect(list2).toHaveLength(1)
+    expect(list2[0].name).toBe('Sylvester')
+  })
+
   it('normalizes medical information including specialNeeds array, viral status, and medications', () => {
     const raw = {
       id: 'pet-med-1',
