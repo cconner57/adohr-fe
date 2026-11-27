@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useAdoptionEvents } from '../../../composables/useAdoptionEvents'
 import type { IPet } from '../../../models/common.ts'
-import { formatDate } from '../../../utils/common.ts'
-import { getPetSpecialNeeds } from '../../../utils/petNormalizer'
+import { getPetCardCapsules, getPetSpecialNeeds } from '../../../utils/petNormalizer'
 import PetItem from '../../common/pet-item/PetItem.vue'
 
 defineProps<{
@@ -16,15 +15,7 @@ const { getPetAttendanceSchedule } = useAdoptionEvents()
   <div class="adopt-summary">
     <PetItem
       v-for="(pet, index) in pets"
-      :capsules="
-        pet.profileSettings?.showDetailCapsules === false
-          ? []
-          : [
-              pet?.species ?? '',
-              pet?.sex ?? '',
-              pet?.physical?.dateOfBirth ? formatDate(pet?.physical?.dateOfBirth ?? '', true) : '',
-            ]
-      "
+      :capsules="getPetCardCapsules(pet)"
       :description="pet.descriptions?.fun ?? ''"
       :id="pet.slug || pet.id"
       :key="pet.id"

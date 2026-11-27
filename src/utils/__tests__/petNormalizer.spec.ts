@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
 
-import { extractPetsFromApiResponse, getPetSpecialNeeds, normalizePet, normalizePetPhotos } from '../petNormalizer'
+import {
+  extractPetsFromApiResponse,
+  getPetCardCapsules,
+  getPetSpecialNeeds,
+  normalizePet,
+  normalizePetPhotos,
+} from '../petNormalizer'
 
 describe('petNormalizer', () => {
   it('normalizes flat photo string arrays and fallback single photo fields', () => {
@@ -208,5 +214,7 @@ describe('petNormalizer', () => {
     expect(restricted.profileSettings.allowShare).toBe(false)
     expect(restricted.profileSettings.allowScheduleMeet).toBe(false)
     expect(restricted.profileSettings.showDetailCapsules).toBe(false)
+    expect(getPetCardCapsules(restricted)).toEqual(['—', '—', '—'])
+    expect(getPetCardCapsules(defaulted)).toEqual(['cat', 'unknown', ''])
   })
 })

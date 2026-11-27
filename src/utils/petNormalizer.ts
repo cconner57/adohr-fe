@@ -8,8 +8,25 @@ import type {
   TSpecies,
   TTemperament,
 } from '@/models/common'
+import { formatDate } from '@/utils/common'
 
 export type TPetBreed = string
+
+export const HIDDEN_DETAIL_CAPSULES = ['—', '—', '—']
+
+/**
+ * Returns species/sex/age capsules for a pet card, or dashed placeholders when details are hidden.
+ */
+export const getPetCardCapsules = (pet: IPet): string[] => {
+  if (pet.profileSettings?.showDetailCapsules === false) {
+    return [...HIDDEN_DETAIL_CAPSULES]
+  }
+  return [
+    pet?.species ?? '',
+    pet?.sex ?? '',
+    pet?.physical?.dateOfBirth ? formatDate(pet.physical.dateOfBirth, true) : '',
+  ]
+}
 
 export function parseTriStateBoolean(value: unknown): boolean | null {
   if (value === true || value === 1) return true

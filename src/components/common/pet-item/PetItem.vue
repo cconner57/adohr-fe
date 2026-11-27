@@ -211,7 +211,7 @@ function handleAdopt() {
       <h3>{{ props.name }}</h3>
 
       <div v-if="props.capsules.length > 0" class="capsules">
-        <template v-for="capText in props.capsules" :key="capText">
+        <template v-for="(capText, idx) in props.capsules" :key="`${idx}-${capText}`">
           <Capsules v-if="capText && capText !== 'Invalid Date'" size="sm">{{ capText }}</Capsules>
         </template>
       </div>

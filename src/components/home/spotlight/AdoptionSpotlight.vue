@@ -6,7 +6,7 @@ import PetItem from '@/components/common/pet-item/PetItem.vue'
 import PetItemSkeleton from '@/components/common/pet-item/PetItemSkeleton.vue'
 import Button from '@/components/common/ui/Button.vue'
 import type { IPet } from '@/models/common'
-import { formatDate } from '@/utils/common'
+import { getPetCardCapsules } from '@/utils/petNormalizer'
 import { useIsMobile } from '@/utils/useIsMobile'
 
 const props = defineProps<{
@@ -117,15 +117,7 @@ const displayedPets = computed((): IPet[] => {
         :name="pet.name"
         :id="(pet.slug || pet.id).toLowerCase()"
         :photo="pet.photos?.find((p) => p.isPrimary)?.url || null"
-        :capsules="
-          pet.profileSettings?.showDetailCapsules === false
-            ? []
-            : [
-                pet?.species ?? '',
-                pet?.sex ?? '',
-                pet?.physical?.dateOfBirth ? formatDate(pet?.physical?.dateOfBirth ?? '', true) : '',
-              ]
-        "
+        :capsules="getPetCardCapsules(pet)"
         :size="isMobile ? 'large' : 'medium'"
         :isSponsored="pet.sponsored?.isSponsored ?? false"
         :status="pet.details?.status ?? ''"
