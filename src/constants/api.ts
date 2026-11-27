@@ -20,6 +20,8 @@ export const API_ENDPOINTS = {
   METRICS: `${API_BASE_URL}/metrics`,
   PETS: `${API_BASE_URL}/pets`,
   PETS_LIST: `${API_BASE_URL}/pets`,
+  PUBLIC_PET_DETAIL: (idOrSlug: string) =>
+    `${API_BASE_URL}/public/pets/${encodeURIComponent(idOrSlug)}`,
   PET_DETAILS: (idOrSlug: string) => `${API_BASE_URL}/v1/pets/${idOrSlug}`,
   PET_PHOTOS: (id: string) => `${API_BASE_URL}/pets/${id}/photos`,
   NEWS_PUBLIC: `${API_BASE_URL}/public/news`,

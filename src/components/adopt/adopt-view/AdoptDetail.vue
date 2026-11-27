@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import PreQualDrawer from '@/components/common/ui/PreQualDrawer.vue'
@@ -28,12 +28,6 @@ const { currentPets } = storeToRefs(petStore)
 const isDrawerOpen = ref(false)
 const isInfoDrawerOpen = ref(false)
 const isPreQualOpen = ref(false)
-
-onMounted(() => {
-  if (currentPets.value.length === 0) {
-    petStore.fetchPetsList()
-  }
-})
 
 const littermates = computed<IPet[]>(() => {
   // If the API directly populates littermates array in the future

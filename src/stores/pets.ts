@@ -154,7 +154,8 @@ export const usePetStore = defineStore('pets', () => {
   }
 
   const fetchPetDetail = async (idOrSlug: string) => {
-    const normalizedParam = idOrSlug.trim().toLowerCase()
+    const trimmedParam = idOrSlug.trim()
+    const normalizedParam = trimmedParam.toLowerCase()
     const cachedPet = currentPets.value.find((p: IPet) => {
       const id = p.id.trim().toLowerCase()
       const slug = p.slug?.trim().toLowerCase() ?? ''
@@ -163,34 +164,22 @@ export const usePetStore = defineStore('pets', () => {
 
     if (cachedPet) return cachedPet
 
-    await fetchPetsList(true)
-    const refreshedPet = currentPets.value.find((p: IPet) => {
-      const id = p.id.trim().toLowerCase()
-      const slug = p.slug?.trim().toLowerCase() ?? ''
-      return id === normalizedParam || slug === normalizedParam
-    })
+    const headers = { Accept: 'application/json', 'X-Org-Id': PUBLIC_ORG_ID }
+    const response = await fetch(
+      `${API_ENDPOINTS.PUBLIC_PET_DETAIL(trimmedParam)}?orgId=${PUBLIC_ORG_ID}`,
+      { headers },
+    )
 
-    if (refreshedPet) return refreshedPet
-
-    try {
-      const headers = { Accept: 'application/json', 'X-Org-Id': PUBLIC_ORG_ID }
-      let response = await fetch(`${API_ENDPOINTS.PET_DETAILS(idOrSlug)}?orgId=${PUBLIC_ORG_ID}`, { headers })
-      if (!response.ok) {
-        response = await fetch(`${API_ENDPOINTS.PETS}/${idOrSlug}?orgId=${PUBLIC_ORG_ID}`, { headers })
-      }
-      if (!response.ok) return null
-
-      const json = await response.json()
-      const pets = extractPetsFromApiResponse(json)
-      if (pets.length > 0) {
-        mergeIntoCurrentPets([pets[0]])
-        return pets[0]
-      }
-      return null
-    } catch (err) {
-      console.warn('Pet detail endpoint unavailable, using cached list fallback', err)
+    if (response.status === 404) {
       return null
     }
+    if (!response.ok) {
+      throw new Error(`Failed to fetch pet profile (${response.status})`)
+    }
+
+    const json = await response.json()
+    const pets = extractPetsFromApiResponse(json)
+    return pets[0] ?? null
   }
 
   const fetchPets = async (forceRefresh = false) => {

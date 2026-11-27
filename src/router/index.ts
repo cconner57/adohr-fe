@@ -6,6 +6,7 @@ import Home from '../pages/Home.vue'
 
 const About = () => import('../pages/About.vue')
 const Adopt = () => import('../pages/Adopt.vue')
+const AdoptPetDetail = () => import('../pages/AdoptPetDetail.vue')
 const Donate = () => import('../pages/Donate.vue')
 const Foster = () => import('../pages/Foster.vue')
 const HappyTails = () => import('../pages/HappyTails.vue')
@@ -49,7 +50,7 @@ const router = createRouter({
     {
       path: '/adopt/:id',
       name: 'adopt-pet',
-      component: Adopt,
+      component: AdoptPetDetail,
       props: true,
     },
     {

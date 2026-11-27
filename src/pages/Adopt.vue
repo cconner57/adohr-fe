@@ -3,7 +3,6 @@ import { storeToRefs } from 'pinia'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-import AdoptDetail from '@/components/adopt/adopt-view/AdoptDetail.vue'
 import AdoptSummary from '@/components/adopt/adopt-view/AdoptSummary.vue'
 import AdoptPageHeader from '@/components/adopt/AdoptPageHeader.vue'
 import EventBanner from '@/components/adopt/events/EventBanner.vue'
@@ -19,13 +18,10 @@ import { getPetSpecialNeeds } from '@/utils/petNormalizer'
 const { attendingPetIds, fetchUpcomingEvents } = useAdoptionEvents()
 const { isFavorite, favoriteCount } = useFavorites()
 
-const props = defineProps<{ id?: string }>()
 const route = useRoute()
 const store = usePetStore()
 const { currentPets, isFetching, error } = storeToRefs(store)
 
-const id = computed(() => props.id ?? (route.params.id as string | undefined))
-const detailPet = ref<IPet | null>(null)
 const isFilterPanelOpen = ref(false)
 const isMatcherOpen = ref(false)
 const isAttendingWeekendOnly = ref(false)
@@ -110,9 +106,7 @@ const applyRouteQueryFilters = (q: typeof route.query) => {
 
 onMounted(() => {
   fetchUpcomingEvents()
-  if (!id.value) {
-    store.fetchPetsList()
-  }
+  store.fetchPetsList()
   applyRouteQueryFilters(route.query)
 })
 
@@ -232,35 +226,6 @@ const setFilter = (filter: string) => {
   })
 }
 
-const pet = computed(() => {
-  if (detailPet.value) return detailPet.value
-
-  const param = id.value
-  if (!param) return undefined
-  return currentPets.value.find((p: IPet) => p.id === param || p.slug === param)
-})
-
-watch(
-  id,
-  async (param) => {
-    detailPet.value = null
-    if (!param) return
-
-    detailPet.value = await store.fetchPetDetail(param)
-  },
-  { immediate: true },
-)
-
-watch(id, () => {
-  isFilterPanelOpen.value = false
-})
-
-watch(pet, (currentPet) => {
-  if (currentPet) {
-    isFilterPanelOpen.value = false
-  }
-})
-
 const filterCount = computed(
   () => Object.values(advancedFilters.value).flat().filter(Boolean).length,
 )
@@ -284,7 +249,7 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special',
   <div class="adopt">
     <div class="content-wrapper">
       <AdoptPageHeader
-        :pet="!!pet"
+        :pet="false"
         :activeFilter="activeFilter"
         :isFilterPanelOpen="isFilterPanelOpen"
         :filterCount="filterCount"
@@ -304,7 +269,6 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special',
 
       <!-- Filter Options Box -->
       <FilterPanel
-        v-if="!pet"
         :isOpen="isFilterPanelOpen"
         :currentFilters="advancedFilters"
         @close="isFilterPanelOpen = false"
@@ -314,7 +278,6 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special',
 
       <!-- Weekend Event Banner (below filter options box) -->
       <EventBanner
-        v-if="!pet"
         :isFilterActive="isAttendingWeekendOnly"
         :showFilterButton="true"
         :hasAttendingPets="hasPetsForActiveEvent"
@@ -345,8 +308,7 @@ const removeFilter = (category: 'age' | 'size' | 'sex' | 'goodWith' | 'special',
           </div>
         </div>
         <template v-else>
-          <AdoptDetail v-if="pet" :pet="pet!" />
-          <AdoptSummary v-else-if="filteredPets.length > 0" :pets="filteredPets" />
+          <AdoptSummary v-if="filteredPets.length > 0" :pets="filteredPets" />
           <div v-else class="empty-state">
             <div class="empty-icon-wrap" aria-hidden="true">
               <svg width="42" height="42" viewBox="0 0 24 24" fill="currentColor">
