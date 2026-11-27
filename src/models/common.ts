@@ -113,6 +113,7 @@ export interface IPet {
     isGoodWithKids: boolean | null
     isGoodWithOtherAnimals?: boolean | null
     isHouseTrained: boolean | null
+    isLitterBoxTrained?: boolean | null
     mustGoWithAnotherCat?: boolean | null
     mustGoWithAnotherDog?: boolean | null
     personalityTags: TTemperament[] | null
@@ -202,6 +203,12 @@ export interface IPet {
     isSpotlightFeatured: boolean
     showAdditionalInformation: boolean
     showMedicalHistory: boolean
+    showSponsoredBadge?: boolean
+    allowAdoptionInquiries?: boolean
+    allowRequestInfo?: boolean
+    allowShare?: boolean
+    allowScheduleMeet?: boolean
+    showDetailCapsules?: boolean
   }
 }
 

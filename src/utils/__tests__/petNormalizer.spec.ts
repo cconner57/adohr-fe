@@ -152,6 +152,7 @@ describe('petNormalizer', () => {
         isGoodWithKids: 'unknown',
         isGoodWithOtherAnimals: 'unknown',
         isHouseTrained: 'unknown',
+        isLitterBoxTrained: 'unknown',
       },
     })
 
@@ -162,6 +163,7 @@ describe('petNormalizer', () => {
     expect(pet.behavior.isGoodWithKids).toBeNull()
     expect(pet.behavior.isGoodWithOtherAnimals).toBeNull()
     expect(pet.behavior.isHouseTrained).toBeNull()
+    expect(pet.behavior.isLitterBoxTrained).toBeNull()
 
     const noneSecondary = normalizePet({
       id: 'pet-none',
@@ -173,5 +175,38 @@ describe('petNormalizer', () => {
       },
     })
     expect(noneSecondary.physical.secondaryColor).toBeNull()
+  })
+
+  it('normalizes profileSettings visitor action flags with true defaults and preserves false values', () => {
+    const defaulted = normalizePet({
+      id: 'pet-default-flags',
+      name: 'Biscuit',
+      species: 'cat',
+    })
+    expect(defaulted.profileSettings.allowAdoptionInquiries).toBe(true)
+    expect(defaulted.profileSettings.allowRequestInfo).toBe(true)
+    expect(defaulted.profileSettings.allowShare).toBe(true)
+    expect(defaulted.profileSettings.allowScheduleMeet).toBe(true)
+    expect(defaulted.profileSettings.showDetailCapsules).toBe(true)
+    expect(defaulted.profileSettings.isSpotlightFeatured).toBe(false)
+
+    const restricted = normalizePet({
+      id: 'pet-snowball',
+      name: 'Snowball',
+      species: 'cat',
+      profileSettings: {
+        isSpotlightFeatured: false,
+        allowAdoptionInquiries: false,
+        allowRequestInfo: false,
+        allowShare: false,
+        allowScheduleMeet: false,
+        showDetailCapsules: false,
+      },
+    })
+    expect(restricted.profileSettings.allowAdoptionInquiries).toBe(false)
+    expect(restricted.profileSettings.allowRequestInfo).toBe(false)
+    expect(restricted.profileSettings.allowShare).toBe(false)
+    expect(restricted.profileSettings.allowScheduleMeet).toBe(false)
+    expect(restricted.profileSettings.showDetailCapsules).toBe(false)
   })
 })

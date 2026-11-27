@@ -131,6 +131,9 @@ export function normalizePet(raw: Record<string, unknown>): IPet {
   const isHouseTrained = parseTriStateBoolean(
     beh.isHouseTrained ?? raw.isHouseTrained ?? raw.houseTrained,
   )
+  const isLitterBoxTrained = parseTriStateBoolean(
+    beh.isLitterBoxTrained ?? raw.isLitterBoxTrained ?? raw.litterBoxTrained,
+  )
   
   // Medical sub-object or flat fallbacks
   const med = (raw.medical || {}) as Record<string, unknown>
@@ -184,6 +187,25 @@ export function normalizePet(raw: Record<string, unknown>): IPet {
   const rawSponsored = (raw.sponsored || {}) as Record<string, unknown>
   const isSponsored = Boolean(rawSponsored.isSponsored ?? raw.isSponsored ?? false)
 
+  // Profile Settings
+  const rawProfile = (raw.profileSettings || {}) as Record<string, unknown>
+  const resolveActionFlag = (val: unknown) => {
+    const parsed = parseTriStateBoolean(val)
+    return parsed === null ? true : parsed
+  }
+  const profileSettings = {
+    ...rawProfile,
+    isSpotlightFeatured: parseTriStateBoolean(rawProfile.isSpotlightFeatured) === true,
+    showAdditionalInformation: parseTriStateBoolean(rawProfile.showAdditionalInformation) === true,
+    showMedicalHistory: parseTriStateBoolean(rawProfile.showMedicalHistory) === true,
+    showSponsoredBadge: parseTriStateBoolean(rawProfile.showSponsoredBadge) === true,
+    allowAdoptionInquiries: resolveActionFlag(rawProfile.allowAdoptionInquiries),
+    allowRequestInfo: resolveActionFlag(rawProfile.allowRequestInfo),
+    allowShare: resolveActionFlag(rawProfile.allowShare),
+    allowScheduleMeet: resolveActionFlag(rawProfile.allowScheduleMeet),
+    showDetailCapsules: resolveActionFlag(rawProfile.showDetailCapsules),
+  }
+
   const normalized = {
     ...raw,
     id,
@@ -218,6 +240,7 @@ export function normalizePet(raw: Record<string, unknown>): IPet {
       isGoodWithKids,
       isGoodWithOtherAnimals,
       isHouseTrained,
+      isLitterBoxTrained,
       mustGoWithAnotherCat: (beh.mustGoWithAnotherCat ?? raw.mustGoWithAnotherCat ?? null) as boolean | null,
       mustGoWithAnotherDog: (beh.mustGoWithAnotherDog ?? raw.mustGoWithAnotherDog ?? null) as boolean | null,
       personalityTags,
@@ -240,6 +263,7 @@ export function normalizePet(raw: Record<string, unknown>): IPet {
     sponsored: {
       isSponsored,
     },
+    profileSettings,
     medical: {
       ...med,
       specialNeeds: rawMedSpecialNeeds,
