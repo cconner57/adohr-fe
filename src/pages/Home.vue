@@ -47,11 +47,11 @@ onMounted(() => {
     <HeroSection />
 
     <main id="main-content">
-      <!-- 2. Weekend Events Band -->
+      <!-- 2. Upcoming Adoption Events Band -->
       <section
         v-if="!isEventsFetched || isEventsLoading || hasUpcomingEvents"
         class="events-band"
-        aria-label="Weekend Adoption Events"
+        aria-label="Upcoming Adoption Events"
       >
         <div class="content-wrapper" v-scroll-reveal>
           <EventBanner

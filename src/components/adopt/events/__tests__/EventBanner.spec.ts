@@ -323,4 +323,43 @@ describe('EventBanner.vue', () => {
 
     expect(wrapper.find('.banner-address').exists()).toBe(false)
   })
+
+  it('shows dynamic week/weekend location headings and day labels for weekday + weekend events', async () => {
+    const mixedEvents = {
+      events: [
+        {
+          id: 'evt-fri',
+          title: 'Meet Our Adoptable Pets at PetSmart Adoptions',
+          type: 'adoption-event',
+          startDate: '2026-11-27',
+          startTime: '08:00',
+          endTime: '14:30',
+          locationName: 'PetSmart - Pasadena',
+        },
+        {
+          id: 'evt-sat',
+          title: 'Meet Our Adoptable Pets at PetSmart Adoptions',
+          type: 'adoption-event',
+          startDate: '2026-11-28',
+          startTime: '12:00',
+          endTime: '16:00',
+          locationName: 'PetSmart - Pasadena',
+        },
+      ],
+    }
+
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => mixedEvents,
+    } as Response)
+
+    const wrapper = mount(EventBanner)
+    await flushPromises()
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    expect(wrapper.text()).toContain('Locations This Week & Weekend:')
+    expect(wrapper.find('.banner-badge').text()).toContain('Friday (8 AM – 2:30 PM)')
+    expect(wrapper.find('.banner-subtitle').text()).not.toContain('This Weekend')
+    expect(wrapper.find('.banner-subtitle').text()).toContain('Fri, Nov 27')
+  })
 })

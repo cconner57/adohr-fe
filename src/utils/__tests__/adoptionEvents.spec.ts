@@ -305,6 +305,40 @@ describe('adoptionEvents utils', () => {
     expect(map.get('pet-upland')?.scheduleText).toBe('At PetSmart - Upland · Sunday Only')
   })
 
+  it('formats weekday-only and combined weekday+weekend events dynamically instead of defaulting to Weekend', () => {
+    const fridayEvent: IPublicAdoptionEvent = {
+      id: 'evt-fri',
+      title: 'Meet Our Adoptable Pets at PetSmart Adoptions',
+      type: 'adoption-event',
+      startDate: '2026-11-27', // Friday
+      startTime: '08:00',
+      endTime: '14:30',
+      location: 'PetSmart - Pasadena',
+    }
+    const satEvent: IPublicAdoptionEvent = {
+      id: 'evt-sat',
+      title: 'Meet Our Adoptable Pets at PetSmart Adoptions',
+      type: 'adoption-event',
+      startDate: '2026-11-28', // Saturday
+      startTime: '08:00',
+      endTime: '14:30',
+      location: 'PetSmart - Pasadena',
+    }
+
+    const [fridayOnly] = combineConsecutiveEvents([fridayEvent])
+    expect(fridayOnly.cadence).toBe('weekday')
+    expect(fridayOnly.recurrenceText).toBe('Friday (8 AM – 2:30 PM)')
+    expect(fridayOnly.dates).toMatch(/^(This Week|Next Week) · Fri, Nov 27$/)
+
+    const [friAndSat] = combineConsecutiveEvents([fridayEvent, satEvent])
+    expect(friAndSat.cadence).toBe('both')
+    expect(friAndSat.recurrenceText).toBe('Fri & Sat (8 AM – 2:30 PM)')
+    expect(friAndSat.dates).toMatch(/^(This Week & Weekend|Next Week & Weekend) · Fri, Nov 27 & Sat, Nov 28$/)
+
+    const weekdayMap = computePetAttendanceMap([{ ...fridayEvent, attendingPetIds: ['pet-fri'] }])
+    expect(weekdayMap.get('pet-fri')?.shortDayText).toBe('Friday Only')
+  })
+
   describe('Weekend Cycle Calculations', () => {
     it('calculates the target weekend ending Sunday correctly for any day of the week', () => {
       // Sunday Sep 27 -> ends Sunday Sep 27 23:59:59.999

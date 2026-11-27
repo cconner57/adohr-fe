@@ -48,7 +48,9 @@ const attendingInfo = computed(() => {
       days: parts[1].trim(),
     }
   }
-  const match = text.match(/^(?:at\s+)?(.+?)\s+((?:sat|sun|weekend|saturday|sunday).*)$/i)
+  const match = text.match(
+    /^(?:at\s+)?(.+?)\s+((?:mon|tue|wed|thu|fri|sat|sun|monday|tuesday|wednesday|thursday|friday|saturday|sunday|weekday|weekend).*)$/i,
+  )
   if (match) {
     return {
       location: match[1].trim(),
@@ -185,7 +187,7 @@ function collapseDockBadge() {
       <div
         v-if="hasWeekendBadge"
         class="image-badge weekend-badge"
-        :aria-label="props.attendingScheduleText || 'Attending PetSmart this weekend'"
+        :aria-label="props.attendingScheduleText || 'Attending upcoming adoption event'"
       >
         <div class="badge-days-row">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">

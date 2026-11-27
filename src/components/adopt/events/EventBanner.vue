@@ -58,6 +58,17 @@ const {
   fetchUpcomingEvents,
 } = useAdoptionEvents()
 
+const locationsHeading = computed(() => {
+  const cadences = new Set(formattedUpcomingEvents.value.map((ev) => ev.cadence))
+  if (cadences.has('both') || (cadences.has('weekday') && cadences.has('weekend'))) {
+    return 'Locations This Week & Weekend:'
+  }
+  if (cadences.has('weekday')) {
+    return 'Locations This Week:'
+  }
+  return 'Locations This Weekend:'
+})
+
 const showSkeleton = computed(() => {
   if (typeof props.loading === 'boolean') {
     return props.loading
@@ -89,7 +100,7 @@ onMounted(() => {
     v-else-if="hasUpcomingEvents"
     class="event-banner petsmart-banner"
     :class="[`variant-${resolvedScheme}`]"
-    aria-label="Weekend Adoption Event Info"
+    aria-label="Adoption Event Info"
   >
     <!-- Multiple Locations Tab Switcher (Visible when 2+ events exist) -->
     <div
@@ -104,7 +115,7 @@ onMounted(() => {
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
             <circle cx="12" cy="10" r="3" />
           </svg>
-          <span>Locations This Weekend:</span>
+          <span>{{ locationsHeading }}</span>
         </span>
       </div>
 

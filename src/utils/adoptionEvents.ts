@@ -24,6 +24,8 @@ export const DEFAULT_ADOPTION_EVENTS: IPublicAdoptionEvent[] = [
   },
 ]
 
+export type TEventCadence = 'weekday' | 'weekend' | 'both'
+
 export interface IFormattedAdoptionEvent {
   id: string
   title: string
@@ -31,6 +33,7 @@ export interface IFormattedAdoptionEvent {
   address: string
   dates: string
   recurrenceText: string
+  cadence: TEventCadence
   directionsUrl: string
   attendingPetIds: string[]
   attendingPets: IAttendingPetSummary[]
@@ -190,6 +193,25 @@ export function parseSortTime(dateStr?: string): number {
   return isNaN(t) ? 0 : t
 }
 
+export function classifyEventCadence(dates: Date[]): TEventCadence {
+  let hasWeekday = false
+  let hasWeekend = false
+  for (const d of dates) {
+    const day = d.getDay()
+    if (day === 0 || day === 6) hasWeekend = true
+    else hasWeekday = true
+  }
+  if (hasWeekday && hasWeekend) return 'both'
+  if (hasWeekday) return 'weekday'
+  return 'weekend'
+}
+
+function getDatePrefix(cadence: TEventCadence, isThisCycle: boolean): string {
+  if (cadence === 'weekday') return isThisCycle ? 'This Week · ' : 'Next Week · '
+  if (cadence === 'both') return isThisCycle ? 'This Week & Weekend · ' : 'Next Week & Weekend · '
+  return isThisCycle ? 'This Weekend · ' : 'Next Weekend · '
+}
+
 export function formatMergedEventDates(startDateStr?: string, endDateStr?: string, datesList: string[] = []): string {
   const validDates = (datesList.length > 0 ? datesList : [startDateStr, endDateStr])
     .filter((d): d is string => Boolean(d))
@@ -201,7 +223,9 @@ export function formatMergedEventDates(startDateStr?: string, endDateStr?: strin
 
   const first = validDates[0]
   const diffDays = Math.ceil((first.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-  const prefix = diffDays >= -1 && diffDays <= 6 ? 'This Weekend · ' : 'Next Weekend · '
+  const isThisCycle = diffDays >= -1 && diffDays <= 6
+  const cadence = classifyEventCadence(validDates)
+  const prefix = getDatePrefix(cadence, isThisCycle)
 
   const uniqueDateMap = new Map<string, Date>()
   for (const d of validDates) {
@@ -226,7 +250,8 @@ export function formatEventDates(event: IPublicAdoptionEvent): string {
 }
 
 export function formatMergedRecurrence(groupEvents: IPublicAdoptionEvent[]): string {
-  const days = new Set<string>()
+  const uniqueDays: Array<{ short: string; full: string }> = []
+  const seenDays = new Set<string>()
   let startTime = ''
   let endTime = ''
 
@@ -235,14 +260,24 @@ export function formatMergedRecurrence(groupEvents: IPublicAdoptionEvent[]): str
     if (ev.endTime && !endTime) endTime = ev.endTime
     if (ev.startDate) {
       const d = new Date(ev.startDate.includes('T') ? ev.startDate : `${ev.startDate}T00:00:00`)
-      if (!isNaN(d.getTime())) days.add(d.toLocaleDateString('en-US', { weekday: 'short' }))
+      if (!isNaN(d.getTime())) {
+        const short = d.toLocaleDateString('en-US', { weekday: 'short' })
+        const full = d.toLocaleDateString('en-US', { weekday: 'long' })
+        if (!seenDays.has(short)) {
+          seenDays.add(short)
+          uniqueDays.push({ short, full })
+        }
+      }
     }
   }
 
   const timeStr = startTime && endTime ? ` (${formatTime12h(startTime)} – ${formatTime12h(endTime)})` : ' (12 PM – 4 PM)'
-  if (days.has('Sat') && days.has('Sun')) return `Sat & Sun${timeStr}`
-  if (days.has('Sat')) return `Saturday${timeStr}`
-  if (days.has('Sun')) return `Sunday${timeStr}`
+  if (uniqueDays.length === 1) return `${uniqueDays[0].full}${timeStr}`
+  if (uniqueDays.length === 2) return `${uniqueDays[0].short} & ${uniqueDays[1].short}${timeStr}`
+  if (uniqueDays.length > 2) {
+    const leading = uniqueDays.slice(0, -1).map((d) => d.short).join(', ')
+    return `${leading} & ${uniqueDays[uniqueDays.length - 1].short}${timeStr}`
+  }
   return `Weekend${timeStr}`
 }
 
@@ -266,12 +301,21 @@ export function combineConsecutiveEvents(rawEvents: IPublicAdoptionEvent[]): IFo
     const venueAddress = resolveLocationAddress(sample, locName)
 
     const datesList: string[] = []
+    const parsedDates: Date[] = []
     const attendingPetIdSet = new Set<string>()
     const attendingPetsMap = new Map<string, IAttendingPetSummary>()
 
     for (const ev of groupEvents) {
-      if (ev.startDate) datesList.push(ev.startDate)
-      if (ev.endDate && ev.endDate !== ev.startDate) datesList.push(ev.endDate)
+      if (ev.startDate) {
+        datesList.push(ev.startDate)
+        const d = new Date(ev.startDate.includes('T') ? ev.startDate : `${ev.startDate}T00:00:00`)
+        if (!isNaN(d.getTime())) parsedDates.push(d)
+      }
+      if (ev.endDate && ev.endDate !== ev.startDate) {
+        datesList.push(ev.endDate)
+        const dEnd = new Date(ev.endDate.includes('T') ? ev.endDate : `${ev.endDate}T00:00:00`)
+        if (!isNaN(dEnd.getTime())) parsedDates.push(dEnd)
+      }
       ev.attendingPetIds?.forEach((id) => attendingPetIdSet.add(id))
       ev.attendingPets?.forEach((pet) => {
         if (pet.id) attendingPetsMap.set(pet.id, pet)
@@ -292,6 +336,7 @@ export function combineConsecutiveEvents(rawEvents: IPublicAdoptionEvent[]): IFo
       address: venueAddress,
       dates: formatMergedEventDates(sample.startDate, sample.endDate, datesList),
       recurrenceText: formatMergedRecurrence(groupEvents),
+      cadence: classifyEventCadence(parsedDates),
       directionsUrl: sample.googleMapsUrl?.trim() || `https://maps.google.com/?q=${encodeURIComponent(`${locName} ${venueAddress}`.trim())}`,
       attendingPetIds: Array.from(attendingPetIdSet),
       attendingPets: Array.from(attendingPetsMap.values()),
@@ -310,6 +355,7 @@ export function formatAdoptionEvent(event?: IPublicAdoptionEvent | null): IForma
       address: DEFAULT_ADDRESS,
       dates: calculateFallbackWeekendDates(),
       recurrenceText: DEFAULT_RECURRENCE,
+      cadence: 'weekend',
       directionsUrl: DEFAULT_MAPS_URL,
       attendingPetIds: [],
       attendingPets: [],
@@ -319,6 +365,13 @@ export function formatAdoptionEvent(event?: IPublicAdoptionEvent | null): IForma
   if (combined.length > 0) return combined[0]
   const locName = resolveLocationName(event)
   const addr = resolveLocationAddress(event, locName)
+  const parsedDates: Date[] = []
+  for (const ds of [event.startDate, event.endDate]) {
+    if (ds) {
+      const d = new Date(ds.includes('T') ? ds : `${ds}T00:00:00`)
+      if (!isNaN(d.getTime())) parsedDates.push(d)
+    }
+  }
   return {
     id: event.id || 'event',
     title: event.title?.trim() || `Meet Our Adoptable Pets at ${locName}`,
@@ -326,6 +379,7 @@ export function formatAdoptionEvent(event?: IPublicAdoptionEvent | null): IForma
     address: addr,
     dates: formatMergedEventDates(event.startDate, event.endDate),
     recurrenceText: formatMergedRecurrence([event]),
+    cadence: classifyEventCadence(parsedDates),
     directionsUrl: event.googleMapsUrl?.trim() || `https://maps.google.com/?q=${encodeURIComponent(`${locName} ${addr}`.trim())}`,
     attendingPetIds: event.attendingPetIds || [],
     attendingPets: event.attendingPets || [],
@@ -394,13 +448,14 @@ export function computePetAttendanceMap(
   map.forEach((item) => {
     const hasSat = item.days.includes('Sat')
     const hasSun = item.days.includes('Sun')
-    if (hasSat && hasSun) {
+    if (hasSat && hasSun && item.days.length === 2) {
       item.isAttendingBoth = true
       item.shortDayText = 'Sat & Sun'
-    } else if (hasSat) {
-      item.shortDayText = 'Saturday Only'
-    } else if (hasSun) {
-      item.shortDayText = 'Sunday Only'
+    } else if (item.days.length === 1) {
+      item.shortDayText = `${item.dayFullNames[0]} Only`
+    } else if (item.days.length === 2) {
+      if (hasSat && hasSun) item.isAttendingBoth = true
+      item.shortDayText = `${item.days[0]} & ${item.days[1]}`
     } else {
       item.shortDayText = item.days.join(', ')
     }
